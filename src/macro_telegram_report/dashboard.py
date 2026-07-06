@@ -2286,8 +2286,9 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     }
 
     .metric-table-wrap {
-      border: 1px solid var(--line);
-      border-radius: 8px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      border-radius: 0;
       background: var(--panel);
       overflow: hidden;
     }
@@ -2299,8 +2300,8 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     }
 
     .metric-table th {
-      height: 38px;
-      padding: 0 14px;
+      height: 34px;
+      padding: 0 12px;
       background: var(--menu);
       color: var(--muted);
       font-size: 11px;
@@ -2310,7 +2311,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     }
 
     .metric-table td {
-      padding: 10px 14px;
+      padding: 7px 12px;
       border-top: 1px solid var(--line);
       color: var(--text);
       vertical-align: middle;
@@ -2336,9 +2337,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     .metric-toggle {
       width: 100%;
       min-width: 0;
-      display: grid;
-      grid-template-columns: 18px minmax(0, 1fr);
-      gap: 8px;
+      display: block;
       align-items: center;
       padding: 0;
       border: 0;
@@ -2354,20 +2353,10 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       border-radius: 6px;
     }
 
-    .metric-chevron {
-      color: var(--muted);
-      font-size: 11px;
-      transition: transform 260ms ease;
-    }
-
-    .metric-row.is-expanded .metric-chevron {
-      transform: rotate(90deg);
-    }
-
     .metric-name {
       min-width: 0;
-      font-size: 14px;
-      line-height: 1.32;
+      font-size: 13px;
+      line-height: 1.26;
       font-weight: 780;
       overflow-wrap: anywhere;
     }
@@ -2376,19 +2365,20 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       margin: 0;
       color: var(--muted);
       font-size: 12.5px;
-      line-height: 1.45;
+      line-height: 1.35;
       overflow-wrap: anywhere;
     }
 
     .metric-date {
       color: var(--muted);
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 680;
       white-space: nowrap;
     }
 
     .chart-mini {
-      height: 82px;
+      height: 34px;
+      max-height: 34px;
       border: 0;
       border-radius: 0;
       background: transparent;
@@ -2665,24 +2655,37 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       }
 
       .group { padding: 15px; }
+
+      .metric-table-wrap {
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+      }
+
       .metric-table {
-        display: block;
+        display: table;
+        min-width: 760px;
       }
 
       .metric-table thead {
-        display: none;
+        display: table-header-group;
       }
 
-      .metric-table tbody,
-      .metric-table tr,
+      .metric-table tbody {
+        display: table-row-group;
+      }
+
+      .metric-table tr {
+        display: table-row;
+      }
+
       .metric-table td {
-        display: block;
-        width: 100%;
+        display: table-cell;
       }
 
       .metric-row {
-        padding: 10px 12px;
-        border-top: 1px solid var(--line);
+        padding: 0;
+        border-top: 0;
       }
 
       .metric-row:first-child {
@@ -2690,29 +2693,22 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       }
 
       .metric-row td {
-        padding: 5px 0;
-        border-top: 0;
+        padding: 7px 10px;
+        border-top: 1px solid var(--line);
       }
 
       .metric-row td:not(.metric-name-cell)::before {
-        content: attr(data-label);
-        display: block;
-        margin-bottom: 3px;
-        color: var(--muted);
-        font-size: 10.5px;
-        line-height: 1.1;
-        font-weight: 790;
+        content: none;
       }
 
-      .metric-name-cell,
-      .metric-description-cell,
-      .metric-date-cell,
-      .metric-chart-cell {
-        width: 100%;
-      }
+      .metric-name-cell { width: 25%; }
+      .metric-description-cell { width: 35%; }
+      .metric-date-cell { width: 12%; }
+      .metric-chart-cell { width: 16%; }
 
-      .metric-chart-cell .chart {
-        height: 104px;
+      .metric-chart-cell .chart-mini {
+        height: 34px;
+        max-height: 34px;
       }
 
       .metric-detail-row td {
@@ -3078,7 +3074,38 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       }));
     }
 
+    function miniChart(history, metric = null) {
+      const displayPoints = displayHistory(history, metric);
+      const chartClass = "chart chart-mini";
+      if (!displayPoints || displayPoints.length < 2) {
+        return `<svg class="${chartClass}" viewBox="0 0 160 36" role="img" aria-label="trend unavailable"></svg>`;
+      }
+      const values = displayPoints.map((point) => point.value).filter((value) => typeof value === "number" && Number.isFinite(value));
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+      const latest = displayPoints[displayPoints.length - 1].value;
+      const first = displayPoints[0].value;
+      const span = max - min || 1;
+      const left = 4;
+      const right = 156;
+      const top = 5;
+      const bottom = 31;
+      const yFor = (value) => bottom - ((value - min) / span) * (bottom - top);
+      const points = displayPoints.map((point, index) => {
+        const x = left + (index / Math.max(displayPoints.length - 1, 1)) * (right - left);
+        const y = yFor(point.value);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(" ");
+      const trend = latest >= first ? "up" : "down";
+      return `<svg class="${chartClass}" viewBox="0 0 160 36" role="img" aria-label="trend">
+        <polyline points="${points}" class="trend-line ${trend}"></polyline>
+      </svg>`;
+    }
+
     function chart(history, extraClass = "", metric = null) {
+      if (extraClass.split(" ").includes("chart-mini")) {
+        return miniChart(history, metric);
+      }
       const displayPoints = displayHistory(history, metric);
       const chartClass = `chart${extraClass ? ` ${extraClass}` : ""}`;
       if (!displayPoints || displayPoints.length < 2) {
@@ -3145,7 +3172,13 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     }
 
     function dateText(value) {
-      return value || t("irregular");
+      if (!value) return t("irregular");
+      const match = String(value).match(/^(\\d{4})[.-](\\d{1,2})(?:[.-](\\d{1,2}))?/);
+      if (!match) return value;
+      const year = match[1].slice(2);
+      const month = String(Number(match[2]));
+      const day = match[3] ? ` ${Number(match[3])}일` : "";
+      return `${year}년 ${month}월${day}`;
     }
 
     function detailStat(label, value, className = "") {
@@ -3177,7 +3210,6 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       return `<tr class="metric-row" data-metric-row data-detail-id="${detailId}">
         <td class="metric-name-cell" data-label="${escapeHtml(t("metric"))}">
           <button class="metric-toggle" type="button" data-metric-toggle aria-expanded="false" aria-controls="${detailId}">
-            <i class="fa-solid fa-chevron-right metric-chevron" aria-hidden="true"></i>
             <span class="metric-name">${escapeHtml(metric.name)}</span>
           </button>
         </td>
