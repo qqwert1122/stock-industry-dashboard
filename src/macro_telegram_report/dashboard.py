@@ -2240,7 +2240,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     .industry-head {
       display: grid;
-      grid-template-columns: 78px minmax(0, 1fr);
+      grid-template-columns: 86px minmax(0, 1fr);
       gap: 16px;
       align-items: center;
       padding: 18px 20px;
@@ -2249,17 +2249,17 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     }
 
     .industry-icon-wrap {
-      width: 78px;
-      height: 78px;
-      border-radius: 8px;
+      width: 86px;
+      height: 86px;
+      border-radius: 999px;
       display: grid;
       place-items: center;
       background: var(--menu);
     }
 
     .industry-icon {
-      width: 64px;
-      height: 64px;
+      width: 76px;
+      height: 76px;
       object-fit: contain;
       display: block;
     }
@@ -2639,19 +2639,19 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       }
 
       .industry-head {
-        grid-template-columns: 64px minmax(0, 1fr);
+        grid-template-columns: 72px minmax(0, 1fr);
         gap: 12px;
         padding: 15px;
       }
 
       .industry-icon-wrap {
-        width: 64px;
-        height: 64px;
+        width: 72px;
+        height: 72px;
       }
 
       .industry-icon {
-        width: 54px;
-        height: 54px;
+        width: 64px;
+        height: 64px;
       }
 
       .group { padding: 15px; }
