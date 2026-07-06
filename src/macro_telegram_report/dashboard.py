@@ -1421,6 +1421,7 @@ def visible_dashboard_metrics(metrics: list[dict[str, Any]]) -> list[dict[str, A
                     "name": clean_display_text(metric["name"]),
                     "meaning": clean_display_text(metric["meaning"]),
                     "value": metric["value"],
+                    "unit": clean_display_text(metric["unit"]),
                     "display_value": metric["display_value"],
                     "frequency": clean_display_text(metric["frequency"]),
                     "observed_at": metric["observed_at"],
@@ -1778,6 +1779,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     body.theme-ready .settings-menu,
     body.theme-ready .settings-menu button,
     body.theme-ready .reorder-actions button,
+    body.theme-ready .currency-toggle,
     body.theme-ready .theme-toggle,
     body.theme-ready .industry,
     body.theme-ready .industry-head,
@@ -2037,6 +2039,13 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       min-height: 46px;
     }
 
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 0 0 auto;
+    }
+
     h1 {
       margin: 0;
       font-size: clamp(26px, 3vw, 40px);
@@ -2044,6 +2053,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       font-weight: 810;
     }
 
+    .currency-toggle,
     .theme-toggle {
       width: 44px;
       height: 44px;
@@ -2059,13 +2069,43 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       font-size: 17px;
     }
 
+    .currency-toggle:hover,
     .theme-toggle:hover {
       background: var(--menu-active);
     }
 
+    .currency-toggle:focus-visible,
     .theme-toggle:focus-visible {
       outline: 2px solid var(--text);
       outline-offset: 3px;
+    }
+
+    .currency-toggle {
+      font-size: 16px;
+      font-weight: 820;
+    }
+
+    .currency-icon {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      display: grid;
+      place-items: center;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.7) rotate(-18deg);
+      transition: opacity 220ms ease, transform 220ms ease;
+    }
+
+    body.currency-usd .currency-icon-dollar,
+    body.currency-krw .currency-icon-won {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    }
+
+    body.currency-usd .currency-icon-won,
+    body.currency-krw .currency-icon-dollar {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.7) rotate(18deg);
     }
 
     .theme-toggle:disabled {
@@ -2153,6 +2193,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       body.theme-ready .settings-menu,
       body.theme-ready .settings-menu button,
       body.theme-ready .reorder-actions button,
+      body.theme-ready .currency-toggle,
       body.theme-ready .theme-toggle,
       body.theme-ready .industry,
       body.theme-ready .industry-head,
@@ -2603,6 +2644,10 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         align-items: flex-start;
       }
 
+      .topbar-actions {
+        gap: 6px;
+      }
+
       .industry-head {
         grid-template-columns: 64px minmax(0, 1fr);
         gap: 12px;
@@ -2732,12 +2777,18 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     <section class="content">
       <header class="topbar">
         <h1 data-i18n="title">산업별 지표 대시보드</h1>
-        <button class="theme-toggle" id="themeToggle" type="button" aria-label="다크모드 전환" title="다크모드 전환">
-          <span class="theme-icon-orbit" aria-hidden="true">
-            <i class="fa-solid fa-moon theme-icon theme-icon-moon"></i>
-            <i class="fa-solid fa-sun theme-icon theme-icon-sun"></i>
-          </span>
-        </button>
+        <div class="topbar-actions">
+          <button class="currency-toggle" id="currencyToggle" type="button" aria-label="원화 표시" title="원화 표시">
+            <i class="fa-solid fa-dollar-sign currency-icon currency-icon-dollar" aria-hidden="true"></i>
+            <i class="fa-solid fa-won-sign currency-icon currency-icon-won" aria-hidden="true"></i>
+          </button>
+          <button class="theme-toggle" id="themeToggle" type="button" aria-label="다크모드 전환" title="다크모드 전환">
+            <span class="theme-icon-orbit" aria-hidden="true">
+              <i class="fa-solid fa-moon theme-icon theme-icon-moon"></i>
+              <i class="fa-solid fa-sun theme-icon theme-icon-sun"></i>
+            </span>
+          </button>
+        </div>
       </header>
       <section class="industry-stack" id="industryStack"></section>
       <div class="empty" id="empty" data-i18n="empty">표시할 지표가 없습니다.</div>
@@ -2751,7 +2802,8 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       isReordering: false,
       draftIndustryOrder: null,
       draggedMenuItem: null,
-      language: "ko"
+      language: "ko",
+      currency: "usd"
     };
     let scrollSpyFrame = 0;
     const groupOrder = [
@@ -2819,6 +2871,69 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     function t(key) {
       return translations[state.language]?.[key] || translations.ko[key] || key;
+    }
+
+    function numberText(value, signed = false) {
+      if (typeof value !== "number" || !Number.isFinite(value)) return "n/a";
+      const abs = Math.abs(value);
+      const digits = abs >= 100 ? 1 : 2;
+      const formatted = abs.toLocaleString("ko-KR", {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits
+      });
+      if (!signed || value === 0) return formatted;
+      return `${value > 0 ? "+" : "-"}${formatted}`;
+    }
+
+    function dollarUnitScale(metric) {
+      const unit = String(metric.unit || "");
+      const rate = usdKrwRate();
+      if (unit === "$B") return { scale: rate / 1000, unit: "조원" };
+      if (unit.includes("백만달러")) return { scale: rate / 100, unit: "억원" };
+      if (unit === "$" || unit.includes("달러") || unit.toUpperCase().includes("USD")) {
+        return { scale: rate, unit: "원" };
+      }
+      return null;
+    }
+
+    function isDollarMetric(metric) {
+      return Boolean(dollarUnitScale(metric));
+    }
+
+    function usdKrwRate() {
+      const match = DASHBOARD_DATA.metrics.find((metric) => {
+        const name = String(metric.name || "").toUpperCase();
+        return typeof metric.value === "number" &&
+          Number.isFinite(metric.value) &&
+          String(metric.unit || "") === "원" &&
+          (name.includes("환율") || name.includes("원/달러") || name.includes("USD/KRW"));
+      });
+      return match?.value || 1350;
+    }
+
+    function displayMetricValue(metric) {
+      const scale = state.currency === "krw" ? dollarUnitScale(metric) : null;
+      if (!scale || typeof metric.value !== "number" || !Number.isFinite(metric.value)) {
+        return metric.display_value;
+      }
+      return `${numberText(metric.value * scale.scale)}${scale.unit}`;
+    }
+
+    function displayMetricChange(metric) {
+      const scale = state.currency === "krw" ? dollarUnitScale(metric) : null;
+      if (!scale || typeof metric.change_abs !== "number" || !Number.isFinite(metric.change_abs)) {
+        return metric.change_abs_label;
+      }
+      return `${numberText(metric.change_abs * scale.scale, true)}${scale.unit}`;
+    }
+
+    function displayHistory(history, metric) {
+      const scale = state.currency === "krw" ? dollarUnitScale(metric || {}) : null;
+      if (!scale) return history;
+      return (history || []).map((point) => ({
+        ...point,
+        value: point.value * scale.scale
+      }));
     }
 
     function escapeHtml(value) {
@@ -2963,26 +3078,27 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       }));
     }
 
-    function chart(history, extraClass = "") {
+    function chart(history, extraClass = "", metric = null) {
+      const displayPoints = displayHistory(history, metric);
       const chartClass = `chart${extraClass ? ` ${extraClass}` : ""}`;
-      if (!history || history.length < 2) {
+      if (!displayPoints || displayPoints.length < 2) {
         return `<svg class="${chartClass}" viewBox="0 0 360 158" role="img" aria-label="trend unavailable">
           <line x1="62" y1="72" x2="344" y2="72" class="guide"></line>
         </svg>`;
       }
-      const values = history.map((point) => point.value).filter((value) => typeof value === "number" && Number.isFinite(value));
+      const values = displayPoints.map((point) => point.value).filter((value) => typeof value === "number" && Number.isFinite(value));
       const min = Math.min(...values);
       const max = Math.max(...values);
-      const latest = history[history.length - 1].value;
-      const first = history[0].value;
+      const latest = displayPoints[displayPoints.length - 1].value;
+      const first = displayPoints[0].value;
       const span = max - min || 1;
       const left = 62;
       const right = 344;
       const top = 16;
       const bottom = 116;
       const yFor = (value) => bottom - ((value - min) / span) * (bottom - top);
-      const points = history.map((point, index) => {
-        const x = left + (index / Math.max(history.length - 1, 1)) * (right - left);
+      const points = displayPoints.map((point, index) => {
+        const x = left + (index / Math.max(displayPoints.length - 1, 1)) * (right - left);
         const y = yFor(point.value);
         return `${x.toFixed(1)},${y.toFixed(1)}`;
       }).join(" ");
@@ -3043,15 +3159,15 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       return `<div class="metric-detail-panel">
         <div class="metric-detail-inner">
           <div class="detail-stats">
-            ${detailStat(t("currentValue"), metric.display_value)}
-            ${detailStat(t("previousChange"), metric.change_abs_label, directionClass(metric.change_abs))}
+            ${detailStat(t("currentValue"), displayMetricValue(metric))}
+            ${detailStat(t("previousChange"), displayMetricChange(metric), directionClass(metric.change_abs))}
             ${detailStat(t("previousChangePct"), metric.change_pct_label, directionClass(metric.change_pct))}
             ${detailStat(t("yoy"), metric.yoy_pct_label, directionClass(metric.yoy_pct))}
             ${detailStat(t("visiblePeriod"), metric.period_label || metric.observed_label || "")}
             ${detailStat(t("updateFrequency"), metric.frequency || t("irregular"))}
             <p class="detail-note">${escapeHtml(metric.meaning)}</p>
           </div>
-          <div class="detail-chart">${chart(metric.history, "chart-detail")}</div>
+          <div class="detail-chart">${chart(metric.history, "chart-detail", metric)}</div>
         </div>
       </div>`;
     }
@@ -3075,7 +3191,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
           <span class="metric-date">${escapeHtml(dateText(metric.next_update_label))}</span>
         </td>
         <td class="metric-chart-cell" data-label="${escapeHtml(t("chart"))}">
-          ${chart(metric.history, "chart-mini")}
+          ${chart(metric.history, "chart-mini", metric)}
         </td>
       </tr>
       <tr class="metric-detail-row" id="${detailId}" aria-hidden="true">
@@ -3340,6 +3456,30 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       });
     }
 
+    function updateCurrencyButton() {
+      const toggle = document.getElementById("currencyToggle");
+      if (!toggle) return;
+      const isKrw = state.currency === "krw";
+      toggle.setAttribute("aria-label", isKrw ? "달러 표시" : "원화 표시");
+      toggle.setAttribute("title", isKrw ? "달러 표시" : "원화 표시");
+    }
+
+    function applyCurrency(currency) {
+      state.currency = currency === "krw" ? "krw" : "usd";
+      document.body.classList.toggle("currency-krw", state.currency === "krw");
+      document.body.classList.toggle("currency-usd", state.currency === "usd");
+      localStorage.setItem("dashboard-currency", state.currency);
+      updateCurrencyButton();
+    }
+
+    function initCurrency() {
+      applyCurrency(localStorage.getItem("dashboard-currency") === "krw" ? "krw" : "usd");
+      document.getElementById("currencyToggle").addEventListener("click", () => {
+        applyCurrency(state.currency === "usd" ? "krw" : "usd");
+        renderIndustries();
+      });
+    }
+
     function updateActiveFromScroll() {
       const sections = [...document.querySelectorAll("[data-industry-section]")];
       if (!sections.length) return;
@@ -3374,6 +3514,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     initLanguage();
     initSettings();
     initTheme();
+    initCurrency();
     render();
   </script>
 </body>
