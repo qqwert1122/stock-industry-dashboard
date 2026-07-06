@@ -1091,6 +1091,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       position: sticky;
       top: 22px;
       align-self: start;
+      min-width: 0;
       min-height: calc(100vh - 44px);
       padding: 18px 14px;
       border: 1px solid var(--line);
@@ -1109,6 +1110,8 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     .side-menu {
       display: grid;
       gap: 7px;
+      min-width: 0;
+      max-width: 100%;
     }
 
     .side-menu button {
@@ -1174,9 +1177,11 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     .industry-stack {
       display: grid;
       gap: 18px;
+      min-width: 0;
     }
 
     .industry {
+      min-width: 0;
       border: 1px solid var(--line);
       border-radius: 8px;
       background: var(--surface);
@@ -1367,13 +1372,17 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
       .sidebar {
         position: static;
+        width: 100%;
+        max-width: 100%;
         min-height: 0;
         padding: 12px;
+        overflow: hidden;
       }
 
       .side-menu {
         display: flex;
         gap: 8px;
+        max-width: 100%;
         overflow-x: auto;
         padding-bottom: 2px;
       }
