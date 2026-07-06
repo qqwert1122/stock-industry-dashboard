@@ -426,8 +426,10 @@ usaspending:
       industry: 방산
       group: 국방 계약
       months_back: 18
-      awarding_agency_codes:
-        - "097"
+      agencies:
+        - type: awarding
+          tier: toptier
+          name: Department of Defense
       award_type_codes:
         - A
         - B
@@ -446,6 +448,20 @@ usaspending:
         - "336419"
         - "336992"
       meaning: 미국 연방 방산/항공우주 제조업 계약 의무액으로 방산 제조 밸류체인의 수주 모멘텀을 확인합니다.
+    - name: 미국 NASA 계약 의무액
+      industry: 우주
+      group: 우주 계약
+      months_back: 18
+      agencies:
+        - type: awarding
+          tier: toptier
+          name: National Aeronautics and Space Administration
+      award_type_codes:
+        - A
+        - B
+        - C
+        - D
+      meaning: NASA 계약 의무액은 우주 장비와 서비스 수요, 정부 우주 예산 집행 흐름을 보여주는 proxy입니다.
 
 eia:
   enabled: true
