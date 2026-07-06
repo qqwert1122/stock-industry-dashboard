@@ -492,6 +492,61 @@ eia:
       group: 제품 가격
       meaning: 디젤 가격은 물류/산업 수요와 정유 제품 마진 환경을 보여주는 proxy입니다.
 
+openfda:
+  enabled: true
+  endpoint: https://api.fda.gov/drug/drugsfda.json
+  source_url: https://open.fda.gov/apis/drug/drugsfda/
+  items:
+    - name: FDA 의약품 승인 활동
+      industry: 바이오
+      group: 승인 이벤트
+      months_back: 18
+      search: submissions.submission_status:AP
+      meaning: FDA 의약품 승인 관련 기록 수로 바이오 규제 이벤트와 신약 모멘텀을 확인합니다.
+
+clinical_trials:
+  enabled: true
+  endpoint: https://clinicaltrials.gov/api/v2/studies
+  source_url: https://clinicaltrials.gov/data-api
+  items:
+    - name: 글로벌 Phase 3 임상 시작
+      industry: 바이오
+      group: 임상 이벤트
+      months_back: 18
+      query: AREA[Phase]PHASE3
+      meaning: Phase 3 임상 시작 건수는 후기 파이프라인 활동성과 바이오 투자심리의 이벤트 밀도를 보여줍니다.
+
+launch_library:
+  enabled: true
+  endpoint: https://ll.thespacedevs.com/2.3.0/launches/
+  source_url: https://thespacedevs.com/llapi
+  items:
+    - name: 글로벌 우주 발사 건수
+      industry: 우주
+      group: 발사 이벤트
+      months_back: 18
+      meaning: 글로벌 발사 건수로 우주 산업 활동성과 위성 인프라 수요를 확인합니다.
+
+afdc:
+  enabled: true
+  endpoint: https://developer.nlr.gov/api/alt-fuel-stations/v1.json
+  last_updated_endpoint: https://developer.nlr.gov/api/alt-fuel-stations/v1/last-updated.json
+  source_url: https://developer.nlr.gov/docs/transportation/alt-fuel-stations-v1/
+  country: US
+  items:
+    - name: 미국 EV 충전소 수
+      industry: 전기차
+      field: stations
+      unit: 곳
+      group: 충전 인프라
+      meaning: 미국 EV 충전소 수는 전기차 보급 환경과 충전 인프라 투자 흐름을 보여주는 지표입니다.
+    - name: 미국 EV 충전 포트 수
+      industry: 전기차
+      field: ports
+      unit: 개
+      group: 충전 인프라
+      meaning: 미국 EV 충전 포트 수는 전기차 이용 편의성과 인프라 확장 속도를 확인하는 지표입니다.
+
 fred:
   enabled: true
   series:

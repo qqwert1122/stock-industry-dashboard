@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import shutil
+import time
 from collections import defaultdict
 from datetime import date, datetime, timedelta
 from io import BytesIO
@@ -125,6 +126,10 @@ def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -
         ("SEC CAPEX", collect_sec_capex_metrics),
         ("USAspending 방산", collect_usaspending_metrics),
         ("EIA", collect_eia_metrics),
+        ("openFDA", collect_openfda_metrics),
+        ("ClinicalTrials.gov", collect_clinical_trials_metrics),
+        ("Launch Library", collect_launch_library_metrics),
+        ("AFDC EV 충전", collect_afdc_metrics),
         ("한국 수출", collect_korea_export_metrics),
     ]
     for source_name, collector in collectors:
@@ -1095,6 +1100,435 @@ def parse_eia_period(value: object) -> date | None:
         return None
 
 
+def collect_openfda_metrics(
+    config: dict[str, Any], session: requests.Session, today: date
+) -> list[dict[str, Any]]:
+    openfda_config = config.get("openfda", {})
+    if not openfda_config.get("enabled", True):
+        return []
+
+    items = openfda_config.get("items", [])
+    if not items:
+        return []
+
+    endpoint = str(openfda_config.get("endpoint") or "https://api.fda.gov/drug/drugsfda.json")
+    source_url = str(openfda_config.get("source_url") or "https://open.fda.gov/apis/drug/drugsfda/")
+    api_key = os.getenv("OPENFDA_API_KEY", "").strip()
+    history_limit = int(config.get("dashboard", {}).get("history_points", 48))
+    metrics: list[dict[str, Any]] = []
+
+    for item in items:
+        name = str(item.get("name") or "FDA 의약품 승인 활동")
+        months_back = int(item.get("months_back") or openfda_config.get("months_back") or 18)
+        base_search = str(
+            item.get("search")
+            or "submissions.submission_status:AP"
+        )
+        points: list[tuple[date, float]] = []
+        try:
+            for month in completed_months(today, months_back):
+                start_text, end_text = openfda_month_range(month)
+                search = f"{base_search} AND submissions.submission_status_date:[{start_text} TO {end_text}]"
+                params = {"search": search, "limit": 1}
+                if api_key:
+                    params["api_key"] = api_key
+                response = session.get(endpoint, params=params, timeout=(5, 20))
+                if response.status_code == 404:
+                    total = 0
+                else:
+                    response.raise_for_status()
+                    total = int(response.json().get("meta", {}).get("results", {}).get("total") or 0)
+                points.append((month, float(total)))
+
+            metrics.append(
+                event_count_metric(
+                    points=points,
+                    history_limit=history_limit,
+                    industry=str(item.get("industry") or "바이오"),
+                    name=name,
+                    source="openFDA Drugs@FDA API",
+                    source_url=source_url,
+                    frequency="월간",
+                    group=str(item.get("group") or "승인 이벤트"),
+                    meaning=str(
+                        item.get("meaning")
+                        or "FDA 의약품 승인 관련 기록 수로 바이오 규제 이벤트와 신약 모멘텀을 확인합니다."
+                    ),
+                )
+            )
+        except Exception as exc:  # noqa: BLE001 - one event source should not break the page.
+            metrics.append(
+                make_metric(
+                    industry=str(item.get("industry") or "바이오"),
+                    name=name,
+                    source="openFDA Drugs@FDA API",
+                    source_url=source_url,
+                    frequency="월간",
+                    automation="무료 공개 API 자동 수집",
+                    status="error",
+                    note=str(exc),
+                    group=str(item.get("group") or "승인 이벤트"),
+                    meaning=str(item.get("meaning") or ""),
+                )
+            )
+    return metrics
+
+
+def collect_clinical_trials_metrics(
+    config: dict[str, Any], session: requests.Session, today: date
+) -> list[dict[str, Any]]:
+    trials_config = config.get("clinical_trials", {})
+    if not trials_config.get("enabled", True):
+        return []
+
+    items = trials_config.get("items", [])
+    if not items:
+        return []
+
+    endpoint = str(trials_config.get("endpoint") or "https://clinicaltrials.gov/api/v2/studies")
+    source_url = str(trials_config.get("source_url") or "https://clinicaltrials.gov/data-api")
+    history_limit = int(config.get("dashboard", {}).get("history_points", 48))
+    metrics: list[dict[str, Any]] = []
+
+    for item in items:
+        name = str(item.get("name") or "글로벌 임상 시작 건수")
+        months_back = int(item.get("months_back") or trials_config.get("months_back") or 18)
+        extra_query = str(item.get("query") or "")
+        points: list[tuple[date, float]] = []
+        try:
+            for month in completed_months(today, months_back):
+                start_date, end_date = month_date_range(month)
+                query = (
+                    f"AREA[StartDate]RANGE[{start_date.isoformat()},{end_date.isoformat()}]"
+                )
+                if extra_query:
+                    query = f"{query} AND {extra_query}"
+                response = session.get(
+                    endpoint,
+                    params={
+                        "format": "json",
+                        "pageSize": 1,
+                        "countTotal": "true",
+                        "query.term": query,
+                    },
+                    timeout=(5, 20),
+                )
+                response.raise_for_status()
+                points.append((month, float(response.json().get("totalCount") or 0)))
+
+            metrics.append(
+                event_count_metric(
+                    points=points,
+                    history_limit=history_limit,
+                    industry=str(item.get("industry") or "바이오"),
+                    name=name,
+                    source="ClinicalTrials.gov API",
+                    source_url=source_url,
+                    frequency="월간",
+                    group=str(item.get("group") or "임상 이벤트"),
+                    meaning=str(
+                        item.get("meaning")
+                        or "새로 시작되는 임상시험 수로 바이오 업계의 파이프라인 활동성을 확인합니다."
+                    ),
+                )
+            )
+        except Exception as exc:  # noqa: BLE001 - keep cards independent.
+            metrics.append(
+                make_metric(
+                    industry=str(item.get("industry") or "바이오"),
+                    name=name,
+                    source="ClinicalTrials.gov API",
+                    source_url=source_url,
+                    frequency="월간",
+                    automation="무료 공식 API 자동 수집",
+                    status="error",
+                    note=str(exc),
+                    group=str(item.get("group") or "임상 이벤트"),
+                    meaning=str(item.get("meaning") or ""),
+                )
+            )
+    return metrics
+
+
+def collect_launch_library_metrics(
+    config: dict[str, Any], session: requests.Session, today: date
+) -> list[dict[str, Any]]:
+    launch_config = config.get("launch_library", {})
+    if not launch_config.get("enabled", True):
+        return []
+
+    items = launch_config.get("items", [])
+    if not items:
+        return []
+
+    endpoint = str(launch_config.get("endpoint") or "https://ll.thespacedevs.com/2.3.0/launches/")
+    source_url = str(launch_config.get("source_url") or "https://thespacedevs.com/llapi")
+    history_limit = int(config.get("dashboard", {}).get("history_points", 48))
+    metrics: list[dict[str, Any]] = []
+
+    for item in items:
+        name = str(item.get("name") or "글로벌 우주 발사 건수")
+        months_back = int(item.get("months_back") or launch_config.get("months_back") or 18)
+        try:
+            months = completed_months(today, months_back)
+            points = launch_library_monthly_counts(session, endpoint, months)
+            metrics.append(
+                event_count_metric(
+                    points=points,
+                    history_limit=history_limit,
+                    industry=str(item.get("industry") or "우주"),
+                    name=name,
+                    source="The Space Devs Launch Library 2 API",
+                    source_url=source_url,
+                    frequency="월간",
+                    group=str(item.get("group") or "발사 이벤트"),
+                    meaning=str(
+                        item.get("meaning")
+                        or "글로벌 발사 건수로 우주 산업 활동성과 위성 인프라 수요를 확인합니다."
+                    ),
+                )
+            )
+        except Exception as exc:  # noqa: BLE001 - keep cards independent.
+            metrics.append(
+                make_metric(
+                    industry=str(item.get("industry") or "우주"),
+                    name=name,
+                    source="The Space Devs Launch Library 2 API",
+                    source_url=source_url,
+                    frequency="월간",
+                    automation="무료 공개 API 자동 수집",
+                    status="error",
+                    note=str(exc),
+                    group=str(item.get("group") or "발사 이벤트"),
+                    meaning=str(item.get("meaning") or ""),
+                )
+            )
+    return metrics
+
+
+def launch_library_monthly_counts(
+    session: requests.Session, endpoint: str, months: list[date]
+) -> list[tuple[date, float]]:
+    if not months:
+        return []
+
+    start_date, _ = month_date_range(months[0])
+    _, end_date = month_date_range(months[-1])
+    counts: dict[date, float] = {month: 0.0 for month in months}
+    offset = 0
+    limit = 100
+    while True:
+        params = {
+            "format": "json",
+            "mode": "list",
+            "limit": limit,
+            "offset": offset,
+            "ordering": "net",
+            "net__gte": f"{start_date.isoformat()}T00:00:00Z",
+            "net__lte": f"{end_date.isoformat()}T23:59:59Z",
+        }
+        response = get_with_rate_limit_retry(session, endpoint, params=params)
+        response.raise_for_status()
+        payload = response.json()
+        for launch in payload.get("results", []):
+            launch_date = parse_iso_date(str(launch.get("net") or "")[:10])
+            if launch_date is None:
+                continue
+            launch_month = date(launch_date.year, launch_date.month, 1)
+            if launch_month in counts:
+                counts[launch_month] += 1
+
+        offset += len(payload.get("results", []))
+        total = int(payload.get("count") or 0)
+        if offset >= total or not payload.get("next"):
+            break
+    return [(month, counts[month]) for month in months]
+
+
+def get_with_rate_limit_retry(
+    session: requests.Session, url: str, *, params: dict[str, Any], attempts: int = 3
+) -> requests.Response:
+    response: requests.Response | None = None
+    for attempt in range(attempts):
+        response = session.get(url, params=params, timeout=(5, 20))
+        if response.status_code != 429 or attempt == attempts - 1:
+            return response
+        retry_after = to_float(response.headers.get("Retry-After")) or 10.0
+        time.sleep(min(max(retry_after, 2.0), 20.0))
+    if response is None:
+        raise RuntimeError("request was not attempted")
+    return response
+
+
+def collect_afdc_metrics(
+    config: dict[str, Any], session: requests.Session, today: date
+) -> list[dict[str, Any]]:
+    afdc_config = config.get("afdc", {})
+    if not afdc_config.get("enabled", True):
+        return []
+
+    api_key = os.getenv("NREL_API_KEY", "").strip() or os.getenv("NLR_API_KEY", "").strip()
+    source_url = str(
+        afdc_config.get("source_url")
+        or "https://developer.nlr.gov/docs/transportation/alt-fuel-stations-v1/"
+    )
+    endpoint = str(
+        afdc_config.get("endpoint")
+        or "https://developer.nlr.gov/api/alt-fuel-stations/v1.json"
+    )
+    last_updated_endpoint = str(
+        afdc_config.get("last_updated_endpoint")
+        or "https://developer.nlr.gov/api/alt-fuel-stations/v1/last-updated.json"
+    )
+    if not api_key:
+        return [
+            make_metric(
+                industry="전기차",
+                name=str(item.get("name") or "미국 EV 충전 인프라"),
+                source="NLR Alternative Fuel Stations API",
+                source_url=source_url,
+                frequency="일간",
+                automation="무료 공식 API 자동 수집",
+                status="needs_key",
+                note="GitHub Secrets에 NREL_API_KEY 등록 필요",
+                group=str(item.get("group") or "충전 인프라"),
+                meaning=str(item.get("meaning") or ""),
+            )
+            for item in afdc_config.get("items", [])
+        ]
+
+    response = session.get(
+        endpoint,
+        params={
+            "api_key": api_key,
+            "fuel_type": "ELEC",
+            "country": str(afdc_config.get("country") or "US"),
+            "limit": 1,
+        },
+        timeout=(5, 20),
+    )
+    response.raise_for_status()
+    payload = response.json()
+    observed_at = today
+    try:
+        updated_response = session.get(
+            last_updated_endpoint, params={"api_key": api_key}, timeout=(5, 20)
+        )
+        updated_response.raise_for_status()
+        updated_at = str(updated_response.json().get("last_updated") or "")
+        parsed = parse_iso_date(updated_at[:10])
+        if parsed is not None:
+            observed_at = parsed
+    except Exception:
+        observed_at = today
+
+    counts = {
+        "stations": to_float(payload.get("total_results")),
+        "ports": to_float(
+            payload.get("station_counts", {})
+            .get("fuels", {})
+            .get("ELEC", {})
+            .get("total")
+        ),
+    }
+    metrics: list[dict[str, Any]] = []
+    for item in afdc_config.get("items", []):
+        key = str(item.get("field") or "stations")
+        value = counts.get(key)
+        if value is None:
+            continue
+        metrics.append(
+            make_metric(
+                industry=str(item.get("industry") or "전기차"),
+                name=str(item.get("name") or "미국 EV 충전 인프라"),
+                source="NLR Alternative Fuel Stations API",
+                source_url=source_url,
+                frequency="일간",
+                automation="무료 공식 API 자동 수집",
+                status="ok",
+                value=value,
+                unit=str(item.get("unit") or ""),
+                observed_at=observed_at.isoformat(),
+                previous_value=None,
+                yoy_value=None,
+                history=[(observed_at, value)],
+                group=str(item.get("group") or "충전 인프라"),
+                meaning=str(
+                    item.get("meaning")
+                    or "미국 EV 충전 인프라 규모로 전기차 보급 환경과 인프라 투자 흐름을 확인합니다."
+                ),
+            )
+        )
+    return metrics
+
+
+def completed_months(today: date, months_back: int) -> list[date]:
+    end_month = add_months(date(today.year, today.month, 1), -1)
+    start_month = add_months(end_month, -months_back + 1)
+    months: list[date] = []
+    cursor = start_month
+    while cursor <= end_month:
+        months.append(cursor)
+        cursor = add_months(cursor, 1)
+    return months
+
+
+def month_date_range(month: date) -> tuple[date, date]:
+    return month, add_months(month, 1) - timedelta(days=1)
+
+
+def openfda_month_range(month: date) -> tuple[str, str]:
+    start_date, end_date = month_date_range(month)
+    return start_date.strftime("%Y%m%d"), end_date.strftime("%Y%m%d")
+
+
+def event_count_metric(
+    *,
+    points: list[tuple[date, float]],
+    history_limit: int,
+    industry: str,
+    name: str,
+    source: str,
+    source_url: str,
+    frequency: str,
+    group: str,
+    meaning: str,
+) -> dict[str, Any]:
+    if not points:
+        return make_metric(
+            industry=industry,
+            name=name,
+            source=source,
+            source_url=source_url,
+            frequency=frequency,
+            automation="무료 공개 API 자동 수집",
+            status="error",
+            note="관측값 없음",
+            group=group,
+            meaning=meaning,
+        )
+    latest_month, latest_value = points[-1]
+    previous_value = points[-2][1] if len(points) > 1 else None
+    yoy_value = find_yoy_value(points, latest_month)
+    return make_metric(
+        industry=industry,
+        name=name,
+        source=source,
+        source_url=source_url,
+        frequency=frequency,
+        automation="무료 공개 API 자동 수집",
+        status="ok",
+        value=latest_value,
+        unit="건",
+        observed_at=latest_month.isoformat(),
+        previous_value=previous_value,
+        yoy_value=yoy_value,
+        history=points[-history_limit:],
+        group=group,
+        meaning=meaning,
+    )
+
+
 def normalize_lookup_text(value: str) -> str:
     return " ".join(value.lower().replace("*", "").split())
 
@@ -1775,6 +2209,9 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     body.theme-ready .sidebar,
     body.theme-ready .side-menu button,
     body.theme-ready .menu-item,
+    body.theme-ready .mobile-menu-toggle,
+    body.theme-ready .drawer-close,
+    body.theme-ready .drawer-backdrop,
     body.theme-ready .settings-button,
     body.theme-ready .settings-menu,
     body.theme-ready .settings-menu button,
@@ -1887,6 +2324,38 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     .side-menu button[aria-current="true"] {
       background: var(--menu-active);
+    }
+
+    .drawer-head,
+    .mobile-menu-toggle,
+    .drawer-backdrop {
+      display: none;
+    }
+
+    .drawer-close,
+    .mobile-menu-toggle {
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 999px;
+      display: none;
+      place-items: center;
+      background: var(--menu);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 20px;
+      box-shadow: var(--menu-shadow);
+    }
+
+    .drawer-close:hover,
+    .mobile-menu-toggle:hover {
+      background: var(--menu-active);
+    }
+
+    .drawer-close:focus-visible,
+    .mobile-menu-toggle:focus-visible {
+      outline: 2px solid var(--text);
+      outline-offset: 3px;
     }
 
     .drag-handle {
@@ -2190,6 +2659,9 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       body.theme-ready .sidebar,
       body.theme-ready .side-menu button,
       body.theme-ready .menu-item,
+      body.theme-ready .mobile-menu-toggle,
+      body.theme-ready .drawer-close,
+      body.theme-ready .drawer-backdrop,
       body.theme-ready .settings-button,
       body.theme-ready .settings-menu,
       body.theme-ready .settings-menu button,
@@ -2377,6 +2849,10 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       overflow-wrap: anywhere;
     }
 
+    .metric-mobile-description {
+      display: none;
+    }
+
     .metric-date {
       color: var(--muted);
       font-size: 12px;
@@ -2391,6 +2867,29 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       line-height: 1.25;
       font-weight: 820;
       overflow-wrap: anywhere;
+    }
+
+    .metric-value-wrap {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .metric-change-badge {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 760;
+      white-space: nowrap;
+    }
+
+    .metric-change-badge i {
+      font-size: 10px;
     }
 
     .chart-mini {
@@ -2629,26 +3128,78 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         padding: 14px 10px 30px;
       }
 
+      body.drawer-open {
+        overflow: hidden;
+      }
+
       .sidebar {
-        position: static;
-        width: 100%;
-        max-width: 100%;
-        min-height: 0;
-        padding: 12px;
+        position: fixed;
+        inset: 0 auto 0 0;
+        z-index: 70;
+        width: min(320px, calc(100vw - 54px));
+        max-width: calc(100vw - 54px);
+        min-height: 100dvh;
+        grid-template-rows: auto minmax(0, 1fr) auto auto;
+        padding: 14px;
+        border-radius: 0 20px 20px 0;
         overflow: visible;
+        transform: translateX(calc(-100% - 24px));
+        transition: transform 260ms ease;
+      }
+
+      body.drawer-open .sidebar {
+        transform: translateX(0);
+      }
+
+      .drawer-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        min-width: 0;
+        padding: 2px 0 4px;
+        font-size: 15px;
+        font-weight: 820;
+      }
+
+      .drawer-close,
+      .mobile-menu-toggle {
+        display: grid;
+        flex: 0 0 auto;
+      }
+
+      .drawer-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        display: block;
+        background: rgba(18, 18, 18, 0.28);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 220ms ease;
+      }
+
+      .drawer-backdrop[hidden] {
+        display: none;
+      }
+
+      body.drawer-open .drawer-backdrop {
+        opacity: 1;
+        pointer-events: auto;
       }
 
       .side-menu {
-        display: flex;
-        gap: 8px;
+        display: grid;
+        gap: 7px;
         max-width: 100%;
-        overflow-x: auto;
-        padding-bottom: 2px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding: 0 2px 0 0;
       }
 
       .side-menu button {
-        width: auto;
-        white-space: nowrap;
+        width: 100%;
+        white-space: normal;
       }
 
       .sidebar.is-reordering .side-menu button {
@@ -2665,11 +3216,19 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       }
 
       .topbar {
-        align-items: flex-start;
+        display: grid;
+        grid-template-columns: 42px minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 8px;
       }
 
       .topbar-actions {
         gap: 6px;
+      }
+
+      h1 {
+        min-width: 0;
+        font-size: clamp(18px, 5vw, 22px);
       }
 
       .industry-head {
@@ -2695,14 +3254,16 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       .group { padding: 0 0 18px; }
 
       .metric-table-wrap {
-        overflow-x: auto;
-        overflow-y: hidden;
+        overflow-x: visible;
+        overflow-y: visible;
         -webkit-overflow-scrolling: touch;
       }
 
       .metric-table {
         display: table;
-        min-width: 760px;
+        width: 100%;
+        min-width: 0;
+        table-layout: fixed;
       }
 
       .metric-table thead {
@@ -2721,6 +3282,25 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         display: table-cell;
       }
 
+      .metric-table col.metric-description-cell,
+      .metric-table col.metric-date-cell,
+      .metric-table th:nth-child(2),
+      .metric-table th:nth-child(3),
+      .metric-table th:nth-child(4),
+      .metric-table td.metric-description-cell,
+      .metric-table td.metric-date-cell {
+        display: none;
+      }
+
+      .metric-table th[data-mobile-label] {
+        font-size: 0;
+      }
+
+      .metric-table th[data-mobile-label]::after {
+        content: attr(data-mobile-label);
+        font-size: 10.5px;
+      }
+
       .metric-row {
         padding: 0;
         border-top: 0;
@@ -2731,7 +3311,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       }
 
       .metric-row td {
-        padding: 7px 10px;
+        padding: 7px 6px;
         border-top: 1px solid var(--line);
       }
 
@@ -2739,31 +3319,90 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         content: none;
       }
 
-      .metric-name-cell { width: 22%; }
-      .metric-description-cell { width: 30%; }
-      .metric-date-cell { width: 11%; }
-      .metric-value-cell { width: 12%; }
-      .metric-chart-cell { width: 14%; }
+      .metric-name-cell { width: 52%; }
+      .metric-value-cell { width: 20%; }
+      .metric-chart-cell { width: 28%; }
+
+      .metric-name {
+        font-size: 12.5px;
+        line-height: 1.22;
+      }
+
+      .metric-mobile-description {
+        display: -webkit-box;
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 10.5px;
+        line-height: 1.28;
+        font-weight: 580;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+      }
+
+      .metric-current-value {
+        font-size: 11.5px;
+        line-height: 1.2;
+      }
+
+      .metric-value-wrap {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+
+      .metric-change-badge {
+        font-size: 10.5px;
+      }
 
       .metric-chart-cell .chart-mini {
-        height: 34px;
-        max-height: 34px;
+        height: 30px;
+        max-height: 30px;
       }
 
       .metric-detail-row td {
-        padding: 0 12px;
+        padding: 0 6px;
       }
 
       .metric-detail-inner {
-        gap: 12px;
+        gap: 8px;
+        padding: 10px 0 12px;
       }
 
-      .detail-stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+      .detail-chart {
+        overflow-x: hidden;
+        padding: 0 0 6px;
       }
 
       .detail-chart .chart {
-        height: 176px;
+        width: 100%;
+        min-width: 100%;
+        height: 126px;
+      }
+
+      .detail-stats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 5px 7px;
+        padding: 9px;
+      }
+
+      .detail-stat {
+        padding: 3px 2px;
+      }
+
+      .detail-label {
+        font-size: 9.5px;
+        line-height: 1.12;
+      }
+
+      .detail-value {
+        margin-top: 3px;
+        font-size: 12px;
+        line-height: 1.12;
+      }
+
+      .detail-note {
+        display: none;
       }
 
       .metric-grid { grid-template-columns: 1fr; }
@@ -2777,7 +3416,13 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 </head>
 <body>
   <main class="shell">
-    <aside class="sidebar">
+    <aside class="sidebar" id="mobileDrawer" aria-label="업종 메뉴">
+      <div class="drawer-head">
+        <span data-i18n="drawerTitle">메뉴</span>
+        <button class="drawer-close" id="drawerClose" type="button" aria-label="메뉴 닫기">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
       <nav class="side-menu" id="industryFilters" aria-label="업종 메뉴"></nav>
       <div class="menu-settings" id="menuSettings">
         <div class="settings-menu" id="settingsMenu" role="menu" hidden>
@@ -2808,8 +3453,12 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         <button class="reorder-save" id="reorderSave" type="button" data-i18n="save">저장</button>
       </div>
     </aside>
+    <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
     <section class="content">
       <header class="topbar">
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobileDrawer">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
         <h1 data-i18n="title">산업별 지표 대시보드</h1>
         <div class="topbar-actions">
           <button class="currency-toggle" id="currencyToggle" type="button" aria-label="원화 표시" title="원화 표시">
@@ -2839,6 +3488,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       language: "ko",
       currency: "usd"
     };
+    const mobileDrawerQuery = window.matchMedia ? window.matchMedia("(max-width: 760px)") : { matches: false };
     let scrollSpyFrame = 0;
     const groupOrder = [
       "판매액", "시장 매출", "가격/수요", "투자/장비", "수출",
@@ -2867,6 +3517,8 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         lastUpdated: "마지막 업데이트일",
         nextUpdate: "다음 예정일",
         chart: "차트",
+        metricSummary: "지표명/설명",
+        metricValueShort: "지표",
         currentValue: "현재값",
         previousChange: "전기 변화",
         previousChangePct: "전기 변화율",
@@ -2874,7 +3526,10 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         visiblePeriod: "표시 기간",
         updateFrequency: "업데이트 주기",
         irregular: "비정기",
-        menuLabel: "업종 메뉴"
+        menuLabel: "업종 메뉴",
+        drawerTitle: "메뉴",
+        openMenu: "메뉴 열기",
+        closeMenu: "메뉴 닫기"
       },
       en: {
         title: "Industry Metrics Dashboard",
@@ -2892,6 +3547,8 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         lastUpdated: "Last updated",
         nextUpdate: "Next update",
         chart: "Chart",
+        metricSummary: "Metric/description",
+        metricValueShort: "Value",
         currentValue: "Current",
         previousChange: "Previous change",
         previousChangePct: "Previous %",
@@ -2899,7 +3556,10 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         visiblePeriod: "Period",
         updateFrequency: "Frequency",
         irregular: "Irregular",
-        menuLabel: "Industry menu"
+        menuLabel: "Industry menu",
+        drawerTitle: "Menu",
+        openMenu: "Open menu",
+        closeMenu: "Close menu"
       }
     };
 
@@ -2985,6 +3645,20 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       return value > 0 ? "positive" : "negative";
     }
 
+    function trendIconClass(value) {
+      if (typeof value !== "number" || !Number.isFinite(value) || value === 0) return "fa-minus";
+      return value > 0 ? "fa-arrow-trend-up" : "fa-arrow-trend-down";
+    }
+
+    function metricChangeBadge(metric) {
+      const className = directionClass(metric.change_pct);
+      const label = metric.change_pct_label || "n/a";
+      return `<span class="metric-change-badge ${className}">
+        <i class="fa-solid ${trendIconClass(metric.change_pct)}" aria-hidden="true"></i>
+        <span>${escapeHtml(label)}</span>
+      </span>`;
+    }
+
     function groupRank(group) {
       const index = groupOrder.indexOf(group);
       return index === -1 ? 999 : index;
@@ -3055,6 +3729,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
           if (!industry || !target) return;
           setActiveIndustry(industry);
           target.scrollIntoView({ behavior: "smooth", block: "start" });
+          closeDrawerOnMobile();
         });
       });
       initMenuDrag();
@@ -3073,15 +3748,42 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       return Number.isFinite(year) ? `${String(year).padStart(2, "0")}년` : "";
     }
 
-    function chartTicks(history, left, right) {
+    function chartDateParts(dateText) {
+      const match = String(dateText || "").match(/^(\\d{4})-(\\d{1,2})/);
+      if (!match) return null;
+      const year = Number(match[1]);
+      const month = Number(match[2]);
+      if (!Number.isFinite(year) || !Number.isFinite(month)) return null;
+      return { year, month };
+    }
+
+    function detailTickLabel(point, seenYears) {
+      const date = chartDateParts(point.date);
+      if (!date) return "";
+      if (!seenYears.has(date.year)) {
+        seenYears.add(date.year);
+        return yearLabel(point.date);
+      }
+      if ([3, 6, 9].includes(date.month)) {
+        return String(date.month);
+      }
+      return "";
+    }
+
+    function chartTicks(history, left, right, includeQuarterMonths = false) {
       const seen = new Set();
+      const seenYears = new Set();
       const ticks = [];
       history.forEach((point, index) => {
-        const year = String(point.date).slice(0, 4);
-        if (seen.has(year)) return;
-        seen.add(year);
+        const label = includeQuarterMonths
+          ? detailTickLabel(point, seenYears)
+          : yearLabel(point.date);
+        if (!label) return;
+        const key = includeQuarterMonths ? `${point.date}-${label}` : String(point.date).slice(0, 4);
+        if (seen.has(key)) return;
+        seen.add(key);
         const x = left + (index / Math.max(history.length - 1, 1)) * (right - left);
-        ticks.push({ label: yearLabel(point.date), x });
+        ticks.push({ label, x });
       });
       if (ticks.length === 1 && history.length > 1) {
         ticks.push({ label: yearLabel(history[history.length - 1].date), x: right });
@@ -3203,7 +3905,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
           <line x1="${left}" y1="${y.toFixed(1)}" x2="${right}" y2="${y.toFixed(1)}" class="guide"></line>
         </g>`;
       }).join("");
-      const xGuides = chartTicks(history, left, right).map((tick) => `
+      const xGuides = chartTicks(history, left, right, isDetailChart).map((tick) => `
         <text x="${tick.x.toFixed(1)}" y="146" text-anchor="middle">${tick.label}</text>
       `).join("");
       const latestX = right;
@@ -3257,6 +3959,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         <td class="metric-name-cell" data-label="${escapeHtml(t("metric"))}">
           <button class="metric-toggle" type="button" data-metric-toggle aria-expanded="false" aria-controls="${detailId}">
             <span class="metric-name">${escapeHtml(metric.name)}</span>
+            <span class="metric-mobile-description">${escapeHtml(metric.meaning)}</span>
           </button>
         </td>
         <td class="metric-description-cell" data-label="${escapeHtml(t("description"))}">
@@ -3269,7 +3972,10 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
           <span class="metric-date">${escapeHtml(dateText(metric.next_update_label))}</span>
         </td>
         <td class="metric-value-cell" data-label="${escapeHtml(t("currentValue"))}">
-          <span class="metric-current-value">${escapeHtml(displayMetricValue(metric))}</span>
+          <span class="metric-value-wrap">
+            <span class="metric-current-value">${escapeHtml(displayMetricValue(metric))}</span>
+            ${metricChangeBadge(metric)}
+          </span>
         </td>
         <td class="metric-chart-cell" data-label="${escapeHtml(t("chart"))}">
           ${chart(metric.history, "chart-mini", metric)}
@@ -3306,12 +4012,12 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
                 </colgroup>
                 <thead>
                   <tr>
-                    <th scope="col">${escapeHtml(t("metric"))}</th>
+                    <th scope="col" data-mobile-label="${escapeHtml(t("metricSummary"))}">${escapeHtml(t("metric"))}</th>
                     <th scope="col">${escapeHtml(t("description"))}</th>
                     <th scope="col">${escapeHtml(t("lastUpdated"))}</th>
                     <th scope="col">${escapeHtml(t("nextUpdate"))}</th>
-                    <th scope="col">${escapeHtml(t("currentValue"))}</th>
-                    <th scope="col">${escapeHtml(t("chart"))}</th>
+                    <th scope="col" data-mobile-label="${escapeHtml(t("metricValueShort"))}">${escapeHtml(t("currentValue"))}</th>
+                    <th scope="col" data-mobile-label="${escapeHtml(t("chart"))}">${escapeHtml(t("chart"))}</th>
                   </tr>
                 </thead>
                 <tbody>${items.map(metricRows).join("")}</tbody>
@@ -3441,6 +4147,9 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         element.textContent = t(element.dataset.i18n);
       });
       document.querySelector(".side-menu")?.setAttribute("aria-label", t("menuLabel"));
+      document.getElementById("mobileDrawer")?.setAttribute("aria-label", t("menuLabel"));
+      document.getElementById("mobileMenuToggle")?.setAttribute("aria-label", t("openMenu"));
+      document.getElementById("drawerClose")?.setAttribute("aria-label", t("closeMenu"));
       document.getElementById("settingsToggle")?.setAttribute("aria-label", t("settings"));
       const languageLabel = document.getElementById("languageSettingLabel");
       if (languageLabel) languageLabel.textContent = state.language === "ko" ? "KO" : "EN";
@@ -3571,6 +4280,45 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       });
     }
 
+    function setDrawerOpen(open) {
+      const drawer = document.getElementById("mobileDrawer");
+      const toggle = document.getElementById("mobileMenuToggle");
+      const backdrop = document.getElementById("drawerBackdrop");
+      if (!drawer || !toggle || !backdrop) return;
+      const shouldOpen = Boolean(open && mobileDrawerQuery.matches);
+      document.body.classList.toggle("drawer-open", shouldOpen);
+      toggle.setAttribute("aria-expanded", String(shouldOpen));
+      drawer.setAttribute("aria-hidden", String(mobileDrawerQuery.matches && !shouldOpen));
+      backdrop.hidden = !shouldOpen;
+      if (shouldOpen) {
+        document.getElementById("drawerClose")?.focus({ preventScroll: true });
+      }
+    }
+
+    function closeDrawerOnMobile() {
+      if (mobileDrawerQuery.matches) setDrawerOpen(false);
+    }
+
+    function initMobileDrawer() {
+      const toggle = document.getElementById("mobileMenuToggle");
+      const close = document.getElementById("drawerClose");
+      const backdrop = document.getElementById("drawerBackdrop");
+      toggle?.addEventListener("click", () => {
+        setDrawerOpen(!document.body.classList.contains("drawer-open"));
+      });
+      close?.addEventListener("click", () => setDrawerOpen(false));
+      backdrop?.addEventListener("click", () => setDrawerOpen(false));
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") setDrawerOpen(false);
+      });
+      if (mobileDrawerQuery.addEventListener) {
+        mobileDrawerQuery.addEventListener("change", () => setDrawerOpen(false));
+      } else if (mobileDrawerQuery.addListener) {
+        mobileDrawerQuery.addListener(() => setDrawerOpen(false));
+      }
+      setDrawerOpen(false);
+    }
+
     function updateActiveFromScroll() {
       const sections = [...document.querySelectorAll("[data-industry-section]")];
       if (!sections.length) return;
@@ -3606,6 +4354,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     initSettings();
     initTheme();
     initCurrency();
+    initMobileDrawer();
     render();
   </script>
 </body>

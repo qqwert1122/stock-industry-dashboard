@@ -4,8 +4,11 @@ from datetime import date
 from macro_telegram_report.dashboard import (
     DEFAULT_INDUSTRIES,
     collect_stablecoin_metrics,
+    completed_months,
     fiscal_month_to_calendar_date,
     make_metric,
+    month_date_range,
+    openfda_month_range,
     parse_eia_period,
     parse_eia_points,
     parse_usaspending_monthly_amounts,
@@ -261,6 +264,14 @@ class DashboardTest(unittest.TestCase):
             parse_eia_points(payload, "sales"),
             [(date(2026, 3, 1), 290000.0), (date(2026, 4, 1), 302126.8)],
         )
+
+    def test_completed_month_helpers(self):
+        self.assertEqual(
+            completed_months(date(2026, 7, 7), 3),
+            [date(2026, 4, 1), date(2026, 5, 1), date(2026, 6, 1)],
+        )
+        self.assertEqual(month_date_range(date(2026, 2, 1)), (date(2026, 2, 1), date(2026, 2, 28)))
+        self.assertEqual(openfda_month_range(date(2026, 6, 1)), ("20260601", "20260630"))
 
 
 if __name__ == "__main__":

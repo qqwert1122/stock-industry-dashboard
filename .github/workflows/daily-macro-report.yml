@@ -41,6 +41,8 @@ jobs:
           DATA_GO_KR_SERVICE_KEY: ${{ secrets.DATA_GO_KR_SERVICE_KEY }}
           EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
           SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+          NREL_API_KEY: ${{ secrets.NREL_API_KEY }}
+          OPENFDA_API_KEY: ${{ secrets.OPENFDA_API_KEY }}
         run: industry-dashboard --config config.yaml --out site
 
       - name: Configure Pages

@@ -1,13 +1,13 @@
 # 산업별 핵심 지표 대시보드
 
-매일 아침 GitHub Actions가 FRED, WSTS, 관세청 수출, World Bank 원자재, SEC CAPEX, USAspending, EIA 데이터를 수집하고 정적 웹 대시보드를 생성해 GitHub Pages에 배포합니다. 내 컴퓨터가 꺼져 있어도 GitHub 서버에서 실행됩니다.
+매일 아침 GitHub Actions가 FRED, WSTS, 관세청 수출, World Bank 원자재, SEC CAPEX, USAspending, EIA, openFDA, ClinicalTrials.gov, Launch Library, NLR/NREL 데이터를 수집하고 정적 웹 대시보드를 생성해 GitHub Pages에 배포합니다. 내 컴퓨터가 꺼져 있어도 GitHub 서버에서 실행됩니다.
 
 ## 현재 MVP
 
 - 반도체: WSTS 월간 반도체 판매액, 한국 반도체 수출, 미국 반도체 PPI
 - 데이터인프라: Microsoft/Amazon/Alphabet/Meta CAPEX
 - 자동차: 미국 자동차 판매, 한국 승용차 수출
-- 전기차: 한국 순수 전기차 수출, 글로벌 EV 판매 자동화 후보
+- 전기차: 한국 순수 전기차 수출, 미국 EV 충전소/충전 포트 수
 - 조선: 한국 선박 수출, BDI/신조선가/운임지수 자동화 후보
 - 철강/소재: FRED 원자재 가격 proxy
 - 화학/정유: WTI/Brent, 미국 화학 PPI
@@ -17,8 +17,8 @@
 - 스테이블코인: DefiLlama 전체/USDT/USDC 유통량
 - 전력: 미국 전력 생산 PPI, 유틸리티 산업생산, 전력 판매/발전량/가격, 에너지 원료 가격, 한국 전력 장비 수출
 - 로봇: 산업용 기계 신규주문, 산업 제어장치 PPI, 한국 산업용 로봇 수출
-- 우주: 방산/우주 장비 산업생산, 항공우주 부품 PPI, 한국 항공기/우주선 수출
-- 바이오: 생물학적 제제/체외진단 PPI, 한국 바이오 의약품 수출
+- 우주: 방산/우주 장비 산업생산, 항공우주 부품 PPI, 글로벌 우주 발사 건수, 한국 항공기/우주선 수출
+- 바이오: 생물학적 제제/체외진단 PPI, FDA 승인 활동, Phase 3 임상 시작, 한국 바이오 의약품 수출
 - 배터리: 저장 배터리 제조 PPI, 니켈 가격, 한국 축전지 수출
 
 무료로 안정적인 공식 API가 없는 지표는 대시보드에서 `부분 자동화` 또는 `수작업` 상태로 표시합니다.
@@ -50,6 +50,8 @@ industry-dashboard --config config.yaml --out site
 - `FRED_API_KEY`: FRED 무료 API 키
 - `EIA_API_KEY`: EIA Open Data 무료 API 키
 - `SEC_USER_AGENT`: SEC fair access용 User-Agent. 선택값이지만 이메일이나 연락 가능한 URL을 넣는 것을 권장합니다.
+- `NREL_API_KEY`: NLR/NREL Alternative Fuel Stations 무료 API 키
+- `OPENFDA_API_KEY`: openFDA 선택 API 키. 없어도 실행되지만 rate limit이 낮습니다.
 
 키가 없으면 해당 데이터 소스의 지표만 `키 필요`로 표시되고, 나머지 대시보드는 계속 생성됩니다.
 
@@ -65,6 +67,10 @@ industry-dashboard --config config.yaml --out site
 - `sec_capex.companies`: SEC Company Facts에서 가져올 빅테크 CAPEX 기업
 - `usaspending.items`: USAspending 계약 의무액 필터
 - `eia.series`: EIA Open Data 시계열
+- `openfda.items`: FDA 승인 활동 이벤트 지표
+- `clinical_trials.items`: ClinicalTrials.gov 임상 이벤트 지표
+- `launch_library.items`: Launch Library 우주 발사 이벤트 지표
+- `afdc.items`: NLR/NREL EV 충전 인프라 지표
 - `dashboard.reference_metrics`: 아직 완전 자동화하지 않은 무료/공식 데이터 후보
 
 ## 데이터 저장 구조
@@ -90,4 +96,8 @@ site/
 - SEC EDGAR APIs: https://www.sec.gov/search-filings/edgar-application-programming-interfaces
 - USAspending API: https://api.usaspending.gov/
 - EIA Open Data: https://www.eia.gov/opendata/
+- openFDA: https://open.fda.gov/apis/
+- ClinicalTrials.gov API: https://clinicaltrials.gov/data-api
+- The Space Devs Launch Library 2: https://thespacedevs.com/llapi
+- NLR Alternative Fuel Stations: https://developer.nlr.gov/docs/transportation/alt-fuel-stations-v1/
 - GitHub Pages Actions: https://github.com/actions/deploy-pages
