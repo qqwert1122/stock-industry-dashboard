@@ -2921,7 +2921,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     function yearLabel(dateText) {
       const year = Number(String(dateText).slice(2, 4));
-      return Number.isFinite(year) ? `${String(year).padStart(2, "0")}y` : "";
+      return Number.isFinite(year) ? `${String(year).padStart(2, "0")}년` : "";
     }
 
     function chartTicks(history, left, right) {
