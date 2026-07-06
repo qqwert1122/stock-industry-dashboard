@@ -123,6 +123,8 @@ def collect_fred_metrics(
                 automation="무료로 안정적으로 자동화 가능",
                 status="needs_key",
                 note="GitHub Secrets에 FRED_API_KEY 등록 필요",
+                group=str(series.get("group") or ""),
+                meaning=str(series.get("meaning") or ""),
             )
             for series in series_config
             if series.get("id")
@@ -181,6 +183,8 @@ def collect_fred_metrics(
                     yoy_value=yoy_value,
                     history=points[-history_limit:],
                     note=str(series.get("note") or ""),
+                    group=str(series.get("group") or ""),
+                    meaning=str(series.get("meaning") or ""),
                 )
             )
         except Exception as exc:  # noqa: BLE001 - keep each card independent.
@@ -281,6 +285,8 @@ def wsts_sheet_metrics(
                     automation="무료로 안정적으로 자동화 가능",
                     status="error",
                     note="선택한 지역 데이터 없음",
+                    group="판매액",
+                    meaning="반도체 업황의 현재 수요 강도와 재고 순환을 확인하는 월간 지표입니다.",
                 )
             )
             continue
@@ -304,6 +310,8 @@ def wsts_sheet_metrics(
                 previous_value=previous_value,
                 yoy_value=yoy_value,
                 history=billion_points[-history_limit:],
+                group="판매액",
+                meaning="반도체 업황의 현재 수요 강도와 재고 순환을 확인하는 월간 지표입니다.",
             )
         )
     return metrics
@@ -344,6 +352,8 @@ def collect_korea_export_metrics(
                     automation="무료로 안정적으로 자동화 가능",
                     status="needs_key",
                     note="GitHub Secrets에 DATA_GO_KR_SERVICE_KEY 등록 필요",
+                    group=str(item.get("group") or "수출"),
+                    meaning=str(item.get("meaning") or export_meaning(name)),
                 )
             )
             continue
@@ -369,6 +379,8 @@ def collect_korea_export_metrics(
                         automation="무료로 안정적으로 자동화 가능",
                         status="error",
                         note=f"{month_key(start_month)}-{month_key(end_month)} 관측값 없음",
+                        group=str(item.get("group") or "수출"),
+                        meaning=str(item.get("meaning") or export_meaning(name)),
                     )
                 )
                 continue
@@ -392,6 +404,8 @@ def collect_korea_export_metrics(
                     previous_value=previous_value,
                     yoy_value=yoy_value,
                     history=points,
+                    group=str(item.get("group") or "수출"),
+                    meaning=str(item.get("meaning") or export_meaning(name)),
                 )
             )
         except Exception as exc:  # noqa: BLE001 - one export item should not break the page.
@@ -405,6 +419,8 @@ def collect_korea_export_metrics(
                     automation="무료로 안정적으로 자동화 가능",
                     status="error",
                     note=str(exc),
+                    group=str(item.get("group") or "수출"),
+                    meaning=str(item.get("meaning") or export_meaning(name)),
                 )
             )
     return metrics
@@ -441,6 +457,8 @@ def collect_reference_metrics(config: dict[str, Any]) -> list[dict[str, Any]]:
                 automation=str(item.get("automation") or status_to_automation(status)),
                 status=status,
                 note=str(item.get("note") or ""),
+                group=str(item.get("group") or ""),
+                meaning=str(item.get("meaning") or item.get("note") or ""),
             )
         )
     return metrics
@@ -462,6 +480,8 @@ def make_metric(
     yoy_value: float | None = None,
     history: list[tuple[date, float]] | None = None,
     note: str = "",
+    group: str = "",
+    meaning: str = "",
 ) -> dict[str, Any]:
     change_abs = value - previous_value if value is not None and previous_value is not None else None
     change_pct = pct_change(value, previous_value) if value is not None else None
@@ -471,11 +491,15 @@ def make_metric(
         {"date": observed_date.isoformat(), "value": observed_value}
         for observed_date, observed_value in (history or [])
     ]
+    resolved_group = group or infer_metric_group(industry, name)
+    resolved_meaning = meaning or infer_metric_meaning(industry, name)
 
     return {
         "id": metric_id,
         "industry": industry,
+        "group": resolved_group,
         "name": name,
+        "meaning": resolved_meaning,
         "source": source,
         "source_url": source_url,
         "frequency": frequency,
@@ -486,6 +510,7 @@ def make_metric(
         "unit": unit,
         "display_value": format_value(value, unit) if value is not None else "대기",
         "observed_at": observed_at,
+        "observed_label": compact_date_label(observed_at),
         "previous_value": previous_value,
         "change_abs": change_abs,
         "change_pct": change_pct,
@@ -494,6 +519,7 @@ def make_metric(
         "yoy_pct": yoy_pct,
         "yoy_pct_label": fmt_pct(yoy_pct),
         "history": history_points,
+        "period_label": period_label(history_points, observed_at),
         "note": note,
     }
 
@@ -517,6 +543,107 @@ def infer_export_industry(hs_code: str) -> str:
     if hs_code.startswith("8901"):
         return "조선"
     return "매크로"
+
+
+def infer_metric_group(industry: str, name: str) -> str:
+    if "수출" in name:
+        return "수출"
+    if "WSTS" in name or "반도체 판매" in name:
+        return "판매액"
+    if industry == "은행/금융":
+        if "금리차" in name or "스프레드" in name:
+            return "스프레드"
+        if "연체" in name or "대출" in name:
+            return "은행 건전성"
+        return "금리"
+    if industry == "건설/부동산":
+        if "모기지" in name:
+            return "금융비용"
+        return "주택 경기"
+    if industry == "철강/소재":
+        return "원자재 가격"
+    if industry == "화학/정유":
+        if "유가" in name:
+            return "에너지 가격"
+        return "화학 스프레드 proxy"
+    if industry == "자동차/전기차":
+        return "판매/수요"
+    if industry == "매크로":
+        if "환율" in name:
+            return "환율"
+        if "VIX" in name:
+            return "리스크"
+    return "핵심 지표"
+
+
+def infer_metric_meaning(industry: str, name: str) -> str:
+    if "WSTS" in name:
+        return "글로벌 반도체 매출 흐름으로 업황의 수요 강도와 재고 순환을 확인합니다."
+    if "반도체 PPI" in name:
+        return "반도체 가격 압력과 공급자 가격 흐름을 보는 가격 proxy입니다."
+    if "국채금리" in name:
+        return "할인율과 금융주 마진 기대를 좌우하는 시장 금리입니다."
+    if "금리차" in name:
+        return "경기 기대와 은행 순이자마진 환경을 함께 보여주는 지표입니다."
+    if "회사채" in name:
+        return "신용 위험과 자금 조달 여건이 얼마나 빡빡한지 확인합니다."
+    if "연체" in name:
+        return "대출 자산의 질과 금융 시스템 부담을 점검합니다."
+    if "총대출" in name:
+        return "은행권 신용 공급과 실물 경기의 자금 수요를 봅니다."
+    if "주택착공" in name:
+        return "건설 경기의 실제 착공 모멘텀과 주택 공급 흐름을 보여줍니다."
+    if "건축허가" in name:
+        return "향후 착공과 건설 활동을 선행해서 보여주는 지표입니다."
+    if "모기지" in name:
+        return "주택 구매 부담과 부동산 수요에 직접 영향을 주는 비용입니다."
+    if "주택가격" in name:
+        return "가계 자산 효과와 부동산 경기 방향성을 확인합니다."
+    if "유가" in name:
+        return "정유, 화학 원가와 인플레이션 압력을 동시에 움직이는 원재료 가격입니다."
+    if "화학 PPI" in name:
+        return "화학 제품 가격 사이클과 마진 방향을 간접적으로 봅니다."
+    if "철광석" in name:
+        return "철강 원가와 중국 투자 수요를 반영하는 핵심 원재료입니다."
+    if "구리" in name:
+        return "전기화와 제조업 경기를 민감하게 반영하는 경기 민감 금속입니다."
+    if "알루미늄" in name:
+        return "경량 소재와 제조업 수요, 전력비 영향을 함께 받는 소재 가격입니다."
+    if "자동차 판매" in name:
+        return "완성차 수요와 소비 경기 흐름을 확인하는 판매 지표입니다."
+    if "환율" in name:
+        return "수출주 원화 환산 매출과 외국인 수급에 영향을 주는 매크로 변수입니다."
+    if "VIX" in name:
+        return "시장 위험 회피 심리와 변동성 확대 여부를 봅니다."
+    if "수출" in name:
+        return "해당 품목의 대외 수요와 가격/물량 사이클을 확인합니다."
+    if industry:
+        return f"{industry} 업황을 해석하기 위한 보조 지표입니다."
+    return "투자 판단에 필요한 업황 변화를 확인합니다."
+
+
+def export_meaning(name: str) -> str:
+    return f"{name} 수출은 해당 품목의 대외 수요와 가격/물량 사이클을 확인하는 지표입니다."
+
+
+def period_label(history_points: list[dict[str, Any]], observed_at: str) -> str:
+    if history_points:
+        start = compact_date_label(str(history_points[0]["date"]))
+        end = compact_date_label(str(history_points[-1]["date"]))
+        return start if start == end else f"{start} - {end}"
+    return compact_date_label(observed_at)
+
+
+def compact_date_label(value: str) -> str:
+    if not value:
+        return ""
+    try:
+        parsed = date.fromisoformat(value[:10])
+    except ValueError:
+        return value[:10]
+    if parsed.day == 1:
+        return f"{parsed.year}.{parsed.month:02d}"
+    return f"{parsed.year}.{parsed.month:02d}.{parsed.day:02d}"
 
 
 def find_yoy_value(points: list[tuple[date, float]], latest_date: date) -> float | None:
@@ -738,6 +865,8 @@ HTML_TEMPLATE = """<!doctype html>
       margin-bottom: 18px;
     }
 
+    .sources:empty { display: none; }
+
     .source-item {
       padding: 12px 14px;
       min-height: 72px;
@@ -759,14 +888,57 @@ HTML_TEMPLATE = """<!doctype html>
 
     .grid {
       display: grid;
+      gap: 18px;
+    }
+
+    .industry-section {
+      display: grid;
+      gap: 14px;
+    }
+
+    .industry-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 4px;
+    }
+
+    .industry-head h2 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.15;
+      font-weight: 780;
+    }
+
+    .industry-count {
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .group-section {
+      display: grid;
+      gap: 10px;
+    }
+
+    .group-title {
+      margin: 0;
+      color: #444641;
+      font-size: 14px;
+      font-weight: 760;
+    }
+
+    .group-grid {
+      display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 12px;
     }
 
     .metric {
-      min-height: 294px;
+      min-height: 270px;
       display: grid;
-      grid-template-rows: auto auto 74px auto;
+      grid-template-rows: auto auto auto 74px auto;
       gap: 12px;
       padding: 15px;
       overflow: hidden;
@@ -779,11 +951,20 @@ HTML_TEMPLATE = """<!doctype html>
       gap: 12px;
     }
 
-    .metric h2 {
+    .metric h3 {
       margin: 0;
       font-size: 16px;
       line-height: 1.35;
       font-weight: 760;
+      overflow-wrap: anywhere;
+    }
+
+    .meaning {
+      min-height: 38px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
       overflow-wrap: anywhere;
     }
 
@@ -880,6 +1061,17 @@ HTML_TEMPLATE = """<!doctype html>
       overflow-wrap: anywhere;
     }
 
+    .period {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      border-top: 1px solid #eeeeea;
+      padding-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
     .empty {
       display: none;
       margin: 28px 0;
@@ -898,10 +1090,12 @@ HTML_TEMPLATE = """<!doctype html>
       font-size: 12px;
     }
 
+    footer:empty { display: none; }
+
     @media (max-width: 1100px) {
       .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .sources { grid-template-columns: 1fr; }
-      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .group-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
     @media (max-width: 720px) {
@@ -918,7 +1112,7 @@ HTML_TEMPLATE = """<!doctype html>
       .toolbar { align-items: stretch; }
       button { flex: 1 1 auto; }
       select { width: 100%; margin-left: 0; }
-      .grid { grid-template-columns: 1fr; }
+      .group-grid { grid-template-columns: 1fr; }
       .metric-main { grid-template-columns: 1fr; align-items: start; }
       .delta { text-align: left; grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .value { font-size: 29px; }
@@ -945,8 +1139,7 @@ HTML_TEMPLATE = """<!doctype html>
 
   <script>
     const DASHBOARD_DATA = __DASHBOARD_JSON__;
-    const state = { industry: "전체", status: "all" };
-    const statusOrder = ["ok", "needs_key", "partial", "manual", "error"];
+    const state = { industry: "전체" };
 
     function cls(status) {
       return String(status || "").replace(/[^a-zA-Z0-9_-]/g, "_");
@@ -967,23 +1160,23 @@ HTML_TEMPLATE = """<!doctype html>
       }[char]));
     }
 
-    function linkHtml(metric) {
-      const source = escapeHtml(metric.source || "출처");
-      if (!metric.source_url) return source;
-      return `<a href="${escapeHtml(metric.source_url)}" target="_blank" rel="noreferrer">${source}</a>`;
+    function displayMetrics() {
+      return DASHBOARD_DATA.metrics.filter((metric) =>
+        metric.status === "ok" &&
+        typeof metric.value === "number" &&
+        Number.isFinite(metric.value)
+      );
     }
 
     function renderSummary() {
-      const metrics = DASHBOARD_DATA.metrics;
-      const ok = metrics.filter((metric) => metric.status === "ok").length;
-      const key = metrics.filter((metric) => metric.status === "needs_key").length;
-      const partial = metrics.filter((metric) => ["partial", "manual"].includes(metric.status)).length;
+      const metrics = displayMetrics();
       const industries = new Set(metrics.map((metric) => metric.industry)).size;
+      const groups = new Set(metrics.map((metric) => `${metric.industry}::${metric.group}`)).size;
       const items = [
-        ["자동 수집", ok],
+        ["지표", metrics.length],
         ["산업", industries],
-        ["키 필요", key],
-        ["부분/수동", partial]
+        ["그룹", groups],
+        ["업데이트", DASHBOARD_DATA.generated_label.split(" ")[0]]
       ];
       document.getElementById("summary").innerHTML = items.map(([label, value]) => `
         <article class="summary-item">
@@ -1000,40 +1193,17 @@ HTML_TEMPLATE = """<!doctype html>
           ${escapeHtml(industry)}
         </button>
       `).join("");
-      const select = `
-        <select id="statusFilter" aria-label="수집 상태">
-          <option value="all">전체 상태</option>
-          <option value="ok">자동 수집</option>
-          <option value="needs_key">키 필요</option>
-          <option value="partial">부분 자동화</option>
-          <option value="manual">수작업</option>
-          <option value="error">오류</option>
-        </select>
-      `;
-      document.getElementById("industryFilters").innerHTML = buttons + select;
+      document.getElementById("industryFilters").innerHTML = buttons;
       document.querySelectorAll("[data-industry]").forEach((button) => {
         button.addEventListener("click", () => {
           state.industry = button.dataset.industry;
           render();
         });
       });
-      document.getElementById("statusFilter").value = state.status;
-      document.getElementById("statusFilter").addEventListener("change", (event) => {
-        state.status = event.target.value;
-        render();
-      });
     }
 
     function renderSources() {
-      document.getElementById("sources").innerHTML = DASHBOARD_DATA.source_status.map((source) => `
-        <article class="source-item">
-          <div class="source-name">
-            <span>${escapeHtml(source.name)}</span>
-            <span class="status ${cls(source.status)}">${escapeHtml(source.status === "ok" ? "정상" : source.status === "error" ? "오류" : "부분")}</span>
-          </div>
-          <div class="source-message">${escapeHtml(source.message)}</div>
-        </article>
-      `).join("");
+      document.getElementById("sources").innerHTML = "";
     }
 
     function sparkline(history, status) {
@@ -1063,55 +1233,85 @@ HTML_TEMPLATE = """<!doctype html>
     }
 
     function filteredMetrics() {
-      return DASHBOARD_DATA.metrics
+      return displayMetrics()
         .filter((metric) => state.industry === "전체" || metric.industry === state.industry)
-        .filter((metric) => state.status === "all" || metric.status === state.status)
         .sort((a, b) => {
-          const statusDelta = statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
-          if (statusDelta !== 0) return statusDelta;
+          const industryDelta = DASHBOARD_DATA.industries.indexOf(a.industry) - DASHBOARD_DATA.industries.indexOf(b.industry);
+          if (industryDelta !== 0) return industryDelta;
+          const groupDelta = String(a.group).localeCompare(String(b.group), "ko");
+          if (groupDelta !== 0) return groupDelta;
           return String(a.name).localeCompare(String(b.name), "ko");
         });
+    }
+
+    function groupedMetrics(metrics) {
+      const industries = [];
+      for (const industry of DASHBOARD_DATA.industries) {
+        const industryMetrics = metrics.filter((metric) => metric.industry === industry);
+        if (!industryMetrics.length) continue;
+        const groups = [];
+        for (const metric of industryMetrics) {
+          let group = groups.find((item) => item.name === metric.group);
+          if (!group) {
+            group = { name: metric.group || "핵심 지표", metrics: [] };
+            groups.push(group);
+          }
+          group.metrics.push(metric);
+        }
+        industries.push({ name: industry, metrics: industryMetrics, groups });
+      }
+      return industries;
     }
 
     function renderMetrics() {
       const metrics = filteredMetrics();
       document.getElementById("empty").style.display = metrics.length ? "none" : "block";
-      document.getElementById("metrics").innerHTML = metrics.map((metric) => `
-        <article class="metric">
-          <div class="metric-head">
-            <div>
-              <span class="pill">${escapeHtml(metric.industry)}</span>
-              <h2>${escapeHtml(metric.name)}</h2>
-            </div>
-            <span class="status ${cls(metric.status)}">${escapeHtml(metric.status_label)}</span>
+      document.getElementById("metrics").innerHTML = groupedMetrics(metrics).map((industry) => `
+        <section class="industry-section">
+          <div class="industry-head">
+            <h2>${escapeHtml(industry.name)}</h2>
+            <span class="industry-count">${industry.metrics.length}개 지표</span>
           </div>
-          <div class="metric-main">
-            <div>
-              <div class="value">${escapeHtml(metric.display_value)}</div>
-              <div class="observed">${escapeHtml(metric.observed_at || metric.frequency || "")}</div>
-            </div>
-            <div class="delta">
-              <span>전기 <strong class="${directionClass(metric.change_abs)}">${escapeHtml(metric.change_abs_label)}</strong></span>
-              <span>전기% <strong class="${directionClass(metric.change_pct)}">${escapeHtml(metric.change_pct_label)}</strong></span>
-              <span>YoY <strong class="${directionClass(metric.yoy_pct)}">${escapeHtml(metric.yoy_pct_label)}</strong></span>
-            </div>
-          </div>
-          ${sparkline(metric.history, metric.status)}
-          <div class="meta">
-            <div class="meta-row"><span>출처</span><span>${linkHtml(metric)}</span></div>
-            <div class="meta-row"><span>주기</span><span>${escapeHtml(metric.frequency || "n/a")}</span></div>
-            <div class="meta-row"><span>자동화</span><span>${escapeHtml(metric.automation)}</span></div>
-            ${metric.note ? `<div class="note">${escapeHtml(metric.note)}</div>` : ""}
-          </div>
-        </article>
+          ${industry.groups.map((group) => `
+            <section class="group-section">
+              <h3 class="group-title">${escapeHtml(group.name)}</h3>
+              <div class="group-grid">
+                ${group.metrics.map((metric) => `
+                  <article class="metric">
+                    <div class="metric-head">
+                      <div>
+                        <span class="pill">${escapeHtml(metric.observed_label || metric.frequency || "")}</span>
+                        <h3>${escapeHtml(metric.name)}</h3>
+                      </div>
+                    </div>
+                    <p class="meaning">${escapeHtml(metric.meaning)}</p>
+                    <div class="metric-main">
+                      <div class="value">${escapeHtml(metric.display_value)}</div>
+                      <div class="delta">
+                        <span>전기 <strong class="${directionClass(metric.change_abs)}">${escapeHtml(metric.change_abs_label)}</strong></span>
+                        <span>전기% <strong class="${directionClass(metric.change_pct)}">${escapeHtml(metric.change_pct_label)}</strong></span>
+                        <span>YoY <strong class="${directionClass(metric.yoy_pct)}">${escapeHtml(metric.yoy_pct_label)}</strong></span>
+                      </div>
+                    </div>
+                    ${sparkline(metric.history, metric.status)}
+                    <div class="period">
+                      <span>기간</span>
+                      <strong>${escapeHtml(metric.period_label || metric.observed_label || "")}</strong>
+                    </div>
+                  </article>
+                `).join("")}
+              </div>
+            </section>
+          `).join("")}
+        </section>
       `).join("");
     }
 
     function render() {
       document.getElementById("title").textContent = DASHBOARD_DATA.title;
-      document.getElementById("subtitle").textContent = "무료 API, 공식 CSV/엑셀, 공개 통계 위주";
-      document.getElementById("timestamp").innerHTML = `생성 ${escapeHtml(DASHBOARD_DATA.generated_label)}<br>${escapeHtml(DASHBOARD_DATA.timezone)}`;
-      document.getElementById("footer").textContent = "GitHub Actions가 매일 08:00 KST 기준으로 정적 사이트를 다시 생성합니다.";
+      document.getElementById("subtitle").textContent = "산업별 지표를 성격이 비슷한 그룹으로 정리했습니다.";
+      document.getElementById("timestamp").innerHTML = `업데이트 ${escapeHtml(DASHBOARD_DATA.generated_label)}`;
+      document.getElementById("footer").textContent = "";
       renderSummary();
       renderFilters();
       renderSources();
