@@ -65,7 +65,7 @@ INDUSTRY_SUMMARIES = {
     "방산": "수주, 생산, 수출 흐름으로 방산 수요를 확인합니다.",
     "스테이블코인": "온체인 달러 유동성과 결제/거래 수요를 봅니다.",
     "전력": "전력 가격, 생산, 장비 수출로 인프라 수요를 확인합니다.",
-    "로봇": "자동화 설비 투자와 로봇 수출 흐름을 묶어 봅니다.",
+    "로봇": "설비투자와 로봇 수출 흐름을 묶어 봅니다.",
     "우주": "우주/항공 장비 생산과 이벤트 수요를 추적합니다.",
     "바이오": "바이오 제품 가격과 수출 흐름으로 업황을 봅니다.",
     "배터리": "배터리 가격, 원재료, 수출 흐름으로 셀/소재 업황을 봅니다.",
@@ -151,13 +151,12 @@ def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -
     industries = configured_industries(config, metrics)
 
     return {
-        "title": str(config.get("dashboard", {}).get("title") or "산업별 핵심 지표 대시보드"),
+        "title": "산업별 지표 대시보드",
         "generated_at": now.isoformat(timespec="seconds"),
         "generated_label": now.strftime("%Y-%m-%d %H:%M %Z"),
         "timezone": timezone,
         "industries": industries,
         "industry_icons": INDUSTRY_ICONS,
-        "industry_summaries": INDUSTRY_SUMMARIES,
         "source_status": [],
         "metrics": metrics,
     }
@@ -773,10 +772,10 @@ def visible_dashboard_metrics(metrics: list[dict[str, Any]]) -> list[dict[str, A
             visible.append(
                 {
                     "id": metric["id"],
-                    "industry": metric["industry"],
-                    "group": metric["group"],
-                    "name": metric["name"],
-                    "meaning": metric["meaning"],
+                    "industry": clean_display_text(metric["industry"]),
+                    "group": clean_display_text(metric["group"]),
+                    "name": clean_display_text(metric["name"]),
+                    "meaning": clean_display_text(metric["meaning"]),
                     "value": metric["value"],
                     "display_value": metric["display_value"],
                     "observed_label": metric["observed_label"],
@@ -791,6 +790,19 @@ def visible_dashboard_metrics(metrics: list[dict[str, Any]]) -> list[dict[str, A
                 }
             )
     return visible
+
+
+def clean_display_text(value: object) -> str:
+    text = str(value or "")
+    replacements = {
+        "자동화 장비": "산업 장비",
+        "자동화 설비": "설비투자",
+        "자동화와": "설비투자와",
+        "자동화": "설비투자",
+    }
+    for source, target in replacements.items():
+        text = text.replace(source, target)
+    return text
 
 
 def infer_export_industry(hs_code: str) -> str:
@@ -822,7 +834,7 @@ def infer_metric_group(industry: str, name: str) -> str:
         return "전력 수요/생산"
     if industry == "로봇":
         if "PPI" in name:
-            return "자동화 장비 가격"
+            return "산업 장비 가격"
         return "설비투자 proxy"
     if industry == "우주":
         if "PPI" in name:
@@ -900,7 +912,7 @@ def infer_metric_meaning(industry: str, name: str) -> str:
     if "전력" in name or "유틸리티" in name:
         return "전력 생산과 가격 흐름으로 전력 인프라와 전력 수요 사이클을 확인합니다."
     if "산업용 기계" in name or "산업 제어" in name:
-        return "자동화 설비 투자와 로봇 부품 수요를 가늠하는 proxy 지표입니다."
+        return "설비투자와 로봇 부품 수요를 가늠하는 proxy 지표입니다."
     if "우주" in name or "항공우주" in name:
         return "항공우주 생산과 가격 흐름으로 우주 밸류체인의 수요 환경을 확인합니다."
     if "생물학적" in name or "체외진단" in name:
@@ -1007,7 +1019,641 @@ def status_to_automation(status: str) -> str:
 
 def render_dashboard_html(payload: dict[str, Any]) -> str:
     json_text = json.dumps(payload, ensure_ascii=False).replace("</", "<\\/")
-    return GROUPED_HTML_TEMPLATE.replace("__DASHBOARD_JSON__", json_text)
+    return MODERN_HTML_TEMPLATE.replace("__DASHBOARD_JSON__", json_text)
+
+
+MODERN_HTML_TEMPLATE = """<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <title>산업별 지표 대시보드</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #ffffff;
+      --surface: #ffffff;
+      --sidebar: #f7f7f7;
+      --panel: #ffffff;
+      --text: #171717;
+      --muted: #6d6d6d;
+      --line: #e6e6e6;
+      --menu: #f0f0f0;
+      --menu-active: #e6e6e6;
+      --chart-up: #d83b32;
+      --chart-down: #2f6fd6;
+      --shadow: 0 10px 26px rgba(0, 0, 0, 0.06);
+    }
+
+    body.theme-dark {
+      color-scheme: dark;
+      --bg: #111111;
+      --surface: #151515;
+      --sidebar: #181818;
+      --panel: #1d1d1d;
+      --text: #f2f2f2;
+      --muted: #a7a7a7;
+      --line: #303030;
+      --menu: #242424;
+      --menu-active: #303030;
+      --shadow: none;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 232px minmax(0, 1fr);
+      gap: 26px;
+      width: min(1540px, 100%);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 22px 24px 42px;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 22px;
+      align-self: start;
+      min-height: calc(100vh - 44px);
+      padding: 18px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--sidebar);
+    }
+
+    .sidebar-title {
+      margin: 0 8px 14px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 760;
+      text-transform: uppercase;
+    }
+
+    .side-menu {
+      display: grid;
+      gap: 7px;
+    }
+
+    .side-menu button {
+      width: 100%;
+      min-height: 38px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      padding: 0 12px;
+      text-align: left;
+      font-size: 14px;
+      font-weight: 720;
+      cursor: pointer;
+    }
+
+    .side-menu button:hover {
+      background: var(--menu);
+    }
+
+    .side-menu button[aria-pressed="true"] {
+      background: var(--menu-active);
+    }
+
+    .content {
+      min-width: 0;
+      display: grid;
+      gap: 20px;
+      align-content: start;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      min-height: 46px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(26px, 3vw, 40px);
+      line-height: 1.05;
+      font-weight: 810;
+    }
+
+    .theme-toggle {
+      width: 44px;
+      height: 44px;
+      border: 0;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: var(--menu);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 17px;
+    }
+
+    .theme-toggle:hover {
+      background: var(--menu-active);
+    }
+
+    .industry-stack {
+      display: grid;
+      gap: 18px;
+    }
+
+    .industry {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .industry-head {
+      display: grid;
+      grid-template-columns: 78px minmax(0, 1fr);
+      gap: 16px;
+      align-items: center;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .industry-icon-wrap {
+      width: 78px;
+      height: 78px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: var(--menu);
+    }
+
+    .industry-icon {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .industry h2 {
+      margin: 0;
+      font-size: 23px;
+      line-height: 1.15;
+      font-weight: 800;
+    }
+
+    .group {
+      padding: 18px 20px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .group:last-child { border-bottom: 0; }
+
+    .group-title {
+      margin-bottom: 12px;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric {
+      min-height: 348px;
+      display: grid;
+      grid-template-rows: auto auto 158px;
+      gap: 13px;
+      padding: 15px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      overflow: hidden;
+    }
+
+    .metric h3 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.32;
+      font-weight: 790;
+      overflow-wrap: anywhere;
+    }
+
+    .meaning {
+      margin: 7px 0 0;
+      min-height: 38px;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
+    .metric-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    .value {
+      font-size: 31px;
+      line-height: 1;
+      font-weight: 820;
+      overflow-wrap: anywhere;
+    }
+
+    .deltas {
+      display: grid;
+      gap: 5px;
+      min-width: 92px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .deltas strong {
+      display: inline-block;
+      min-width: 54px;
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .positive { color: var(--chart-up) !important; }
+    .negative { color: var(--chart-down) !important; }
+
+    .chart {
+      width: 100%;
+      height: 158px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      overflow: visible;
+    }
+
+    .chart text {
+      fill: var(--muted);
+      font-size: 10.5px;
+      font-weight: 650;
+    }
+
+    .axis-line {
+      stroke: var(--line);
+      stroke-width: 1;
+    }
+
+    .guide {
+      stroke: var(--line);
+      stroke-width: 1;
+      stroke-dasharray: 4 4;
+    }
+
+    .trend-line {
+      fill: none;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .trend-line.up { stroke: var(--chart-up); }
+    .trend-line.down { stroke: var(--chart-down); }
+
+    .current-dot.up { fill: var(--chart-up); }
+    .current-dot.down { fill: var(--chart-down); }
+
+    .empty {
+      display: none;
+      margin: 28px 0;
+      padding: 26px;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 1180px) {
+      .shell {
+        grid-template-columns: 190px minmax(0, 1fr);
+        gap: 18px;
+        padding-inline: 18px;
+      }
+
+      .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 760px) {
+      .shell {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 14px 10px 30px;
+      }
+
+      .sidebar {
+        position: static;
+        min-height: 0;
+        padding: 12px;
+      }
+
+      .side-menu {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 2px;
+      }
+
+      .side-menu button {
+        width: auto;
+        white-space: nowrap;
+      }
+
+      .topbar {
+        align-items: flex-start;
+      }
+
+      .industry-head {
+        grid-template-columns: 64px minmax(0, 1fr);
+        gap: 12px;
+        padding: 15px;
+      }
+
+      .industry-icon-wrap {
+        width: 64px;
+        height: 64px;
+      }
+
+      .industry-icon {
+        width: 54px;
+        height: 54px;
+      }
+
+      .group { padding: 15px; }
+      .metric-grid { grid-template-columns: 1fr; }
+      .metric-main { grid-template-columns: 1fr; }
+      .deltas {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <aside class="sidebar">
+      <div class="sidebar-title">산업</div>
+      <nav class="side-menu" id="industryFilters" aria-label="산업 필터"></nav>
+    </aside>
+    <section class="content">
+      <header class="topbar">
+        <h1>산업별 지표 대시보드</h1>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="다크모드 전환" title="다크모드 전환">
+          <i class="fa-solid fa-moon" aria-hidden="true"></i>
+        </button>
+      </header>
+      <section class="industry-stack" id="industryStack"></section>
+      <div class="empty" id="empty">표시할 지표가 없습니다.</div>
+    </section>
+  </main>
+
+  <script>
+    const DASHBOARD_DATA = __DASHBOARD_JSON__;
+    const state = { industry: "전체" };
+    const groupOrder = [
+      "판매액", "시장 매출", "가격/수요", "투자/장비", "수출",
+      "판매/수요", "판매량", "배터리 원재료",
+      "운임/해운", "선가/발주",
+      "원자재 가격", "중국 경기",
+      "에너지 가격", "원유/원료", "화학 스프레드 proxy", "스프레드/마진",
+      "금리", "스프레드", "금리/스프레드", "은행 건전성", "대출/건전성",
+      "주택 경기", "건설 선행", "금융비용", "주택 시장",
+      "환율", "리스크", "시장 환경", "핵심 지표"
+    ];
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    function directionClass(value) {
+      if (typeof value !== "number" || !Number.isFinite(value) || value === 0) return "";
+      return value > 0 ? "positive" : "negative";
+    }
+
+    function groupRank(group) {
+      const index = groupOrder.indexOf(group);
+      return index === -1 ? 999 : index;
+    }
+
+    function filteredMetrics() {
+      return DASHBOARD_DATA.metrics
+        .filter((metric) => state.industry === "전체" || metric.industry === state.industry);
+    }
+
+    function renderFilters() {
+      const industries = ["전체", ...DASHBOARD_DATA.industries.filter((industry) =>
+        DASHBOARD_DATA.metrics.some((metric) => metric.industry === industry)
+      )];
+      document.getElementById("industryFilters").innerHTML = industries.map((industry) => `
+        <button type="button" data-industry="${escapeHtml(industry)}" aria-pressed="${state.industry === industry}">
+          ${escapeHtml(industry)}
+        </button>
+      `).join("");
+      document.querySelectorAll("[data-industry]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.industry = button.dataset.industry;
+          render();
+        });
+      });
+    }
+
+    function formatAxisValue(value) {
+      const abs = Math.abs(value);
+      if (abs >= 1000) return `${(value / 1000).toFixed(1)}k`;
+      if (abs >= 100) return value.toFixed(0);
+      if (abs >= 10) return value.toFixed(1);
+      return value.toFixed(2);
+    }
+
+    function yearLabel(dateText) {
+      const year = Number(String(dateText).slice(2, 4));
+      return Number.isFinite(year) ? `${String(year).padStart(2, "0")}y` : "";
+    }
+
+    function chartTicks(history, left, right) {
+      const seen = new Set();
+      const ticks = [];
+      history.forEach((point, index) => {
+        const year = String(point.date).slice(0, 4);
+        if (seen.has(year)) return;
+        seen.add(year);
+        const x = left + (index / Math.max(history.length - 1, 1)) * (right - left);
+        ticks.push({ label: yearLabel(point.date), x });
+      });
+      if (ticks.length === 1 && history.length > 1) {
+        ticks.push({ label: yearLabel(history[history.length - 1].date), x: right });
+      }
+      return ticks.filter((tick, index) => index === 0 || tick.label !== ticks[index - 1].label);
+    }
+
+    function chart(history) {
+      if (!history || history.length < 2) {
+        return `<svg class="chart" viewBox="0 0 360 158" role="img" aria-label="trend unavailable">
+          <line x1="62" y1="72" x2="344" y2="72" class="guide"></line>
+        </svg>`;
+      }
+      const values = history.map((point) => point.value).filter((value) => typeof value === "number" && Number.isFinite(value));
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+      const latest = history[history.length - 1].value;
+      const first = history[0].value;
+      const span = max - min || 1;
+      const left = 62;
+      const right = 344;
+      const top = 16;
+      const bottom = 116;
+      const yFor = (value) => bottom - ((value - min) / span) * (bottom - top);
+      const points = history.map((point, index) => {
+        const x = left + (index / Math.max(history.length - 1, 1)) * (right - left);
+        const y = yFor(point.value);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(" ");
+      const trend = latest >= first ? "up" : "down";
+      const levels = [
+        { label: "최고", value: max },
+        { label: "현재", value: latest },
+        { label: "최저", value: min }
+      ];
+      const yGuides = levels.map((level) => {
+        const y = yFor(level.value);
+        return `<g>
+          <text x="8" y="${(y + 3).toFixed(1)}">${level.label} ${formatAxisValue(level.value)}</text>
+          <line x1="${left}" y1="${y.toFixed(1)}" x2="${right}" y2="${y.toFixed(1)}" class="guide"></line>
+        </g>`;
+      }).join("");
+      const xGuides = chartTicks(history, left, right).map((tick) => `
+        <text x="${tick.x.toFixed(1)}" y="146" text-anchor="middle">${tick.label}</text>
+      `).join("");
+      const latestX = right;
+      const latestY = yFor(latest);
+      return `<svg class="chart" viewBox="0 0 360 158" role="img" aria-label="trend">
+        ${yGuides}
+        <line x1="${left}" y1="126" x2="${right}" y2="126" class="axis-line"></line>
+        ${xGuides}
+        <polyline points="${points}" class="trend-line ${trend}"></polyline>
+        <circle cx="${latestX}" cy="${latestY.toFixed(1)}" r="4" class="current-dot ${trend}"></circle>
+      </svg>`;
+    }
+
+    function metricCard(metric) {
+      return `<article class="metric">
+        <div>
+          <h3>${escapeHtml(metric.name)}</h3>
+          <p class="meaning">${escapeHtml(metric.meaning)}</p>
+        </div>
+        <div class="metric-main">
+          <div class="value">${escapeHtml(metric.display_value)}</div>
+          <div class="deltas">
+            <span>전기 <strong class="${directionClass(metric.change_abs)}">${escapeHtml(metric.change_abs_label)}</strong></span>
+            <span>전기% <strong class="${directionClass(metric.change_pct)}">${escapeHtml(metric.change_pct_label)}</strong></span>
+            <span>YoY <strong class="${directionClass(metric.yoy_pct)}">${escapeHtml(metric.yoy_pct_label)}</strong></span>
+          </div>
+        </div>
+        ${chart(metric.history)}
+      </article>`;
+    }
+
+    function renderIndustry(industry, metrics) {
+      const groups = Map.groupBy
+        ? Map.groupBy(metrics, (metric) => metric.group || "핵심 지표")
+        : metrics.reduce((map, metric) => {
+            const key = metric.group || "핵심 지표";
+            map.set(key, [...(map.get(key) || []), metric]);
+            return map;
+          }, new Map());
+      const icon = DASHBOARD_DATA.industry_icons?.[industry] || "";
+      const groupHtml = [...groups.entries()]
+        .sort(([a], [b]) => groupRank(a) - groupRank(b) || String(a).localeCompare(String(b), "ko"))
+        .map(([group, items]) => `
+          <section class="group">
+            <div class="group-title">${escapeHtml(group)}</div>
+            <div class="metric-grid">${items.map(metricCard).join("")}</div>
+          </section>
+        `).join("");
+
+      return `<article class="industry">
+        <div class="industry-head">
+          <div class="industry-icon-wrap">${icon ? `<img class="industry-icon" src="${escapeHtml(icon)}" alt="">` : ""}</div>
+          <div>
+            <h2>${escapeHtml(industry)}</h2>
+          </div>
+        </div>
+        <div class="group-stack">${groupHtml}</div>
+      </article>`;
+    }
+
+    function renderIndustries() {
+      const metrics = filteredMetrics();
+      const stack = document.getElementById("industryStack");
+      document.getElementById("empty").style.display = metrics.length ? "none" : "block";
+      const byIndustry = metrics.reduce((map, metric) => {
+        map.set(metric.industry, [...(map.get(metric.industry) || []), metric]);
+        return map;
+      }, new Map());
+      stack.innerHTML = DASHBOARD_DATA.industries
+        .filter((industry) => byIndustry.has(industry))
+        .map((industry) => renderIndustry(industry, byIndustry.get(industry)))
+        .join("");
+    }
+
+    function applyTheme(theme) {
+      const isDark = theme === "dark";
+      document.body.classList.toggle("theme-dark", isDark);
+      const icon = document.querySelector("#themeToggle i");
+      icon.className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
+      localStorage.setItem("dashboard-theme", isDark ? "dark" : "light");
+    }
+
+    function initTheme() {
+      const saved = localStorage.getItem("dashboard-theme");
+      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      applyTheme(saved || (prefersDark ? "dark" : "light"));
+      document.getElementById("themeToggle").addEventListener("click", () => {
+        applyTheme(document.body.classList.contains("theme-dark") ? "light" : "dark");
+      });
+    }
+
+    function render() {
+      renderFilters();
+      renderIndustries();
+    }
+
+    initTheme();
+    render();
+  </script>
+</body>
+</html>
+"""
 
 
 GROUPED_HTML_TEMPLATE = """<!doctype html>
