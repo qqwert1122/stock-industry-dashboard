@@ -1082,6 +1082,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       --chart-up: #d83b32;
       --chart-down: #2f6fd6;
       --shadow: 0 10px 26px rgba(0, 0, 0, 0.06);
+      --menu-shadow: 0 8px 24px rgba(0, 0, 0, 0.055);
     }
 
     body.theme-dark {
@@ -1096,6 +1097,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       --menu: #242424;
       --menu-active: #303030;
       --shadow: none;
+      --menu-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
     }
 
     * { box-sizing: border-box; }
@@ -1165,18 +1167,11 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       align-self: start;
       min-width: 0;
       min-height: calc(100vh - 44px);
-      padding: 18px 14px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
+      padding: 14px;
+      border: 0;
+      border-radius: 18px;
       background: var(--sidebar);
-    }
-
-    .sidebar-title {
-      margin: 0 8px 14px;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 760;
-      text-transform: uppercase;
+      box-shadow: var(--menu-shadow);
     }
 
     .side-menu {
@@ -1190,7 +1185,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       width: 100%;
       min-height: 38px;
       border: 0;
-      border-radius: 8px;
+      border-radius: 12px;
       background: transparent;
       padding: 0 12px;
       text-align: left;
@@ -1870,8 +1865,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 <body>
   <main class="shell">
     <aside class="sidebar">
-      <div class="sidebar-title">산업</div>
-      <nav class="side-menu" id="industryFilters" aria-label="산업 필터"></nav>
+      <nav class="side-menu" id="industryFilters" aria-label="업종 메뉴"></nav>
     </aside>
     <section class="content">
       <header class="topbar">
