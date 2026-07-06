@@ -2336,10 +2336,11 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       background: var(--menu-active);
     }
 
-    .metric-name-cell { width: 25%; }
-    .metric-description-cell { width: 35%; }
-    .metric-date-cell { width: 12%; }
-    .metric-chart-cell { width: 16%; }
+    .metric-name-cell { width: 22%; }
+    .metric-description-cell { width: 30%; }
+    .metric-date-cell { width: 11%; }
+    .metric-value-cell { width: 12%; }
+    .metric-chart-cell { width: 14%; }
 
     .metric-toggle {
       width: 100%;
@@ -2381,6 +2382,15 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       font-size: 12px;
       font-weight: 680;
       white-space: nowrap;
+    }
+
+    .metric-current-value {
+      display: block;
+      color: var(--text);
+      font-size: 12.5px;
+      line-height: 1.25;
+      font-weight: 820;
+      overflow-wrap: anywhere;
     }
 
     .chart-mini {
@@ -2729,10 +2739,11 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         content: none;
       }
 
-      .metric-name-cell { width: 25%; }
-      .metric-description-cell { width: 35%; }
-      .metric-date-cell { width: 12%; }
-      .metric-chart-cell { width: 16%; }
+      .metric-name-cell { width: 22%; }
+      .metric-description-cell { width: 30%; }
+      .metric-date-cell { width: 11%; }
+      .metric-value-cell { width: 12%; }
+      .metric-chart-cell { width: 14%; }
 
       .metric-chart-cell .chart-mini {
         height: 34px;
@@ -3257,12 +3268,15 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         <td class="metric-date-cell" data-label="${escapeHtml(t("nextUpdate"))}">
           <span class="metric-date">${escapeHtml(dateText(metric.next_update_label))}</span>
         </td>
+        <td class="metric-value-cell" data-label="${escapeHtml(t("currentValue"))}">
+          <span class="metric-current-value">${escapeHtml(displayMetricValue(metric))}</span>
+        </td>
         <td class="metric-chart-cell" data-label="${escapeHtml(t("chart"))}">
           ${chart(metric.history, "chart-mini", metric)}
         </td>
       </tr>
       <tr class="metric-detail-row" id="${detailId}" aria-hidden="true">
-        <td colspan="5">${metricDetail(metric)}</td>
+        <td colspan="6">${metricDetail(metric)}</td>
       </tr>`;
     }
 
@@ -3287,6 +3301,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
                   <col class="metric-description-cell">
                   <col class="metric-date-cell">
                   <col class="metric-date-cell">
+                  <col class="metric-value-cell">
                   <col class="metric-chart-cell">
                 </colgroup>
                 <thead>
@@ -3295,6 +3310,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
                     <th scope="col">${escapeHtml(t("description"))}</th>
                     <th scope="col">${escapeHtml(t("lastUpdated"))}</th>
                     <th scope="col">${escapeHtml(t("nextUpdate"))}</th>
+                    <th scope="col">${escapeHtml(t("currentValue"))}</th>
                     <th scope="col">${escapeHtml(t("chart"))}</th>
                   </tr>
                 </thead>
