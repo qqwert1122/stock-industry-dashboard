@@ -2048,8 +2048,8 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     h1 {
       margin: 0;
-      font-size: clamp(26px, 3vw, 40px);
-      line-height: 1.05;
+      font-size: clamp(22px, 2.2vw, 30px);
+      line-height: 1.12;
       font-weight: 810;
     }
 
@@ -2224,18 +2224,23 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     .industry-stack {
       display: grid;
-      gap: 18px;
+      gap: 0;
       min-width: 0;
     }
 
     .industry {
       min-width: 0;
       scroll-margin-top: 22px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--surface);
-      box-shadow: var(--shadow);
-      overflow: hidden;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+      box-shadow: none;
+      overflow: visible;
+    }
+
+    .industry:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
     }
 
     .industry-head {
@@ -2243,9 +2248,9 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       grid-template-columns: 86px minmax(0, 1fr);
       gap: 16px;
       align-items: center;
-      padding: 18px 20px;
-      border-bottom: 1px solid var(--line);
-      background: var(--surface);
+      padding: 22px 0 16px;
+      border-bottom: 0;
+      background: transparent;
     }
 
     .industry-icon-wrap {
@@ -2266,13 +2271,13 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     .industry h2 {
       margin: 0;
-      font-size: 23px;
-      line-height: 1.15;
+      font-size: 20px;
+      line-height: 1.18;
       font-weight: 800;
     }
 
     .group {
-      padding: 18px 20px 20px;
+      padding: 0 0 22px;
       border-bottom: 1px solid var(--line);
     }
 
@@ -2641,7 +2646,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       .industry-head {
         grid-template-columns: 72px minmax(0, 1fr);
         gap: 12px;
-        padding: 15px;
+        padding: 18px 0 12px;
       }
 
       .industry-icon-wrap {
@@ -2654,7 +2659,11 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         height: 64px;
       }
 
-      .group { padding: 15px; }
+      .industry h2 {
+        font-size: 18px;
+      }
+
+      .group { padding: 0 0 18px; }
 
       .metric-table-wrap {
         overflow-x: auto;
