@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import shutil
 import time
 from collections import defaultdict
@@ -78,6 +79,247 @@ INDUSTRY_SUMMARIES = {
     "배터리": "배터리 가격, 원재료, 수출 흐름으로 셀/소재 업황을 봅니다.",
     "데이터인프라": "서버와 네트워크 인프라 투자 흐름을 봅니다.",
     "매크로": "환율과 변동성으로 시장 환경을 빠르게 확인합니다.",
+}
+EN_INDUSTRY_LABELS = {
+    "반도체": "Semiconductors",
+    "데이터인프라": "Data Infrastructure",
+    "자동차": "Automobiles",
+    "전기차": "EVs",
+    "조선": "Shipbuilding",
+    "철강/소재": "Steel & Materials",
+    "화학/정유": "Chemicals & Refining",
+    "은행/금융": "Banks & Financials",
+    "건설/부동산": "Construction & Real Estate",
+    "방산": "Defense",
+    "스테이블코인": "Stablecoins",
+    "전력": "Power",
+    "로봇": "Robotics",
+    "우주": "Space",
+    "바이오": "Biotech",
+    "배터리": "Batteries",
+    "매크로": "Macro",
+}
+EN_GROUP_LABELS = {
+    "판매액": "Sales",
+    "시장 매출": "Market Revenue",
+    "가격/수요": "Price/Demand",
+    "투자/장비": "Investment/Equipment",
+    "수출": "Exports",
+    "판매/수요": "Sales/Demand",
+    "판매량": "Sales Volume",
+    "배터리 원재료": "Battery Raw Materials",
+    "운임/해운": "Shipping Rates",
+    "선가/발주": "Newbuild Prices/Orders",
+    "원자재 가격": "Commodity Prices",
+    "중국 경기": "China Macro",
+    "에너지 가격": "Energy Prices",
+    "원유/원료": "Crude/Feedstock",
+    "화학 스프레드 proxy": "Chemical Spread Proxy",
+    "스프레드/마진": "Spreads/Margins",
+    "금리": "Rates",
+    "스프레드": "Spreads",
+    "금리/스프레드": "Rates/Spreads",
+    "은행 건전성": "Bank Asset Quality",
+    "대출/건전성": "Lending/Asset Quality",
+    "주택 경기": "Housing Activity",
+    "건설 선행": "Construction Leads",
+    "금융비용": "Financing Costs",
+    "주택 시장": "Housing Market",
+    "환율": "FX",
+    "리스크": "Risk",
+    "시장 환경": "Market Conditions",
+    "핵심 지표": "Core Metrics",
+    "수주잔고": "Order Backlog",
+    "신규주문": "New Orders",
+    "방산 수요": "Defense Demand",
+    "유통량": "Supply",
+    "전력 수요": "Power Demand",
+    "전력 가격": "Power Prices",
+    "전력 수요/생산": "Power Demand/Generation",
+    "CAPEX": "CAPEX",
+    "산업 장비 가격": "Industrial Equipment Prices",
+    "설비투자 proxy": "Capex Proxy",
+    "항공우주 가격": "Aerospace Prices",
+    "우주/방산 생산": "Space/Defense Production",
+    "바이오 가격": "Biotech Prices",
+    "진단 가격": "Diagnostics Prices",
+    "배터리 가격": "Battery Prices",
+    "EV 수요": "EV Demand",
+    "EV 수출": "EV Exports",
+    "국방 계약": "Defense Contracts",
+    "우주 계약": "Space Contracts",
+    "제품 가격": "Product Prices",
+    "승인 이벤트": "Approval Events",
+    "임상 이벤트": "Clinical Trial Events",
+    "발사 이벤트": "Launch Events",
+    "충전 인프라": "Charging Infrastructure",
+}
+EN_FREQUENCY_LABELS = {
+    "일간": "Daily",
+    "주간": "Weekly",
+    "월간": "Monthly",
+    "분기": "Quarterly",
+    "연간": "Annual",
+    "비정기": "Irregular",
+    "월간/비정기": "Monthly/Irregular",
+    "연간/비정기": "Annual/Irregular",
+}
+EN_UNIT_LABELS = {
+    "$": "USD",
+    "$/mt": "USD/mt",
+    "$/mmbtu": "USD/mmbtu",
+    "$/gal": "USD/gal",
+    "원": "KRW",
+    "지수": "Index",
+    "천건": "k",
+    "백만대": "M units",
+    "백만달러": "USD mn",
+    "건": "events",
+    "곳": "stations",
+    "개": "ports",
+}
+EN_EXPORT_ITEM_LABELS = {
+    "반도체 IC": "Semiconductor ICs",
+    "반도체 소자": "Semiconductor Devices",
+    "무선통신기기": "Wireless Communication Devices",
+    "승용차": "Passenger Cars",
+    "전기차": "EVs",
+    "선박": "Ships",
+    "무기류/탄약": "Arms/Ammunition",
+    "항공기/우주선": "Aircraft/Spacecraft",
+    "변압기": "Transformers",
+    "전력 케이블": "Power Cables",
+    "산업용 로봇": "Industrial Robots",
+    "백신/면역제품": "Vaccines/Immune Products",
+    "의약품": "Pharmaceuticals",
+    "축전지": "Rechargeable Batteries",
+}
+EN_METRIC_NAME_LABELS = {
+    "전체 스테이블코인 유통량": "Total Stablecoin Supply",
+    "USDT 유통량": "USDT Supply",
+    "USDC 유통량": "USDC Supply",
+    "니켈 가격": "Nickel Price",
+    "유럽 천연가스 가격": "Europe Natural Gas Price",
+    "호주 석탄 가격": "Australian Coal Price",
+    "미국 국방부 계약 의무액": "US DoD Contract Obligations",
+    "미국 방산 제조 계약 의무액": "US Defense Manufacturing Contract Obligations",
+    "미국 NASA 계약 의무액": "US NASA Contract Obligations",
+    "FDA 의약품 승인 활동": "FDA Drug Approval Activity",
+    "글로벌 Phase 3 임상 시작": "Global Phase 3 Trial Starts",
+    "글로벌 우주 발사 건수": "Global Space Launch Count",
+    "미국 EV 충전소 수": "US EV Charging Stations",
+    "미국 EV 충전 포트 수": "US EV Charging Ports",
+    "미국 10년 국채금리": "US 10Y Treasury Yield",
+    "미국 2년 국채금리": "US 2Y Treasury Yield",
+    "미국 10Y-2Y 금리차": "US 10Y-2Y Treasury Spread",
+    "미국 BAA 회사채-10년 국채 스프레드": "US BAA Corporate-10Y Treasury Spread",
+    "미국 은행 대출 연체율": "US Bank Loan Delinquency Rate",
+    "미국 상업은행 총대출": "US Commercial Bank Total Loans",
+    "미국 주택착공": "US Housing Starts",
+    "미국 건축허가": "US Building Permits",
+    "미국 30년 모기지 금리": "US 30Y Mortgage Rate",
+    "미국 주택가격지수": "US Home Price Index",
+    "WTI 유가": "WTI Crude Oil Price",
+    "Brent 유가": "Brent Crude Oil Price",
+    "미국 산업용 화학 PPI": "US Industrial Chemicals PPI",
+    "철광석 가격": "Iron Ore Price",
+    "구리 가격": "Copper Price",
+    "알루미늄 가격": "Aluminum Price",
+    "미국 자동차 판매": "US Auto Sales",
+    "미국 반도체 PPI": "US Semiconductor PPI",
+    "미국 방산 자본재 신규주문": "US Defense Capital Goods New Orders",
+    "미국 방산 자본재 수주잔고": "US Defense Capital Goods Backlog",
+    "미국 전력 생산 PPI": "US Electric Power Generation PPI",
+    "미국 전기/가스 유틸리티 산업생산": "US Electric & Gas Utilities Industrial Production",
+    "미국 산업용 기계 신규주문": "US Industrial Machinery New Orders",
+    "미국 산업 제어장치 PPI": "US Industrial Control Equipment PPI",
+    "미국 방산/우주 장비 산업생산": "US Defense/Space Equipment Industrial Production",
+    "미국 항공우주 부품 PPI": "US Aerospace Parts PPI",
+    "미국 생물학적 제제 PPI": "US Biological Products PPI",
+    "미국 체외진단 물질 PPI": "US In-vitro Diagnostics PPI",
+    "미국 저장 배터리 제조 PPI": "US Storage Battery Manufacturing PPI",
+    "원/달러 환율": "USD/KRW Exchange Rate",
+    "DRAM/NAND 가격 대체 지표": "DRAM/NAND Price Proxy",
+    "HBM 수요 대체 지표": "HBM Demand Proxy",
+    "TSMC 월매출": "TSMC Monthly Revenue",
+    "ASML 수주/매출": "ASML Orders/Revenue",
+    "SEMI 장비 billings": "SEMI Equipment Billings",
+    "빅테크 CAPEX": "Big Tech CAPEX",
+    "글로벌 EV 판매량": "Global EV Sales",
+    "리튬/배터리 원재료 가격": "Lithium/Battery Raw Material Prices",
+    "주요 완성차 월별 판매": "Major Automaker Monthly Sales",
+    "신조선가/LNG선 발주량 대체 지표": "Newbuild Price/LNG Carrier Orders Proxy",
+    "해운 운임지수": "Shipping Freight Index",
+    "중국 산업생산/제조업 PMI": "China Industrial Production/Manufacturing PMI",
+    "나프타/올레핀 스프레드": "Naphtha/Olefin Spread",
+    "정제마진 대체 지표": "Refining Margin Proxy",
+    "한국 미분양/주택가격지수": "Korea Unsold Homes/Home Price Index",
+    "한국 방산 수출 수주": "Korea Defense Export Orders",
+    "USDT/USDC 준비금과 발행량": "USDT/USDC Reserves and Supply",
+    "전력 수요/예비율": "Power Demand/Reserve Margin",
+    "산업용 로봇 설치 대수": "Industrial Robot Installations",
+    "위성 발사/수주 이벤트": "Satellite Launch/Order Events",
+    "FDA 신약 승인/임상 이벤트": "FDA Drug Approval/Clinical Events",
+    "리튬/니켈/코발트 가격": "Lithium/Nickel/Cobalt Prices",
+}
+EN_MEANING_LABELS = {
+    "반도체 업황의 현재 수요 강도와 재고 순환을 확인하는 월간 지표입니다.": "Monthly indicator for semiconductor demand strength and inventory cycles.",
+    "글로벌 반도체 매출 흐름으로 업황의 수요 강도와 재고 순환을 확인합니다.": "Tracks global semiconductor revenue to read demand strength and inventory cycles.",
+    "반도체 가격 압력과 공급자 가격 흐름을 보는 가격 proxy입니다.": "Price proxy for semiconductor pricing pressure and producer price trends.",
+    "할인율과 금융주 마진 기대를 좌우하는 시장 금리입니다.": "Market rate that drives discount rates and bank margin expectations.",
+    "경기 기대와 은행 순이자마진 환경을 함께 보여주는 지표입니다.": "Shows both growth expectations and the net interest margin backdrop for banks.",
+    "신용 위험과 자금 조달 여건이 얼마나 빡빡한지 확인합니다.": "Measures credit risk and how tight funding conditions are.",
+    "대출 자산의 질과 금융 시스템 부담을 점검합니다.": "Checks loan asset quality and stress in the financial system.",
+    "은행권 신용 공급과 실물 경기의 자금 수요를 봅니다.": "Tracks bank credit supply and real-economy loan demand.",
+    "건설 경기의 실제 착공 모멘텀과 주택 공급 흐름을 보여줍니다.": "Shows actual construction momentum and the housing supply pipeline.",
+    "향후 착공과 건설 활동을 선행해서 보여주는 지표입니다.": "Leading indicator for future starts and construction activity.",
+    "주택 구매 부담과 부동산 수요에 직접 영향을 주는 비용입니다.": "Financing cost that directly affects housing affordability and real estate demand.",
+    "가계 자산 효과와 부동산 경기 방향성을 확인합니다.": "Shows household wealth effects and the direction of the housing cycle.",
+    "정유, 화학 원가와 인플레이션 압력을 동시에 움직이는 원재료 가격입니다.": "Feedstock price that affects refining, chemical costs, and inflation pressure.",
+    "석유 제품 가격으로 정유 제품 수요와 crack spread 방향을 간접적으로 확인합니다.": "Oil product price proxy for refined product demand and crack spread direction.",
+    "화학 제품 가격 사이클과 마진 방향을 간접적으로 봅니다.": "Proxy for chemical product price cycles and margin direction.",
+    "철강 원가와 중국 투자 수요를 반영하는 핵심 원재료입니다.": "Core raw material reflecting steel costs and Chinese investment demand.",
+    "전기화와 제조업 경기를 민감하게 반영하는 경기 민감 금속입니다.": "Cyclical metal that is sensitive to electrification and manufacturing activity.",
+    "경량 소재와 제조업 수요, 전력비 영향을 함께 받는 소재 가격입니다.": "Material price affected by lightweighting demand, manufacturing demand, and power costs.",
+    "배터리 양극재 원가와 소재 업체 마진 환경을 보여주는 원재료 proxy입니다.": "Raw material proxy for battery cathode costs and materials-company margins.",
+    "니켈 가격은 배터리 양극재 원가와 소재 업체 마진 환경을 보여주는 원재료 proxy입니다.": "Nickel price is a raw material proxy for battery cathode costs and materials-company margins.",
+    "전력 생산 원가와 산업 에너지 비용을 좌우하는 에너지 원료 지표입니다.": "Energy feedstock indicator that drives power generation costs and industrial energy costs.",
+    "천연가스 가격은 전력 생산 원가와 산업 에너지 비용을 좌우하는 에너지 원료 지표입니다.": "Natural gas price indicates power generation costs and industrial energy cost pressure.",
+    "석탄 가격은 화력발전 원가와 전력 가격 압력을 확인하는 원료 proxy입니다.": "Coal price is a feedstock proxy for thermal power costs and power price pressure.",
+    "완성차 수요와 소비 경기 흐름을 확인하는 판매 지표입니다.": "Sales indicator for automaker demand and consumer-cycle conditions.",
+    "순수 전기차 수출 흐름으로 EV 수요와 국내 전기차 생산 모멘텀을 확인합니다.": "Tracks BEV export flows to read EV demand and domestic EV production momentum.",
+    "순수 전기차 수출 흐름으로 전기차 완성차 수요와 국내 EV 생산 모멘텀을 확인합니다.": "Tracks BEV export flows to read EV demand and domestic EV production momentum.",
+    "방산 발주와 생산 사이클을 통해 방산 업체의 수요 환경을 확인합니다.": "Reads defense-company demand through order and production cycles.",
+    "달러 연동 스테이블코인의 유통량 변화로 온체인 달러 유동성과 결제/거래 수요를 확인합니다.": "Tracks USD-pegged stablecoin supply to read on-chain dollar liquidity and payment/trading demand.",
+    "전력 생산과 가격 흐름으로 전력 인프라와 전력 수요 사이클을 확인합니다.": "Tracks power production and prices to read power infrastructure and demand cycles.",
+    "빅테크 CAPEX는 AI 데이터센터, 서버, 전력 인프라 투자 수요를 보여주는 핵심 proxy입니다.": "Big Tech CAPEX is a core proxy for AI data center, server, and power infrastructure investment demand.",
+    "설비투자와 로봇 부품 수요를 가늠하는 proxy 지표입니다.": "Proxy for capex and robotics component demand.",
+    "항공우주 생산과 가격 흐름으로 우주 밸류체인의 수요 환경을 확인합니다.": "Reads space value-chain demand through aerospace production and price trends.",
+    "바이오 의약품과 진단 제품의 가격 사이클을 확인하는 지표입니다.": "Tracks the pricing cycle for biologics and diagnostics products.",
+    "배터리 제품 가격 흐름으로 셀/소재 밸류체인의 업황을 점검합니다.": "Checks battery cell/materials conditions through battery product price trends.",
+    "수출주 원화 환산 매출과 외국인 수급에 영향을 주는 매크로 변수입니다.": "Macro variable affecting exporters' KRW-translated revenue and foreign investor flows.",
+    "시장 위험 회피 심리와 변동성 확대 여부를 봅니다.": "Tracks risk-off sentiment and volatility expansion.",
+    "해당 품목의 대외 수요와 가격/물량 사이클을 확인합니다.": "Tracks external demand and price/volume cycles for the item.",
+    "투자 판단에 필요한 업황 변화를 확인합니다.": "Tracks industry changes relevant to investment decisions.",
+    "미국 방산 자본재 발주 흐름으로 방산 수요와 수주 모멘텀을 확인합니다.": "Tracks US defense capital goods orders to read defense demand and order momentum.",
+    "아직 매출로 인식되지 않은 방산 수주잔고의 축적과 감소를 확인합니다.": "Tracks the buildup and drawdown of defense order backlog not yet recognized as revenue.",
+    "전력 생산 가격 흐름으로 전력 인프라와 유틸리티 수익 환경을 확인합니다.": "Tracks power producer prices to read power infrastructure and utility revenue conditions.",
+    "유틸리티 실물 생산 흐름으로 전력 수요와 경기 민감도를 확인합니다.": "Uses utilities production to read power demand and cyclical sensitivity.",
+    "설비투자와 로봇 수요에 가까운 산업용 기계 발주 흐름을 확인합니다.": "Tracks industrial machinery orders as a proxy for capex and robotics demand.",
+    "로봇과 설비투자 설비에 들어가는 산업 제어장치 가격 흐름을 확인합니다.": "Tracks industrial control equipment prices used in robotics and capex equipment.",
+    "우주와 방산 장비 생산 사이클을 함께 보여주는 월간 생산 지표입니다.": "Monthly production indicator for both space and defense equipment cycles.",
+    "항공우주 부품 가격 흐름으로 우주 밸류체인의 비용과 수요 환경을 봅니다.": "Tracks aerospace parts prices to read cost and demand conditions in the space value chain.",
+    "바이오 의약품 제조 가격 흐름으로 바이오 업황의 가격 사이클을 확인합니다.": "Tracks biologics manufacturing prices to read the biotech pricing cycle.",
+    "진단 제품 가격 흐름으로 진단/바이오 수요와 가격 환경을 확인합니다.": "Tracks diagnostics product prices to read diagnostics/biotech demand and pricing conditions.",
+    "저장 배터리 제조 가격 흐름으로 배터리 셀 업황과 마진 환경을 확인합니다.": "Tracks storage battery manufacturing prices to read battery cell conditions and margins.",
+    "미국 국방부가 집행한 계약 의무액으로 방산 예산 집행과 수주 환경의 큰 흐름을 확인합니다.": "Uses US DoD contract obligations to read the broad trend in defense budget execution and order conditions.",
+    "미국 연방 방산/항공우주 제조업 계약 의무액으로 방산 제조 밸류체인의 수주 모멘텀을 확인합니다.": "Uses US federal defense/aerospace manufacturing obligations to read order momentum across the defense manufacturing value chain.",
+    "NASA 계약 의무액은 우주 장비와 서비스 수요, 정부 우주 예산 집행 흐름을 보여주는 proxy입니다.": "NASA contract obligations proxy demand for space equipment and services and government space budget execution.",
+    "FDA 의약품 승인 관련 기록 수로 바이오 규제 이벤트와 신약 모멘텀을 확인합니다.": "Counts FDA drug approval records to read biotech regulatory events and new-drug momentum.",
+    "Phase 3 임상 시작 건수는 후기 파이프라인 활동성과 바이오 투자심리의 이벤트 밀도를 보여줍니다.": "Phase 3 trial starts show late-stage pipeline activity and event density for biotech sentiment.",
+    "글로벌 발사 건수로 우주 산업 활동성과 위성 인프라 수요를 확인합니다.": "Global launch count indicates space industry activity and satellite infrastructure demand.",
+    "미국 EV 충전소 수는 전기차 보급 환경과 충전 인프라 투자 흐름을 보여주는 지표입니다.": "US EV charging station count shows EV adoption conditions and charging infrastructure investment trends.",
+    "미국 EV 충전 포트 수는 전기차 이용 편의성과 인프라 확장 속도를 확인하는 지표입니다.": "US EV charging port count shows EV usability and the pace of infrastructure expansion.",
 }
 
 
@@ -171,6 +413,7 @@ def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -
         "generated_label": now.strftime("%Y-%m-%d %H:%M %Z"),
         "timezone": timezone,
         "industries": industries,
+        "industry_labels_en": {industry: english_industry(industry) for industry in industries},
         "industry_icons": INDUSTRY_ICONS,
         "source_status": source_status,
         "metrics": metrics,
@@ -1851,13 +2094,22 @@ def visible_dashboard_metrics(metrics: list[dict[str, Any]]) -> list[dict[str, A
                 {
                     "id": metric["id"],
                     "industry": clean_display_text(metric["industry"]),
+                    "industry_en": english_industry(clean_display_text(metric["industry"])),
                     "group": clean_display_text(metric["group"]),
+                    "group_en": english_group(clean_display_text(metric["group"])),
                     "name": clean_display_text(metric["name"]),
+                    "name_en": english_metric_name(clean_display_text(metric["name"])),
                     "meaning": clean_display_text(metric["meaning"]),
+                    "meaning_en": english_metric_meaning(
+                        clean_display_text(metric["meaning"]),
+                        clean_display_text(metric["industry"]),
+                    ),
                     "value": metric["value"],
                     "unit": clean_display_text(metric["unit"]),
+                    "unit_en": english_unit(clean_display_text(metric["unit"])),
                     "display_value": metric["display_value"],
                     "frequency": clean_display_text(metric["frequency"]),
+                    "frequency_en": english_frequency(clean_display_text(metric["frequency"])),
                     "observed_at": metric["observed_at"],
                     "observed_label": metric["observed_label"],
                     "next_update_label": metric["next_update_label"],
@@ -1885,6 +2137,69 @@ def clean_display_text(value: object) -> str:
     for source, target in replacements.items():
         text = text.replace(source, target)
     return text
+
+
+def english_industry(industry: str) -> str:
+    return EN_INDUSTRY_LABELS.get(industry, industry)
+
+
+def english_group(group: str) -> str:
+    return EN_GROUP_LABELS.get(group, group)
+
+
+def english_frequency(frequency: str) -> str:
+    if not frequency:
+        return ""
+    compact = frequency.replace(" ", "")
+    if compact in EN_FREQUENCY_LABELS:
+        return EN_FREQUENCY_LABELS[compact]
+    parts = [EN_FREQUENCY_LABELS.get(part, part) for part in compact.split("/") if part]
+    return "/".join(parts) if parts else frequency
+
+
+def english_unit(unit: str) -> str:
+    return EN_UNIT_LABELS.get(unit, unit)
+
+
+def english_export_item(name: str) -> str:
+    return EN_EXPORT_ITEM_LABELS.get(name, name)
+
+
+def english_metric_name(name: str) -> str:
+    if name in EN_METRIC_NAME_LABELS:
+        return EN_METRIC_NAME_LABELS[name]
+
+    wsts_match = re.match(r"^WSTS 반도체 판매액( 3MMA)? - (.+)$", name)
+    if wsts_match:
+        suffix = " 3MMA" if wsts_match.group(1) else ""
+        return f"WSTS Semiconductor Sales{suffix} - {wsts_match.group(2)}"
+
+    export_match = re.match(r"^한국 수출 (.+)\\(([^)]+)\\)$", name)
+    if export_match:
+        item = english_export_item(export_match.group(1))
+        return f"Korea Exports: {item} ({export_match.group(2)})"
+
+    return name
+
+
+def english_metric_meaning(meaning: str, industry: str = "") -> str:
+    if meaning in EN_MEANING_LABELS:
+        return EN_MEANING_LABELS[meaning]
+
+    export_match = re.match(
+        r"^(.+) 수출은 해당 품목의 대외 수요와 가격/물량 사이클을 확인하는 지표입니다\\.$",
+        meaning,
+    )
+    if export_match:
+        item = english_export_item(export_match.group(1))
+        return f"{item} exports track external demand and price/volume cycles for the item."
+
+    industry_match = re.match(r"^(.+) 업황을 해석하기 위한 보조 지표입니다\\.$", meaning)
+    if industry_match:
+        target_industry = english_industry(industry_match.group(1) or industry)
+        return f"Supplementary indicator for interpreting {target_industry} industry conditions."
+
+    return meaning
 
 
 def infer_export_industry(hs_code: str) -> str:
@@ -3529,7 +3844,10 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         menuLabel: "업종 메뉴",
         drawerTitle: "메뉴",
         openMenu: "메뉴 열기",
-        closeMenu: "메뉴 닫기"
+        closeMenu: "메뉴 닫기",
+        toggleTheme: "다크모드 전환",
+        showKrw: "원화 표시",
+        showUsd: "달러 표시"
       },
       en: {
         title: "Industry Metrics Dashboard",
@@ -3559,7 +3877,10 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         menuLabel: "Industry menu",
         drawerTitle: "Menu",
         openMenu: "Open menu",
-        closeMenu: "Close menu"
+        closeMenu: "Close menu",
+        toggleTheme: "Toggle dark mode",
+        showKrw: "Show KRW",
+        showUsd: "Show USD"
       }
     };
 
@@ -3567,11 +3888,47 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       return translations[state.language]?.[key] || translations.ko[key] || key;
     }
 
+    function localizedIndustry(industry) {
+      if (state.language !== "en") return industry || "";
+      return DASHBOARD_DATA.industry_labels_en?.[industry] || industry || "";
+    }
+
+    function localizedField(item, field) {
+      if (!item) return "";
+      if (state.language === "en") {
+        return item[`${field}_en`] || item[field] || "";
+      }
+      return item[field] || "";
+    }
+
+    function localizedGroup(group, items = []) {
+      if (state.language !== "en") return group || "";
+      const first = items.find((item) => item.group === group && item.group_en);
+      return first?.group_en || group || "";
+    }
+
+    function localizedUnit(metric) {
+      if (!metric) return "";
+      return state.language === "en" ? (metric.unit_en || metric.unit || "") : (metric.unit || "");
+    }
+
+    function formatMetricNumberWithUnit(value, unit, signed = false, isChange = false) {
+      if (typeof value !== "number" || !Number.isFinite(value)) return "n/a";
+      const text = numberText(value, signed);
+      if (unit === "$B") {
+        const prefix = signed ? (value > 0 ? "+" : value < 0 ? "-" : "") : "";
+        return `${prefix}$${numberText(Math.abs(value))}B`;
+      }
+      if (unit === "%") return `${text}${isChange ? "%p" : "%"}`;
+      if (!unit) return text;
+      return `${text} ${unit}`;
+    }
+
     function numberText(value, signed = false) {
       if (typeof value !== "number" || !Number.isFinite(value)) return "n/a";
       const abs = Math.abs(value);
       const digits = abs >= 100 ? 1 : 2;
-      const formatted = abs.toLocaleString("ko-KR", {
+      const formatted = abs.toLocaleString(state.language === "en" ? "en-US" : "ko-KR", {
         minimumFractionDigits: digits,
         maximumFractionDigits: digits
       });
@@ -3582,10 +3939,13 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     function dollarUnitScale(metric) {
       const unit = String(metric.unit || "");
       const rate = usdKrwRate();
-      if (unit === "$B") return { scale: rate / 1000, unit: "조원" };
-      if (unit.includes("백만달러")) return { scale: rate / 100, unit: "억원" };
+      const english = state.language === "en";
+      if (unit === "$B") return { scale: rate / 1000, unit: english ? "tn KRW" : "조원" };
+      if (unit.includes("백만달러")) {
+        return english ? { scale: rate / 1000, unit: "bn KRW" } : { scale: rate / 100, unit: "억원" };
+      }
       if (unit === "$" || unit.includes("달러") || unit.toUpperCase().includes("USD")) {
-        return { scale: rate, unit: "원" };
+        return { scale: rate, unit: english ? "KRW" : "원" };
       }
       return null;
     }
@@ -3607,6 +3967,13 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     function displayMetricValue(metric) {
       const scale = state.currency === "krw" ? dollarUnitScale(metric) : null;
+      if (scale && typeof metric.value === "number" && Number.isFinite(metric.value)) {
+        const separator = state.language === "en" ? " " : "";
+        return `${numberText(metric.value * scale.scale)}${separator}${scale.unit}`;
+      }
+      if (state.language === "en" && typeof metric.value === "number" && Number.isFinite(metric.value)) {
+        return formatMetricNumberWithUnit(metric.value, localizedUnit(metric));
+      }
       if (!scale || typeof metric.value !== "number" || !Number.isFinite(metric.value)) {
         return metric.display_value;
       }
@@ -3615,6 +3982,13 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     function displayMetricChange(metric) {
       const scale = state.currency === "krw" ? dollarUnitScale(metric) : null;
+      if (scale && typeof metric.change_abs === "number" && Number.isFinite(metric.change_abs)) {
+        const separator = state.language === "en" ? " " : "";
+        return `${numberText(metric.change_abs * scale.scale, true)}${separator}${scale.unit}`;
+      }
+      if (state.language === "en" && typeof metric.change_abs === "number" && Number.isFinite(metric.change_abs)) {
+        return formatMetricNumberWithUnit(metric.change_abs, localizedUnit(metric), true, true);
+      }
       if (!scale || typeof metric.change_abs !== "number" || !Number.isFinite(metric.change_abs)) {
         return metric.change_abs_label;
       }
@@ -3716,7 +4090,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       document.getElementById("industryFilters").innerHTML = industries.map((industry) => `
         <div class="menu-item" data-menu-item data-industry-item="${escapeHtml(industry)}" draggable="${state.isReordering}">
           <button type="button" data-industry="${escapeHtml(industry)}" data-target="${industryId(industry)}" aria-pressed="${state.activeIndustry === industry}" aria-current="${state.activeIndustry === industry}" ${state.isReordering ? 'tabindex="-1"' : ""}>
-            ${escapeHtml(industry)}
+            ${escapeHtml(localizedIndustry(industry))}
           </button>
           <span class="drag-handle" aria-hidden="true"><i class="fa-solid fa-grip-lines"></i></span>
         </div>
@@ -3745,7 +4119,9 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     function yearLabel(dateText) {
       const year = Number(String(dateText).slice(2, 4));
-      return Number.isFinite(year) ? `${String(year).padStart(2, "0")}년` : "";
+      if (!Number.isFinite(year)) return "";
+      const shortYear = String(year).padStart(2, "0");
+      return state.language === "en" ? shortYear : `${shortYear}년`;
     }
 
     function chartDateParts(dateText) {
@@ -3921,8 +4297,15 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     function dateText(value) {
       if (!value) return t("irregular");
+      if (String(value).includes("비정기")) return t("irregular");
       const match = String(value).match(/^(\\d{4})[.-](\\d{1,2})(?:[.-](\\d{1,2}))?/);
       if (!match) return value;
+      if (state.language === "en") {
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const year = match[1];
+        const month = monthNames[Math.max(0, Math.min(11, Number(match[2]) - 1))];
+        return match[3] ? `${month} ${Number(match[3])}, ${year}` : `${month} ${year}`;
+      }
       const year = match[1].slice(2);
       const month = String(Number(match[2]));
       const day = match[3] ? ` ${Number(match[3])}일` : "";
@@ -3946,8 +4329,8 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
             ${detailStat(t("previousChangePct"), metric.change_pct_label, directionClass(metric.change_pct))}
             ${detailStat(t("yoy"), metric.yoy_pct_label, directionClass(metric.yoy_pct))}
             ${detailStat(t("visiblePeriod"), metric.period_label || metric.observed_label || "")}
-            ${detailStat(t("updateFrequency"), metric.frequency || t("irregular"))}
-            <p class="detail-note">${escapeHtml(metric.meaning)}</p>
+            ${detailStat(t("updateFrequency"), localizedField(metric, "frequency") || t("irregular"))}
+            <p class="detail-note">${escapeHtml(localizedField(metric, "meaning"))}</p>
           </div>
         </div>
       </div>`;
@@ -3958,12 +4341,12 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       return `<tr class="metric-row" data-metric-row data-detail-id="${detailId}">
         <td class="metric-name-cell" data-label="${escapeHtml(t("metric"))}">
           <button class="metric-toggle" type="button" data-metric-toggle aria-expanded="false" aria-controls="${detailId}">
-            <span class="metric-name">${escapeHtml(metric.name)}</span>
-            <span class="metric-mobile-description">${escapeHtml(metric.meaning)}</span>
+            <span class="metric-name">${escapeHtml(localizedField(metric, "name"))}</span>
+            <span class="metric-mobile-description">${escapeHtml(localizedField(metric, "meaning"))}</span>
           </button>
         </td>
         <td class="metric-description-cell" data-label="${escapeHtml(t("description"))}">
-          <p class="metric-description">${escapeHtml(metric.meaning)}</p>
+          <p class="metric-description">${escapeHtml(localizedField(metric, "meaning"))}</p>
         </td>
         <td class="metric-date-cell" data-label="${escapeHtml(t("lastUpdated"))}">
           <span class="metric-date">${escapeHtml(dateText(metric.observed_label))}</span>
@@ -3999,7 +4382,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         .sort(([a], [b]) => groupRank(a) - groupRank(b) || String(a).localeCompare(String(b), "ko"))
         .map(([group, items]) => `
           <section class="group">
-            <div class="group-title">${escapeHtml(group)}</div>
+            <div class="group-title">${escapeHtml(localizedGroup(group, items))}</div>
             <div class="metric-table-wrap">
               <table class="metric-table">
                 <colgroup>
@@ -4030,7 +4413,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         <div class="industry-head">
           <div class="industry-icon-wrap">${icon ? `<img class="industry-icon" src="${escapeHtml(icon)}" alt="">` : ""}</div>
           <div>
-            <h2>${escapeHtml(industry)}</h2>
+            <h2>${escapeHtml(localizedIndustry(industry))}</h2>
           </div>
         </div>
         <div class="group-stack">${groupHtml}</div>
@@ -4151,15 +4534,19 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       document.getElementById("mobileMenuToggle")?.setAttribute("aria-label", t("openMenu"));
       document.getElementById("drawerClose")?.setAttribute("aria-label", t("closeMenu"));
       document.getElementById("settingsToggle")?.setAttribute("aria-label", t("settings"));
+      document.getElementById("themeToggle")?.setAttribute("aria-label", t("toggleTheme"));
+      document.getElementById("themeToggle")?.setAttribute("title", t("toggleTheme"));
       const languageLabel = document.getElementById("languageSettingLabel");
       if (languageLabel) languageLabel.textContent = state.language === "ko" ? "KO" : "EN";
       updateThemeSettingLabel();
+      updateCurrencyButton();
     }
 
     function setLanguage(language) {
       state.language = language === "en" ? "en" : "ko";
       localStorage.setItem("dashboard-language", state.language);
       updateLanguageText();
+      renderFilters();
       renderIndustries();
     }
 
@@ -4260,8 +4647,8 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       const toggle = document.getElementById("currencyToggle");
       if (!toggle) return;
       const isKrw = state.currency === "krw";
-      toggle.setAttribute("aria-label", isKrw ? "달러 표시" : "원화 표시");
-      toggle.setAttribute("title", isKrw ? "달러 표시" : "원화 표시");
+      toggle.setAttribute("aria-label", isKrw ? t("showUsd") : t("showKrw"));
+      toggle.setAttribute("title", isKrw ? t("showUsd") : t("showKrw"));
     }
 
     function applyCurrency(currency) {
