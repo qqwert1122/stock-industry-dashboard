@@ -1791,6 +1791,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     body.theme-ready .metric-table td,
     body.theme-ready .metric-toggle,
     body.theme-ready .metric-detail-panel,
+    body.theme-ready .detail-stats,
     body.theme-ready .detail-stat,
     body.theme-ready .chart,
     body.theme-ready .empty {
@@ -2205,6 +2206,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       body.theme-ready .metric-table td,
       body.theme-ready .metric-toggle,
       body.theme-ready .metric-detail-panel,
+      body.theme-ready .detail-stats,
       body.theme-ready .detail-stat,
       body.theme-ready .chart,
       body.theme-ready .empty,
@@ -2407,7 +2409,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     }
 
     .metric-detail-row.is-open .metric-detail-panel {
-      max-height: 560px;
+      max-height: 640px;
       opacity: 1;
       transform: translateY(0);
       border-top: 1px solid var(--line);
@@ -2415,24 +2417,27 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     .metric-detail-inner {
       display: grid;
-      grid-template-columns: minmax(260px, 1fr) minmax(360px, 1.25fr);
-      gap: 18px;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 12px;
       padding: 16px 0 18px;
     }
 
     .detail-stats {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px 12px;
       align-content: start;
+      padding: 12px;
+      border-radius: 12px;
+      background: var(--menu);
     }
 
     .detail-stat {
       min-width: 0;
-      padding: 10px 12px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--panel);
+      padding: 6px 4px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
     }
 
     .detail-label {
@@ -2447,7 +2452,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       display: block;
       margin-top: 6px;
       color: var(--text);
-      font-size: 18px;
+      font-size: 16px;
       line-height: 1.15;
       font-weight: 820;
       overflow-wrap: anywhere;
@@ -2455,15 +2460,29 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     .detail-note {
       grid-column: 1 / -1;
-      margin: 2px 0 0;
+      margin: 4px 0 0;
+      padding: 10px 4px 0;
+      border-top: 1px solid var(--line);
       color: var(--muted);
       font-size: 12.5px;
       line-height: 1.5;
       overflow-wrap: anywhere;
     }
 
+    .detail-chart {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 2px 0 10px;
+      -webkit-overflow-scrolling: touch;
+    }
+
     .detail-chart .chart {
+      width: max(100%, var(--detail-chart-width, 760px));
+      min-width: max(100%, var(--detail-chart-width, 760px));
       height: 190px;
+      display: block;
     }
 
     .metric-grid {
@@ -2725,7 +2744,6 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       }
 
       .metric-detail-inner {
-        grid-template-columns: 1fr;
         gap: 12px;
       }
 
@@ -3083,6 +3101,11 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       }));
     }
 
+    function detailChartWidth(points) {
+      const count = Array.isArray(points) ? points.length : 0;
+      return Math.max(760, count * 54);
+    }
+
     function miniChart(history, metric = null) {
       const displayPoints = displayHistory(history, metric);
       const chartClass = "chart chart-mini";
@@ -3117,9 +3140,14 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       }
       const displayPoints = displayHistory(history, metric);
       const chartClass = `chart${extraClass ? ` ${extraClass}` : ""}`;
+      const isDetailChart = extraClass.split(" ").includes("chart-detail");
+      const svgWidth = isDetailChart ? detailChartWidth(displayPoints) : 360;
+      const chartStyle = isDetailChart ? ` style="--detail-chart-width: ${svgWidth}px"` : "";
+      const left = 62;
+      const right = svgWidth - 16;
       if (!displayPoints || displayPoints.length < 2) {
-        return `<svg class="${chartClass}" viewBox="0 0 360 158" role="img" aria-label="trend unavailable">
-          <line x1="62" y1="72" x2="344" y2="72" class="guide"></line>
+        return `<svg class="${chartClass}"${chartStyle} viewBox="0 0 ${svgWidth} 158" role="img" aria-label="trend unavailable">
+          <line x1="${left}" y1="72" x2="${right}" y2="72" class="guide"></line>
         </svg>`;
       }
       const values = displayPoints.map((point) => point.value).filter((value) => typeof value === "number" && Number.isFinite(value));
@@ -3128,8 +3156,6 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       const latest = displayPoints[displayPoints.length - 1].value;
       const first = displayPoints[0].value;
       const span = max - min || 1;
-      const left = 62;
-      const right = 344;
       const top = 16;
       const bottom = 116;
       const yFor = (value) => bottom - ((value - min) / span) * (bottom - top);
@@ -3171,7 +3197,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       `).join("");
       const latestX = right;
       const latestY = yFor(latest);
-      return `<svg class="${chartClass}" viewBox="0 0 360 158" role="img" aria-label="trend">
+      return `<svg class="${chartClass}"${chartStyle} viewBox="0 0 ${svgWidth} 158" role="img" aria-label="trend">
         ${yGuides}
         <line x1="${left}" y1="126" x2="${right}" y2="126" class="axis-line"></line>
         ${xGuides}
@@ -3200,6 +3226,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     function metricDetail(metric) {
       return `<div class="metric-detail-panel">
         <div class="metric-detail-inner">
+          <div class="detail-chart">${chart(metric.history, "chart-detail", metric)}</div>
           <div class="detail-stats">
             ${detailStat(t("currentValue"), displayMetricValue(metric))}
             ${detailStat(t("previousChange"), displayMetricChange(metric), directionClass(metric.change_abs))}
@@ -3209,7 +3236,6 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
             ${detailStat(t("updateFrequency"), metric.frequency || t("irregular"))}
             <p class="detail-note">${escapeHtml(metric.meaning)}</p>
           </div>
-          <div class="detail-chart">${chart(metric.history, "chart-detail", metric)}</div>
         </div>
       </div>`;
     }
@@ -3314,6 +3340,14 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       detail.classList.toggle("is-open", expanded);
       detail.setAttribute("aria-hidden", String(!expanded));
       toggle.setAttribute("aria-expanded", String(expanded));
+      if (expanded) {
+        const scroller = detail.querySelector(".detail-chart");
+        if (scroller) {
+          requestAnimationFrame(() => {
+            scroller.scrollLeft = scroller.scrollWidth;
+          });
+        }
+      }
     }
 
     function initMetricRows() {
