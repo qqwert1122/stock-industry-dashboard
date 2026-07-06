@@ -748,6 +748,7 @@ HTML_TEMPLATE = """<!doctype html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
   <title>산업별 핵심 지표 대시보드</title>
   <style>
     :root {
