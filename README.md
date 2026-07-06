@@ -11,6 +11,13 @@
 - 화학/정유: WTI/Brent, 미국 화학 PPI
 - 은행/금융: 기준금리 proxy, 장단기 금리차, 회사채 스프레드, 연체율, 은행 대출
 - 건설/부동산: 주택착공, 건축허가, 모기지 금리, 주택가격지수
+- 방산: 미국 방산 자본재 신규주문/수주잔고, 한국 무기류/탄약 수출
+- 스테이블코인: DefiLlama 전체/USDT/USDC 유통량
+- 전력: 미국 전력 생산 PPI, 유틸리티 산업생산, 한국 전력 장비 수출
+- 로봇: 산업용 기계 신규주문, 산업 제어장치 PPI, 한국 산업용 로봇 수출
+- 우주: 방산/우주 장비 산업생산, 항공우주 부품 PPI, 한국 항공기/우주선 수출
+- 바이오: 생물학적 제제/체외진단 PPI, 한국 바이오 의약품 수출
+- 배터리: 저장 배터리 제조 PPI, 한국 축전지 수출
 
 무료로 안정적인 공식 API가 없는 지표는 대시보드에서 `부분 자동화` 또는 `수작업` 상태로 표시합니다.
 
@@ -49,6 +56,7 @@ industry-dashboard --config config.yaml --out site
 - `dashboard.fred_series`: FRED API/CSV로 자동 수집할 지표
 - `wsts.regions`: WSTS에서 표시할 지역
 - `korea_exports.items`: 관세청 HS 코드별 수출 지표
+- `stablecoins.assets`: DefiLlama에서 가져올 스테이블코인 유통량 지표
 - `dashboard.reference_metrics`: 아직 완전 자동화하지 않은 무료/공식 데이터 후보
 
 ## 데이터 저장 구조
@@ -69,4 +77,5 @@ site/
 - FRED: https://fred.stlouisfed.org/
 - WSTS Historical Billings Report: https://www.wsts.org/67/Historical-Billings-Report
 - 관세청 품목별 수출입실적 API: https://www.data.go.kr/data/15101609/openapi.do
+- DefiLlama Stablecoins: https://defillama.com/stablecoins
 - GitHub Pages Actions: https://github.com/actions/deploy-pages

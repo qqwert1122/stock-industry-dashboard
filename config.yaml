@@ -13,6 +13,13 @@ dashboard:
     - 화학/정유
     - 은행/금융
     - 건설/부동산
+    - 방산
+    - 스테이블코인
+    - 전력
+    - 로봇
+    - 우주
+    - 바이오
+    - 배터리
     - 매크로
   fred_series:
     - id: DGS10
@@ -105,6 +112,83 @@ dashboard:
       industry: 반도체
       unit: 지수
       frequency: 월간
+    - id: ADEFNO
+      name: 미국 방산 자본재 신규주문
+      industry: 방산
+      unit: 백만달러
+      frequency: 월간
+      group: 신규주문
+      meaning: 미국 방산 자본재 발주 흐름으로 방산 수요와 수주 모멘텀을 확인합니다.
+    - id: ADEFUO
+      name: 미국 방산 자본재 수주잔고
+      industry: 방산
+      unit: 백만달러
+      frequency: 월간
+      group: 수주잔고
+      meaning: 아직 매출로 인식되지 않은 방산 수주잔고의 축적과 감소를 확인합니다.
+    - id: PCU221110221110
+      name: 미국 전력 생산 PPI
+      industry: 전력
+      unit: 지수
+      frequency: 월간
+      group: 전력 가격
+      meaning: 전력 생산 가격 흐름으로 전력 인프라와 유틸리티 수익 환경을 확인합니다.
+    - id: IPG2211A2N
+      name: 미국 전기/가스 유틸리티 산업생산
+      industry: 전력
+      unit: 지수
+      frequency: 월간
+      group: 전력 수요/생산
+      meaning: 유틸리티 실물 생산 흐름으로 전력 수요와 경기 민감도를 확인합니다.
+    - id: A33ENO
+      name: 미국 산업용 기계 신규주문
+      industry: 로봇
+      unit: 백만달러
+      frequency: 월간
+      group: 설비투자 proxy
+      meaning: 자동화와 로봇 수요에 가까운 산업용 기계 발주 흐름을 확인합니다.
+    - id: WPU11750799
+      name: 미국 산업 제어장치 PPI
+      industry: 로봇
+      unit: 지수
+      frequency: 월간
+      group: 자동화 장비 가격
+      meaning: 로봇과 자동화 설비에 들어가는 산업 제어장치 가격 흐름을 확인합니다.
+    - id: IPB52300S
+      name: 미국 방산/우주 장비 산업생산
+      industry: 우주
+      unit: 지수
+      frequency: 월간
+      group: 우주/방산 생산
+      meaning: 우주와 방산 장비 생산 사이클을 함께 보여주는 월간 생산 지표입니다.
+    - id: PCU33643364
+      name: 미국 항공우주 부품 PPI
+      industry: 우주
+      unit: 지수
+      frequency: 월간
+      group: 항공우주 가격
+      meaning: 항공우주 부품 가격 흐름으로 우주 밸류체인의 비용과 수요 환경을 봅니다.
+    - id: PCU325414325414
+      name: 미국 생물학적 제제 PPI
+      industry: 바이오
+      unit: 지수
+      frequency: 월간
+      group: 바이오 가격
+      meaning: 바이오 의약품 제조 가격 흐름으로 바이오 업황의 가격 사이클을 확인합니다.
+    - id: PCU325413325413
+      name: 미국 체외진단 물질 PPI
+      industry: 바이오
+      unit: 지수
+      frequency: 월간
+      group: 진단 가격
+      meaning: 진단 제품 가격 흐름으로 진단/바이오 수요와 가격 환경을 확인합니다.
+    - id: PCU3359133591
+      name: 미국 저장 배터리 제조 PPI
+      industry: 배터리
+      unit: 지수
+      frequency: 월간
+      group: 배터리 가격
+      meaning: 저장 배터리 제조 가격 흐름으로 배터리 셀 업황과 마진 환경을 확인합니다.
     - id: DEXKOUS
       name: 원/달러 환율
       industry: 매크로
@@ -228,6 +312,67 @@ dashboard:
       frequency: 월간
       status: partial
       note: 국내 통계 API 키와 지표 코드를 확정하면 자동화 가능합니다.
+    - industry: 방산
+      name: 한국 방산 수출 수주
+      source: 방위사업청/기업 공시
+      source_url: https://www.dapa.go.kr/
+      frequency: 비정기
+      status: partial
+      note: 방산 수주는 계약 공시와 정부 발표의 비정형성이 커서 우선 공시/보도자료 파서 후보로 둡니다.
+    - industry: 스테이블코인
+      name: USDT/USDC 준비금과 발행량
+      source: Tether/Circle 투명성 페이지
+      source_url: https://www.circle.com/transparency
+      frequency: 일간/월간
+      status: partial
+      note: DefiLlama 유통량은 자동 수집하고, 발행사 준비금 구성은 별도 공시 파서 후보입니다.
+    - industry: 전력
+      name: 전력 수요/예비율
+      source: 전력거래소 전력통계정보시스템
+      source_url: https://epsis.kpx.or.kr/
+      frequency: 일간/월간
+      status: partial
+      note: 국내 전력 수요와 예비율은 공개 통계가 있으나 API/파일 포맷 확인 후 파서가 필요합니다.
+    - industry: 로봇
+      name: 산업용 로봇 설치 대수
+      source: International Federation of Robotics
+      source_url: https://ifr.org/
+      frequency: 연간
+      status: manual
+      note: 핵심 통계는 연간 리포트 중심이라 무료 자동화 범위가 제한적입니다.
+    - industry: 우주
+      name: 위성 발사/수주 이벤트
+      source: Space-Track/NASA/기업 공시
+      source_url: https://www.space-track.org/
+      frequency: 비정기
+      status: partial
+      note: 발사 이벤트는 공개 API가 가능하지만 투자지표화하려면 기업별 수주/매출 매핑이 필요합니다.
+    - industry: 바이오
+      name: FDA 신약 승인/임상 이벤트
+      source: FDA Drugs@FDA
+      source_url: https://www.accessdata.fda.gov/scripts/cder/daf/
+      frequency: 비정기
+      status: partial
+      note: 승인 이벤트는 자동화 가능하지만 기업/파이프라인 매핑 로직이 추가로 필요합니다.
+    - industry: 배터리
+      name: 리튬/니켈/코발트 가격
+      source: World Bank Pink Sheet/공개 원자재 데이터
+      source_url: https://www.worldbank.org/en/research/commodity-markets
+      frequency: 월간
+      status: partial
+      note: 원자재 공개 엑셀을 붙이면 배터리 소재 가격 proxy를 자동화할 수 있습니다.
+
+stablecoins:
+  enabled: true
+  endpoint: https://stablecoins.llama.fi/stablecoins?includePrices=true
+  source_url: https://defillama.com/stablecoins
+  assets:
+    - symbol: TOTAL
+      name: 전체 스테이블코인 유통량
+    - symbol: USDT
+      name: USDT 유통량
+    - symbol: USDC
+      name: USDC 유통량
 
 fred:
   enabled: true
@@ -278,3 +423,27 @@ korea_exports:
     - name: 선박
       hs_code: "8901"
       industry: 조선
+    - name: 무기류/탄약
+      hs_code: "9306"
+      industry: 방산
+    - name: 항공기/우주선
+      hs_code: "8802"
+      industry: 우주
+    - name: 변압기
+      hs_code: "8504"
+      industry: 전력
+    - name: 전력 케이블
+      hs_code: "8544"
+      industry: 전력
+    - name: 산업용 로봇
+      hs_code: "847950"
+      industry: 로봇
+    - name: 백신/면역제품
+      hs_code: "3002"
+      industry: 바이오
+    - name: 의약품
+      hs_code: "3004"
+      industry: 바이오
+    - name: 축전지
+      hs_code: "8507"
+      industry: 배터리
