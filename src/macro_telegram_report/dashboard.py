@@ -2940,6 +2940,29 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       return ticks.filter((tick, index) => index === 0 || tick.label !== ticks[index - 1].label);
     }
 
+    function separatedLabelPositions(levels, minY, maxY, minGap = 13) {
+      const sorted = [...levels]
+        .sort((a, b) => a.y - b.y)
+        .map((level) => ({ ...level, labelY: Math.min(maxY, Math.max(minY, level.y)) }));
+      for (let index = 1; index < sorted.length; index += 1) {
+        if (sorted[index].labelY - sorted[index - 1].labelY < minGap) {
+          sorted[index].labelY = sorted[index - 1].labelY + minGap;
+        }
+      }
+      for (let index = sorted.length - 1; index >= 0; index -= 1) {
+        if (sorted[index].labelY > maxY) {
+          sorted[index].labelY = maxY;
+        }
+        if (index > 0 && sorted[index].labelY - sorted[index - 1].labelY < minGap) {
+          sorted[index - 1].labelY = sorted[index].labelY - minGap;
+        }
+      }
+      return sorted.map((level) => ({
+        ...level,
+        labelY: Math.min(maxY, Math.max(minY, level.labelY))
+      }));
+    }
+
     function chart(history, extraClass = "") {
       const chartClass = `chart${extraClass ? ` ${extraClass}` : ""}`;
       if (!history || history.length < 2) {
@@ -2964,15 +2987,30 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         return `${x.toFixed(1)},${y.toFixed(1)}`;
       }).join(" ");
       const trend = latest >= first ? "up" : "down";
-      const levels = [
-        { label: "최고", value: max },
-        { label: "현재", value: latest },
-        { label: "최저", value: min }
-      ];
+      const levelValues = [];
+      [max, latest, min].forEach((value) => {
+        if (!levelValues.some((existing) => Math.abs(existing - value) < 1e-9)) {
+          levelValues.push(value);
+        }
+      });
+      const levels = separatedLabelPositions(
+        levelValues.map((value) => ({
+          value,
+          label: formatAxisValue(value),
+          y: yFor(value)
+        })),
+        14,
+        118
+      );
       const yGuides = levels.map((level) => {
-        const y = yFor(level.value);
+        const y = level.y;
+        const labelY = level.labelY;
+        const connector = Math.abs(labelY - y) > 7
+          ? `<line x1="50" y1="${labelY.toFixed(1)}" x2="${left}" y2="${y.toFixed(1)}" class="guide"></line>`
+          : "";
         return `<g>
-          <text x="8" y="${(y + 3).toFixed(1)}">${level.label} ${formatAxisValue(level.value)}</text>
+          <text x="8" y="${(labelY + 3).toFixed(1)}">${level.label}</text>
+          ${connector}
           <line x1="${left}" y1="${y.toFixed(1)}" x2="${right}" y2="${y.toFixed(1)}" class="guide"></line>
         </g>`;
       }).join("");
