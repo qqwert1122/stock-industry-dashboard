@@ -167,7 +167,7 @@ def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -
         "timezone": timezone,
         "industries": industries,
         "industry_icons": INDUSTRY_ICONS,
-        "source_status": [],
+        "source_status": source_status,
         "metrics": metrics,
     }
 
