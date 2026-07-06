@@ -7,7 +7,8 @@ dashboard:
   history_points: 48
   industries:
     - 반도체
-    - 자동차/전기차
+    - 자동차
+    - 전기차
     - 조선
     - 철강/소재
     - 화학/정유
@@ -104,7 +105,7 @@ dashboard:
       frequency: 월간
     - id: TOTALSA
       name: 미국 자동차 판매
-      industry: 자동차/전기차
+      industry: 자동차
       unit: 백만대
       frequency: 월간
     - id: PCU33443344
@@ -242,21 +243,21 @@ dashboard:
       frequency: 분기
       status: partial
       note: AMZN/MSFT/GOOGL/META의 capex 태그를 SEC API로 붙이는 확장 후보입니다.
-    - industry: 자동차/전기차
+    - industry: 전기차
       name: 글로벌 EV 판매량
       source: IEA Global EV Data Explorer
       source_url: https://www.iea.org/data-and-statistics/data-tools/global-ev-data-explorer
       frequency: 연간/비정기
       status: partial
       note: 무료 공개 데이터는 있으나 월간 자동 API는 제한적입니다.
-    - industry: 자동차/전기차
+    - industry: 배터리
       name: 리튬/배터리 원재료 가격
       source: World Bank Pink Sheet
       source_url: https://www.worldbank.org/en/research/commodity-markets
       frequency: 월간
       status: partial
       note: 공개 엑셀 다운로드를 붙이면 일부 원자재는 자동화 가능합니다.
-    - industry: 자동차/전기차
+    - industry: 자동차
       name: 주요 완성차 월별 판매
       source: 각 완성차 IR/판매 보도자료
       source_url: https://global.toyota/en/ir/library/sales-production/
@@ -419,7 +420,12 @@ korea_exports:
       industry: 반도체
     - name: 승용차
       hs_code: "8703"
-      industry: 자동차/전기차
+      industry: 자동차
+    - name: 전기차
+      hs_code: "870380"
+      industry: 전기차
+      group: EV 수출
+      meaning: 순수 전기차 수출 흐름으로 전기차 완성차 수요와 국내 EV 생산 모멘텀을 확인합니다.
     - name: 선박
       hs_code: "8901"
       industry: 조선

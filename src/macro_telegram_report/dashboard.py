@@ -21,7 +21,8 @@ from .wsts import find_wsts_xlsx_url, parse_wsts_sheet
 FRED_OBSERVATIONS_URL = "https://api.stlouisfed.org/fred/series/observations"
 DEFAULT_INDUSTRIES = [
     "반도체",
-    "자동차/전기차",
+    "자동차",
+    "전기차",
     "조선",
     "철강/소재",
     "화학/정유",
@@ -38,7 +39,8 @@ DEFAULT_INDUSTRIES = [
 ]
 INDUSTRY_ICONS = {
     "반도체": "assets/industry-icons/semiconductor.png",
-    "자동차/전기차": "assets/industry-icons/auto-ev.png",
+    "자동차": "assets/industry-icons/auto-ev.png",
+    "전기차": "assets/industry-icons/auto-ev.png",
     "조선": "assets/industry-icons/shipbuilding.png",
     "철강/소재": "assets/industry-icons/steel-materials.png",
     "화학/정유": "assets/industry-icons/chemicals-refining.png",
@@ -56,7 +58,8 @@ INDUSTRY_ICONS = {
 }
 INDUSTRY_SUMMARIES = {
     "반도체": "메모리, 파운드리, 장비, AI 인프라 수요를 함께 봅니다.",
-    "자동차/전기차": "완성차 판매와 EV, 배터리 원재료 흐름을 묶어 봅니다.",
+    "자동차": "완성차 판매와 승용차 수출로 자동차 수요 사이클을 봅니다.",
+    "전기차": "순수 전기차 수출과 EV 판매 proxy로 전기차 침투율 흐름을 봅니다.",
     "조선": "운임, 선가, 발주, 선박 수출을 통해 수주 환경을 점검합니다.",
     "철강/소재": "원자재 가격과 중국 제조업 경기를 소재 업황 proxy로 봅니다.",
     "화학/정유": "유가, 원료, 제품 스프레드로 마진 방향을 확인합니다.",
@@ -808,8 +811,10 @@ def clean_display_text(value: object) -> str:
 def infer_export_industry(hs_code: str) -> str:
     if hs_code.startswith(("8541", "8542")):
         return "반도체"
+    if hs_code.startswith("870380"):
+        return "전기차"
     if hs_code.startswith("8703"):
-        return "자동차/전기차"
+        return "자동차"
     if hs_code.startswith("8901"):
         return "조선"
     return "매크로"
@@ -860,8 +865,10 @@ def infer_metric_group(industry: str, name: str) -> str:
         if "유가" in name:
             return "에너지 가격"
         return "화학 스프레드 proxy"
-    if industry == "자동차/전기차":
+    if industry == "자동차":
         return "판매/수요"
+    if industry == "전기차":
+        return "EV 수요"
     if industry == "매크로":
         if "환율" in name:
             return "환율"
@@ -905,6 +912,8 @@ def infer_metric_meaning(industry: str, name: str) -> str:
         return "경량 소재와 제조업 수요, 전력비 영향을 함께 받는 소재 가격입니다."
     if "자동차 판매" in name:
         return "완성차 수요와 소비 경기 흐름을 확인하는 판매 지표입니다."
+    if "전기차" in name:
+        return "순수 전기차 수출 흐름으로 EV 수요와 국내 전기차 생산 모멘텀을 확인합니다."
     if "방산" in name:
         return "방산 발주와 생산 사이클을 통해 방산 업체의 수요 환경을 확인합니다."
     if "스테이블코인" in name or "USDT" in name or "USDC" in name:

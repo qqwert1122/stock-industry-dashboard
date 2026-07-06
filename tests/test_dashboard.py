@@ -69,8 +69,9 @@ class DashboardTest(unittest.TestCase):
         self.assertIn("DASHBOARD_DATA", html)
 
     def test_default_industries_include_new_categories(self):
-        for industry in ["방산", "스테이블코인", "전력", "로봇", "우주", "바이오", "배터리"]:
+        for industry in ["자동차", "전기차", "방산", "스테이블코인", "전력", "로봇", "우주", "바이오", "배터리"]:
             self.assertIn(industry, DEFAULT_INDUSTRIES)
+        self.assertNotIn("자동차/전기차", DEFAULT_INDUSTRIES)
 
     def test_collect_stablecoin_metrics_builds_total_and_assets(self):
         session = FakeSession(
