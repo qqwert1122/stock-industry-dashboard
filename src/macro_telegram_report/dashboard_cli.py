@@ -32,8 +32,7 @@ def main(argv: list[str] | None = None) -> int:
         session.headers.update({"User-Agent": "industry-dashboard/0.1 (+personal-investing)"})
         payload = build_dashboard_site(config, args.out, session)
 
-    ok_count = sum(1 for metric in payload["metrics"] if metric["status"] == "ok")
-    print(f"{args.out}/index.html 생성 완료: 자동 수집 {ok_count}/{len(payload['metrics'])}개")
+    print(f"{args.out}/index.html 생성 완료: 표시 지표 {len(payload['metrics'])}개")
     return 0
 
 

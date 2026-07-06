@@ -86,6 +86,7 @@ def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -
                 )
 
     metrics.extend(collect_reference_metrics(config))
+    metrics = visible_dashboard_metrics(metrics)
     industries = configured_industries(config, metrics)
 
     return {
@@ -94,7 +95,7 @@ def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -
         "generated_label": now.strftime("%Y-%m-%d %H:%M %Z"),
         "timezone": timezone,
         "industries": industries,
-        "source_status": source_status,
+        "source_status": [],
         "metrics": metrics,
     }
 
@@ -533,6 +534,34 @@ def configured_industries(config: dict[str, Any], metrics: list[dict[str, Any]])
             configured.append(industry)
             seen.add(industry)
     return configured
+
+
+def visible_dashboard_metrics(metrics: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    visible: list[dict[str, Any]] = []
+    for metric in metrics:
+        value = metric.get("value")
+        if metric.get("status") == "ok" and isinstance(value, (int, float)):
+            visible.append(
+                {
+                    "id": metric["id"],
+                    "industry": metric["industry"],
+                    "group": metric["group"],
+                    "name": metric["name"],
+                    "meaning": metric["meaning"],
+                    "value": metric["value"],
+                    "display_value": metric["display_value"],
+                    "observed_label": metric["observed_label"],
+                    "change_abs": metric["change_abs"],
+                    "change_pct": metric["change_pct"],
+                    "change_abs_label": metric["change_abs_label"],
+                    "change_pct_label": metric["change_pct_label"],
+                    "yoy_pct": metric["yoy_pct"],
+                    "yoy_pct_label": metric["yoy_pct_label"],
+                    "history": metric["history"],
+                    "period_label": metric["period_label"],
+                }
+            )
+    return visible
 
 
 def infer_export_industry(hs_code: str) -> str:
@@ -1162,7 +1191,6 @@ HTML_TEMPLATE = """<!doctype html>
 
     function displayMetrics() {
       return DASHBOARD_DATA.metrics.filter((metric) =>
-        metric.status === "ok" &&
         typeof metric.value === "number" &&
         Number.isFinite(metric.value)
       );
@@ -1293,7 +1321,7 @@ HTML_TEMPLATE = """<!doctype html>
                         <span>YoY <strong class="${directionClass(metric.yoy_pct)}">${escapeHtml(metric.yoy_pct_label)}</strong></span>
                       </div>
                     </div>
-                    ${sparkline(metric.history, metric.status)}
+                    ${sparkline(metric.history, "ok")}
                     <div class="period">
                       <span>기간</span>
                       <strong>${escapeHtml(metric.period_label || metric.observed_label || "")}</strong>
