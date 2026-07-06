@@ -743,6 +743,7 @@ def make_metric(
         "display_value": format_value(value, unit) if value is not None else "대기",
         "observed_at": observed_at,
         "observed_label": compact_date_label(observed_at),
+        "next_update_label": next_update_label(observed_at, frequency),
         "previous_value": previous_value,
         "change_abs": change_abs,
         "change_pct": change_pct,
@@ -781,7 +782,10 @@ def visible_dashboard_metrics(metrics: list[dict[str, Any]]) -> list[dict[str, A
                     "meaning": clean_display_text(metric["meaning"]),
                     "value": metric["value"],
                     "display_value": metric["display_value"],
+                    "frequency": clean_display_text(metric["frequency"]),
+                    "observed_at": metric["observed_at"],
                     "observed_label": metric["observed_label"],
+                    "next_update_label": metric["next_update_label"],
                     "change_abs": metric["change_abs"],
                     "change_pct": metric["change_pct"],
                     "change_abs_label": metric["change_abs_label"],
@@ -963,6 +967,30 @@ def compact_date_label(value: str) -> str:
     return f"{parsed.year}.{parsed.month:02d}.{parsed.day:02d}"
 
 
+def next_update_label(observed_at: str, frequency: str) -> str:
+    if not observed_at:
+        return "비정기"
+    try:
+        observed_date = date.fromisoformat(observed_at[:10])
+    except ValueError:
+        return "비정기"
+
+    compact_frequency = frequency.replace(" ", "")
+    if not compact_frequency or "비정기" in compact_frequency:
+        return "비정기"
+    if "일간" in compact_frequency:
+        return compact_date_label((observed_date + timedelta(days=1)).isoformat())
+    if "주간" in compact_frequency and "월간" not in compact_frequency:
+        return compact_date_label((observed_date + timedelta(days=7)).isoformat())
+    if "월간" in compact_frequency:
+        return compact_date_label(add_months(observed_date, 1).isoformat())
+    if "분기" in compact_frequency:
+        return compact_date_label(add_months(observed_date, 3).isoformat())
+    if "연간" in compact_frequency:
+        return compact_date_label(add_months(observed_date, 12).isoformat())
+    return "비정기"
+
+
 def find_yoy_value(points: list[tuple[date, float]], latest_date: date) -> float | None:
     exact_month = next(
         (
@@ -1093,6 +1121,12 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     body.theme-ready .industry-icon-wrap,
     body.theme-ready .group,
     body.theme-ready .metric,
+    body.theme-ready .metric-table-wrap,
+    body.theme-ready .metric-table th,
+    body.theme-ready .metric-table td,
+    body.theme-ready .metric-toggle,
+    body.theme-ready .metric-detail-panel,
+    body.theme-ready .detail-stat,
     body.theme-ready .chart,
     body.theme-ready .empty {
       transition:
@@ -1309,6 +1343,12 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       body.theme-ready .industry-icon-wrap,
       body.theme-ready .group,
       body.theme-ready .metric,
+      body.theme-ready .metric-table-wrap,
+      body.theme-ready .metric-table th,
+      body.theme-ready .metric-table td,
+      body.theme-ready .metric-toggle,
+      body.theme-ready .metric-detail-panel,
+      body.theme-ready .detail-stat,
       body.theme-ready .chart,
       body.theme-ready .empty,
       body.theme-ready .chart text,
@@ -1386,6 +1426,192 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       color: var(--text);
       font-size: 14px;
       font-weight: 800;
+    }
+
+    .metric-table-wrap {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      overflow: hidden;
+    }
+
+    .metric-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    .metric-table th {
+      height: 38px;
+      padding: 0 14px;
+      background: var(--menu);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 820;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .metric-table td {
+      padding: 10px 14px;
+      border-top: 1px solid var(--line);
+      color: var(--text);
+      vertical-align: middle;
+    }
+
+    .metric-row {
+      cursor: pointer;
+    }
+
+    .metric-row:hover td {
+      background: var(--menu);
+    }
+
+    .metric-row.is-expanded td {
+      background: var(--menu-active);
+    }
+
+    .metric-name-cell { width: 25%; }
+    .metric-description-cell { width: 35%; }
+    .metric-date-cell { width: 12%; }
+    .metric-chart-cell { width: 16%; }
+
+    .metric-toggle {
+      width: 100%;
+      min-width: 0;
+      display: grid;
+      grid-template-columns: 18px minmax(0, 1fr);
+      gap: 8px;
+      align-items: center;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .metric-toggle:focus-visible {
+      outline: 2px solid var(--text);
+      outline-offset: 3px;
+      border-radius: 6px;
+    }
+
+    .metric-chevron {
+      color: var(--muted);
+      font-size: 11px;
+      transition: transform 260ms ease;
+    }
+
+    .metric-row.is-expanded .metric-chevron {
+      transform: rotate(90deg);
+    }
+
+    .metric-name {
+      min-width: 0;
+      font-size: 14px;
+      line-height: 1.32;
+      font-weight: 780;
+      overflow-wrap: anywhere;
+    }
+
+    .metric-description {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
+    .metric-date {
+      color: var(--muted);
+      font-size: 12.5px;
+      font-weight: 680;
+      white-space: nowrap;
+    }
+
+    .chart-mini {
+      height: 82px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+    }
+
+    .metric-detail-row td {
+      padding: 0 14px;
+      border-top: 0;
+      background: var(--surface);
+    }
+
+    .metric-detail-panel {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition:
+        max-height 380ms ease,
+        opacity 260ms ease,
+        transform 260ms ease;
+    }
+
+    .metric-detail-row.is-open .metric-detail-panel {
+      max-height: 560px;
+      opacity: 1;
+      transform: translateY(0);
+      border-top: 1px solid var(--line);
+    }
+
+    .metric-detail-inner {
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) minmax(360px, 1.25fr);
+      gap: 18px;
+      padding: 16px 0 18px;
+    }
+
+    .detail-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      align-content: start;
+    }
+
+    .detail-stat {
+      min-width: 0;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+
+    .detail-label {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.2;
+      font-weight: 780;
+    }
+
+    .detail-value {
+      display: block;
+      margin-top: 6px;
+      color: var(--text);
+      font-size: 18px;
+      line-height: 1.15;
+      font-weight: 820;
+      overflow-wrap: anywhere;
+    }
+
+    .detail-note {
+      grid-column: 1 / -1;
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .detail-chart .chart {
+      height: 190px;
     }
 
     .metric-grid {
@@ -1565,6 +1791,73 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       }
 
       .group { padding: 15px; }
+      .metric-table {
+        display: block;
+      }
+
+      .metric-table thead {
+        display: none;
+      }
+
+      .metric-table tbody,
+      .metric-table tr,
+      .metric-table td {
+        display: block;
+        width: 100%;
+      }
+
+      .metric-row {
+        padding: 10px 12px;
+        border-top: 1px solid var(--line);
+      }
+
+      .metric-row:first-child {
+        border-top: 0;
+      }
+
+      .metric-row td {
+        padding: 5px 0;
+        border-top: 0;
+      }
+
+      .metric-row td:not(.metric-name-cell)::before {
+        content: attr(data-label);
+        display: block;
+        margin-bottom: 3px;
+        color: var(--muted);
+        font-size: 10.5px;
+        line-height: 1.1;
+        font-weight: 790;
+      }
+
+      .metric-name-cell,
+      .metric-description-cell,
+      .metric-date-cell,
+      .metric-chart-cell {
+        width: 100%;
+      }
+
+      .metric-chart-cell .chart {
+        height: 104px;
+      }
+
+      .metric-detail-row td {
+        padding: 0 12px;
+      }
+
+      .metric-detail-inner {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .detail-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .detail-chart .chart {
+        height: 176px;
+      }
+
       .metric-grid { grid-template-columns: 1fr; }
       .metric-main { grid-template-columns: 1fr; }
       .deltas {
@@ -1700,9 +1993,10 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       return ticks.filter((tick, index) => index === 0 || tick.label !== ticks[index - 1].label);
     }
 
-    function chart(history) {
+    function chart(history, extraClass = "") {
+      const chartClass = `chart${extraClass ? ` ${extraClass}` : ""}`;
       if (!history || history.length < 2) {
-        return `<svg class="chart" viewBox="0 0 360 158" role="img" aria-label="trend unavailable">
+        return `<svg class="${chartClass}" viewBox="0 0 360 158" role="img" aria-label="trend unavailable">
           <line x1="62" y1="72" x2="344" y2="72" class="guide"></line>
         </svg>`;
       }
@@ -1740,7 +2034,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       `).join("");
       const latestX = right;
       const latestY = yFor(latest);
-      return `<svg class="chart" viewBox="0 0 360 158" role="img" aria-label="trend">
+      return `<svg class="${chartClass}" viewBox="0 0 360 158" role="img" aria-label="trend">
         ${yGuides}
         <line x1="${left}" y1="126" x2="${right}" y2="126" class="axis-line"></line>
         ${xGuides}
@@ -1749,22 +2043,59 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       </svg>`;
     }
 
-    function metricCard(metric) {
-      return `<article class="metric">
-        <div>
-          <h3>${escapeHtml(metric.name)}</h3>
-          <p class="meaning">${escapeHtml(metric.meaning)}</p>
-        </div>
-        <div class="metric-main">
-          <div class="value">${escapeHtml(metric.display_value)}</div>
-          <div class="deltas">
-            <span>전기 <strong class="${directionClass(metric.change_abs)}">${escapeHtml(metric.change_abs_label)}</strong></span>
-            <span>전기% <strong class="${directionClass(metric.change_pct)}">${escapeHtml(metric.change_pct_label)}</strong></span>
-            <span>YoY <strong class="${directionClass(metric.yoy_pct)}">${escapeHtml(metric.yoy_pct_label)}</strong></span>
+    function dateText(value) {
+      return value || "비정기";
+    }
+
+    function detailStat(label, value, className = "") {
+      return `<div class="detail-stat">
+        <span class="detail-label">${escapeHtml(label)}</span>
+        <strong class="detail-value ${className}">${escapeHtml(value)}</strong>
+      </div>`;
+    }
+
+    function metricDetail(metric) {
+      return `<div class="metric-detail-panel">
+        <div class="metric-detail-inner">
+          <div class="detail-stats">
+            ${detailStat("현재값", metric.display_value)}
+            ${detailStat("전기 변화", metric.change_abs_label, directionClass(metric.change_abs))}
+            ${detailStat("전기 변화율", metric.change_pct_label, directionClass(metric.change_pct))}
+            ${detailStat("YoY", metric.yoy_pct_label, directionClass(metric.yoy_pct))}
+            ${detailStat("표시 기간", metric.period_label || metric.observed_label || "")}
+            ${detailStat("업데이트 주기", metric.frequency || "비정기")}
+            <p class="detail-note">${escapeHtml(metric.meaning)}</p>
           </div>
+          <div class="detail-chart">${chart(metric.history, "chart-detail")}</div>
         </div>
-        ${chart(metric.history)}
-      </article>`;
+      </div>`;
+    }
+
+    function metricRows(metric) {
+      const detailId = `metric-detail-${metric.id}`;
+      return `<tr class="metric-row" data-metric-row data-detail-id="${detailId}">
+        <td class="metric-name-cell" data-label="지표">
+          <button class="metric-toggle" type="button" data-metric-toggle aria-expanded="false" aria-controls="${detailId}">
+            <i class="fa-solid fa-chevron-right metric-chevron" aria-hidden="true"></i>
+            <span class="metric-name">${escapeHtml(metric.name)}</span>
+          </button>
+        </td>
+        <td class="metric-description-cell" data-label="설명">
+          <p class="metric-description">${escapeHtml(metric.meaning)}</p>
+        </td>
+        <td class="metric-date-cell" data-label="마지막 업데이트일">
+          <span class="metric-date">${escapeHtml(dateText(metric.observed_label))}</span>
+        </td>
+        <td class="metric-date-cell" data-label="다음 예정일">
+          <span class="metric-date">${escapeHtml(dateText(metric.next_update_label))}</span>
+        </td>
+        <td class="metric-chart-cell" data-label="차트">
+          ${chart(metric.history, "chart-mini")}
+        </td>
+      </tr>
+      <tr class="metric-detail-row" id="${detailId}" aria-hidden="true">
+        <td colspan="5">${metricDetail(metric)}</td>
+      </tr>`;
     }
 
     function renderIndustry(industry, metrics) {
@@ -1781,7 +2112,27 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         .map(([group, items]) => `
           <section class="group">
             <div class="group-title">${escapeHtml(group)}</div>
-            <div class="metric-grid">${items.map(metricCard).join("")}</div>
+            <div class="metric-table-wrap">
+              <table class="metric-table">
+                <colgroup>
+                  <col class="metric-name-cell">
+                  <col class="metric-description-cell">
+                  <col class="metric-date-cell">
+                  <col class="metric-date-cell">
+                  <col class="metric-chart-cell">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th scope="col">지표</th>
+                    <th scope="col">설명</th>
+                    <th scope="col">마지막 업데이트일</th>
+                    <th scope="col">다음 예정일</th>
+                    <th scope="col">차트</th>
+                  </tr>
+                </thead>
+                <tbody>${items.map(metricRows).join("")}</tbody>
+              </table>
+            </div>
           </section>
         `).join("");
 
@@ -1808,7 +2159,25 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         .filter((industry) => byIndustry.has(industry))
         .map((industry) => renderIndustry(industry, byIndustry.get(industry)))
         .join("");
+      initMetricRows();
       updateActiveFromScroll();
+    }
+
+    function toggleMetricRow(row) {
+      const detail = document.getElementById(row.dataset.detailId);
+      const toggle = row.querySelector("[data-metric-toggle]");
+      if (!detail || !toggle) return;
+      const expanded = !row.classList.contains("is-expanded");
+      row.classList.toggle("is-expanded", expanded);
+      detail.classList.toggle("is-open", expanded);
+      detail.setAttribute("aria-hidden", String(!expanded));
+      toggle.setAttribute("aria-expanded", String(expanded));
+    }
+
+    function initMetricRows() {
+      document.querySelectorAll("[data-metric-row]").forEach((row) => {
+        row.addEventListener("click", () => toggleMetricRow(row));
+      });
     }
 
     function applyTheme(theme) {

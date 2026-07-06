@@ -52,6 +52,7 @@ class DashboardTest(unittest.TestCase):
         self.assertEqual(metric["change_pct_label"], "+20.0%")
         self.assertEqual(metric["yoy_pct_label"], "+50.0%")
         self.assertEqual(metric["status_label"], "자동 수집")
+        self.assertEqual(metric["next_update_label"], "2026.07")
 
     def test_render_dashboard_html_embeds_payload(self):
         html = render_dashboard_html(
