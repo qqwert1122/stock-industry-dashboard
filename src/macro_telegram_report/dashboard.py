@@ -9,9 +9,11 @@ from datetime import date, datetime, timedelta
 from io import BytesIO
 from pathlib import Path
 from typing import Any
+from urllib.parse import urljoin
 from zoneinfo import ZoneInfo
 
 import requests
+from bs4 import BeautifulSoup
 from openpyxl import load_workbook
 
 from .korea_exports import fetch_itemtrade_records
@@ -21,6 +23,7 @@ from .wsts import find_wsts_xlsx_url, parse_wsts_sheet
 FRED_OBSERVATIONS_URL = "https://api.stlouisfed.org/fred/series/observations"
 DEFAULT_INDUSTRIES = [
     "반도체",
+    "데이터인프라",
     "자동차",
     "전기차",
     "조선",
@@ -118,6 +121,10 @@ def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -
         ("WSTS", collect_wsts_metrics),
         ("FRED", collect_fred_metrics),
         ("스테이블코인", collect_stablecoin_metrics),
+        ("World Bank 원자재", collect_world_bank_commodity_metrics),
+        ("SEC CAPEX", collect_sec_capex_metrics),
+        ("USAspending 방산", collect_usaspending_metrics),
+        ("EIA", collect_eia_metrics),
         ("한국 수출", collect_korea_export_metrics),
     ]
     for source_name, collector in collectors:
@@ -457,6 +464,639 @@ def stablecoin_billions(value: float | None) -> float | None:
 
 def stablecoin_meaning() -> str:
     return "달러 연동 스테이블코인의 유통량 변화로 온체인 달러 유동성과 결제/거래 수요를 확인합니다."
+
+
+def collect_world_bank_commodity_metrics(
+    config: dict[str, Any], session: requests.Session, today: date
+) -> list[dict[str, Any]]:
+    del today
+    commodity_config = config.get("world_bank_commodities", {})
+    if not commodity_config.get("enabled", True):
+        return []
+
+    items = commodity_config.get("items", [])
+    if not items:
+        return []
+
+    page_url = str(
+        commodity_config.get("page_url")
+        or "https://www.worldbank.org/en/research/commodity-markets"
+    )
+    xlsx_url = str(
+        commodity_config.get("download_url") or find_world_bank_monthly_xlsx_url(page_url, session)
+    )
+    response = session.get(xlsx_url, timeout=(5, 60))
+    response.raise_for_status()
+    workbook = load_workbook(BytesIO(response.content), data_only=True, read_only=True)
+    sheet_name = str(commodity_config.get("sheet") or "Monthly Prices")
+    sheet = workbook[sheet_name] if sheet_name in workbook.sheetnames else workbook.active
+    price_table = parse_world_bank_monthly_prices(
+        sheet,
+        header_row=int(commodity_config.get("header_row", 5)),
+        data_start_row=int(commodity_config.get("data_start_row", 7)),
+    )
+    history_limit = int(config.get("dashboard", {}).get("history_points", 48))
+
+    metrics: list[dict[str, Any]] = []
+    for item in items:
+        column = str(item.get("column") or "").strip()
+        name = str(item.get("name") or column or "World Bank 원자재 가격")
+        industry = str(item.get("industry") or "철강/소재")
+        unit = str(item.get("unit") or "")
+        group = str(item.get("group") or "원자재 가격")
+        meaning = str(item.get("meaning") or infer_metric_meaning(industry, name))
+
+        points = world_bank_column_points(price_table, column)
+        if not points:
+            metrics.append(
+                make_metric(
+                    industry=industry,
+                    name=name,
+                    source="World Bank Commodity Markets Pink Sheet",
+                    source_url=page_url,
+                    frequency="월간",
+                    automation="무료 공개 엑셀 자동 수집",
+                    status="error",
+                    note=f"{column} 열을 찾을 수 없음",
+                    group=group,
+                    meaning=meaning,
+                )
+            )
+            continue
+
+        scale = to_float(item.get("scale")) or 1.0
+        scaled_points = [(observed_month, value * scale) for observed_month, value in points]
+        latest_month, latest_value = scaled_points[-1]
+        previous_value = scaled_points[-2][1] if len(scaled_points) > 1 else None
+        yoy_value = find_yoy_value(scaled_points, latest_month)
+        metrics.append(
+            make_metric(
+                industry=industry,
+                name=name,
+                source="World Bank Commodity Markets Pink Sheet",
+                source_url=xlsx_url,
+                frequency="월간",
+                automation="무료 공개 엑셀 자동 수집",
+                status="ok",
+                value=latest_value,
+                unit=unit,
+                observed_at=latest_month.isoformat(),
+                previous_value=previous_value,
+                yoy_value=yoy_value,
+                history=scaled_points[-history_limit:],
+                note=str(item.get("note") or ""),
+                group=group,
+                meaning=meaning,
+            )
+        )
+    return metrics
+
+
+def find_world_bank_monthly_xlsx_url(page_url: str, session: requests.Session) -> str:
+    response = session.get(page_url, timeout=(5, 20))
+    response.raise_for_status()
+    soup = BeautifulSoup(response.text, "html.parser")
+    candidates: list[str] = []
+    for anchor in soup.find_all("a", href=True):
+        href = str(anchor["href"])
+        lower_href = href.lower()
+        if lower_href.endswith(".xlsx") and "monthly" in lower_href:
+            candidates.append(urljoin(page_url, href))
+        elif "cmo-historical-data-monthly" in lower_href and ".xlsx" in lower_href:
+            candidates.append(urljoin(page_url, href))
+    if not candidates:
+        raise ValueError("World Bank 월간 원자재 엑셀 링크를 찾을 수 없음")
+    return candidates[0]
+
+
+def parse_world_bank_monthly_prices(
+    sheet: Any, *, header_row: int, data_start_row: int
+) -> dict[str, list[tuple[date, float]]]:
+    columns: dict[int, str] = {}
+    values: dict[str, list[tuple[date, float]]] = {}
+    for row_index, row in enumerate(sheet.iter_rows(values_only=True), start=1):
+        if row_index == header_row:
+            for column_index, header in enumerate(row[1:], start=1):
+                if header is None:
+                    continue
+                name = str(header).strip()
+                if name:
+                    columns[column_index] = name
+                    values[name] = []
+            continue
+
+        if row_index < data_start_row or not columns:
+            continue
+
+        observed_month = parse_world_bank_month(row[0] if row else None)
+        if observed_month is None:
+            continue
+        for column_index, name in columns.items():
+            if column_index >= len(row):
+                continue
+            value = to_float(row[column_index])
+            if value is not None:
+                values[name].append((observed_month, value))
+    return {name: points for name, points in values.items() if points}
+
+
+def world_bank_column_points(
+    price_table: dict[str, list[tuple[date, float]]], column_name: str
+) -> list[tuple[date, float]]:
+    if column_name in price_table:
+        return price_table[column_name]
+
+    normalized_target = normalize_lookup_text(column_name)
+    for name, points in price_table.items():
+        if normalize_lookup_text(name) == normalized_target:
+            return points
+    return []
+
+
+def parse_world_bank_month(value: object) -> date | None:
+    if isinstance(value, datetime):
+        return date(value.year, value.month, 1)
+    if isinstance(value, date):
+        return date(value.year, value.month, 1)
+
+    text = str(value or "").strip()
+    if not text:
+        return None
+    if "M" in text:
+        year_text, month_text = text.split("M", 1)
+        try:
+            return date(int(year_text), int(month_text), 1)
+        except ValueError:
+            return None
+    try:
+        parsed = datetime.strptime(text[:10], "%Y-%m-%d")
+    except ValueError:
+        return None
+    return date(parsed.year, parsed.month, 1)
+
+
+def collect_sec_capex_metrics(
+    config: dict[str, Any], session: requests.Session, today: date
+) -> list[dict[str, Any]]:
+    del today
+    capex_config = config.get("sec_capex", {})
+    if not capex_config.get("enabled", True):
+        return []
+
+    companies = capex_config.get("companies", [])
+    if not companies:
+        return []
+
+    source_url = str(
+        capex_config.get("source_url")
+        or "https://www.sec.gov/search-filings/edgar-application-programming-interfaces"
+    )
+    user_agent = str(
+        os.getenv("SEC_USER_AGENT")
+        or capex_config.get("user_agent")
+        or "stock-industry-dashboard/0.1 contact@example.com"
+    )
+    history_limit = int(config.get("dashboard", {}).get("history_points", 48))
+    metrics: list[dict[str, Any]] = []
+
+    for company in companies:
+        raw_cik = str(company.get("cik") or "").strip()
+        if not raw_cik:
+            continue
+        cik = raw_cik.zfill(10)
+        ticker = str(company.get("ticker") or cik)
+        name = str(company.get("name") or f"{ticker} CAPEX")
+        metric_name = name if "CAPEX" in name.upper() else f"{name} CAPEX"
+        configured_tags = capex_config.get("tags")
+        tags = [str(tag) for tag in configured_tags] if isinstance(configured_tags, list) else None
+
+        api_url = f"https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json"
+        try:
+            response = session.get(
+                api_url,
+                headers={
+                    "User-Agent": user_agent,
+                    "Accept": "application/json",
+                    "Accept-Encoding": "gzip, deflate",
+                },
+                timeout=(5, 30),
+            )
+            response.raise_for_status()
+            points = sec_capex_points(response.json(), tags)
+            if not points:
+                metrics.append(
+                    make_metric(
+                        industry="데이터인프라",
+                        name=metric_name,
+                        source="SEC Company Facts API",
+                        source_url=source_url,
+                        frequency="분기",
+                        automation="무료 공식 API 자동 수집",
+                        status="error",
+                        note="CAPEX 태그 관측값 없음",
+                        group="CAPEX",
+                        meaning=sec_capex_meaning(),
+                    )
+                )
+                continue
+
+            billion_points = [(observed_at, value / 1_000_000_000) for observed_at, value in points]
+            latest_date, latest_value = billion_points[-1]
+            previous_value = billion_points[-2][1] if len(billion_points) > 1 else None
+            yoy_value = find_yoy_value(billion_points, latest_date)
+            metrics.append(
+                make_metric(
+                    industry="데이터인프라",
+                    name=metric_name,
+                    source="SEC Company Facts API",
+                    source_url=api_url,
+                    frequency="분기",
+                    automation="무료 공식 API 자동 수집",
+                    status="ok",
+                    value=latest_value,
+                    unit="$B",
+                    observed_at=latest_date.isoformat(),
+                    previous_value=previous_value,
+                    yoy_value=yoy_value,
+                    history=billion_points[-history_limit:],
+                    group="CAPEX",
+                    meaning=sec_capex_meaning(),
+                )
+            )
+        except Exception as exc:  # noqa: BLE001 - keep company cards independent.
+            metrics.append(
+                make_metric(
+                    industry="데이터인프라",
+                    name=metric_name,
+                    source="SEC Company Facts API",
+                    source_url=source_url,
+                    frequency="분기",
+                    automation="무료 공식 API 자동 수집",
+                    status="error",
+                    note=str(exc),
+                    group="CAPEX",
+                    meaning=sec_capex_meaning(),
+                )
+            )
+    return metrics
+
+
+def sec_capex_points(payload: dict[str, Any], tags: list[str] | None = None) -> list[tuple[date, float]]:
+    tag_candidates = tags or [
+        "PaymentsToAcquirePropertyPlantAndEquipment",
+        "PaymentsToAcquirePropertyAndEquipment",
+        "PaymentsToAcquireProductiveAssets",
+        "CapitalExpenditures",
+    ]
+    us_gaap = payload.get("facts", {}).get("us-gaap", {})
+    best_points: list[tuple[date, float]] = []
+    for tag in tag_candidates:
+        fact = us_gaap.get(tag, {})
+        rows = fact.get("units", {}).get("USD", [])
+        if not rows:
+            continue
+
+        by_period: dict[tuple[date, date], tuple[str, float]] = {}
+        for row in rows:
+            if str(row.get("form") or "") not in {"10-Q", "10-K"}:
+                continue
+            start_date = parse_iso_date(row.get("start"))
+            end_date = parse_iso_date(row.get("end"))
+            value = to_float(row.get("val"))
+            if start_date is None or end_date is None or value is None:
+                continue
+            if not is_quarter_duration(start_date, end_date):
+                continue
+            filed = str(row.get("filed") or "")
+            key = (start_date, end_date)
+            if key not in by_period or filed >= by_period[key][0]:
+                by_period[key] = (filed, abs(value))
+
+        points = sorted((end_date, value) for (_, end_date), (_, value) in by_period.items())
+        if points and (not best_points or points[-1][0] > best_points[-1][0]):
+            best_points = points
+    return best_points
+
+
+def parse_iso_date(value: object) -> date | None:
+    try:
+        return date.fromisoformat(str(value))
+    except (TypeError, ValueError):
+        return None
+
+
+def is_quarter_duration(start_date: date, end_date: date) -> bool:
+    days = (end_date - start_date).days + 1
+    return 70 <= days <= 110
+
+
+def sec_capex_meaning() -> str:
+    return "빅테크 CAPEX는 AI 데이터센터, 서버, 전력 인프라 투자 수요를 보여주는 핵심 proxy입니다."
+
+
+def collect_usaspending_metrics(
+    config: dict[str, Any], session: requests.Session, today: date
+) -> list[dict[str, Any]]:
+    spending_config = config.get("usaspending", {})
+    if not spending_config.get("enabled", True):
+        return []
+
+    items = spending_config.get("items", [])
+    if not items:
+        return []
+
+    endpoint = str(
+        spending_config.get("endpoint")
+        or "https://api.usaspending.gov/api/v2/search/spending_over_time/"
+    )
+    history_limit = int(config.get("dashboard", {}).get("history_points", 48))
+    metrics: list[dict[str, Any]] = []
+
+    for item in items:
+        months_back = int(item.get("months_back") or spending_config.get("months_back") or 18)
+        current_month = date(today.year, today.month, 1)
+        end_month = add_months(current_month, -1)
+        end_date = current_month - timedelta(days=1)
+        start_month = add_months(end_month, -months_back + 1)
+        filters: dict[str, Any] = {
+            "time_period": [
+                {"start_date": start_month.isoformat(), "end_date": end_date.isoformat()}
+            ],
+        }
+        if item.get("naics_codes"):
+            filters["naics_codes"] = [str(code) for code in item.get("naics_codes", [])]
+        if item.get("award_type_codes"):
+            filters["award_type_codes"] = [str(code) for code in item.get("award_type_codes", [])]
+        if item.get("toptier_agencies"):
+            filters["toptier_agencies"] = [str(code) for code in item.get("toptier_agencies", [])]
+        if item.get("awarding_agency_codes"):
+            filters["awarding_agency_codes"] = [
+                str(code) for code in item.get("awarding_agency_codes", [])
+            ]
+        if item.get("agencies"):
+            filters["agencies"] = item.get("agencies", [])
+
+        payload = {
+            "group": "month",
+            "subawards": False,
+            "filters": filters,
+        }
+        name = str(item.get("name") or "미국 방산 계약 의무액")
+        industry = str(item.get("industry") or "방산")
+        group = str(item.get("group") or "국방 계약")
+        meaning = str(
+            item.get("meaning")
+            or "미국 연방 방산 계약 의무액으로 방산 수주와 예산 집행 모멘텀을 확인합니다."
+        )
+
+        try:
+            response = session.post(endpoint, json=payload, timeout=(5, 30))
+            response.raise_for_status()
+            points = parse_usaspending_monthly_amounts(response.json())
+            if not points:
+                metrics.append(
+                    make_metric(
+                        industry=industry,
+                        name=name,
+                        source="USAspending API",
+                        source_url=endpoint,
+                        frequency="월간",
+                        automation="무료 공식 API 자동 수집",
+                        status="error",
+                        note="관측값 없음",
+                        group=group,
+                        meaning=meaning,
+                    )
+                )
+                continue
+
+            billion_points = [(observed_month, value / 1_000_000_000) for observed_month, value in points]
+            latest_month, latest_value = billion_points[-1]
+            previous_value = billion_points[-2][1] if len(billion_points) > 1 else None
+            yoy_value = find_yoy_value(billion_points, latest_month)
+            metrics.append(
+                make_metric(
+                    industry=industry,
+                    name=name,
+                    source="USAspending API",
+                    source_url=endpoint,
+                    frequency="월간",
+                    automation="무료 공식 API 자동 수집",
+                    status="ok",
+                    value=latest_value,
+                    unit="$B",
+                    observed_at=latest_month.isoformat(),
+                    previous_value=previous_value,
+                    yoy_value=yoy_value,
+                    history=billion_points[-history_limit:],
+                    group=group,
+                    meaning=meaning,
+                )
+            )
+        except Exception as exc:  # noqa: BLE001 - one spending item should not break the page.
+            metrics.append(
+                make_metric(
+                    industry=industry,
+                    name=name,
+                    source="USAspending API",
+                    source_url=endpoint,
+                    frequency="월간",
+                    automation="무료 공식 API 자동 수집",
+                    status="error",
+                    note=str(exc),
+                    group=group,
+                    meaning=meaning,
+                )
+            )
+    return metrics
+
+
+def parse_usaspending_monthly_amounts(payload: dict[str, Any]) -> list[tuple[date, float]]:
+    points: list[tuple[date, float]] = []
+    for row in payload.get("results", []):
+        period = row.get("time_period", {})
+        fiscal_year = period.get("fiscal_year")
+        fiscal_month = period.get("month")
+        value = to_float(row.get("aggregated_amount"))
+        if fiscal_year is None or fiscal_month is None or value is None:
+            continue
+        try:
+            observed_month = fiscal_month_to_calendar_date(fiscal_year, fiscal_month)
+        except ValueError:
+            continue
+        points.append((observed_month, value))
+    return sorted(points)
+
+
+def fiscal_month_to_calendar_date(fiscal_year: object, fiscal_month: object) -> date:
+    year = int(fiscal_year)
+    month = int(fiscal_month)
+    if not 1 <= month <= 12:
+        raise ValueError(f"Invalid fiscal month: {fiscal_month}")
+    if month <= 3:
+        return date(year - 1, month + 9, 1)
+    return date(year, month - 3, 1)
+
+
+def collect_eia_metrics(
+    config: dict[str, Any], session: requests.Session, today: date
+) -> list[dict[str, Any]]:
+    del today
+    eia_config = config.get("eia", {})
+    if not eia_config.get("enabled", True):
+        return []
+
+    series_config = eia_config.get("series", [])
+    if not series_config:
+        return []
+
+    api_key = os.getenv("EIA_API_KEY", "").strip()
+    source_url = str(eia_config.get("source_url") or "https://www.eia.gov/opendata/")
+    if not api_key:
+        return [
+            make_metric(
+                industry=str(series.get("industry") or "매크로"),
+                name=str(series.get("name") or series.get("series_id")),
+                source="EIA Open Data API",
+                source_url=source_url,
+                frequency=str(series.get("frequency") or ""),
+                automation="무료 공식 API 자동 수집",
+                status="needs_key",
+                note="GitHub Secrets에 EIA_API_KEY 등록 필요",
+                group=str(series.get("group") or ""),
+                meaning=str(series.get("meaning") or ""),
+            )
+            for series in series_config
+            if series.get("series_id")
+        ]
+
+    history_limit = int(config.get("dashboard", {}).get("history_points", 48))
+    fetch_limit = max(history_limit, 80)
+    metrics: list[dict[str, Any]] = []
+    for series in series_config:
+        series_id = str(series.get("series_id") or "").strip()
+        if not series_id:
+            continue
+
+        name = str(series.get("name") or series_id)
+        industry = str(series.get("industry") or "매크로")
+        unit = str(series.get("unit") or "")
+        frequency = str(series.get("frequency") or "")
+        value_field = str(series.get("value_field") or "")
+        api_url = f"https://api.eia.gov/v2/seriesid/{series_id}"
+
+        try:
+            response = session.get(
+                api_url,
+                params={
+                    "api_key": api_key,
+                    "sort[0][column]": "period",
+                    "sort[0][direction]": "desc",
+                    "length": fetch_limit,
+                },
+                timeout=(5, 30),
+            )
+            response.raise_for_status()
+            points = parse_eia_points(response.json(), value_field)
+            if not points:
+                metrics.append(
+                    make_metric(
+                        industry=industry,
+                        name=name,
+                        source="EIA Open Data API",
+                        source_url=source_url,
+                        frequency=frequency,
+                        automation="무료 공식 API 자동 수집",
+                        status="error",
+                        note="관측값 없음",
+                        group=str(series.get("group") or ""),
+                        meaning=str(series.get("meaning") or ""),
+                    )
+                )
+                continue
+
+            scale = to_float(series.get("scale")) or 1.0
+            scaled_points = [(observed_at, value * scale) for observed_at, value in points]
+            latest_date, latest_value = scaled_points[-1]
+            previous_value = scaled_points[-2][1] if len(scaled_points) > 1 else None
+            yoy_value = find_yoy_value(scaled_points, latest_date)
+            metrics.append(
+                make_metric(
+                    industry=industry,
+                    name=name,
+                    source="EIA Open Data API",
+                    source_url=api_url,
+                    frequency=frequency,
+                    automation="무료 공식 API 자동 수집",
+                    status="ok",
+                    value=latest_value,
+                    unit=unit,
+                    observed_at=latest_date.isoformat(),
+                    previous_value=previous_value,
+                    yoy_value=yoy_value,
+                    history=scaled_points[-history_limit:],
+                    group=str(series.get("group") or ""),
+                    meaning=str(series.get("meaning") or ""),
+                )
+            )
+        except Exception as exc:  # noqa: BLE001 - one EIA series should not break the page.
+            metrics.append(
+                make_metric(
+                    industry=industry,
+                    name=name,
+                    source="EIA Open Data API",
+                    source_url=source_url,
+                    frequency=frequency,
+                    automation="무료 공식 API 자동 수집",
+                    status="error",
+                    note=str(exc),
+                    group=str(series.get("group") or ""),
+                    meaning=str(series.get("meaning") or ""),
+                )
+            )
+    return metrics
+
+
+def parse_eia_points(payload: dict[str, Any], value_field: str = "") -> list[tuple[date, float]]:
+    rows = payload.get("response", {}).get("data", [])
+    points: list[tuple[date, float]] = []
+    for row in rows:
+        observed_at = parse_eia_period(row.get("period"))
+        value = eia_row_value(row, value_field)
+        if observed_at is not None and value is not None:
+            points.append((observed_at, value))
+    return sorted(points)
+
+
+def eia_row_value(row: dict[str, Any], value_field: str = "") -> float | None:
+    if value_field:
+        return to_float(row.get(value_field))
+    for field in ["value", "price", "sales", "generation", "revenue", "customers"]:
+        value = to_float(row.get(field))
+        if value is not None:
+            return value
+    return None
+
+
+def parse_eia_period(value: object) -> date | None:
+    text = str(value or "").strip()
+    if not text:
+        return None
+    if len(text) == 4 and text.isdigit():
+        return date(int(text), 1, 1)
+    if len(text) == 7 and text[4] == "-":
+        try:
+            return date(int(text[:4]), int(text[5:7]), 1)
+        except ValueError:
+            return None
+    try:
+        return date.fromisoformat(text[:10])
+    except ValueError:
+        return None
+
+
+def normalize_lookup_text(value: str) -> str:
+    return " ".join(value.lower().replace("*", "").split())
 
 
 def collect_wsts_metrics(
@@ -838,9 +1478,15 @@ def infer_metric_group(industry: str, name: str) -> str:
     if industry == "스테이블코인":
         return "유통량"
     if industry == "전력":
+        if "천연가스" in name or "석탄" in name:
+            return "에너지 가격"
+        if "판매량" in name or "발전량" in name:
+            return "전력 수요"
         if "PPI" in name:
             return "전력 가격"
         return "전력 수요/생산"
+    if industry == "데이터인프라":
+        return "CAPEX"
     if industry == "로봇":
         if "PPI" in name:
             return "산업 장비 가격"
@@ -852,6 +1498,8 @@ def infer_metric_group(industry: str, name: str) -> str:
     if industry == "바이오":
         return "바이오 가격"
     if industry == "배터리":
+        if "니켈" in name or "리튬" in name or "코발트" in name:
+            return "배터리 원재료"
         return "배터리 가격"
     if industry == "은행/금융":
         if "금리차" in name or "스프레드" in name:
@@ -906,6 +1554,8 @@ def infer_metric_meaning(industry: str, name: str) -> str:
         return "가계 자산 효과와 부동산 경기 방향성을 확인합니다."
     if "유가" in name:
         return "정유, 화학 원가와 인플레이션 압력을 동시에 움직이는 원재료 가격입니다."
+    if "휘발유" in name or "디젤" in name:
+        return "석유 제품 가격으로 정유 제품 수요와 crack spread 방향을 간접적으로 확인합니다."
     if "화학 PPI" in name:
         return "화학 제품 가격 사이클과 마진 방향을 간접적으로 봅니다."
     if "철광석" in name:
@@ -914,6 +1564,10 @@ def infer_metric_meaning(industry: str, name: str) -> str:
         return "전기화와 제조업 경기를 민감하게 반영하는 경기 민감 금속입니다."
     if "알루미늄" in name:
         return "경량 소재와 제조업 수요, 전력비 영향을 함께 받는 소재 가격입니다."
+    if "니켈" in name:
+        return "배터리 양극재 원가와 소재 업체 마진 환경을 보여주는 원재료 proxy입니다."
+    if "천연가스" in name or "석탄" in name:
+        return "전력 생산 원가와 산업 에너지 비용을 좌우하는 에너지 원료 지표입니다."
     if "자동차 판매" in name:
         return "완성차 수요와 소비 경기 흐름을 확인하는 판매 지표입니다."
     if "전기차" in name:
@@ -924,6 +1578,8 @@ def infer_metric_meaning(industry: str, name: str) -> str:
         return stablecoin_meaning()
     if "전력" in name or "유틸리티" in name:
         return "전력 생산과 가격 흐름으로 전력 인프라와 전력 수요 사이클을 확인합니다."
+    if industry == "데이터인프라" or "CAPEX" in name.upper():
+        return sec_capex_meaning()
     if "산업용 기계" in name or "산업 제어" in name:
         return "설비투자와 로봇 부품 수요를 가늠하는 proxy 지표입니다."
     if "우주" in name or "항공우주" in name:
@@ -1117,6 +1773,11 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     body.theme-ready .sidebar,
     body.theme-ready .side-menu button,
+    body.theme-ready .menu-item,
+    body.theme-ready .settings-button,
+    body.theme-ready .settings-menu,
+    body.theme-ready .settings-menu button,
+    body.theme-ready .reorder-actions button,
     body.theme-ready .theme-toggle,
     body.theme-ready .industry,
     body.theme-ready .industry-head,
@@ -1167,11 +1828,15 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       align-self: start;
       min-width: 0;
       min-height: calc(100vh - 44px);
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto auto;
+      gap: 12px;
       padding: 14px;
       border: 0;
       border-radius: 18px;
       background: var(--sidebar);
       box-shadow: var(--menu-shadow);
+      overflow: visible;
     }
 
     .side-menu {
@@ -1179,6 +1844,16 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       gap: 7px;
       min-width: 0;
       max-width: 100%;
+      min-height: 0;
+      align-content: start;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .menu-item {
+      position: relative;
+      min-width: 0;
+      border-radius: 12px;
     }
 
     .side-menu button {
@@ -1194,6 +1869,11 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       cursor: pointer;
     }
 
+    .sidebar.is-reordering .side-menu button {
+      padding-right: 36px;
+      cursor: grab;
+    }
+
     .side-menu button:hover {
       background: var(--menu);
     }
@@ -1204,6 +1884,142 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     .side-menu button[aria-current="true"] {
       background: var(--menu-active);
+    }
+
+    .drag-handle {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      width: 18px;
+      height: 18px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-50%);
+      transition: opacity 180ms ease;
+    }
+
+    .sidebar.is-reordering .drag-handle {
+      opacity: 1;
+      pointer-events: auto;
+      cursor: grab;
+    }
+
+    .menu-item.is-dragging {
+      opacity: 0.45;
+    }
+
+    .menu-settings {
+      position: relative;
+      display: grid;
+      gap: 8px;
+    }
+
+    .settings-button,
+    .settings-menu button,
+    .reorder-actions button {
+      min-width: 0;
+      border: 0;
+      cursor: pointer;
+    }
+
+    .settings-button {
+      min-height: 40px;
+      border-radius: 14px;
+      display: grid;
+      grid-template-columns: 20px minmax(0, 1fr) 14px;
+      gap: 8px;
+      align-items: center;
+      padding: 0 12px;
+      background: var(--menu);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 760;
+      text-align: left;
+    }
+
+    .settings-button:hover,
+    .settings-button[aria-expanded="true"] {
+      background: var(--menu-active);
+    }
+
+    .settings-chevron {
+      color: var(--muted);
+      font-size: 11px;
+      transition: transform 180ms ease;
+    }
+
+    .settings-button[aria-expanded="true"] .settings-chevron {
+      transform: rotate(180deg);
+    }
+
+    .settings-menu {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: calc(100% + 8px);
+      z-index: 20;
+      display: grid;
+      gap: 5px;
+      padding: 7px;
+      border-radius: 14px;
+      background: var(--surface);
+      box-shadow: var(--menu-shadow);
+    }
+
+    .settings-menu[hidden],
+    .reorder-actions[hidden] {
+      display: none;
+    }
+
+    .settings-menu button {
+      min-height: 36px;
+      border-radius: 10px;
+      display: grid;
+      grid-template-columns: 18px minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      padding: 0 9px;
+      background: transparent;
+      color: var(--text);
+      font-size: 12.5px;
+      font-weight: 720;
+      text-align: left;
+    }
+
+    .settings-menu button:hover {
+      background: var(--menu);
+    }
+
+    .settings-meta {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 760;
+    }
+
+    .reorder-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .reorder-actions button {
+      min-height: 38px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 780;
+    }
+
+    .reorder-cancel {
+      background: var(--menu);
+      color: var(--text);
+    }
+
+    .reorder-save {
+      background: var(--chart-down);
+      color: #ffffff;
     }
 
     .content {
@@ -1332,6 +2148,11 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       body.theme-ready,
       body.theme-ready .sidebar,
       body.theme-ready .side-menu button,
+      body.theme-ready .menu-item,
+      body.theme-ready .settings-button,
+      body.theme-ready .settings-menu,
+      body.theme-ready .settings-menu button,
+      body.theme-ready .reorder-actions button,
       body.theme-ready .theme-toggle,
       body.theme-ready .industry,
       body.theme-ready .industry-head,
@@ -1749,7 +2570,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         max-width: 100%;
         min-height: 0;
         padding: 12px;
-        overflow: hidden;
+        overflow: visible;
       }
 
       .side-menu {
@@ -1763,6 +2584,19 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       .side-menu button {
         width: auto;
         white-space: nowrap;
+      }
+
+      .sidebar.is-reordering .side-menu button {
+        padding-right: 34px;
+      }
+
+      .settings-menu {
+        position: static;
+        order: -1;
+      }
+
+      .reorder-actions {
+        grid-template-columns: 1fr 1fr;
       }
 
       .topbar {
@@ -1866,10 +2700,38 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
   <main class="shell">
     <aside class="sidebar">
       <nav class="side-menu" id="industryFilters" aria-label="업종 메뉴"></nav>
+      <div class="menu-settings" id="menuSettings">
+        <div class="settings-menu" id="settingsMenu" role="menu" hidden>
+          <button type="button" role="menuitem" data-setting-action="theme">
+            <i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i>
+            <span data-i18n="darkMode">다크모드</span>
+            <span class="settings-meta" id="themeSettingLabel"></span>
+          </button>
+          <button type="button" role="menuitem" data-setting-action="language">
+            <i class="fa-solid fa-language" aria-hidden="true"></i>
+            <span data-i18n="language">언어변경</span>
+            <span class="settings-meta" id="languageSettingLabel">KO</span>
+          </button>
+          <button type="button" role="menuitem" data-setting-action="reorder">
+            <i class="fa-solid fa-arrow-up-wide-short" aria-hidden="true"></i>
+            <span data-i18n="reorderMenu">메뉴 순서변경</span>
+            <span></span>
+          </button>
+        </div>
+        <button class="settings-button" id="settingsToggle" type="button" aria-label="설정" aria-expanded="false" aria-controls="settingsMenu">
+          <i class="fa-solid fa-gear" aria-hidden="true"></i>
+          <span data-i18n="settings">설정</span>
+          <i class="fa-solid fa-chevron-up settings-chevron" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="reorder-actions" id="reorderActions" hidden>
+        <button class="reorder-cancel" id="reorderCancel" type="button" data-i18n="cancel">취소</button>
+        <button class="reorder-save" id="reorderSave" type="button" data-i18n="save">저장</button>
+      </div>
     </aside>
     <section class="content">
       <header class="topbar">
-        <h1>산업별 지표 대시보드</h1>
+        <h1 data-i18n="title">산업별 지표 대시보드</h1>
         <button class="theme-toggle" id="themeToggle" type="button" aria-label="다크모드 전환" title="다크모드 전환">
           <span class="theme-icon-orbit" aria-hidden="true">
             <i class="fa-solid fa-moon theme-icon theme-icon-moon"></i>
@@ -1878,13 +2740,19 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         </button>
       </header>
       <section class="industry-stack" id="industryStack"></section>
-      <div class="empty" id="empty">표시할 지표가 없습니다.</div>
+      <div class="empty" id="empty" data-i18n="empty">표시할 지표가 없습니다.</div>
     </section>
   </main>
 
   <script>
     const DASHBOARD_DATA = __DASHBOARD_JSON__;
-    const state = { activeIndustry: "" };
+    const state = {
+      activeIndustry: "",
+      isReordering: false,
+      draftIndustryOrder: null,
+      draggedMenuItem: null,
+      language: "ko"
+    };
     let scrollSpyFrame = 0;
     const groupOrder = [
       "판매액", "시장 매출", "가격/수요", "투자/장비", "수출",
@@ -1896,6 +2764,62 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       "주택 경기", "건설 선행", "금융비용", "주택 시장",
       "환율", "리스크", "시장 환경", "핵심 지표"
     ];
+    const translations = {
+      ko: {
+        title: "산업별 지표 대시보드",
+        settings: "설정",
+        darkMode: "다크모드",
+        lightMode: "라이트",
+        darkModeState: "다크",
+        language: "언어변경",
+        reorderMenu: "메뉴 순서변경",
+        cancel: "취소",
+        save: "저장",
+        empty: "표시할 지표가 없습니다.",
+        metric: "지표",
+        description: "설명",
+        lastUpdated: "마지막 업데이트일",
+        nextUpdate: "다음 예정일",
+        chart: "차트",
+        currentValue: "현재값",
+        previousChange: "전기 변화",
+        previousChangePct: "전기 변화율",
+        yoy: "YoY",
+        visiblePeriod: "표시 기간",
+        updateFrequency: "업데이트 주기",
+        irregular: "비정기",
+        menuLabel: "업종 메뉴"
+      },
+      en: {
+        title: "Industry Metrics Dashboard",
+        settings: "Settings",
+        darkMode: "Dark mode",
+        lightMode: "Light",
+        darkModeState: "Dark",
+        language: "Language",
+        reorderMenu: "Reorder menu",
+        cancel: "Cancel",
+        save: "Save",
+        empty: "No metrics to display.",
+        metric: "Metric",
+        description: "Description",
+        lastUpdated: "Last updated",
+        nextUpdate: "Next update",
+        chart: "Chart",
+        currentValue: "Current",
+        previousChange: "Previous change",
+        previousChangePct: "Previous %",
+        yoy: "YoY",
+        visiblePeriod: "Period",
+        updateFrequency: "Frequency",
+        irregular: "Irregular",
+        menuLabel: "Industry menu"
+      }
+    };
+
+    function t(key) {
+      return translations[state.language]?.[key] || translations.ko[key] || key;
+    }
 
     function escapeHtml(value) {
       return String(value ?? "").replace(/[&<>"']/g, (char) => ({
@@ -1917,10 +2841,34 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       return index === -1 ? 999 : index;
     }
 
-    function visibleIndustries() {
+    function baseVisibleIndustries() {
       return DASHBOARD_DATA.industries.filter((industry) =>
         DASHBOARD_DATA.metrics.some((metric) => metric.industry === industry)
       );
+    }
+
+    function storedIndustryOrder() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem("dashboard-industry-order") || "[]");
+        return Array.isArray(parsed) ? parsed.filter((item) => typeof item === "string") : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function orderedIndustries(industries, order = null) {
+      const selectedOrder = order || state.draftIndustryOrder || storedIndustryOrder();
+      const rank = new Map(selectedOrder.map((industry, index) => [industry, index]));
+      return [...industries].sort((a, b) => {
+        const aRank = rank.has(a) ? rank.get(a) : Number.MAX_SAFE_INTEGER;
+        const bRank = rank.has(b) ? rank.get(b) : Number.MAX_SAFE_INTEGER;
+        if (aRank !== bRank) return aRank - bRank;
+        return industries.indexOf(a) - industries.indexOf(b);
+      });
+    }
+
+    function visibleIndustries() {
+      return orderedIndustries(baseVisibleIndustries());
     }
 
     function industryId(industry) {
@@ -1943,12 +2891,16 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         state.activeIndustry = industries[0];
       }
       document.getElementById("industryFilters").innerHTML = industries.map((industry) => `
-        <button type="button" data-industry="${escapeHtml(industry)}" data-target="${industryId(industry)}" aria-pressed="${state.activeIndustry === industry}" aria-current="${state.activeIndustry === industry}">
-          ${escapeHtml(industry)}
-        </button>
+        <div class="menu-item" data-menu-item data-industry-item="${escapeHtml(industry)}" draggable="${state.isReordering}">
+          <button type="button" data-industry="${escapeHtml(industry)}" data-target="${industryId(industry)}" aria-pressed="${state.activeIndustry === industry}" aria-current="${state.activeIndustry === industry}" ${state.isReordering ? 'tabindex="-1"' : ""}>
+            ${escapeHtml(industry)}
+          </button>
+          <span class="drag-handle" aria-hidden="true"><i class="fa-solid fa-grip-lines"></i></span>
+        </div>
       `).join("");
       document.querySelectorAll("[data-industry]").forEach((button) => {
         button.addEventListener("click", () => {
+          if (state.isReordering) return;
           const industry = button.dataset.industry;
           const target = document.getElementById(button.dataset.target);
           if (!industry || !target) return;
@@ -1956,6 +2908,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
           target.scrollIntoView({ behavior: "smooth", block: "start" });
         });
       });
+      initMenuDrag();
     }
 
     function formatAxisValue(value) {
@@ -2038,7 +2991,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     }
 
     function dateText(value) {
-      return value || "비정기";
+      return value || t("irregular");
     }
 
     function detailStat(label, value, className = "") {
@@ -2052,12 +3005,12 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       return `<div class="metric-detail-panel">
         <div class="metric-detail-inner">
           <div class="detail-stats">
-            ${detailStat("현재값", metric.display_value)}
-            ${detailStat("전기 변화", metric.change_abs_label, directionClass(metric.change_abs))}
-            ${detailStat("전기 변화율", metric.change_pct_label, directionClass(metric.change_pct))}
-            ${detailStat("YoY", metric.yoy_pct_label, directionClass(metric.yoy_pct))}
-            ${detailStat("표시 기간", metric.period_label || metric.observed_label || "")}
-            ${detailStat("업데이트 주기", metric.frequency || "비정기")}
+            ${detailStat(t("currentValue"), metric.display_value)}
+            ${detailStat(t("previousChange"), metric.change_abs_label, directionClass(metric.change_abs))}
+            ${detailStat(t("previousChangePct"), metric.change_pct_label, directionClass(metric.change_pct))}
+            ${detailStat(t("yoy"), metric.yoy_pct_label, directionClass(metric.yoy_pct))}
+            ${detailStat(t("visiblePeriod"), metric.period_label || metric.observed_label || "")}
+            ${detailStat(t("updateFrequency"), metric.frequency || t("irregular"))}
             <p class="detail-note">${escapeHtml(metric.meaning)}</p>
           </div>
           <div class="detail-chart">${chart(metric.history, "chart-detail")}</div>
@@ -2068,22 +3021,22 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     function metricRows(metric) {
       const detailId = `metric-detail-${metric.id}`;
       return `<tr class="metric-row" data-metric-row data-detail-id="${detailId}">
-        <td class="metric-name-cell" data-label="지표">
+        <td class="metric-name-cell" data-label="${escapeHtml(t("metric"))}">
           <button class="metric-toggle" type="button" data-metric-toggle aria-expanded="false" aria-controls="${detailId}">
             <i class="fa-solid fa-chevron-right metric-chevron" aria-hidden="true"></i>
             <span class="metric-name">${escapeHtml(metric.name)}</span>
           </button>
         </td>
-        <td class="metric-description-cell" data-label="설명">
+        <td class="metric-description-cell" data-label="${escapeHtml(t("description"))}">
           <p class="metric-description">${escapeHtml(metric.meaning)}</p>
         </td>
-        <td class="metric-date-cell" data-label="마지막 업데이트일">
+        <td class="metric-date-cell" data-label="${escapeHtml(t("lastUpdated"))}">
           <span class="metric-date">${escapeHtml(dateText(metric.observed_label))}</span>
         </td>
-        <td class="metric-date-cell" data-label="다음 예정일">
+        <td class="metric-date-cell" data-label="${escapeHtml(t("nextUpdate"))}">
           <span class="metric-date">${escapeHtml(dateText(metric.next_update_label))}</span>
         </td>
-        <td class="metric-chart-cell" data-label="차트">
+        <td class="metric-chart-cell" data-label="${escapeHtml(t("chart"))}">
           ${chart(metric.history, "chart-mini")}
         </td>
       </tr>
@@ -2117,11 +3070,11 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
                 </colgroup>
                 <thead>
                   <tr>
-                    <th scope="col">지표</th>
-                    <th scope="col">설명</th>
-                    <th scope="col">마지막 업데이트일</th>
-                    <th scope="col">다음 예정일</th>
-                    <th scope="col">차트</th>
+                    <th scope="col">${escapeHtml(t("metric"))}</th>
+                    <th scope="col">${escapeHtml(t("description"))}</th>
+                    <th scope="col">${escapeHtml(t("lastUpdated"))}</th>
+                    <th scope="col">${escapeHtml(t("nextUpdate"))}</th>
+                    <th scope="col">${escapeHtml(t("chart"))}</th>
                   </tr>
                 </thead>
                 <tbody>${items.map(metricRows).join("")}</tbody>
@@ -2149,7 +3102,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         map.set(metric.industry, [...(map.get(metric.industry) || []), metric]);
         return map;
       }, new Map());
-      stack.innerHTML = DASHBOARD_DATA.industries
+      stack.innerHTML = visibleIndustries()
         .filter((industry) => byIndustry.has(industry))
         .map((industry) => renderIndustry(industry, byIndustry.get(industry)))
         .join("");
@@ -2174,10 +3127,149 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       });
     }
 
+    function currentMenuOrder() {
+      return [...document.querySelectorAll("[data-menu-item]")]
+        .map((item) => item.dataset.industryItem)
+        .filter(Boolean);
+    }
+
+    function dragDirection(container) {
+      return getComputedStyle(container).display === "flex" ? "horizontal" : "vertical";
+    }
+
+    function initMenuDrag() {
+      document.querySelectorAll("[data-menu-item]").forEach((item) => {
+        item.draggable = state.isReordering;
+        item.addEventListener("dragstart", (event) => {
+          if (!state.isReordering) {
+            event.preventDefault();
+            return;
+          }
+          state.draggedMenuItem = item;
+          item.classList.add("is-dragging");
+          event.dataTransfer.effectAllowed = "move";
+          event.dataTransfer.setData("text/plain", item.dataset.industryItem || "");
+        });
+        item.addEventListener("dragend", () => {
+          item.classList.remove("is-dragging");
+          state.draggedMenuItem = null;
+          state.draftIndustryOrder = currentMenuOrder();
+        });
+      });
+
+      const menu = document.getElementById("industryFilters");
+      menu.ondragover = (event) => {
+        if (!state.isReordering || !state.draggedMenuItem) return;
+        event.preventDefault();
+        const target = event.target.closest("[data-menu-item]");
+        if (!target || target === state.draggedMenuItem || !menu.contains(target)) return;
+        const rect = target.getBoundingClientRect();
+        const horizontal = dragDirection(menu) === "horizontal";
+        const insertAfter = horizontal
+          ? event.clientX > rect.left + rect.width / 2
+          : event.clientY > rect.top + rect.height / 2;
+        menu.insertBefore(state.draggedMenuItem, insertAfter ? target.nextSibling : target);
+      };
+      menu.ondrop = (event) => {
+        if (!state.isReordering) return;
+        event.preventDefault();
+        state.draftIndustryOrder = currentMenuOrder();
+      };
+    }
+
+    function setSettingsOpen(open) {
+      const toggle = document.getElementById("settingsToggle");
+      const menu = document.getElementById("settingsMenu");
+      toggle.setAttribute("aria-expanded", String(open));
+      menu.hidden = !open;
+    }
+
+    function updateThemeSettingLabel() {
+      const label = document.getElementById("themeSettingLabel");
+      if (!label) return;
+      label.textContent = document.body.classList.contains("theme-dark") ? t("darkModeState") : t("lightMode");
+    }
+
+    function updateLanguageText() {
+      document.documentElement.lang = state.language;
+      document.querySelectorAll("[data-i18n]").forEach((element) => {
+        element.textContent = t(element.dataset.i18n);
+      });
+      document.querySelector(".side-menu")?.setAttribute("aria-label", t("menuLabel"));
+      document.getElementById("settingsToggle")?.setAttribute("aria-label", t("settings"));
+      const languageLabel = document.getElementById("languageSettingLabel");
+      if (languageLabel) languageLabel.textContent = state.language === "ko" ? "KO" : "EN";
+      updateThemeSettingLabel();
+    }
+
+    function setLanguage(language) {
+      state.language = language === "en" ? "en" : "ko";
+      localStorage.setItem("dashboard-language", state.language);
+      updateLanguageText();
+      renderIndustries();
+    }
+
+    function initLanguage() {
+      state.language = localStorage.getItem("dashboard-language") === "en" ? "en" : "ko";
+      updateLanguageText();
+    }
+
+    function updateReorderControls() {
+      document.querySelector(".sidebar")?.classList.toggle("is-reordering", state.isReordering);
+      document.getElementById("reorderActions").hidden = !state.isReordering;
+    }
+
+    function startMenuReorder() {
+      state.isReordering = true;
+      state.draftIndustryOrder = visibleIndustries();
+      setSettingsOpen(false);
+      updateReorderControls();
+      renderFilters();
+    }
+
+    function cancelMenuReorder() {
+      state.isReordering = false;
+      state.draftIndustryOrder = null;
+      updateReorderControls();
+      renderFilters();
+    }
+
+    function saveMenuReorder() {
+      const order = currentMenuOrder();
+      localStorage.setItem("dashboard-industry-order", JSON.stringify(order));
+      state.isReordering = false;
+      state.draftIndustryOrder = null;
+      updateReorderControls();
+      renderFilters();
+      renderIndustries();
+    }
+
+    function initSettings() {
+      const settings = document.getElementById("menuSettings");
+      const toggle = document.getElementById("settingsToggle");
+      toggle.addEventListener("click", () => {
+        setSettingsOpen(toggle.getAttribute("aria-expanded") !== "true");
+      });
+      document.addEventListener("click", (event) => {
+        if (!settings.contains(event.target)) setSettingsOpen(false);
+      });
+      document.querySelector('[data-setting-action="theme"]').addEventListener("click", () => {
+        animateThemeToggle(document.body.classList.contains("theme-dark") ? "light" : "dark");
+      });
+      document.querySelector('[data-setting-action="language"]').addEventListener("click", () => {
+        setLanguage(state.language === "ko" ? "en" : "ko");
+      });
+      document.querySelector('[data-setting-action="reorder"]').addEventListener("click", startMenuReorder);
+      document.getElementById("reorderCancel").addEventListener("click", cancelMenuReorder);
+      document.getElementById("reorderSave").addEventListener("click", saveMenuReorder);
+      updateReorderControls();
+    }
+
     function applyTheme(theme) {
       const isDark = theme === "dark";
       document.body.classList.toggle("theme-dark", isDark);
       localStorage.setItem("dashboard-theme", isDark ? "dark" : "light");
+      updateThemeSettingLabel();
     }
 
     function animateThemeToggle(nextTheme) {
@@ -2241,6 +3333,8 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       renderIndustries();
     }
 
+    initLanguage();
+    initSettings();
     initTheme();
     render();
   </script>

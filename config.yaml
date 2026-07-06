@@ -7,6 +7,7 @@ dashboard:
   history_points: 48
   industries:
     - 반도체
+    - 데이터인프라
     - 자동차
     - 전기차
     - 조선
@@ -374,6 +375,122 @@ stablecoins:
       name: USDT 유통량
     - symbol: USDC
       name: USDC 유통량
+
+world_bank_commodities:
+  enabled: true
+  page_url: https://www.worldbank.org/en/research/commodity-markets
+  sheet: Monthly Prices
+  items:
+    - name: 니켈 가격
+      industry: 배터리
+      column: Nickel
+      unit: "$/mt"
+      group: 배터리 원재료
+      meaning: 니켈 가격은 배터리 양극재 원가와 소재 업체 마진 환경을 보여주는 원재료 proxy입니다.
+    - name: 유럽 천연가스 가격
+      industry: 전력
+      column: Natural gas, Europe
+      unit: "$/mmbtu"
+      group: 에너지 가격
+      meaning: 천연가스 가격은 전력 생산 원가와 산업 에너지 비용을 좌우하는 에너지 원료 지표입니다.
+    - name: 호주 석탄 가격
+      industry: 전력
+      column: Coal, Australian
+      unit: "$/mt"
+      group: 에너지 가격
+      meaning: 석탄 가격은 화력발전 원가와 전력 가격 압력을 확인하는 원료 proxy입니다.
+
+sec_capex:
+  enabled: true
+  source_url: https://www.sec.gov/search-filings/edgar-application-programming-interfaces
+  user_agent: stock-industry-dashboard/0.1 contact@example.com
+  companies:
+    - ticker: MSFT
+      name: Microsoft CAPEX
+      cik: "0000789019"
+    - ticker: AMZN
+      name: Amazon CAPEX
+      cik: "0001018724"
+    - ticker: GOOGL
+      name: Alphabet CAPEX
+      cik: "0001652044"
+    - ticker: META
+      name: Meta CAPEX
+      cik: "0001326801"
+
+usaspending:
+  enabled: true
+  endpoint: https://api.usaspending.gov/api/v2/search/spending_over_time/
+  items:
+    - name: 미국 국방부 계약 의무액
+      industry: 방산
+      group: 국방 계약
+      months_back: 18
+      awarding_agency_codes:
+        - "097"
+      award_type_codes:
+        - A
+        - B
+        - C
+        - D
+      meaning: 미국 국방부가 집행한 계약 의무액으로 방산 예산 집행과 수주 환경의 큰 흐름을 확인합니다.
+    - name: 미국 방산 제조 계약 의무액
+      industry: 방산
+      group: 국방 계약
+      months_back: 18
+      naics_codes:
+        - "336411"
+        - "336412"
+        - "336414"
+        - "336415"
+        - "336419"
+        - "336992"
+      meaning: 미국 연방 방산/항공우주 제조업 계약 의무액으로 방산 제조 밸류체인의 수주 모멘텀을 확인합니다.
+
+eia:
+  enabled: true
+  source_url: https://www.eia.gov/opendata/
+  series:
+    - name: 미국 전력 판매량
+      industry: 전력
+      series_id: ELEC.SALES.US-ALL.M
+      value_field: sales
+      unit: GWh
+      frequency: 월간
+      group: 전력 수요
+      meaning: 미국 전력 판매량은 데이터센터, 산업, 가계 전력 수요 흐름을 확인하는 월간 지표입니다.
+    - name: 미국 총 발전량
+      industry: 전력
+      series_id: ELEC.GEN.ALL-US-99.M
+      value_field: generation
+      unit: GWh
+      frequency: 월간
+      group: 전력 수요
+      meaning: 미국 발전량은 전력 인프라 이용 강도와 계절적 수요 변화를 확인하는 지표입니다.
+    - name: 미국 평균 전력가격
+      industry: 전력
+      series_id: ELEC.PRICE.US-ALL.M
+      value_field: price
+      unit: cents/kWh
+      frequency: 월간
+      group: 전력 가격
+      meaning: 전력 가격은 유틸리티 매출 환경과 산업 전력 비용 부담을 보여주는 가격 지표입니다.
+    - name: 미국 휘발유 가격
+      industry: 화학/정유
+      series_id: PET.EMM_EPM0_PTE_NUS_DPG.W
+      value_field: value
+      unit: "$/gal"
+      frequency: 주간
+      group: 제품 가격
+      meaning: 휘발유 가격은 정유 제품 수요와 crack spread 방향을 간접적으로 확인하는 proxy입니다.
+    - name: 미국 디젤 가격
+      industry: 화학/정유
+      series_id: PET.EMD_EPD2D_PTE_NUS_DPG.W
+      value_field: value
+      unit: "$/gal"
+      frequency: 주간
+      group: 제품 가격
+      meaning: 디젤 가격은 물류/산업 수요와 정유 제품 마진 환경을 보여주는 proxy입니다.
 
 fred:
   enabled: true

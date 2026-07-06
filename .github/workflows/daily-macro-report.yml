@@ -39,6 +39,8 @@ jobs:
         env:
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
           DATA_GO_KR_SERVICE_KEY: ${{ secrets.DATA_GO_KR_SERVICE_KEY }}
+          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
         run: industry-dashboard --config config.yaml --out site
 
       - name: Configure Pages

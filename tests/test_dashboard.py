@@ -4,8 +4,14 @@ from datetime import date
 from macro_telegram_report.dashboard import (
     DEFAULT_INDUSTRIES,
     collect_stablecoin_metrics,
+    fiscal_month_to_calendar_date,
     make_metric,
+    parse_eia_period,
+    parse_eia_points,
+    parse_usaspending_monthly_amounts,
+    parse_world_bank_month,
     render_dashboard_html,
+    sec_capex_points,
 )
 
 
@@ -24,9 +30,10 @@ class FakeSession:
     def __init__(self, payload):
         self.payload = payload
 
-    def get(self, url, timeout):
+    def get(self, url, timeout=None, **kwargs):
         self.url = url
         self.timeout = timeout
+        self.kwargs = kwargs
         return FakeResponse(self.payload)
 
 
@@ -70,7 +77,18 @@ class DashboardTest(unittest.TestCase):
         self.assertIn("DASHBOARD_DATA", html)
 
     def test_default_industries_include_new_categories(self):
-        for industry in ["자동차", "전기차", "방산", "스테이블코인", "전력", "로봇", "우주", "바이오", "배터리"]:
+        for industry in [
+            "자동차",
+            "전기차",
+            "데이터인프라",
+            "방산",
+            "스테이블코인",
+            "전력",
+            "로봇",
+            "우주",
+            "바이오",
+            "배터리",
+        ]:
             self.assertIn(industry, DEFAULT_INDUSTRIES)
         self.assertNotIn("자동차/전기차", DEFAULT_INDUSTRIES)
 
@@ -126,6 +144,123 @@ class DashboardTest(unittest.TestCase):
         self.assertEqual(metrics[0]["display_value"], "$150.0B")
         self.assertEqual(metrics[0]["change_abs_label"], "+1.50B")
         self.assertEqual(metrics[1]["display_value"], "$100.0B")
+
+    def test_parse_world_bank_month(self):
+        self.assertEqual(parse_world_bank_month("2026M06"), date(2026, 6, 1))
+        self.assertEqual(parse_world_bank_month("2026-06-30"), date(2026, 6, 1))
+        self.assertIsNone(parse_world_bank_month("not-a-month"))
+
+    def test_sec_capex_points_uses_quarter_duration_and_latest_filing(self):
+        payload = {
+            "facts": {
+                "us-gaap": {
+                    "PaymentsToAcquirePropertyPlantAndEquipment": {
+                        "units": {
+                            "USD": [
+                                {
+                                    "start": "2025-01-01",
+                                    "end": "2025-03-31",
+                                    "val": 10_000_000_000,
+                                    "form": "10-Q",
+                                    "filed": "2025-04-30",
+                                },
+                                {
+                                    "start": "2025-01-01",
+                                    "end": "2025-06-30",
+                                    "val": 22_000_000_000,
+                                    "form": "10-Q",
+                                    "filed": "2025-07-30",
+                                },
+                                {
+                                    "start": "2025-04-01",
+                                    "end": "2025-06-30",
+                                    "val": 13_000_000_000,
+                                    "form": "10-Q",
+                                    "filed": "2025-07-30",
+                                },
+                                {
+                                    "start": "2025-04-01",
+                                    "end": "2025-06-30",
+                                    "val": 14_000_000_000,
+                                    "form": "10-Q",
+                                    "filed": "2026-01-30",
+                                },
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+
+        points = sec_capex_points(payload)
+
+        self.assertEqual(points, [(date(2025, 3, 31), 10_000_000_000), (date(2025, 6, 30), 14_000_000_000)])
+
+    def test_sec_capex_points_chooses_newer_tag(self):
+        payload = {
+            "facts": {
+                "us-gaap": {
+                    "PaymentsToAcquirePropertyPlantAndEquipment": {
+                        "units": {
+                            "USD": [
+                                {
+                                    "start": "2017-01-01",
+                                    "end": "2017-03-31",
+                                    "val": 1_000_000_000,
+                                    "form": "10-Q",
+                                    "filed": "2017-04-30",
+                                }
+                            ]
+                        }
+                    },
+                    "PaymentsToAcquireProductiveAssets": {
+                        "units": {
+                            "USD": [
+                                {
+                                    "start": "2026-01-01",
+                                    "end": "2026-03-31",
+                                    "val": 44_000_000_000,
+                                    "form": "10-Q",
+                                    "filed": "2026-04-30",
+                                }
+                            ]
+                        }
+                    },
+                }
+            }
+        }
+
+        self.assertEqual(sec_capex_points(payload), [(date(2026, 3, 31), 44_000_000_000)])
+
+    def test_usaspending_fiscal_month_conversion(self):
+        self.assertEqual(fiscal_month_to_calendar_date("2025", "1"), date(2024, 10, 1))
+        self.assertEqual(fiscal_month_to_calendar_date("2025", "4"), date(2025, 1, 1))
+        payload = {
+            "results": [
+                {
+                    "time_period": {"fiscal_year": "2025", "month": "4"},
+                    "aggregated_amount": 1_000_000_000,
+                }
+            ]
+        }
+        self.assertEqual(parse_usaspending_monthly_amounts(payload), [(date(2025, 1, 1), 1_000_000_000)])
+
+    def test_parse_eia_period_and_points(self):
+        self.assertEqual(parse_eia_period("2026-04"), date(2026, 4, 1))
+        self.assertEqual(parse_eia_period("2026-06-29"), date(2026, 6, 29))
+        payload = {
+            "response": {
+                "data": [
+                    {"period": "2026-04", "sales": "302126.8"},
+                    {"period": "2026-03", "sales": 290000},
+                ]
+            }
+        }
+
+        self.assertEqual(
+            parse_eia_points(payload, "sales"),
+            [(date(2026, 3, 1), 290000.0), (date(2026, 4, 1), 302126.8)],
+        )
 
 
 if __name__ == "__main__":

@@ -1,10 +1,11 @@
 # 산업별 핵심 지표 대시보드
 
-매일 아침 GitHub Actions가 FRED, WSTS, 관세청 수출 데이터를 수집하고 정적 웹 대시보드를 생성해 GitHub Pages에 배포합니다. 내 컴퓨터가 꺼져 있어도 GitHub 서버에서 실행됩니다.
+매일 아침 GitHub Actions가 FRED, WSTS, 관세청 수출, World Bank 원자재, SEC CAPEX, USAspending, EIA 데이터를 수집하고 정적 웹 대시보드를 생성해 GitHub Pages에 배포합니다. 내 컴퓨터가 꺼져 있어도 GitHub 서버에서 실행됩니다.
 
 ## 현재 MVP
 
 - 반도체: WSTS 월간 반도체 판매액, 한국 반도체 수출, 미국 반도체 PPI
+- 데이터인프라: Microsoft/Amazon/Alphabet/Meta CAPEX
 - 자동차: 미국 자동차 판매, 한국 승용차 수출
 - 전기차: 한국 순수 전기차 수출, 글로벌 EV 판매 자동화 후보
 - 조선: 한국 선박 수출, BDI/신조선가/운임지수 자동화 후보
@@ -12,13 +13,13 @@
 - 화학/정유: WTI/Brent, 미국 화학 PPI
 - 은행/금융: 기준금리 proxy, 장단기 금리차, 회사채 스프레드, 연체율, 은행 대출
 - 건설/부동산: 주택착공, 건축허가, 모기지 금리, 주택가격지수
-- 방산: 미국 방산 자본재 신규주문/수주잔고, 한국 무기류/탄약 수출
+- 방산: 미국 방산 자본재 신규주문/수주잔고, 미국 국방부/방산 제조 계약 의무액, 한국 무기류/탄약 수출
 - 스테이블코인: DefiLlama 전체/USDT/USDC 유통량
-- 전력: 미국 전력 생산 PPI, 유틸리티 산업생산, 한국 전력 장비 수출
+- 전력: 미국 전력 생산 PPI, 유틸리티 산업생산, 전력 판매/발전량/가격, 에너지 원료 가격, 한국 전력 장비 수출
 - 로봇: 산업용 기계 신규주문, 산업 제어장치 PPI, 한국 산업용 로봇 수출
 - 우주: 방산/우주 장비 산업생산, 항공우주 부품 PPI, 한국 항공기/우주선 수출
 - 바이오: 생물학적 제제/체외진단 PPI, 한국 바이오 의약품 수출
-- 배터리: 저장 배터리 제조 PPI, 한국 축전지 수출
+- 배터리: 저장 배터리 제조 PPI, 니켈 가격, 한국 축전지 수출
 
 무료로 안정적인 공식 API가 없는 지표는 대시보드에서 `부분 자동화` 또는 `수작업` 상태로 표시합니다.
 
@@ -47,6 +48,8 @@ industry-dashboard --config config.yaml --out site
 
 - `DATA_GO_KR_SERVICE_KEY`: 공공데이터포털 관세청 API의 Decoding 서비스키
 - `FRED_API_KEY`: FRED 무료 API 키
+- `EIA_API_KEY`: EIA Open Data 무료 API 키
+- `SEC_USER_AGENT`: SEC fair access용 User-Agent. 선택값이지만 이메일이나 연락 가능한 URL을 넣는 것을 권장합니다.
 
 키가 없으면 해당 데이터 소스의 지표만 `키 필요`로 표시되고, 나머지 대시보드는 계속 생성됩니다.
 
@@ -58,6 +61,10 @@ industry-dashboard --config config.yaml --out site
 - `wsts.regions`: WSTS에서 표시할 지역
 - `korea_exports.items`: 관세청 HS 코드별 수출 지표
 - `stablecoins.assets`: DefiLlama에서 가져올 스테이블코인 유통량 지표
+- `world_bank_commodities.items`: World Bank Pink Sheet 엑셀에서 가져올 원자재 지표
+- `sec_capex.companies`: SEC Company Facts에서 가져올 빅테크 CAPEX 기업
+- `usaspending.items`: USAspending 계약 의무액 필터
+- `eia.series`: EIA Open Data 시계열
 - `dashboard.reference_metrics`: 아직 완전 자동화하지 않은 무료/공식 데이터 후보
 
 ## 데이터 저장 구조
@@ -79,4 +86,8 @@ site/
 - WSTS Historical Billings Report: https://www.wsts.org/67/Historical-Billings-Report
 - 관세청 품목별 수출입실적 API: https://www.data.go.kr/data/15101609/openapi.do
 - DefiLlama Stablecoins: https://defillama.com/stablecoins
+- World Bank Commodity Markets: https://www.worldbank.org/en/research/commodity-markets
+- SEC EDGAR APIs: https://www.sec.gov/search-filings/edgar-application-programming-interfaces
+- USAspending API: https://api.usaspending.gov/
+- EIA Open Data: https://www.eia.gov/opendata/
 - GitHub Pages Actions: https://github.com/actions/deploy-pages
