@@ -44,6 +44,14 @@ INDUSTRY_ICONS = {
     "화학/정유": "assets/industry-icons/chemicals-refining.png",
     "은행/금융": "assets/industry-icons/finance.png",
     "건설/부동산": "assets/industry-icons/construction-real-estate.png",
+    "방산": "assets/industry-icons/defense.png",
+    "스테이블코인": "assets/industry-icons/stablecoins.png",
+    "전력": "assets/industry-icons/power.png",
+    "로봇": "assets/industry-icons/robotics.png",
+    "우주": "assets/industry-icons/space.png",
+    "바이오": "assets/industry-icons/biotech.png",
+    "배터리": "assets/industry-icons/battery.png",
+    "데이터인프라": "assets/industry-icons/data-infrastructure.png",
     "매크로": "assets/industry-icons/macro.png",
 }
 INDUSTRY_SUMMARIES = {
@@ -54,6 +62,14 @@ INDUSTRY_SUMMARIES = {
     "화학/정유": "유가, 원료, 제품 스프레드로 마진 방향을 확인합니다.",
     "은행/금융": "금리, 스프레드, 대출, 연체율로 금융 환경을 봅니다.",
     "건설/부동산": "착공, 허가, 금리, 가격으로 부동산 선행 흐름을 봅니다.",
+    "방산": "수주, 생산, 수출 흐름으로 방산 수요를 확인합니다.",
+    "스테이블코인": "온체인 달러 유동성과 결제/거래 수요를 봅니다.",
+    "전력": "전력 가격, 생산, 장비 수출로 인프라 수요를 확인합니다.",
+    "로봇": "자동화 설비 투자와 로봇 수출 흐름을 묶어 봅니다.",
+    "우주": "우주/항공 장비 생산과 이벤트 수요를 추적합니다.",
+    "바이오": "바이오 제품 가격과 수출 흐름으로 업황을 봅니다.",
+    "배터리": "배터리 가격, 원재료, 수출 흐름으로 셀/소재 업황을 봅니다.",
+    "데이터인프라": "서버와 네트워크 인프라 투자 흐름을 봅니다.",
     "매크로": "환율과 변동성으로 시장 환경을 빠르게 확인합니다.",
 }
 
