@@ -39,22 +39,22 @@ DEFAULT_INDUSTRIES = [
 ]
 INDUSTRY_ICONS = {
     "반도체": "assets/industry-icons/semiconductor.png",
-    "자동차": "assets/industry-icons/auto-ev.png",
-    "전기차": "assets/industry-icons/auto-ev.png",
+    "자동차": "assets/industry-icons/auto.png",
+    "전기차": "assets/industry-icons/electric-car.png",
     "조선": "assets/industry-icons/shipbuilding.png",
     "철강/소재": "assets/industry-icons/steel-materials.png",
-    "화학/정유": "assets/industry-icons/chemicals-refining.png",
+    "화학/정유": "assets/industry-icons/oil-barrel.png",
     "은행/금융": "assets/industry-icons/finance.png",
     "건설/부동산": "assets/industry-icons/construction-real-estate.png",
-    "방산": "assets/industry-icons/defense.png",
-    "스테이블코인": "assets/industry-icons/stablecoins.png",
+    "방산": "assets/industry-icons/tank.png",
+    "스테이블코인": "assets/industry-icons/bitcoin.png",
     "전력": "assets/industry-icons/power.png",
     "로봇": "assets/industry-icons/robotics.png",
     "우주": "assets/industry-icons/space.png",
     "바이오": "assets/industry-icons/biotech.png",
     "배터리": "assets/industry-icons/battery.png",
     "데이터인프라": "assets/industry-icons/data-infrastructure.png",
-    "매크로": "assets/industry-icons/macro.png",
+    "매크로": "assets/industry-icons/macro-trend.png",
 }
 INDUSTRY_SUMMARIES = {
     "반도체": "메모리, 파운드리, 장비, AI 인프라 수요를 함께 봅니다.",
@@ -1081,6 +1081,35 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       letter-spacing: 0;
     }
 
+    body.theme-ready {
+      transition: background-color 520ms ease, color 520ms ease;
+    }
+
+    body.theme-ready .sidebar,
+    body.theme-ready .side-menu button,
+    body.theme-ready .theme-toggle,
+    body.theme-ready .industry,
+    body.theme-ready .industry-head,
+    body.theme-ready .industry-icon-wrap,
+    body.theme-ready .group,
+    body.theme-ready .metric,
+    body.theme-ready .chart,
+    body.theme-ready .empty {
+      transition:
+        background-color 520ms ease,
+        border-color 520ms ease,
+        box-shadow 520ms ease,
+        color 520ms ease;
+    }
+
+    body.theme-ready .chart text,
+    body.theme-ready .axis-line,
+    body.theme-ready .guide,
+    body.theme-ready .trend-line,
+    body.theme-ready .current-dot {
+      transition: fill 520ms ease, stroke 520ms ease;
+    }
+
     button {
       font: inherit;
       color: inherit;
@@ -1174,9 +1203,11 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       width: 44px;
       height: 44px;
       border: 0;
-      border-radius: 8px;
+      border-radius: 999px;
       display: grid;
       place-items: center;
+      position: relative;
+      overflow: hidden;
       background: var(--menu);
       color: var(--text);
       cursor: pointer;
@@ -1185,6 +1216,113 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     .theme-toggle:hover {
       background: var(--menu-active);
+    }
+
+    .theme-toggle:focus-visible {
+      outline: 2px solid var(--text);
+      outline-offset: 3px;
+    }
+
+    .theme-toggle:disabled {
+      cursor: default;
+    }
+
+    .theme-icon-orbit {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .theme-icon {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 1em;
+      height: 1em;
+      display: grid;
+      place-items: center;
+      color: currentColor;
+      opacity: 0;
+      transform: translate(-50%, -50%) translate3d(30px, 26px, 0) scale(0.72) rotate(36deg);
+      transform-origin: center;
+      pointer-events: none;
+    }
+
+    body:not(.theme-dark) .theme-icon-moon,
+    body.theme-dark .theme-icon-sun {
+      opacity: 1;
+      transform: translate(-50%, -50%) translate3d(0, 0, 0) scale(1) rotate(0deg);
+    }
+
+    body:not(.theme-dark) .theme-icon-sun,
+    body.theme-dark .theme-icon-moon {
+      opacity: 0;
+      transform: translate(-50%, -50%) translate3d(30px, 26px, 0) scale(0.72) rotate(36deg);
+    }
+
+    .theme-icon.is-exiting {
+      animation: themeIconExit 520ms cubic-bezier(0.65, 0, 0.35, 1) forwards;
+    }
+
+    .theme-icon.is-entering {
+      animation: themeIconEnter 520ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes themeIconExit {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) translate3d(0, 0, 0) scale(1) rotate(0deg);
+      }
+      45% {
+        opacity: 0.92;
+        transform: translate(-50%, -50%) translate3d(-14px, -12px, 0) scale(0.94) rotate(-16deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) translate3d(-38px, 30px, 0) scale(0.66) rotate(-52deg);
+      }
+    }
+
+    @keyframes themeIconEnter {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) translate3d(38px, 30px, 0) scale(0.66) rotate(52deg);
+      }
+      55% {
+        opacity: 0.96;
+        transform: translate(-50%, -50%) translate3d(14px, -12px, 0) scale(0.94) rotate(16deg);
+      }
+      100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) translate3d(0, 0, 0) scale(1) rotate(0deg);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body.theme-ready,
+      body.theme-ready .sidebar,
+      body.theme-ready .side-menu button,
+      body.theme-ready .theme-toggle,
+      body.theme-ready .industry,
+      body.theme-ready .industry-head,
+      body.theme-ready .industry-icon-wrap,
+      body.theme-ready .group,
+      body.theme-ready .metric,
+      body.theme-ready .chart,
+      body.theme-ready .empty,
+      body.theme-ready .chart text,
+      body.theme-ready .axis-line,
+      body.theme-ready .guide,
+      body.theme-ready .trend-line,
+      body.theme-ready .current-dot {
+        transition-duration: 1ms;
+      }
+
+      .theme-icon.is-exiting,
+      .theme-icon.is-entering {
+        animation-duration: 1ms;
+      }
     }
 
     .industry-stack {
@@ -1446,7 +1584,10 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       <header class="topbar">
         <h1>산업별 지표 대시보드</h1>
         <button class="theme-toggle" id="themeToggle" type="button" aria-label="다크모드 전환" title="다크모드 전환">
-          <i class="fa-solid fa-moon" aria-hidden="true"></i>
+          <span class="theme-icon-orbit" aria-hidden="true">
+            <i class="fa-solid fa-moon theme-icon theme-icon-moon"></i>
+            <i class="fa-solid fa-sun theme-icon theme-icon-sun"></i>
+          </span>
         </button>
       </header>
       <section class="industry-stack" id="industryStack"></section>
@@ -1673,17 +1814,36 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     function applyTheme(theme) {
       const isDark = theme === "dark";
       document.body.classList.toggle("theme-dark", isDark);
-      const icon = document.querySelector("#themeToggle i");
-      icon.className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
       localStorage.setItem("dashboard-theme", isDark ? "dark" : "light");
+    }
+
+    function animateThemeToggle(nextTheme) {
+      const toggle = document.getElementById("themeToggle");
+      const isDark = document.body.classList.contains("theme-dark");
+      const outgoing = toggle.querySelector(isDark ? ".theme-icon-sun" : ".theme-icon-moon");
+      const incoming = toggle.querySelector(isDark ? ".theme-icon-moon" : ".theme-icon-sun");
+      toggle.disabled = true;
+      toggle.querySelectorAll(".theme-icon").forEach((icon) => {
+        icon.classList.remove("is-exiting", "is-entering");
+      });
+      void toggle.offsetWidth;
+      outgoing.classList.add("is-exiting");
+      incoming.classList.add("is-entering");
+      applyTheme(nextTheme);
+      window.setTimeout(() => {
+        outgoing.classList.remove("is-exiting");
+        incoming.classList.remove("is-entering");
+        toggle.disabled = false;
+      }, 540);
     }
 
     function initTheme() {
       const saved = localStorage.getItem("dashboard-theme");
       const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
       applyTheme(saved || (prefersDark ? "dark" : "light"));
+      requestAnimationFrame(() => document.body.classList.add("theme-ready"));
       document.getElementById("themeToggle").addEventListener("click", () => {
-        applyTheme(document.body.classList.contains("theme-dark") ? "light" : "dark");
+        animateThemeToggle(document.body.classList.contains("theme-dark") ? "light" : "dark");
       });
     }
 
