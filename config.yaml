@@ -1,0 +1,280 @@
+timezone: Asia/Seoul
+report:
+  title: 아침 매크로 리포트
+
+dashboard:
+  title: 산업별 핵심 지표 대시보드
+  history_points: 48
+  industries:
+    - 반도체
+    - 자동차/전기차
+    - 조선
+    - 철강/소재
+    - 화학/정유
+    - 은행/금융
+    - 건설/부동산
+    - 매크로
+  fred_series:
+    - id: DGS10
+      name: 미국 10년 국채금리
+      industry: 은행/금융
+      unit: "%"
+      frequency: 일간
+    - id: DGS2
+      name: 미국 2년 국채금리
+      industry: 은행/금융
+      unit: "%"
+      frequency: 일간
+    - id: T10Y2Y
+      name: 미국 10Y-2Y 금리차
+      industry: 은행/금융
+      unit: "%"
+      frequency: 일간
+    - id: BAA10Y
+      name: 미국 BAA 회사채-10년 국채 스프레드
+      industry: 은행/금융
+      unit: "%"
+      frequency: 일간
+    - id: DRALACBS
+      name: 미국 은행 대출 연체율
+      industry: 은행/금융
+      unit: "%"
+      frequency: 분기
+    - id: TOTLL
+      name: 미국 상업은행 총대출
+      industry: 은행/금융
+      unit: "$B"
+      frequency: 주간
+    - id: HOUST
+      name: 미국 주택착공
+      industry: 건설/부동산
+      unit: 천건
+      frequency: 월간
+    - id: PERMIT
+      name: 미국 건축허가
+      industry: 건설/부동산
+      unit: 천건
+      frequency: 월간
+    - id: MORTGAGE30US
+      name: 미국 30년 모기지 금리
+      industry: 건설/부동산
+      unit: "%"
+      frequency: 주간
+    - id: CSUSHPISA
+      name: 미국 주택가격지수
+      industry: 건설/부동산
+      unit: 지수
+      frequency: 월간
+    - id: DCOILWTICO
+      name: WTI 유가
+      industry: 화학/정유
+      unit: "$"
+      frequency: 일간
+    - id: DCOILBRENTEU
+      name: Brent 유가
+      industry: 화학/정유
+      unit: "$"
+      frequency: 일간
+    - id: WPU061
+      name: 미국 산업용 화학 PPI
+      industry: 화학/정유
+      unit: 지수
+      frequency: 월간
+    - id: PIORECRUSDM
+      name: 철광석 가격
+      industry: 철강/소재
+      unit: "$"
+      frequency: 월간
+    - id: PCOPPUSDM
+      name: 구리 가격
+      industry: 철강/소재
+      unit: "$"
+      frequency: 월간
+    - id: PALUMUSDM
+      name: 알루미늄 가격
+      industry: 철강/소재
+      unit: "$"
+      frequency: 월간
+    - id: TOTALSA
+      name: 미국 자동차 판매
+      industry: 자동차/전기차
+      unit: 백만대
+      frequency: 월간
+    - id: PCU33443344
+      name: 미국 반도체 PPI
+      industry: 반도체
+      unit: 지수
+      frequency: 월간
+    - id: DEXKOUS
+      name: 원/달러 환율
+      industry: 매크로
+      unit: 원
+      frequency: 일간
+    - id: VIXCLS
+      name: VIX
+      industry: 매크로
+      unit: ""
+      frequency: 일간
+  reference_metrics:
+    - industry: 반도체
+      name: DRAM/NAND 가격 대체 지표
+      source: TrendForce 공개 뉴스/RSS
+      source_url: https://www.trendforce.com/news/
+      frequency: 비정기
+      status: partial
+      note: 무료 공식 API가 없어 공개 뉴스, 가격 코멘트, 반도체 PPI를 조합하는 후보입니다.
+    - industry: 반도체
+      name: HBM 수요 대체 지표
+      source: NVIDIA/메모리 업체 실적 발표
+      source_url: https://investor.nvidia.com/financial-info/quarterly-results/default.aspx
+      frequency: 분기
+      status: partial
+      note: NVIDIA 데이터센터 매출과 메모리 업체 HBM 코멘트를 SEC XBRL/IR 자료로 확장할 수 있습니다.
+    - industry: 반도체
+      name: TSMC 월매출
+      source: TSMC IR 월매출
+      source_url: https://investor.tsmc.com/english/monthly-revenue
+      frequency: 월간
+      status: partial
+      note: 공식 IR 페이지 표를 별도 파서로 붙이면 자동화 가능합니다.
+    - industry: 반도체
+      name: ASML 수주/매출
+      source: ASML quarterly results
+      source_url: https://www.asml.com/en/investors/financial-results
+      frequency: 분기
+      status: partial
+      note: 공식 실적 PDF/표에서 수주와 매출을 추출하는 단계가 필요합니다.
+    - industry: 반도체
+      name: SEMI 장비 billings
+      source: SEMI press releases
+      source_url: https://www.semi.org/en/news-resources/press
+      frequency: 월간
+      status: partial
+      note: 공개 보도자료 범위는 자동화 가능하지만 일부 상세 시계열은 유료일 수 있습니다.
+    - industry: 반도체
+      name: 빅테크 CAPEX
+      source: SEC company facts
+      source_url: https://www.sec.gov/edgar/sec-api-documentation
+      frequency: 분기
+      status: partial
+      note: AMZN/MSFT/GOOGL/META의 capex 태그를 SEC API로 붙이는 확장 후보입니다.
+    - industry: 자동차/전기차
+      name: 글로벌 EV 판매량
+      source: IEA Global EV Data Explorer
+      source_url: https://www.iea.org/data-and-statistics/data-tools/global-ev-data-explorer
+      frequency: 연간/비정기
+      status: partial
+      note: 무료 공개 데이터는 있으나 월간 자동 API는 제한적입니다.
+    - industry: 자동차/전기차
+      name: 리튬/배터리 원재료 가격
+      source: World Bank Pink Sheet
+      source_url: https://www.worldbank.org/en/research/commodity-markets
+      frequency: 월간
+      status: partial
+      note: 공개 엑셀 다운로드를 붙이면 일부 원자재는 자동화 가능합니다.
+    - industry: 자동차/전기차
+      name: 주요 완성차 월별 판매
+      source: 각 완성차 IR/판매 보도자료
+      source_url: https://global.toyota/en/ir/library/sales-production/
+      frequency: 월간
+      status: partial
+      note: 회사별 포맷이 달라 우선순위 업체부터 개별 파서가 필요합니다.
+    - industry: 조선
+      name: BDI
+      source: Baltic Exchange 공개 페이지
+      source_url: https://www.balticexchange.com/en/data-services/market-information0.html
+      frequency: 일간
+      status: manual
+      note: 안정적인 무료 공식 API가 없어 수동 입력 또는 라이선스 데이터가 현실적입니다.
+    - industry: 조선
+      name: 신조선가/LNG선 발주량 대체 지표
+      source: 조선사 공시/수출 HS 8901
+      source_url: https://dart.fss.or.kr/
+      frequency: 월간/비정기
+      status: partial
+      note: Clarksons 지표는 유료 성격이 강해 공시와 수출 데이터를 대체 지표로 씁니다.
+    - industry: 조선
+      name: 해운 운임지수
+      source: 상하이항운거래소 공개 지수
+      source_url: https://en.sse.net.cn/indices/scfinew.jsp
+      frequency: 주간
+      status: partial
+      note: 공개 페이지 기반이라 포맷 변경 리스크가 있습니다.
+    - industry: 철강/소재
+      name: 중국 산업생산/제조업 PMI
+      source: 중국 국가통계국/공식 PMI
+      source_url: https://www.stats.gov.cn/english/
+      frequency: 월간
+      status: partial
+      note: 공식 발표는 무료이나 API보다 공시 페이지/파일 파싱에 가깝습니다.
+    - industry: 화학/정유
+      name: 나프타/올레핀 스프레드
+      source: EIA/World Bank/공개 원자재 데이터
+      source_url: https://www.eia.gov/opendata/
+      frequency: 주간/월간
+      status: partial
+      note: 제품 가격 무료 시계열이 제한적이라 유가와 화학 PPI를 대체 지표로 사용합니다.
+    - industry: 화학/정유
+      name: 정제마진 대체 지표
+      source: EIA petroleum product prices
+      source_url: https://www.eia.gov/opendata/
+      frequency: 주간
+      status: partial
+      note: 제품별 가격 API를 붙여 3-2-1 crack spread 형태로 확장 가능합니다.
+    - industry: 건설/부동산
+      name: 한국 미분양/주택가격지수
+      source: 국토교통부/KOSIS/한국부동산원
+      source_url: https://kosis.kr/
+      frequency: 월간
+      status: partial
+      note: 국내 통계 API 키와 지표 코드를 확정하면 자동화 가능합니다.
+
+fred:
+  enabled: true
+  series:
+    - id: DGS10
+      name: 미국 10년 국채금리
+      unit: "%"
+    - id: DGS2
+      name: 미국 2년 국채금리
+      unit: "%"
+    - id: T10Y2Y
+      name: 미국 10Y-2Y 금리차
+      unit: "%"
+    - id: DEXKOUS
+      name: 원/달러 환율
+      unit: 원
+    - id: VIXCLS
+      name: VIX
+      unit: ""
+
+wsts:
+  enabled: true
+  page_url: https://www.wsts.org/67/Historical-Billings-Report
+  regions:
+    - Worldwide
+    - Asia Pacific
+    - Americas
+  include_3mma: true
+
+korea_exports:
+  enabled: true
+  endpoint: https://apis.data.go.kr/1220000/Itemtrade/getItemtradeList
+  months_back: 15
+  end_offset_months: 1
+  items:
+    - name: 반도체 IC
+      hs_code: "8542"
+      industry: 반도체
+    - name: 반도체 소자
+      hs_code: "8541"
+      industry: 반도체
+    - name: 무선통신기기
+      hs_code: "8517"
+      industry: 반도체
+    - name: 승용차
+      hs_code: "8703"
+      industry: 자동차/전기차
+    - name: 선박
+      hs_code: "8901"
+      industry: 조선

@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "macro-telegram-report"
+version = "0.1.0"
+description = "Daily FRED, WSTS, and Korea export collector with a static industry dashboard."
+requires-python = ">=3.9"
+dependencies = [
+  "beautifulsoup4>=4.12.3",
+  "openpyxl>=3.1.5",
+  "PyYAML>=6.0.2",
+  "requests>=2.32.3",
+  "urllib3<2",
+]
+
+[project.scripts]
+macro-telegram-report = "macro_telegram_report.cli:main"
+industry-dashboard = "macro_telegram_report.dashboard_cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
