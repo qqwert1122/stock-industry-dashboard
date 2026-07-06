@@ -1135,6 +1135,10 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       background: var(--menu-active);
     }
 
+    .side-menu button[aria-current="true"] {
+      background: var(--menu-active);
+    }
+
     .content {
       min-width: 0;
       display: grid;
@@ -1182,6 +1186,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     .industry {
       min-width: 0;
+      scroll-margin-top: 22px;
       border: 1px solid var(--line);
       border-radius: 8px;
       background: var(--surface);
@@ -1442,7 +1447,8 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
   <script>
     const DASHBOARD_DATA = __DASHBOARD_JSON__;
-    const state = { industry: "전체" };
+    const state = { activeIndustry: "" };
+    let scrollSpyFrame = 0;
     const groupOrder = [
       "판매액", "시장 매출", "가격/수요", "투자/장비", "수출",
       "판매/수요", "판매량", "배터리 원재료",
@@ -1474,24 +1480,43 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       return index === -1 ? 999 : index;
     }
 
-    function filteredMetrics() {
-      return DASHBOARD_DATA.metrics
-        .filter((metric) => state.industry === "전체" || metric.industry === state.industry);
+    function visibleIndustries() {
+      return DASHBOARD_DATA.industries.filter((industry) =>
+        DASHBOARD_DATA.metrics.some((metric) => metric.industry === industry)
+      );
+    }
+
+    function industryId(industry) {
+      return `industry-${Array.from(industry).map((char) => char.charCodeAt(0).toString(36)).join("-")}`;
+    }
+
+    function setActiveIndustry(industry) {
+      if (!industry || state.activeIndustry === industry) return;
+      state.activeIndustry = industry;
+      document.querySelectorAll("[data-industry]").forEach((button) => {
+        const active = button.dataset.industry === industry;
+        button.setAttribute("aria-pressed", String(active));
+        button.setAttribute("aria-current", String(active));
+      });
     }
 
     function renderFilters() {
-      const industries = ["전체", ...DASHBOARD_DATA.industries.filter((industry) =>
-        DASHBOARD_DATA.metrics.some((metric) => metric.industry === industry)
-      )];
+      const industries = visibleIndustries();
+      if (!state.activeIndustry && industries.length) {
+        state.activeIndustry = industries[0];
+      }
       document.getElementById("industryFilters").innerHTML = industries.map((industry) => `
-        <button type="button" data-industry="${escapeHtml(industry)}" aria-pressed="${state.industry === industry}">
+        <button type="button" data-industry="${escapeHtml(industry)}" data-target="${industryId(industry)}" aria-pressed="${state.activeIndustry === industry}" aria-current="${state.activeIndustry === industry}">
           ${escapeHtml(industry)}
         </button>
       `).join("");
       document.querySelectorAll("[data-industry]").forEach((button) => {
         button.addEventListener("click", () => {
-          state.industry = button.dataset.industry;
-          render();
+          const industry = button.dataset.industry;
+          const target = document.getElementById(button.dataset.target);
+          if (!industry || !target) return;
+          setActiveIndustry(industry);
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
         });
       });
     }
@@ -1610,7 +1635,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
           </section>
         `).join("");
 
-      return `<article class="industry">
+      return `<article class="industry" id="${industryId(industry)}" data-industry-section data-industry-name="${escapeHtml(industry)}">
         <div class="industry-head">
           <div class="industry-icon-wrap">${icon ? `<img class="industry-icon" src="${escapeHtml(icon)}" alt="">` : ""}</div>
           <div>
@@ -1622,7 +1647,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     }
 
     function renderIndustries() {
-      const metrics = filteredMetrics();
+      const metrics = DASHBOARD_DATA.metrics;
       const stack = document.getElementById("industryStack");
       document.getElementById("empty").style.display = metrics.length ? "none" : "block";
       const byIndustry = metrics.reduce((map, metric) => {
@@ -1633,6 +1658,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         .filter((industry) => byIndustry.has(industry))
         .map((industry) => renderIndustry(industry, byIndustry.get(industry)))
         .join("");
+      updateActiveFromScroll();
     }
 
     function applyTheme(theme) {
@@ -1651,6 +1677,32 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         applyTheme(document.body.classList.contains("theme-dark") ? "light" : "dark");
       });
     }
+
+    function updateActiveFromScroll() {
+      const sections = [...document.querySelectorAll("[data-industry-section]")];
+      if (!sections.length) return;
+      const anchor = window.innerHeight * 0.5;
+      let current = sections[0];
+      for (const section of sections) {
+        if (section.getBoundingClientRect().top <= anchor) {
+          current = section;
+        } else {
+          break;
+        }
+      }
+      setActiveIndustry(current.dataset.industryName);
+    }
+
+    function onScrollSpy() {
+      if (scrollSpyFrame) return;
+      scrollSpyFrame = requestAnimationFrame(() => {
+        scrollSpyFrame = 0;
+        updateActiveFromScroll();
+      });
+    }
+
+    window.addEventListener("scroll", onScrollSpy, { passive: true });
+    window.addEventListener("resize", onScrollSpy);
 
     function render() {
       renderFilters();
