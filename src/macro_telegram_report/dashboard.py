@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import shutil
 from collections import defaultdict
 from datetime import date, datetime, timedelta
 from io import BytesIO
@@ -26,8 +27,35 @@ DEFAULT_INDUSTRIES = [
     "화학/정유",
     "은행/금융",
     "건설/부동산",
+    "방산",
+    "스테이블코인",
+    "전력",
+    "로봇",
+    "우주",
+    "바이오",
+    "배터리",
     "매크로",
 ]
+INDUSTRY_ICONS = {
+    "반도체": "assets/industry-icons/semiconductor.png",
+    "자동차/전기차": "assets/industry-icons/auto-ev.png",
+    "조선": "assets/industry-icons/shipbuilding.png",
+    "철강/소재": "assets/industry-icons/steel-materials.png",
+    "화학/정유": "assets/industry-icons/chemicals-refining.png",
+    "은행/금융": "assets/industry-icons/finance.png",
+    "건설/부동산": "assets/industry-icons/construction-real-estate.png",
+    "매크로": "assets/industry-icons/macro.png",
+}
+INDUSTRY_SUMMARIES = {
+    "반도체": "메모리, 파운드리, 장비, AI 인프라 수요를 함께 봅니다.",
+    "자동차/전기차": "완성차 판매와 EV, 배터리 원재료 흐름을 묶어 봅니다.",
+    "조선": "운임, 선가, 발주, 선박 수출을 통해 수주 환경을 점검합니다.",
+    "철강/소재": "원자재 가격과 중국 제조업 경기를 소재 업황 proxy로 봅니다.",
+    "화학/정유": "유가, 원료, 제품 스프레드로 마진 방향을 확인합니다.",
+    "은행/금융": "금리, 스프레드, 대출, 연체율로 금융 환경을 봅니다.",
+    "건설/부동산": "착공, 허가, 금리, 가격으로 부동산 선행 흐름을 봅니다.",
+    "매크로": "환율과 변동성으로 시장 환경을 빠르게 확인합니다.",
+}
 
 
 def build_dashboard_site(config: dict[str, Any], output_dir: str | Path, session: requests.Session) -> dict[str, Any]:
@@ -38,10 +66,26 @@ def build_dashboard_site(config: dict[str, Any], output_dir: str | Path, session
     payload = build_dashboard_payload(config, session)
     json_text = json.dumps(payload, ensure_ascii=False, indent=2)
 
+    copy_dashboard_assets(output_path)
     (data_path / "dashboard.json").write_text(json_text + "\n", encoding="utf-8")
     (output_path / "index.html").write_text(render_dashboard_html(payload), encoding="utf-8")
     (output_path / ".nojekyll").write_text("", encoding="utf-8")
     return payload
+
+
+def copy_dashboard_assets(output_path: Path) -> None:
+    candidates = [
+        Path.cwd() / "assets" / "industry-icons",
+        Path(__file__).resolve().parents[2] / "assets" / "industry-icons",
+    ]
+    source = next((path for path in candidates if path.exists()), None)
+    if source is None:
+        return
+
+    target = output_path / "assets" / "industry-icons"
+    if target.exists():
+        shutil.rmtree(target)
+    shutil.copytree(source, target)
 
 
 def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -> dict[str, Any]:
@@ -54,6 +98,7 @@ def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -
     collectors = [
         ("WSTS", collect_wsts_metrics),
         ("FRED", collect_fred_metrics),
+        ("스테이블코인", collect_stablecoin_metrics),
         ("한국 수출", collect_korea_export_metrics),
     ]
     for source_name, collector in collectors:
@@ -95,6 +140,8 @@ def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -
         "generated_label": now.strftime("%Y-%m-%d %H:%M %Z"),
         "timezone": timezone,
         "industries": industries,
+        "industry_icons": INDUSTRY_ICONS,
+        "industry_summaries": INDUSTRY_SUMMARIES,
         "source_status": [],
         "metrics": metrics,
     }
@@ -226,6 +273,172 @@ def fetch_fred_history(
         points.append((date.fromisoformat(str(item["date"])), value))
     points.sort(key=lambda point: point[0])
     return points[-limit:], "FRED API"
+
+
+def collect_stablecoin_metrics(
+    config: dict[str, Any], session: requests.Session, today: date
+) -> list[dict[str, Any]]:
+    stablecoin_config = config.get("stablecoins", {})
+    if not stablecoin_config.get("enabled", True):
+        return []
+
+    endpoint = str(
+        stablecoin_config.get("endpoint")
+        or "https://stablecoins.llama.fi/stablecoins?includePrices=true"
+    )
+    source_url = str(stablecoin_config.get("source_url") or "https://defillama.com/stablecoins")
+    response = session.get(endpoint, timeout=(5, 20))
+    response.raise_for_status()
+    payload = response.json()
+    assets = [
+        asset
+        for asset in payload.get("peggedAssets", [])
+        if isinstance(asset, dict) and not asset.get("delisted")
+    ]
+
+    configured_assets = stablecoin_config.get("assets") or [
+        {"symbol": "TOTAL", "name": "전체 스테이블코인 유통량"},
+        {"symbol": "USDT", "name": "USDT 유통량"},
+        {"symbol": "USDC", "name": "USDC 유통량"},
+    ]
+
+    metrics: list[dict[str, Any]] = []
+    for item in configured_assets:
+        symbol = str(item.get("symbol") or "").upper()
+        asset_id = str(item.get("id") or "")
+        name = str(item.get("name") or symbol or asset_id or "스테이블코인 유통량")
+
+        if symbol == "TOTAL":
+            values = stablecoin_total_values(assets)
+        else:
+            asset = find_stablecoin_asset(assets, symbol=symbol, asset_id=asset_id)
+            if asset is None:
+                metrics.append(
+                    make_metric(
+                        industry="스테이블코인",
+                        name=name,
+                        source="DefiLlama Stablecoins API",
+                        source_url=source_url,
+                        frequency="일간",
+                        automation="무료로 안정적으로 자동화 가능",
+                        status="error",
+                        note=f"{symbol or asset_id} 자산을 찾을 수 없음",
+                        group=str(item.get("group") or "유통량"),
+                        meaning=str(item.get("meaning") or stablecoin_meaning()),
+                    )
+                )
+                continue
+            values = stablecoin_asset_values(asset)
+            if not item.get("name"):
+                name = f"{asset.get('name', symbol)}({asset.get('symbol', symbol)}) 유통량"
+
+        current = values.get("current")
+        if current is None:
+            metrics.append(
+                make_metric(
+                    industry="스테이블코인",
+                    name=name,
+                    source="DefiLlama Stablecoins API",
+                    source_url=source_url,
+                    frequency="일간",
+                    automation="무료로 안정적으로 자동화 가능",
+                    status="error",
+                    note="유통량 데이터 없음",
+                    group=str(item.get("group") or "유통량"),
+                    meaning=str(item.get("meaning") or stablecoin_meaning()),
+                )
+            )
+            continue
+
+        history = stablecoin_history_points(values, today)
+        metrics.append(
+            make_metric(
+                industry="스테이블코인",
+                name=name,
+                source="DefiLlama Stablecoins API",
+                source_url=source_url,
+                frequency="일간",
+                automation="무료 공개 API 자동 수집",
+                status="ok",
+                value=current / 1_000_000_000,
+                unit="$B",
+                observed_at=today.isoformat(),
+                previous_value=stablecoin_billions(values.get("prev_day")),
+                yoy_value=None,
+                history=history,
+                note=str(item.get("note") or ""),
+                group=str(item.get("group") or "유통량"),
+                meaning=str(item.get("meaning") or stablecoin_meaning()),
+            )
+        )
+    return metrics
+
+
+def find_stablecoin_asset(
+    assets: list[dict[str, Any]], *, symbol: str, asset_id: str
+) -> dict[str, Any] | None:
+    for asset in assets:
+        if asset_id and str(asset.get("id") or "") == asset_id:
+            return asset
+        if symbol and str(asset.get("symbol") or "").upper() == symbol:
+            return asset
+    return None
+
+
+def stablecoin_asset_values(asset: dict[str, Any]) -> dict[str, float | None]:
+    return {
+        "current": stablecoin_supply_value(asset, "circulating"),
+        "prev_day": stablecoin_supply_value(asset, "circulatingPrevDay"),
+        "prev_week": stablecoin_supply_value(asset, "circulatingPrevWeek"),
+        "prev_month": stablecoin_supply_value(asset, "circulatingPrevMonth"),
+    }
+
+
+def stablecoin_total_values(assets: list[dict[str, Any]]) -> dict[str, float | None]:
+    values: dict[str, float | None] = {}
+    for key, source_key in [
+        ("current", "circulating"),
+        ("prev_day", "circulatingPrevDay"),
+        ("prev_week", "circulatingPrevWeek"),
+        ("prev_month", "circulatingPrevMonth"),
+    ]:
+        total = 0.0
+        found = False
+        for asset in assets:
+            if str(asset.get("pegType") or "") != "peggedUSD":
+                continue
+            value = stablecoin_supply_value(asset, source_key)
+            if value is None:
+                continue
+            total += value
+            found = True
+        values[key] = total if found else None
+    return values
+
+
+def stablecoin_supply_value(asset: dict[str, Any], key: str) -> float | None:
+    value = asset.get(key)
+    if isinstance(value, dict):
+        return to_float(value.get("peggedUSD"))
+    return to_float(value)
+
+
+def stablecoin_history_points(values: dict[str, float | None], today: date) -> list[tuple[date, float]]:
+    points = [
+        (today - timedelta(days=30), stablecoin_billions(values.get("prev_month"))),
+        (today - timedelta(days=7), stablecoin_billions(values.get("prev_week"))),
+        (today - timedelta(days=1), stablecoin_billions(values.get("prev_day"))),
+        (today, stablecoin_billions(values.get("current"))),
+    ]
+    return [(observed_at, value) for observed_at, value in points if value is not None]
+
+
+def stablecoin_billions(value: float | None) -> float | None:
+    return value / 1_000_000_000 if value is not None else None
+
+
+def stablecoin_meaning() -> str:
+    return "달러 연동 스테이블코인의 유통량 변화로 온체인 달러 유동성과 결제/거래 수요를 확인합니다."
 
 
 def collect_wsts_metrics(
@@ -579,6 +792,30 @@ def infer_metric_group(industry: str, name: str) -> str:
         return "수출"
     if "WSTS" in name or "반도체 판매" in name:
         return "판매액"
+    if industry == "방산":
+        if "수주잔고" in name:
+            return "수주잔고"
+        if "신규주문" in name:
+            return "신규주문"
+        return "방산 수요"
+    if industry == "스테이블코인":
+        return "유통량"
+    if industry == "전력":
+        if "PPI" in name:
+            return "전력 가격"
+        return "전력 수요/생산"
+    if industry == "로봇":
+        if "PPI" in name:
+            return "자동화 장비 가격"
+        return "설비투자 proxy"
+    if industry == "우주":
+        if "PPI" in name:
+            return "항공우주 가격"
+        return "우주/방산 생산"
+    if industry == "바이오":
+        return "바이오 가격"
+    if industry == "배터리":
+        return "배터리 가격"
     if industry == "은행/금융":
         if "금리차" in name or "스프레드" in name:
             return "스프레드"
@@ -640,6 +877,20 @@ def infer_metric_meaning(industry: str, name: str) -> str:
         return "경량 소재와 제조업 수요, 전력비 영향을 함께 받는 소재 가격입니다."
     if "자동차 판매" in name:
         return "완성차 수요와 소비 경기 흐름을 확인하는 판매 지표입니다."
+    if "방산" in name:
+        return "방산 발주와 생산 사이클을 통해 방산 업체의 수요 환경을 확인합니다."
+    if "스테이블코인" in name or "USDT" in name or "USDC" in name:
+        return stablecoin_meaning()
+    if "전력" in name or "유틸리티" in name:
+        return "전력 생산과 가격 흐름으로 전력 인프라와 전력 수요 사이클을 확인합니다."
+    if "산업용 기계" in name or "산업 제어" in name:
+        return "자동화 설비 투자와 로봇 부품 수요를 가늠하는 proxy 지표입니다."
+    if "우주" in name or "항공우주" in name:
+        return "항공우주 생산과 가격 흐름으로 우주 밸류체인의 수요 환경을 확인합니다."
+    if "생물학적" in name or "체외진단" in name:
+        return "바이오 의약품과 진단 제품의 가격 사이클을 확인하는 지표입니다."
+    if "배터리" in name:
+        return "배터리 제품 가격 흐름으로 셀/소재 밸류체인의 업황을 점검합니다."
     if "환율" in name:
         return "수출주 원화 환산 매출과 외국인 수급에 영향을 주는 매크로 변수입니다."
     if "VIX" in name:
@@ -740,7 +991,512 @@ def status_to_automation(status: str) -> str:
 
 def render_dashboard_html(payload: dict[str, Any]) -> str:
     json_text = json.dumps(payload, ensure_ascii=False).replace("</", "<\\/")
-    return HTML_TEMPLATE.replace("__DASHBOARD_JSON__", json_text)
+    return GROUPED_HTML_TEMPLATE.replace("__DASHBOARD_JSON__", json_text)
+
+
+GROUPED_HTML_TEMPLATE = """<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>산업별 핵심 지표 대시보드</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f3ee;
+      --paper: #fffdfa;
+      --panel: #ffffff;
+      --text: #202124;
+      --muted: #6c6a63;
+      --soft: #f0eee7;
+      --line: #dedbd1;
+      --accent: #2f6f73;
+      --accent-soft: #e5f0ee;
+      --good: #07805e;
+      --bad: #c24135;
+      --gold: #b48627;
+      --shadow: 0 14px 30px rgba(39, 38, 34, 0.07);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    .shell {
+      width: min(1480px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 26px 0 42px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: end;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(25px, 3vw, 38px);
+      line-height: 1.08;
+      font-weight: 790;
+    }
+
+    .subtitle {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .updated {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 16px 0;
+      background: rgba(245, 243, 238, 0.92);
+      backdrop-filter: blur(12px);
+    }
+
+    button {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      color: var(--text);
+      padding: 0 13px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 720;
+      cursor: pointer;
+    }
+
+    button[aria-pressed="true"] {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: #174b50;
+    }
+
+    .industry-stack {
+      display: grid;
+      gap: 18px;
+    }
+
+    .industry {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .industry-head {
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1fr);
+      gap: 18px;
+      align-items: center;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #fffefa, #f9f7f0);
+    }
+
+    .industry-icon-wrap {
+      width: 92px;
+      height: 92px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: #f4f1e8;
+    }
+
+    .industry-icon {
+      width: 76px;
+      height: 76px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .industry h2 {
+      margin: 0;
+      font-size: 25px;
+      line-height: 1.15;
+      font-weight: 790;
+    }
+
+    .industry-summary {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .group-stack {
+      display: grid;
+      gap: 0;
+    }
+
+    .group {
+      padding: 18px 20px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .group:last-child { border-bottom: 0; }
+
+    .group-title {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #3c3b36;
+    }
+
+    .group-title::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--gold);
+      flex: 0 0 auto;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric {
+      min-height: 268px;
+      display: grid;
+      grid-template-rows: auto auto 70px auto;
+      gap: 12px;
+      padding: 15px;
+      border: 1px solid #ebe7dc;
+      border-radius: 8px;
+      background: var(--panel);
+    }
+
+    .metric h3 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.32;
+      font-weight: 790;
+      overflow-wrap: anywhere;
+    }
+
+    .meaning {
+      margin: 7px 0 0;
+      min-height: 38px;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
+    .metric-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    .value {
+      font-size: 31px;
+      line-height: 1;
+      font-weight: 820;
+      overflow-wrap: anywhere;
+    }
+
+    .deltas {
+      display: grid;
+      gap: 5px;
+      min-width: 92px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .deltas strong {
+      display: inline-block;
+      min-width: 54px;
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .positive { color: var(--good) !important; }
+    .negative { color: var(--bad) !important; }
+
+    .spark {
+      width: 100%;
+      height: 70px;
+      border: 1px solid #efebe1;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #fffdfa, #f9f7f1);
+    }
+
+    .period {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding-top: 9px;
+      border-top: 1px solid #efebe1;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .period strong {
+      color: #3f403b;
+      font-weight: 760;
+      white-space: nowrap;
+    }
+
+    .empty {
+      display: none;
+      margin: 28px 0;
+      padding: 26px;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 1120px) {
+      .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 720px) {
+      .shell {
+        width: min(100% - 20px, 680px);
+        padding-top: 16px;
+      }
+
+      header {
+        grid-template-columns: 1fr;
+        align-items: start;
+      }
+
+      .updated { text-align: left; white-space: normal; }
+      .toolbar { position: static; }
+      button { flex: 1 1 auto; }
+      .industry-head {
+        grid-template-columns: 70px minmax(0, 1fr);
+        gap: 12px;
+        padding: 15px;
+      }
+      .industry-icon-wrap {
+        width: 70px;
+        height: 70px;
+      }
+      .industry-icon {
+        width: 60px;
+        height: 60px;
+      }
+      .industry h2 { font-size: 21px; }
+      .group { padding: 15px; }
+      .metric-grid { grid-template-columns: 1fr; }
+      .metric-main { grid-template-columns: 1fr; }
+      .deltas {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        text-align: left;
+      }
+      .value { font-size: 29px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <h1 id="title">산업별 핵심 지표 대시보드</h1>
+        <div class="subtitle">비슷한 지표를 그룹으로 묶어 업황 변화를 빠르게 봅니다.</div>
+      </div>
+      <div class="updated" id="updated"></div>
+    </header>
+    <nav class="toolbar" id="industryFilters" aria-label="산업 필터"></nav>
+    <section class="industry-stack" id="industryStack"></section>
+    <div class="empty" id="empty">표시할 지표가 없습니다.</div>
+  </main>
+
+  <script>
+    const DASHBOARD_DATA = __DASHBOARD_JSON__;
+    const state = { industry: "전체" };
+    const groupOrder = [
+      "판매액", "시장 매출", "가격/수요", "투자/장비", "수출",
+      "판매/수요", "판매량", "배터리 원재료",
+      "운임/해운", "선가/발주",
+      "원자재 가격", "중국 경기",
+      "에너지 가격", "원유/원료", "화학 스프레드 proxy", "스프레드/마진",
+      "금리", "스프레드", "금리/스프레드", "은행 건전성", "대출/건전성",
+      "주택 경기", "건설 선행", "금융비용", "주택 시장",
+      "환율", "리스크", "시장 환경", "핵심 지표"
+    ];
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    function directionClass(value) {
+      if (typeof value !== "number" || !Number.isFinite(value) || value === 0) return "";
+      return value > 0 ? "positive" : "negative";
+    }
+
+    function groupRank(group) {
+      const index = groupOrder.indexOf(group);
+      return index === -1 ? 999 : index;
+    }
+
+    function filteredMetrics() {
+      return DASHBOARD_DATA.metrics
+        .filter((metric) => state.industry === "전체" || metric.industry === state.industry);
+    }
+
+    function renderFilters() {
+      const industries = ["전체", ...DASHBOARD_DATA.industries.filter((industry) =>
+        DASHBOARD_DATA.metrics.some((metric) => metric.industry === industry)
+      )];
+      document.getElementById("industryFilters").innerHTML = industries.map((industry) => `
+        <button type="button" data-industry="${escapeHtml(industry)}" aria-pressed="${state.industry === industry}">
+          ${escapeHtml(industry)}
+        </button>
+      `).join("");
+      document.querySelectorAll("[data-industry]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.industry = button.dataset.industry;
+          render();
+        });
+      });
+    }
+
+    function sparkline(history) {
+      if (!history || history.length < 2) {
+        return `<svg class="spark" viewBox="0 0 300 70" role="img" aria-label="trend unavailable">
+          <line x1="16" y1="36" x2="284" y2="36" stroke="#ddd8cc" stroke-width="2" stroke-dasharray="5 5"></line>
+        </svg>`;
+      }
+      const values = history.map((point) => point.value).filter((value) => typeof value === "number" && Number.isFinite(value));
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+      const span = max - min || 1;
+      const width = 300;
+      const height = 70;
+      const padX = 12;
+      const padY = 10;
+      const points = history.map((point, index) => {
+        const x = padX + (index / Math.max(history.length - 1, 1)) * (width - padX * 2);
+        const y = height - padY - ((point.value - min) / span) * (height - padY * 2);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(" ");
+      return `<svg class="spark" viewBox="0 0 300 70" role="img" aria-label="trend">
+        <line x1="12" y1="60" x2="288" y2="60" stroke="#ebe5d8" stroke-width="1"></line>
+        <polyline points="${points}" fill="none" stroke="#2f6f73" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
+      </svg>`;
+    }
+
+    function metricCard(metric) {
+      return `<article class="metric">
+        <div>
+          <h3>${escapeHtml(metric.name)}</h3>
+          <p class="meaning">${escapeHtml(metric.meaning)}</p>
+        </div>
+        <div class="metric-main">
+          <div class="value">${escapeHtml(metric.display_value)}</div>
+          <div class="deltas">
+            <span>전기 <strong class="${directionClass(metric.change_abs)}">${escapeHtml(metric.change_abs_label)}</strong></span>
+            <span>전기% <strong class="${directionClass(metric.change_pct)}">${escapeHtml(metric.change_pct_label)}</strong></span>
+            <span>YoY <strong class="${directionClass(metric.yoy_pct)}">${escapeHtml(metric.yoy_pct_label)}</strong></span>
+          </div>
+        </div>
+        ${sparkline(metric.history)}
+        <div class="period"><span>기간</span><strong>${escapeHtml(metric.period_label || metric.observed_label || "")}</strong></div>
+      </article>`;
+    }
+
+    function renderIndustry(industry, metrics) {
+      const groups = Map.groupBy
+        ? Map.groupBy(metrics, (metric) => metric.group || "핵심 지표")
+        : metrics.reduce((map, metric) => {
+            const key = metric.group || "핵심 지표";
+            map.set(key, [...(map.get(key) || []), metric]);
+            return map;
+          }, new Map());
+      const icon = DASHBOARD_DATA.industry_icons?.[industry] || "";
+      const summary = DASHBOARD_DATA.industry_summaries?.[industry] || "";
+      const groupHtml = [...groups.entries()]
+        .sort(([a], [b]) => groupRank(a) - groupRank(b) || String(a).localeCompare(String(b), "ko"))
+        .map(([group, items]) => `
+          <section class="group">
+            <div class="group-title">${escapeHtml(group)}</div>
+            <div class="metric-grid">${items.map(metricCard).join("")}</div>
+          </section>
+        `).join("");
+
+      return `<article class="industry">
+        <div class="industry-head">
+          <div class="industry-icon-wrap">${icon ? `<img class="industry-icon" src="${escapeHtml(icon)}" alt="">` : ""}</div>
+          <div>
+            <h2>${escapeHtml(industry)}</h2>
+            <p class="industry-summary">${escapeHtml(summary)}</p>
+          </div>
+        </div>
+        <div class="group-stack">${groupHtml}</div>
+      </article>`;
+    }
+
+    function renderIndustries() {
+      const metrics = filteredMetrics();
+      const stack = document.getElementById("industryStack");
+      document.getElementById("empty").style.display = metrics.length ? "none" : "block";
+      const byIndustry = metrics.reduce((map, metric) => {
+        map.set(metric.industry, [...(map.get(metric.industry) || []), metric]);
+        return map;
+      }, new Map());
+      stack.innerHTML = DASHBOARD_DATA.industries
+        .filter((industry) => byIndustry.has(industry))
+        .map((industry) => renderIndustry(industry, byIndustry.get(industry)))
+        .join("");
+    }
+
+    function render() {
+      document.getElementById("title").textContent = DASHBOARD_DATA.title;
+      document.getElementById("updated").innerHTML = `업데이트 ${escapeHtml(DASHBOARD_DATA.generated_label)}<br>${escapeHtml(DASHBOARD_DATA.timezone)}`;
+      renderFilters();
+      renderIndustries();
+    }
+
+    render();
+  </script>
+</body>
+</html>
+"""
 
 
 HTML_TEMPLATE = """<!doctype html>
