@@ -37,6 +37,23 @@ industry-dashboard --config config.yaml --out site
 
 생성된 파일은 `site/index.html`입니다.
 
+## VSCode에서 외형 수정
+
+외형만 바꿀 때는 API를 다시 수집하지 않고 기존 `site/data/dashboard.json`을 재사용합니다.
+
+```bash
+.venv/bin/python scripts/dev_dashboard.py
+```
+
+터미널에 표시되는 `http://127.0.0.1:8000/` 주소를 브라우저나 VSCode Simple Browser로 열면 됩니다.  
+`src/macro_telegram_report/dashboard.py`의 `MODERN_HTML_TEMPLATE` 안 CSS/HTML/JS를 수정하면 `site/index.html`이 자동으로 다시 생성되고 브라우저가 새로고침됩니다.
+
+데이터까지 새로 수집하고 싶을 때만 아래처럼 실행합니다.
+
+```bash
+.venv/bin/python scripts/dev_dashboard.py --full-build
+```
+
 ## GitHub Pages 배포
 
 1. 이 private 저장소에서 `Daily Industry Dashboard` workflow를 실행합니다.
