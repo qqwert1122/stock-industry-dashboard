@@ -4423,21 +4423,21 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       }
 
       .detail-chart {
-        grid-template-columns: 38px minmax(0, 1fr);
+        grid-template-columns: 40px minmax(0, 1fr);
         overflow: hidden;
         padding: 0 0 6px;
       }
 
       .detail-chart-axis {
-        width: 38px;
-        min-width: 38px;
-        height: 126px;
+        width: 40px;
+        min-width: 40px;
+        height: 158px;
       }
 
       .detail-chart-scroll .chart {
         width: max(100%, var(--detail-chart-width, 520px));
         min-width: max(100%, var(--detail-chart-width, 520px));
-        height: 126px;
+        height: 158px;
       }
 
       .detail-stats {
@@ -5002,23 +5002,31 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       const chartStyle = ` style="--detail-chart-width: ${svgWidth}px"`;
       const axisClass = "chart detail-chart-axis";
       const plotClass = "chart chart-detail";
-      const axisWidth = 42;
-      const axisGuideStart = 36;
-      const left = 4;
-      const right = svgWidth - 4;
-      const emptyPlot = `<svg class="${plotClass}"${chartStyle} viewBox="0 0 ${svgWidth} 158" role="img" aria-label="trend unavailable">
-        <line x1="${left}" y1="72" x2="${right}" y2="72" class="guide"></line>
+      const isMobileChart = mobileDrawerQuery.matches;
+      const chartHeight = isMobileChart ? 158 : 190;
+      const axisWidth = isMobileChart ? 40 : 42;
+      const axisGuideStart = axisWidth - 6;
+      const left = 1;
+      const right = svgWidth - 1;
+      const top = isMobileChart ? 12 : 18;
+      const axisY = chartHeight - 32;
+      const bottom = axisY - 12;
+      const labelBottom = chartHeight - 12;
+      const levelMinY = top - 2;
+      const levelMaxY = bottom + 2;
+      const emptyPlot = `<svg class="${plotClass}"${chartStyle} viewBox="0 0 ${svgWidth} ${chartHeight}" role="img" aria-label="trend unavailable">
+        <line x1="${left}" y1="${(top + bottom) / 2}" x2="${right}" y2="${(top + bottom) / 2}" class="guide"></line>
       </svg>`;
       if (!displayPoints || displayPoints.length < 2) {
         return `<div class="detail-chart">
-          <svg class="${axisClass}" viewBox="0 0 ${axisWidth} 158" aria-hidden="true"></svg>
+          <svg class="${axisClass}" viewBox="0 0 ${axisWidth} ${chartHeight}" aria-hidden="true"></svg>
           <div class="detail-chart-scroll">${emptyPlot}</div>
         </div>`;
       }
       const values = displayPoints.map((point) => point.value).filter((value) => typeof value === "number" && Number.isFinite(value));
       if (values.length < 2) {
         return `<div class="detail-chart">
-          <svg class="${axisClass}" viewBox="0 0 ${axisWidth} 158" aria-hidden="true"></svg>
+          <svg class="${axisClass}" viewBox="0 0 ${axisWidth} ${chartHeight}" aria-hidden="true"></svg>
           <div class="detail-chart-scroll">${emptyPlot}</div>
         </div>`;
       }
@@ -5027,8 +5035,6 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       const latest = displayPoints[displayPoints.length - 1].value;
       const first = displayPoints[0].value;
       const span = max - min || 1;
-      const top = 16;
-      const bottom = 116;
       const yFor = (value) => bottom - ((value - min) / span) * (bottom - top);
       const points = displayPoints.map((point, index) => {
         const x = left + (index / Math.max(displayPoints.length - 1, 1)) * (right - left);
@@ -5048,13 +5054,13 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
           label: formatAxisValue(value),
           y: yFor(value)
         })),
-        14,
-        118
+        levelMinY,
+        levelMaxY
       );
       const yAxis = levels.map((level) => {
         const labelY = level.labelY;
         return `<g>
-          <text x="4" y="${(labelY + 3).toFixed(1)}">${level.label}</text>
+          <text x="${axisGuideStart.toFixed(1)}" y="${(labelY + 3).toFixed(1)}" text-anchor="end">${level.label}</text>
         </g>`;
       }).join("");
       const ticks = chartTicks(displayPoints, left, right, true);
@@ -5062,11 +5068,11 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         <line x1="${left}" y1="${level.y.toFixed(1)}" x2="${right}" y2="${level.y.toFixed(1)}" class="chart-background-line"></line>
       `).join("");
       const xBackgroundLines = ticks.map((tick) => `
-        <line x1="${tick.x.toFixed(1)}" y1="16" x2="${tick.x.toFixed(1)}" y2="126" class="chart-background-line"></line>
+        <line x1="${tick.x.toFixed(1)}" y1="${top}" x2="${tick.x.toFixed(1)}" y2="${axisY}" class="chart-background-line"></line>
       `).join("");
       const xGuides = ticks.map((tick) => {
         const anchor = tick.x <= left + 2 ? "start" : tick.x >= right - 2 ? "end" : "middle";
-        return `<text x="${tick.x.toFixed(1)}" y="146" text-anchor="${anchor}">${tick.label}</text>`;
+        return `<text x="${tick.x.toFixed(1)}" y="${labelBottom}" text-anchor="${anchor}">${tick.label}</text>`;
       }).join("");
       const tooltipUnit = detailChartUnit(metric || {});
       const pointHits = displayPoints.map((point, index) => {
@@ -5082,15 +5088,15 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       const latestX = right;
       const latestY = yFor(latest);
       return `<div class="detail-chart">
-        <svg class="${axisClass}" viewBox="0 0 ${axisWidth} 158" aria-hidden="true">
+        <svg class="${axisClass}" viewBox="0 0 ${axisWidth} ${chartHeight}" aria-hidden="true">
           ${yAxis}
-          <line x1="${axisGuideStart}" y1="126" x2="${axisWidth}" y2="126" class="axis-line"></line>
+          <line x1="${axisGuideStart}" y1="${axisY}" x2="${axisWidth}" y2="${axisY}" class="axis-line"></line>
         </svg>
         <div class="detail-chart-scroll">
-          <svg class="${plotClass}"${chartStyle} viewBox="0 0 ${svgWidth} 158" role="img" aria-label="trend">
+          <svg class="${plotClass}"${chartStyle} viewBox="0 0 ${svgWidth} ${chartHeight}" role="img" aria-label="trend">
             ${yBackgroundLines}
             ${xBackgroundLines}
-            <line x1="${left}" y1="126" x2="${right}" y2="126" class="axis-line"></line>
+            <line x1="${left}" y1="${axisY}" x2="${right}" y2="${axisY}" class="axis-line"></line>
             ${xGuides}
             <polyline points="${points}" class="trend-line ${trend}"></polyline>
             <circle cx="${latestX}" cy="${latestY.toFixed(1)}" r="4" class="current-dot ${trend}"></circle>
@@ -5354,7 +5360,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         const scroller = detail.querySelector(".detail-chart-scroll");
         if (scroller) {
           requestAnimationFrame(() => {
-            scroller.scrollLeft = 0;
+            scroller.scrollLeft = Math.max(0, scroller.scrollWidth - scroller.clientWidth);
           });
         }
       }
