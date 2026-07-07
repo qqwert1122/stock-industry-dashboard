@@ -7,7 +7,7 @@ import re
 import shutil
 import time
 from collections import defaultdict
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from io import BytesIO
 from pathlib import Path
 from typing import Any
@@ -156,6 +156,8 @@ EN_GROUP_LABELS = {
     "주택 재고": "Housing Inventory",
     "국내 주택": "Korea Housing",
     "건설 허가": "Construction Permits",
+    "대표주가": "Representative Stock Prices",
+    "신용 스프레드": "Credit Spreads",
 }
 EN_FREQUENCY_LABELS = {
     "일간": "Daily",
@@ -219,6 +221,11 @@ EN_METRIC_NAME_LABELS = {
     "미국 2년 국채금리": "US 2Y Treasury Yield",
     "미국 10Y-2Y 금리차": "US 10Y-2Y Treasury Spread",
     "미국 BAA 회사채-10년 국채 스프레드": "US BAA Corporate-10Y Treasury Spread",
+    "미국 투자등급 회사채 OAS": "US Investment Grade Corporate OAS",
+    "미국 BBB 회사채 OAS": "US BBB Corporate OAS",
+    "미국 하이일드 회사채 OAS": "US High Yield Corporate OAS",
+    "한국 회사채 AA- 3Y-국고채 3Y 스프레드": "Korea AA- Corporate 3Y-KTB 3Y Spread",
+    "한국 회사채 BBB- 3Y-국고채 3Y 스프레드": "Korea BBB- Corporate 3Y-KTB 3Y Spread",
     "미국 은행 대출 연체율": "US Bank Loan Delinquency Rate",
     "미국 상업은행 총대출": "US Commercial Bank Total Loans",
     "미국 주택착공": "US Housing Starts",
@@ -275,6 +282,11 @@ EN_MEANING_LABELS = {
     "할인율과 금융주 마진 기대를 좌우하는 시장 금리입니다.": "Market rate that drives discount rates and bank margin expectations.",
     "경기 기대와 은행 순이자마진 환경을 함께 보여주는 지표입니다.": "Shows both growth expectations and the net interest margin backdrop for banks.",
     "신용 위험과 자금 조달 여건이 얼마나 빡빡한지 확인합니다.": "Measures credit risk and how tight funding conditions are.",
+    "미국 투자등급 회사채 OAS는 우량 회사채 신용위험과 자금조달 여건을 보여주는 지표입니다.": "US investment grade corporate OAS shows credit risk and funding conditions for higher-quality corporate bonds.",
+    "BBB 회사채 OAS는 경기 둔화와 신용위험 확대에 민감한 투자등급 하단 스프레드입니다.": "BBB corporate OAS tracks the lower end of investment grade credit, which is sensitive to slowdown and credit stress.",
+    "하이일드 OAS는 위험자산 선호와 기업 부도위험 변화를 보여주는 대표 신용 스프레드입니다.": "High yield OAS is a representative credit spread for risk appetite and corporate default risk.",
+    "한국 회사채 AA- 3년 금리와 국고채 3년 금리의 차이로 국내 우량 기업 신용위험과 자금조달 여건을 확인합니다.": "Spread between Korea AA- 3Y corporate bonds and 3Y government bonds, used to read domestic high-grade credit risk and funding conditions.",
+    "한국 회사채 BBB- 3년 금리와 국고채 3년 금리의 차이로 국내 하위등급 신용위험과 위험회피 강도를 확인합니다.": "Spread between Korea BBB- 3Y corporate bonds and 3Y government bonds, used to read lower-grade credit risk and risk aversion.",
     "대출 자산의 질과 금융 시스템 부담을 점검합니다.": "Checks loan asset quality and stress in the financial system.",
     "은행권 신용 공급과 실물 경기의 자금 수요를 봅니다.": "Tracks bank credit supply and real-economy loan demand.",
     "건설 경기의 실제 착공 모멘텀과 주택 공급 흐름을 보여줍니다.": "Shows actual construction momentum and the housing supply pipeline.",
@@ -369,6 +381,8 @@ def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -
     collectors = [
         ("WSTS", collect_wsts_metrics),
         ("FRED", collect_fred_metrics),
+        ("ECOS 신용스프레드", collect_ecos_credit_spread_metrics),
+        ("대표주가", collect_equity_price_metrics),
         ("스테이블코인", collect_stablecoin_metrics),
         ("World Bank 원자재", collect_world_bank_commodity_metrics),
         ("SEC CAPEX", collect_sec_capex_metrics),
@@ -553,6 +567,340 @@ def fetch_fred_history(
         points.append((date.fromisoformat(str(item["date"])), value))
     points.sort(key=lambda point: point[0])
     return points[-limit:], "FRED API"
+
+
+def collect_ecos_credit_spread_metrics(
+    config: dict[str, Any], session: requests.Session, today: date
+) -> list[dict[str, Any]]:
+    ecos_config = config.get("ecos", {})
+    if not ecos_config.get("enabled", True):
+        return []
+
+    items = ecos_config.get("credit_spreads", [])
+    if not items:
+        return []
+
+    api_key = os.getenv("ECOS_API_KEY", "").strip()
+    history_limit = int(config.get("dashboard", {}).get("history_points", 48))
+    fetch_days = int(ecos_config.get("fetch_days", 730))
+    row_count = int(ecos_config.get("row_count", 1000))
+    if api_key == "sample":
+        fetch_days = min(fetch_days, 14)
+        row_count = min(row_count, 10)
+    fetch_start = today - timedelta(days=fetch_days)
+    source_url = str(ecos_config.get("source_url") or "https://ecos.bok.or.kr/api/")
+
+    if not api_key:
+        return [
+            make_metric(
+                industry=str(item.get("industry") or "은행/금융"),
+                name=str(item.get("name") or "한국 신용 스프레드"),
+                source="한국은행 ECOS API",
+                source_url=source_url,
+                frequency=str(item.get("frequency") or "일간"),
+                automation="무료로 안정적으로 자동화 가능",
+                status="needs_key",
+                note="GitHub Secrets에 ECOS_API_KEY 등록 필요",
+                group=str(item.get("group") or "신용 스프레드"),
+                meaning=str(item.get("meaning") or ""),
+            )
+            for item in items
+        ]
+
+    metrics: list[dict[str, Any]] = []
+    for item in items:
+        name = str(item.get("name") or "한국 신용 스프레드")
+        industry = str(item.get("industry") or "은행/금융")
+        frequency = str(item.get("frequency") or "일간")
+        group = str(item.get("group") or "신용 스프레드")
+        meaning = str(item.get("meaning") or "")
+        try:
+            corporate_points = fetch_ecos_points(
+                session=session,
+                base_url=str(ecos_config.get("endpoint") or "https://ecos.bok.or.kr/api"),
+                api_key=api_key,
+                stat_code=str(item.get("stat_code") or "817Y002"),
+                period=str(item.get("period") or "D"),
+                start=fetch_start,
+                end=today,
+                item_code=str(item.get("corporate_item_code") or ""),
+                row_count=row_count,
+            )
+            treasury_points = fetch_ecos_points(
+                session=session,
+                base_url=str(ecos_config.get("endpoint") or "https://ecos.bok.or.kr/api"),
+                api_key=api_key,
+                stat_code=str(item.get("stat_code") or "817Y002"),
+                period=str(item.get("period") or "D"),
+                start=fetch_start,
+                end=today,
+                item_code=str(item.get("treasury_item_code") or ""),
+                row_count=row_count,
+            )
+            points = compute_spread_points(corporate_points, treasury_points)
+            if not points:
+                metrics.append(
+                    make_metric(
+                        industry=industry,
+                        name=name,
+                        source="한국은행 ECOS API",
+                        source_url=source_url,
+                        frequency=frequency,
+                        automation="무료로 안정적으로 자동화 가능",
+                        status="error",
+                        note="관측값 없음",
+                        group=group,
+                        meaning=meaning,
+                    )
+                )
+                continue
+
+            latest_date, latest_value = points[-1]
+            previous_value = points[-2][1] if len(points) > 1 else None
+            yoy_value = find_yoy_value(points, latest_date)
+            metrics.append(
+                make_metric(
+                    industry=industry,
+                    name=name,
+                    source="한국은행 ECOS API",
+                    source_url=source_url,
+                    frequency=frequency,
+                    automation="무료로 안정적으로 자동화 가능",
+                    status="ok",
+                    value=latest_value,
+                    unit=str(item.get("unit") or "%"),
+                    observed_at=latest_date.isoformat(),
+                    previous_value=previous_value,
+                    yoy_value=yoy_value,
+                    history=points[-history_limit:],
+                    note=str(item.get("note") or ""),
+                    group=group,
+                    meaning=meaning,
+                )
+            )
+        except Exception as exc:  # noqa: BLE001 - one ECOS item should not break the dashboard.
+            metrics.append(
+                make_metric(
+                    industry=industry,
+                    name=name,
+                    source="한국은행 ECOS API",
+                    source_url=source_url,
+                    frequency=frequency,
+                    automation="무료로 안정적으로 자동화 가능",
+                    status="error",
+                    note=str(exc),
+                    group=group,
+                    meaning=meaning,
+                )
+            )
+    return metrics
+
+
+def fetch_ecos_points(
+    *,
+    session: requests.Session,
+    base_url: str,
+    api_key: str,
+    stat_code: str,
+    period: str,
+    start: date,
+    end: date,
+    item_code: str,
+    row_count: int = 1000,
+) -> list[tuple[date, float]]:
+    if not item_code:
+        return []
+    start_text = start.strftime("%Y%m%d")
+    end_text = end.strftime("%Y%m%d")
+    url = (
+        f"{base_url.rstrip('/')}/StatisticSearch/{api_key}/json/kr/1/{row_count}/"
+        f"{stat_code}/{period}/{start_text}/{end_text}/{item_code}"
+    )
+    response = session.get(url, timeout=(5, 20))
+    response.raise_for_status()
+    return parse_ecos_points(response.json(), period)
+
+
+def parse_ecos_points(payload: dict[str, Any], period: str = "D") -> list[tuple[date, float]]:
+    result = payload.get("RESULT") or {}
+    code = str(result.get("CODE") or "")
+    if code and code != "INFO-200":
+        raise ValueError(str(result.get("MESSAGE") or code))
+
+    rows = (payload.get("StatisticSearch") or {}).get("row") or []
+    points: list[tuple[date, float]] = []
+    for row in rows:
+        observed_at = parse_ecos_period(str(row.get("TIME") or ""), period)
+        value = to_float(row.get("DATA_VALUE"))
+        if observed_at is None or value is None:
+            continue
+        points.append((observed_at, value))
+    points.sort(key=lambda point: point[0])
+    return points
+
+
+def parse_ecos_period(value: str, period: str = "D") -> date | None:
+    if not value:
+        return None
+    compact_period = period.upper()
+    try:
+        if compact_period == "D" and len(value) >= 8:
+            return date(int(value[:4]), int(value[4:6]), int(value[6:8]))
+        if compact_period == "M" and len(value) >= 6:
+            return date(int(value[:4]), int(value[4:6]), 1)
+        if len(value) >= 4:
+            return date(int(value[:4]), 1, 1)
+    except ValueError:
+        return None
+    return None
+
+
+def compute_spread_points(
+    corporate_points: list[tuple[date, float]],
+    treasury_points: list[tuple[date, float]],
+) -> list[tuple[date, float]]:
+    treasury_by_date = dict(treasury_points)
+    spreads = [
+        (observed_at, round(corporate_value - treasury_by_date[observed_at], 4))
+        for observed_at, corporate_value in corporate_points
+        if observed_at in treasury_by_date
+    ]
+    spreads.sort(key=lambda point: point[0])
+    return spreads
+
+
+def collect_equity_price_metrics(
+    config: dict[str, Any], session: requests.Session, today: date
+) -> list[dict[str, Any]]:
+    del today
+    equities_config = config.get("equities", {})
+    if not equities_config.get("enabled", True):
+        return []
+
+    items = equities_config.get("items", [])
+    if not items:
+        return []
+
+    endpoint_template = str(
+        equities_config.get("endpoint")
+        or "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}"
+    )
+    source_url = str(equities_config.get("source_url") or "https://finance.yahoo.com/")
+    history_limit = int(config.get("dashboard", {}).get("history_points", 48))
+    metrics: list[dict[str, Any]] = []
+
+    for item in items:
+        symbol = str(item.get("symbol") or "").strip()
+        if not symbol:
+            continue
+        name = str(item.get("name") or f"{symbol} 주가")
+        industry = str(item.get("industry") or "매크로")
+        url = endpoint_template.format(symbol=symbol)
+        quote_url = f"{source_url.rstrip('/')}/quote/{symbol}"
+
+        try:
+            response = session.get(
+                url,
+                params={"range": str(item.get("range") or "2y"), "interval": "1d"},
+                headers={"User-Agent": "Mozilla/5.0 stock-industry-dashboard/1.0"},
+                timeout=(5, 20),
+            )
+            response.raise_for_status()
+            payload = response.json()
+            points, currency = parse_yahoo_chart_points(payload)
+            if not points:
+                metrics.append(
+                    make_metric(
+                        industry=industry,
+                        name=name,
+                        source="Yahoo Finance chart API",
+                        source_url=quote_url,
+                        frequency="일간",
+                        automation="무료 공개 JSON 자동 수집",
+                        status="error",
+                        note="관측값 없음",
+                        group=str(item.get("group") or "대표주가"),
+                        meaning=str(item.get("meaning") or equity_price_meaning(name)),
+                    )
+                )
+                continue
+
+            unit = str(
+                item.get("unit")
+                or ("원" if currency == "KRW" else "$" if currency == "USD" else currency)
+            )
+            latest_date, latest_value = points[-1]
+            previous_value = points[-2][1] if len(points) > 1 else None
+            yoy_value = find_yoy_value(points, latest_date)
+            metrics.append(
+                make_metric(
+                    industry=industry,
+                    name=name,
+                    source="Yahoo Finance chart API",
+                    source_url=quote_url,
+                    frequency="일간",
+                    automation="무료 공개 JSON 자동 수집",
+                    status="ok",
+                    value=latest_value,
+                    unit=unit,
+                    observed_at=latest_date.isoformat(),
+                    previous_value=previous_value,
+                    yoy_value=yoy_value,
+                    history=points[-history_limit:],
+                    note=str(item.get("note") or ""),
+                    group=str(item.get("group") or "대표주가"),
+                    meaning=str(item.get("meaning") or equity_price_meaning(name)),
+                )
+            )
+        except Exception as exc:  # noqa: BLE001 - one ticker should not break the dashboard.
+            metrics.append(
+                make_metric(
+                    industry=industry,
+                    name=name,
+                    source="Yahoo Finance chart API",
+                    source_url=quote_url,
+                    frequency="일간",
+                    automation="무료 공개 JSON 자동 수집",
+                    status="error",
+                    note=str(exc),
+                    group=str(item.get("group") or "대표주가"),
+                    meaning=str(item.get("meaning") or equity_price_meaning(name)),
+                )
+            )
+    return metrics
+
+
+def parse_yahoo_chart_points(payload: dict[str, Any]) -> tuple[list[tuple[date, float]], str]:
+    chart = payload.get("chart", {})
+    if chart.get("error"):
+        raise ValueError(str(chart.get("error")))
+    result = (chart.get("result") or [None])[0]
+    if not isinstance(result, dict):
+        return [], ""
+
+    timestamps = result.get("timestamp") or []
+    quote = ((result.get("indicators") or {}).get("quote") or [{}])[0]
+    closes = quote.get("close") or []
+    adjclose_item = ((result.get("indicators") or {}).get("adjclose") or [{}])[0]
+    adjclose = adjclose_item.get("adjclose") or []
+    meta = result.get("meta") or {}
+    currency = str(meta.get("currency") or "")
+    by_date: dict[date, float] = {}
+    for index, timestamp in enumerate(timestamps):
+        value = None
+        if index < len(closes):
+            value = to_float(closes[index])
+        if value is None and index < len(adjclose):
+            value = to_float(adjclose[index])
+        if value is None:
+            continue
+        observed_at = datetime.fromtimestamp(int(timestamp), tz=timezone.utc).date()
+        by_date[observed_at] = value
+    return sorted(by_date.items()), currency
+
+
+def equity_price_meaning(name: str) -> str:
+    return f"{name}는 해당 산업을 대표하는 상장사의 주가 흐름으로 시장이 반영하는 성장성과 리스크를 확인하는 proxy입니다."
 
 
 def collect_stablecoin_metrics(
@@ -2368,6 +2716,10 @@ def english_metric_name(name: str) -> str:
         item = english_export_item(export_match.group(1))
         return f"Korea Exports: {item} ({export_match.group(2)})"
 
+    stock_match = re.match(r"^(.+) 주가$", name)
+    if stock_match:
+        return f"{stock_match.group(1)} Stock Price"
+
     return name
 
 
@@ -2382,6 +2734,16 @@ def english_metric_meaning(meaning: str, industry: str = "") -> str:
     if export_match:
         item = english_export_item(export_match.group(1))
         return f"{item} exports track external demand and price/volume cycles for the item."
+
+    stock_match = re.match(
+        r"^(.+) 주가는 해당 산업을 대표하는 상장사의 주가 흐름으로 시장이 반영하는 성장성과 리스크를 확인하는 proxy입니다\\.$",
+        meaning,
+    )
+    if stock_match:
+        return (
+            f"{stock_match.group(1)} stock price is a representative listed-company "
+            "proxy for market-implied growth and risk in the industry."
+        )
 
     industry_match = re.match(r"^(.+) 업황을 해석하기 위한 보조 지표입니다\\.$", meaning)
     if industry_match:
@@ -2608,10 +2970,12 @@ def format_value(value: float | None, unit: str) -> str:
         return "대기"
     if unit == "$B":
         return f"${fmt_number(value)}B"
+    if unit == "$":
+        return f"${fmt_number(value)}"
     if unit == "%":
         return f"{fmt_number(value)}%"
     if unit == "원":
-        return f"{fmt_number(value)}원"
+        return f"{value:,.0f}원" if float(value).is_integer() else f"{fmt_number(value)}원"
     if unit:
         return f"{fmt_number(value)} {unit}"
     return fmt_number(value)
@@ -2622,10 +2986,12 @@ def format_abs_change(value: float | None, unit: str) -> str:
         return "n/a"
     if unit == "$B":
         return f"{fmt_signed(value)}B"
+    if unit == "$":
+        return f"${fmt_signed(value)}"
     if unit == "%":
         return f"{fmt_signed(value)}%p"
     if unit == "원":
-        return f"{fmt_signed(value)}원"
+        return f"{value:+,.0f}원" if float(value).is_integer() else f"{fmt_signed(value)}원"
     if unit:
         return f"{fmt_signed(value)} {unit}"
     return fmt_signed(value)

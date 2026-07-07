@@ -44,6 +44,27 @@ dashboard:
       industry: 은행/금융
       unit: "%"
       frequency: 일간
+    - id: BAMLC0A0CM
+      name: 미국 투자등급 회사채 OAS
+      industry: 은행/금융
+      unit: "%"
+      frequency: 일간
+      group: 신용 스프레드
+      meaning: 미국 투자등급 회사채 OAS는 우량 회사채 신용위험과 자금조달 여건을 보여주는 지표입니다.
+    - id: BAMLC0A4CBBB
+      name: 미국 BBB 회사채 OAS
+      industry: 은행/금융
+      unit: "%"
+      frequency: 일간
+      group: 신용 스프레드
+      meaning: BBB 회사채 OAS는 경기 둔화와 신용위험 확대에 민감한 투자등급 하단 스프레드입니다.
+    - id: BAMLH0A0HYM2
+      name: 미국 하이일드 회사채 OAS
+      industry: 은행/금융
+      unit: "%"
+      frequency: 일간
+      group: 신용 스프레드
+      meaning: 하이일드 OAS는 위험자산 선호와 기업 부도위험 변화를 보여주는 대표 신용 스프레드입니다.
     - id: DRALACBS
       name: 미국 은행 대출 연체율
       industry: 은행/금융
@@ -364,6 +385,108 @@ dashboard:
       status: partial
       note: 원자재 공개 엑셀을 붙이면 배터리 소재 가격 proxy를 자동화할 수 있습니다.
 
+equities:
+  enabled: true
+  endpoint: https://query1.finance.yahoo.com/v8/finance/chart/{symbol}
+  source_url: https://finance.yahoo.com/
+  items:
+    - name: 삼성전자 주가
+      symbol: 005930.KS
+      industry: 반도체
+    - name: NVIDIA 주가
+      symbol: NVDA
+      industry: 반도체
+    - name: NAVER 주가
+      symbol: 035420.KS
+      industry: 데이터인프라
+    - name: Microsoft 주가
+      symbol: MSFT
+      industry: 데이터인프라
+    - name: 현대차 주가
+      symbol: 005380.KS
+      industry: 자동차
+    - name: Toyota 주가
+      symbol: TM
+      industry: 자동차
+    - name: LG에너지솔루션 주가
+      symbol: 373220.KS
+      industry: 전기차
+    - name: Tesla 주가
+      symbol: TSLA
+      industry: 전기차
+    - name: HD현대중공업 주가
+      symbol: 329180.KS
+      industry: 조선
+    - name: Huntington Ingalls 주가
+      symbol: HII
+      industry: 조선
+    - name: POSCO홀딩스 주가
+      symbol: 005490.KS
+      industry: 철강/소재
+    - name: Nucor 주가
+      symbol: NUE
+      industry: 철강/소재
+    - name: LG화학 주가
+      symbol: 051910.KS
+      industry: 화학/정유
+    - name: Exxon Mobil 주가
+      symbol: XOM
+      industry: 화학/정유
+    - name: KB금융 주가
+      symbol: 105560.KS
+      industry: 은행/금융
+    - name: JPMorgan Chase 주가
+      symbol: JPM
+      industry: 은행/금융
+    - name: 현대건설 주가
+      symbol: 000720.KS
+      industry: 건설/부동산
+    - name: D.R. Horton 주가
+      symbol: DHI
+      industry: 건설/부동산
+    - name: 한화에어로스페이스 주가
+      symbol: 012450.KS
+      industry: 방산
+    - name: Lockheed Martin 주가
+      symbol: LMT
+      industry: 방산
+    - name: Coinbase 주가
+      symbol: COIN
+      industry: 스테이블코인
+    - name: Circle 주가
+      symbol: CRCL
+      industry: 스테이블코인
+    - name: 한국전력 주가
+      symbol: 015760.KS
+      industry: 전력
+    - name: GE Vernova 주가
+      symbol: GEV
+      industry: 전력
+    - name: 두산로보틱스 주가
+      symbol: 454910.KS
+      industry: 로봇
+    - name: Teradyne 주가
+      symbol: TER
+      industry: 로봇
+    - name: 쎄트렉아이 주가
+      symbol: 099320.KQ
+      industry: 우주
+    - name: Rocket Lab 주가
+      symbol: RKLB
+      industry: 우주
+    - name: 삼성바이오로직스 주가
+      symbol: 207940.KS
+      industry: 바이오
+    - name: Eli Lilly 주가
+      symbol: LLY
+      industry: 바이오
+    - name: 삼성SDI 주가
+      symbol: 006400.KS
+      industry: 배터리
+    - name: Albemarle 주가
+      symbol: ALB
+      industry: 배터리
+
 stablecoins:
   enabled: true
   endpoint: https://stablecoins.llama.fi/stablecoins?includePrices=true
@@ -602,6 +725,32 @@ kosis:
       frequency: 월간
       group: 건설 허가
       meaning: 건축허가 동수는 향후 건설 활동과 건축 경기의 선행 흐름을 보여줍니다.
+
+ecos:
+  enabled: true
+  endpoint: https://ecos.bok.or.kr/api
+  source_url: https://ecos.bok.or.kr/api/
+  credit_spreads:
+    - name: 한국 회사채 AA- 3Y-국고채 3Y 스프레드
+      industry: 은행/금융
+      stat_code: 817Y002
+      period: D
+      corporate_item_code: "010300000"
+      treasury_item_code: "010200000"
+      unit: "%"
+      frequency: 일간
+      group: 신용 스프레드
+      meaning: 한국 회사채 AA- 3년 금리와 국고채 3년 금리의 차이로 국내 우량 기업 신용위험과 자금조달 여건을 확인합니다.
+    - name: 한국 회사채 BBB- 3Y-국고채 3Y 스프레드
+      industry: 은행/금융
+      stat_code: 817Y002
+      period: D
+      corporate_item_code: "010320000"
+      treasury_item_code: "010200000"
+      unit: "%"
+      frequency: 일간
+      group: 신용 스프레드
+      meaning: 한국 회사채 BBB- 3년 금리와 국고채 3년 금리의 차이로 국내 하위등급 신용위험과 위험회피 강도를 확인합니다.
 
 fred:
   enabled: true

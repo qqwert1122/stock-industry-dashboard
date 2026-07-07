@@ -1,21 +1,25 @@
 import unittest
-from datetime import date
+from datetime import date, datetime, timezone
 
 from macro_telegram_report.dashboard import (
     DEFAULT_INDUSTRIES,
     collect_stablecoin_metrics,
     completed_months,
+    compute_spread_points,
     fiscal_month_to_calendar_date,
     kosis_code_param,
     make_metric,
     month_date_range,
     openfda_month_range,
+    parse_ecos_period,
+    parse_ecos_points,
     parse_eia_period,
     parse_eia_points,
     parse_kosis_period,
     parse_kosis_points,
     parse_usaspending_monthly_amounts,
     parse_world_bank_month,
+    parse_yahoo_chart_points,
     render_dashboard_html,
     sec_capex_points,
 )
@@ -66,6 +70,49 @@ class DashboardTest(unittest.TestCase):
         self.assertEqual(metric["yoy_pct_label"], "+50.0%")
         self.assertEqual(metric["status_label"], "자동 수집")
         self.assertEqual(metric["next_update_label"], "2026.07")
+
+    def test_make_metric_formats_dollar_unit(self):
+        metric = make_metric(
+            industry="반도체",
+            name="NVIDIA 주가",
+            source="Yahoo Finance chart API",
+            source_url="https://finance.yahoo.com/quote/NVDA",
+            frequency="일간",
+            automation="무료 공개 JSON 자동 수집",
+            status="ok",
+            value=151.25,
+            unit="$",
+            previous_value=150.0,
+        )
+
+        self.assertEqual(metric["display_value"], "$151.2")
+        self.assertEqual(metric["change_abs_label"], "$+1.25")
+
+    def test_parse_yahoo_chart_points(self):
+        first = int(datetime(2026, 7, 1, tzinfo=timezone.utc).timestamp())
+        second = int(datetime(2026, 7, 2, tzinfo=timezone.utc).timestamp())
+        payload = {
+            "chart": {
+                "result": [
+                    {
+                        "meta": {"currency": "USD"},
+                        "timestamp": [first, second],
+                        "indicators": {
+                            "quote": [{"close": [100.0, 101.5]}],
+                        },
+                    }
+                ],
+                "error": None,
+            }
+        }
+
+        points, currency = parse_yahoo_chart_points(payload)
+
+        self.assertEqual(currency, "USD")
+        self.assertEqual(
+            points,
+            [(date(2026, 7, 1), 100.0), (date(2026, 7, 2), 101.5)],
+        )
 
     def test_render_dashboard_html_embeds_payload(self):
         html = render_dashboard_html(
@@ -266,6 +313,32 @@ class DashboardTest(unittest.TestCase):
         self.assertEqual(
             parse_eia_points(payload, "sales"),
             [(date(2026, 3, 1), 290000.0), (date(2026, 4, 1), 302126.8)],
+        )
+
+    def test_parse_ecos_points_and_credit_spread(self):
+        payload = {
+            "StatisticSearch": {
+                "row": [
+                    {"TIME": "20260701", "DATA_VALUE": "4.466"},
+                    {"TIME": "20260702", "DATA_VALUE": "4.431"},
+                ]
+            }
+        }
+
+        corporate = parse_ecos_points(payload, "D")
+        treasury = [
+            (date(2026, 7, 1), 3.791),
+            (date(2026, 7, 2), 3.747),
+        ]
+
+        self.assertEqual(parse_ecos_period("20260701", "D"), date(2026, 7, 1))
+        self.assertEqual(
+            corporate,
+            [(date(2026, 7, 1), 4.466), (date(2026, 7, 2), 4.431)],
+        )
+        self.assertEqual(
+            compute_spread_points(corporate, treasury),
+            [(date(2026, 7, 1), 0.675), (date(2026, 7, 2), 0.684)],
         )
 
     def test_completed_month_helpers(self):
