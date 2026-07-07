@@ -101,6 +101,7 @@ EN_INDUSTRY_LABELS = {
 }
 EN_GROUP_LABELS = {
     "판매액": "Sales",
+    "판매액(WSTS)": "Sales (WSTS)",
     "시장 매출": "Market Revenue",
     "가격/수요": "Price/Demand",
     "투자/장비": "Investment/Equipment",
@@ -157,7 +158,9 @@ EN_GROUP_LABELS = {
     "국내 주택": "Korea Housing",
     "건설 허가": "Construction Permits",
     "대표주가": "Representative Stock Prices",
+    "대표주가/시장지수": "Representative Stocks/Market Indexes",
     "신용 스프레드": "Credit Spreads",
+    "시장지수": "Market Indexes",
 }
 EN_FREQUENCY_LABELS = {
     "일간": "Daily",
@@ -236,8 +239,11 @@ EN_METRIC_NAME_LABELS = {
     "Brent 유가": "Brent Crude Oil Price",
     "미국 산업용 화학 PPI": "US Industrial Chemicals PPI",
     "철광석 가격": "Iron Ore Price",
+    "철광석": "Iron Ore",
     "구리 가격": "Copper Price",
+    "구리": "Copper",
     "알루미늄 가격": "Aluminum Price",
+    "알루미늄": "Aluminum",
     "미국 자동차 판매": "US Auto Sales",
     "미국 반도체 PPI": "US Semiconductor PPI",
     "미국 방산 자본재 신규주문": "US Defense Capital Goods New Orders",
@@ -252,6 +258,11 @@ EN_METRIC_NAME_LABELS = {
     "미국 체외진단 물질 PPI": "US In-vitro Diagnostics PPI",
     "미국 저장 배터리 제조 PPI": "US Storage Battery Manufacturing PPI",
     "원/달러 환율": "USD/KRW Exchange Rate",
+    "코스피": "KOSPI",
+    "코스닥": "KOSDAQ",
+    "나스닥": "NASDAQ Composite",
+    "S&P 500": "S&P 500",
+    "다우": "Dow Jones Industrial Average",
     "DRAM/NAND 가격 대체 지표": "DRAM/NAND Price Proxy",
     "HBM 수요 대체 지표": "HBM Demand Proxy",
     "TSMC 월매출": "TSMC Monthly Revenue",
@@ -274,6 +285,78 @@ EN_METRIC_NAME_LABELS = {
     "위성 발사/수주 이벤트": "Satellite Launch/Order Events",
     "FDA 신약 승인/임상 이벤트": "FDA Drug Approval/Clinical Events",
     "리튬/니켈/코발트 가격": "Lithium/Nickel/Cobalt Prices",
+}
+WSTS_REGION_MEANINGS = {
+    "Worldwide": (
+        "전 세계 반도체 판매액입니다. 메모리와 비메모리를 모두 합친 시장 전체의 매출 흐름이라, "
+        "반도체 업황이 커지는지 줄어드는지 볼 때 기준으로 씁니다."
+    ),
+    "Asia Pacific": (
+        "아시아·태평양 지역 반도체 판매액입니다. 한국, 대만, 중국, 일본 등 주요 생산·소비 거점의 "
+        "수요 흐름을 보는 데 유용합니다."
+    ),
+    "Americas": (
+        "미주 지역 반도체 판매액입니다. 미국을 중심으로 데이터센터, 클라우드, 기업 IT 투자 수요가 "
+        "반도체 매출에 얼마나 이어지는지 볼 때 참고합니다."
+    ),
+}
+WSTS_3MMA_MEANING = (
+    "3MMA는 최근 3개월 평균입니다. 한 달짜리 급등락을 줄여 실제 추세가 위인지 아래인지 "
+    "보기 쉽게 해줍니다."
+)
+WSTS_REGION_MEANINGS_EN = {
+    "Worldwide": (
+        "Worldwide semiconductor sales show total global semiconductor revenue across memory and non-memory. "
+        "They are the main baseline for judging whether the semiconductor cycle is expanding or slowing."
+    ),
+    "Asia Pacific": (
+        "Asia Pacific semiconductor sales show demand across major Asian electronics and semiconductor hubs "
+        "such as Korea, Taiwan, China, and Japan."
+    ),
+    "Americas": (
+        "Americas semiconductor sales show demand in the Americas, led by the US. They help check how data center, "
+        "cloud, AI, and enterprise IT demand feeds into chip revenue."
+    ),
+}
+WSTS_3MMA_MEANING_EN = (
+    "3MMA means a three-month moving average. It smooths one-month jumps and drops so the underlying trend is "
+    "easier to see."
+)
+CAPEX_MEANINGS = {
+    "Microsoft": (
+        "Microsoft의 CAPEX는 Azure와 AI 데이터센터를 짓기 위한 서버, GPU, 네트워크, 전력 설비 투자를 "
+        "보여줍니다. 금액이 커질수록 클라우드와 AI 인프라 확장 속도가 빠르다는 뜻으로 볼 수 있습니다."
+    ),
+    "Amazon": (
+        "Amazon의 CAPEX는 AWS 데이터센터와 물류 인프라에 들어가는 설비투자 규모를 보여줍니다. 특히 AWS "
+        "투자가 커질수록 클라우드·AI 서버 수요가 강하다는 신호로 볼 수 있습니다."
+    ),
+    "Alphabet": (
+        "Alphabet의 CAPEX는 Google Cloud와 AI 데이터센터, 검색·유튜브 인프라 확장을 위한 투자 규모를 "
+        "보여줍니다. AI 서비스 확대가 실제 설비투자로 이어지는지 볼 때 참고합니다."
+    ),
+    "Meta": (
+        "Meta의 CAPEX는 AI 추천·광고 시스템과 소셜 서비스 운영을 위한 데이터센터 투자를 보여줍니다. "
+        "서버와 GPU 투자 강도를 확인하는 데 유용합니다."
+    ),
+}
+CAPEX_MEANINGS_EN = {
+    "Microsoft": (
+        "Microsoft CAPEX shows investment in servers, GPUs, networking, and power equipment for Azure and AI "
+        "data centers. Rising spending suggests faster cloud and AI infrastructure buildout."
+    ),
+    "Amazon": (
+        "Amazon CAPEX shows spending on AWS data centers and logistics infrastructure. Strong AWS-related "
+        "investment is a signal of cloud and AI server demand."
+    ),
+    "Alphabet": (
+        "Alphabet CAPEX shows investment in Google Cloud, AI data centers, and Search and YouTube infrastructure. "
+        "It helps check whether AI service growth is turning into physical infrastructure spending."
+    ),
+    "Meta": (
+        "Meta CAPEX shows data center investment for AI recommendation, advertising systems, and social services. "
+        "It is useful for reading server and GPU investment intensity."
+    ),
 }
 EN_MEANING_LABELS = {
     "반도체 업황의 현재 수요 강도와 재고 순환을 확인하는 월간 지표입니다.": "Monthly indicator for semiconductor demand strength and inventory cycles.",
@@ -382,7 +465,7 @@ def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -
         ("WSTS", collect_wsts_metrics),
         ("FRED", collect_fred_metrics),
         ("ECOS 신용스프레드", collect_ecos_credit_spread_metrics),
-        ("대표주가", collect_equity_price_metrics),
+        ("대표주가/시장지수", collect_equity_price_metrics),
         ("스테이블코인", collect_stablecoin_metrics),
         ("World Bank 원자재", collect_world_bank_commodity_metrics),
         ("SEC CAPEX", collect_sec_capex_metrics),
@@ -1268,8 +1351,8 @@ def collect_sec_capex_metrics(
             continue
         cik = raw_cik.zfill(10)
         ticker = str(company.get("ticker") or cik)
-        name = str(company.get("name") or f"{ticker} CAPEX")
-        metric_name = name if "CAPEX" in name.upper() else f"{name} CAPEX"
+        name = str(company.get("name") or ticker or "CAPEX")
+        metric_name = str(company.get("metric_name") or name)
         configured_tags = capex_config.get("tags")
         tags = [str(tag) for tag in configured_tags] if isinstance(configured_tags, list) else None
 
@@ -1298,7 +1381,7 @@ def collect_sec_capex_metrics(
                         status="error",
                         note="CAPEX 태그 관측값 없음",
                         group="CAPEX",
-                        meaning=sec_capex_meaning(),
+                        meaning=sec_capex_meaning(name),
                     )
                 )
                 continue
@@ -1323,7 +1406,7 @@ def collect_sec_capex_metrics(
                     yoy_value=yoy_value,
                     history=billion_points[-history_limit:],
                     group="CAPEX",
-                    meaning=sec_capex_meaning(),
+                    meaning=sec_capex_meaning(name),
                 )
             )
         except Exception as exc:  # noqa: BLE001 - keep company cards independent.
@@ -1338,7 +1421,7 @@ def collect_sec_capex_metrics(
                     status="error",
                     note=str(exc),
                     group="CAPEX",
-                    meaning=sec_capex_meaning(),
+                    meaning=sec_capex_meaning(name),
                 )
             )
     return metrics
@@ -1393,8 +1476,14 @@ def is_quarter_duration(start_date: date, end_date: date) -> bool:
     return 70 <= days <= 110
 
 
-def sec_capex_meaning() -> str:
-    return "빅테크 CAPEX는 AI 데이터센터, 서버, 전력 인프라 투자 수요를 보여주는 핵심 proxy입니다."
+def sec_capex_meaning(company_name: str = "빅테크") -> str:
+    display_name = company_name.replace(" CAPEX", "").strip() or "빅테크"
+    if display_name in CAPEX_MEANINGS:
+        return CAPEX_MEANINGS[display_name]
+    return (
+        f"{display_name}의 CAPEX는 데이터센터, 서버, AI 인프라 같은 장기 설비투자 규모를 보여줍니다. "
+        "투자가 커질수록 클라우드와 AI 인프라 수요가 강하다는 신호로 볼 수 있습니다."
+    )
 
 
 def collect_usaspending_metrics(
@@ -2313,6 +2402,17 @@ def normalize_lookup_text(value: str) -> str:
     return " ".join(value.lower().replace("*", "").split())
 
 
+def wsts_metric_name(region: str, is_3mma: bool) -> str:
+    return f"3MMA - {region}" if is_3mma else region
+
+
+def wsts_metric_meaning(region: str, is_3mma: bool) -> str:
+    base = WSTS_REGION_MEANINGS.get(region) or (
+        f"{region} 지역 반도체 판매액입니다. 지역별 수요가 반도체 업황에 어떻게 반영되는지 볼 때 참고합니다."
+    )
+    return f"{base} {WSTS_3MMA_MEANING}" if is_3mma else base
+
+
 def collect_wsts_metrics(
     config: dict[str, Any], session: requests.Session, today: date
 ) -> list[dict[str, Any]]:
@@ -2334,7 +2434,7 @@ def collect_wsts_metrics(
         wsts_sheet_metrics(
             workbook["Monthly Data"],
             regions,
-            label="WSTS 반도체 판매액",
+            is_3mma=False,
             xlsx_url=str(xlsx_url),
             history_limit=int(config.get("dashboard", {}).get("history_points", 48)),
         )
@@ -2344,7 +2444,7 @@ def collect_wsts_metrics(
             wsts_sheet_metrics(
                 workbook["3MMA"],
                 regions,
-                label="WSTS 반도체 판매액 3MMA",
+                is_3mma=True,
                 xlsx_url=str(xlsx_url),
                 history_limit=int(config.get("dashboard", {}).get("history_points", 48)),
             )
@@ -2353,13 +2453,14 @@ def collect_wsts_metrics(
 
 
 def wsts_sheet_metrics(
-    sheet: Any, regions: list[str], label: str, xlsx_url: str, history_limit: int
+    sheet: Any, regions: list[str], is_3mma: bool, xlsx_url: str, history_limit: int
 ) -> list[dict[str, Any]]:
     parsed = parse_wsts_sheet(sheet)
     metrics: list[dict[str, Any]] = []
     for region in regions:
         points = sorted(parsed.get(region, []), key=lambda point: point[0])
-        name = f"{label} - {region}"
+        name = wsts_metric_name(region, is_3mma)
+        meaning = wsts_metric_meaning(region, is_3mma)
         if not points:
             metrics.append(
                 make_metric(
@@ -2371,8 +2472,8 @@ def wsts_sheet_metrics(
                     automation="무료로 안정적으로 자동화 가능",
                     status="error",
                     note="선택한 지역 데이터 없음",
-                    group="판매액",
-                    meaning="반도체 업황의 현재 수요 강도와 재고 순환을 확인하는 월간 지표입니다.",
+                    group="판매액(WSTS)",
+                    meaning=meaning,
                 )
             )
             continue
@@ -2396,8 +2497,8 @@ def wsts_sheet_metrics(
                 previous_value=previous_value,
                 yoy_value=yoy_value,
                 history=billion_points[-history_limit:],
-                group="판매액",
-                meaning="반도체 업황의 현재 수요 강도와 재고 순환을 확인하는 월간 지표입니다.",
+                group="판매액(WSTS)",
+                meaning=meaning,
             )
         )
     return metrics
@@ -2727,6 +2828,17 @@ def english_metric_meaning(meaning: str, industry: str = "") -> str:
     if meaning in EN_MEANING_LABELS:
         return EN_MEANING_LABELS[meaning]
 
+    for region, korean_meaning in WSTS_REGION_MEANINGS.items():
+        english_meaning = WSTS_REGION_MEANINGS_EN[region]
+        if meaning == korean_meaning:
+            return english_meaning
+        if meaning == f"{korean_meaning} {WSTS_3MMA_MEANING}":
+            return f"{english_meaning} {WSTS_3MMA_MEANING_EN}"
+
+    for company, korean_meaning in CAPEX_MEANINGS.items():
+        if meaning == korean_meaning:
+            return CAPEX_MEANINGS_EN[company]
+
     export_match = re.match(
         r"^(.+) 수출은 해당 품목의 대외 수요와 가격/물량 사이클을 확인하는 지표입니다\\.$",
         meaning,
@@ -2743,6 +2855,18 @@ def english_metric_meaning(meaning: str, industry: str = "") -> str:
         return (
             f"{stock_match.group(1)} stock price is a representative listed-company "
             "proxy for market-implied growth and risk in the industry."
+        )
+
+    capex_match = re.match(
+        r"^(.+)의 CAPEX는 데이터센터, 서버, AI 인프라 같은 장기 설비투자 규모를 보여줍니다\\. "
+        r"투자가 커질수록 클라우드와 AI 인프라 수요가 강하다는 신호로 볼 수 있습니다\\.$",
+        meaning,
+    )
+    if capex_match:
+        return (
+            f"{capex_match.group(1)} CAPEX shows long-term investment in data centers, "
+            "servers, and AI infrastructure. Rising investment can signal stronger cloud "
+            "and AI infrastructure demand."
         )
 
     industry_match = re.match(r"^(.+) 업황을 해석하기 위한 보조 지표입니다\\.$", meaning)
@@ -2768,8 +2892,10 @@ def infer_export_industry(hs_code: str) -> str:
 def infer_metric_group(industry: str, name: str) -> str:
     if "수출" in name:
         return "수출"
+    if name in WSTS_REGION_MEANINGS or name.startswith("3MMA - "):
+        return "판매액(WSTS)"
     if "WSTS" in name or "반도체 판매" in name:
-        return "판매액"
+        return "판매액(WSTS)"
     if industry == "방산":
         if "수주잔고" in name:
             return "수주잔고"
@@ -2831,8 +2957,15 @@ def infer_metric_group(industry: str, name: str) -> str:
 
 
 def infer_metric_meaning(industry: str, name: str) -> str:
+    wsts_old_match = re.match(r"^WSTS 반도체 판매액( 3MMA)? - (.+)$", name)
+    if wsts_old_match:
+        return wsts_metric_meaning(wsts_old_match.group(2), bool(wsts_old_match.group(1)))
+    if name.startswith("3MMA - "):
+        return wsts_metric_meaning(name.removeprefix("3MMA - "), True)
+    if name in WSTS_REGION_MEANINGS:
+        return wsts_metric_meaning(name, False)
     if "WSTS" in name:
-        return "글로벌 반도체 매출 흐름으로 업황의 수요 강도와 재고 순환을 확인합니다."
+        return wsts_metric_meaning("Worldwide", False)
     if "반도체 PPI" in name:
         return "반도체 가격 압력과 공급자 가격 흐름을 보는 가격 proxy입니다."
     if "국채금리" in name:
@@ -2880,7 +3013,7 @@ def infer_metric_meaning(industry: str, name: str) -> str:
     if "전력" in name or "유틸리티" in name:
         return "전력 생산과 가격 흐름으로 전력 인프라와 전력 수요 사이클을 확인합니다."
     if industry == "데이터인프라" or "CAPEX" in name.upper():
-        return sec_capex_meaning()
+        return sec_capex_meaning(name)
     if "산업용 기계" in name or "산업 제어" in name:
         return "설비투자와 로봇 부품 수요를 가늠하는 proxy 지표입니다."
     if "우주" in name or "항공우주" in name:
@@ -4554,14 +4687,14 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     const mobileDrawerQuery = window.matchMedia ? window.matchMedia("(max-width: 760px)") : { matches: false };
     let scrollSpyFrame = 0;
     const groupOrder = [
-      "판매액", "시장 매출", "가격/수요", "투자/장비", "수출",
+      "판매액(WSTS)", "판매액", "시장 매출", "가격/수요", "투자/장비", "수출",
       "판매/수요", "판매량", "배터리 원재료",
       "운임/해운", "선가/발주",
       "원자재 가격", "중국 경기",
       "에너지 가격", "원유/원료", "화학 스프레드 proxy", "스프레드/마진",
       "금리", "신용 스프레드", "스프레드", "금리/스프레드", "은행 건전성", "대출/건전성",
       "주택 경기", "건설 선행", "금융비용", "주택 시장",
-      "환율", "리스크", "시장 환경", "핵심 지표", "대표주가"
+      "시장지수", "환율", "리스크", "시장 환경", "핵심 지표", "대표주가"
     ];
     const translations = {
       ko: {
@@ -6148,14 +6281,14 @@ GROUPED_HTML_TEMPLATE = """<!doctype html>
     const DASHBOARD_DATA = __DASHBOARD_JSON__;
     const state = { industry: "전체" };
     const groupOrder = [
-      "판매액", "시장 매출", "가격/수요", "투자/장비", "수출",
+      "판매액(WSTS)", "판매액", "시장 매출", "가격/수요", "투자/장비", "수출",
       "판매/수요", "판매량", "배터리 원재료",
       "운임/해운", "선가/발주",
       "원자재 가격", "중국 경기",
       "에너지 가격", "원유/원료", "화학 스프레드 proxy", "스프레드/마진",
       "금리", "스프레드", "금리/스프레드", "은행 건전성", "대출/건전성",
       "주택 경기", "건설 선행", "금융비용", "주택 시장",
-      "환율", "리스크", "시장 환경", "핵심 지표"
+      "시장지수", "환율", "리스크", "시장 환경", "핵심 지표"
     ];
 
     function escapeHtml(value) {

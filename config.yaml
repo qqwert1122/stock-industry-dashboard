@@ -112,17 +112,17 @@ dashboard:
       unit: 지수
       frequency: 월간
     - id: PIORECRUSDM
-      name: 철광석 가격
+      name: 철광석
       industry: 철강/소재
       unit: "$"
       frequency: 월간
     - id: PCOPPUSDM
-      name: 구리 가격
+      name: 구리
       industry: 철강/소재
       unit: "$"
       frequency: 월간
     - id: PALUMUSDM
-      name: 알루미늄 가격
+      name: 알루미늄
       industry: 철강/소재
       unit: "$"
       frequency: 월간
@@ -487,6 +487,36 @@ equities:
     - name: Albemarle(ALB)
       symbol: ALB
       industry: 배터리
+    - name: 코스피
+      symbol: ^KS11
+      industry: 매크로
+      unit: 지수
+      group: 시장지수
+      meaning: 코스피는 한국 유가증권시장 전체 흐름을 보여주는 대표 지수입니다. 국내 대형주와 한국 증시 전반의 투자심리를 볼 때 사용합니다.
+    - name: 코스닥
+      symbol: ^KQ11
+      industry: 매크로
+      unit: 지수
+      group: 시장지수
+      meaning: 코스닥은 한국 성장주와 중소형 기술주 흐름을 보여주는 대표 지수입니다. 개인투자 심리와 성장주 선호가 강한지 볼 때 사용합니다.
+    - name: 나스닥
+      symbol: ^IXIC
+      industry: 매크로
+      unit: 지수
+      group: 시장지수
+      meaning: 나스닥은 미국 기술주 중심의 시장 흐름을 보여주는 지수입니다. AI, 반도체, 소프트웨어 같은 성장 산업의 투자심리를 볼 때 사용합니다.
+    - name: S&P 500
+      symbol: ^GSPC
+      industry: 매크로
+      unit: 지수
+      group: 시장지수
+      meaning: S&P 500은 미국 대형주 500개로 구성된 대표 지수입니다. 미국 증시와 글로벌 위험자산 분위기를 보는 기준으로 사용합니다.
+    - name: 다우
+      symbol: ^DJI
+      industry: 매크로
+      unit: 지수
+      group: 시장지수
+      meaning: 다우는 미국 전통 대형 우량주 흐름을 보여주는 지수입니다. 경기민감주와 오래된 대형 기업들의 시장 분위기를 볼 때 사용합니다.
 
 stablecoins:
   enabled: true
@@ -530,16 +560,16 @@ sec_capex:
   user_agent: stock-industry-dashboard/0.1 contact@example.com
   companies:
     - ticker: MSFT
-      name: Microsoft CAPEX
+      name: Microsoft
       cik: "0000789019"
     - ticker: AMZN
-      name: Amazon CAPEX
+      name: Amazon
       cik: "0001018724"
     - ticker: GOOGL
-      name: Alphabet CAPEX
+      name: Alphabet
       cik: "0001652044"
     - ticker: META
-      name: Meta CAPEX
+      name: Meta
       cik: "0001326801"
 
 usaspending:
