@@ -8,15 +8,13 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: github-pages
+  group: stock-industry-dashboard-pages
   cancel-in-progress: false
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -45,22 +43,33 @@ jobs:
           OPENFDA_API_KEY: ${{ secrets.OPENFDA_API_KEY }}
         run: industry-dashboard --config config.yaml --out site
 
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
+      - name: Deploy to public Pages repository
+        env:
+          USER_PAGES_DEPLOY_KEY: ${{ secrets.USER_PAGES_DEPLOY_KEY }}
+        run: |
+          test -n "$USER_PAGES_DEPLOY_KEY"
+          mkdir -p ~/.ssh
+          printf '%s\n' "$USER_PAGES_DEPLOY_KEY" > ~/.ssh/user_pages_key
+          chmod 600 ~/.ssh/user_pages_key
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          cat > ~/.ssh/config <<'EOF'
+          Host github.com
+            HostName github.com
+            User git
+            IdentityFile ~/.ssh/user_pages_key
+            IdentitiesOnly yes
+          EOF
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: site
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          git clone git@github.com:qqwert1122/qqwert1122.github.io.git public-pages
+          mkdir -p public-pages/stock-industry-dashboard
+          rsync -a --delete site/ public-pages/stock-industry-dashboard/
+          cd public-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add stock-industry-dashboard
+          if git diff --cached --quiet; then
+            echo "No dashboard changes to deploy."
+          else
+            git commit -m "Update stock industry dashboard"
+            git push origin main
+          fi
