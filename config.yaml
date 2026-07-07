@@ -111,6 +111,8 @@ dashboard:
       industry: 화학/정유
       unit: 지수
       frequency: 월간
+      group: 화학 스프레드
+      meaning: 산업용 화학 제품의 생산자 가격입니다. 제품 가격이 원가보다 빠르게 오르는지 볼 때 참고합니다.
     - id: PIORECRUSDM
       name: 철광석
       industry: 철강/소재
@@ -146,7 +148,7 @@ dashboard:
       frequency: 월간
       depth: 소자/부품
       group: 가격/수요
-      meaning: 미국 반도체 및 관련 소자 제조 가격 흐름입니다. 칩과 웨이퍼 등 기초 반도체 부품 가격 환경을 확인합니다.
+      meaning: 미국 반도체와 관련 소자의 생산자 가격입니다. 칩과 웨이퍼 가격이 오르는지 내리는지 볼 때 참고합니다.
     - id: PCU333242333242
       name: 미국 반도체 장비 PPI
       industry: 반도체
@@ -154,7 +156,7 @@ dashboard:
       frequency: 월간
       depth: 장비
       group: 투자/장비
-      meaning: 반도체 장비 제조 가격 흐름입니다. 장비 업체의 가격 환경과 설비투자 비용 압력을 볼 때 참고합니다.
+      meaning: 반도체 장비 제조 가격입니다. 장비 가격이 오르면 반도체 설비투자 비용도 함께 커질 수 있습니다.
     - id: PCU3332423332420
       name: 미국 반도체 장비/부품 PPI
       industry: 반도체
@@ -162,7 +164,7 @@ dashboard:
       frequency: 월간
       depth: 장비
       group: 투자/장비
-      meaning: 반도체 장비와 부품 가격 흐름입니다. 노광, 식각, 증착 등 장비 공급망의 가격 압력을 보는 proxy입니다.
+      meaning: 반도체 장비와 부품 가격입니다. 노광, 식각, 증착 장비를 살 때 비용 부담이 커지는지 볼 때 참고합니다.
     - id: PCU3344133344131
       name: 미국 반도체 패키징 PPI
       industry: 반도체
@@ -191,7 +193,7 @@ dashboard:
       unit: 지수
       frequency: 월간
       group: 전력 가격
-      meaning: 전력 생산 가격 흐름으로 전력 인프라와 유틸리티 수익 환경을 확인합니다.
+      meaning: 전력 생산 가격입니다. 전기요금과 전력 회사의 수익성이 좋아질지 나빠질지 볼 때 참고합니다.
     - id: IPG2211A2N
       name: 미국 전기/가스 유틸리티 산업생산
       industry: 전력
@@ -204,7 +206,7 @@ dashboard:
       industry: 로봇
       unit: 백만달러
       frequency: 월간
-      group: 설비투자 proxy
+      group: 설비투자
       meaning: 자동화와 로봇 수요에 가까운 산업용 기계 발주 흐름을 확인합니다.
     - id: WPU11750799
       name: 미국 산업 제어장치 PPI
@@ -226,7 +228,7 @@ dashboard:
       unit: 지수
       frequency: 월간
       group: 항공우주 가격
-      meaning: 항공우주 부품 가격 흐름으로 우주 밸류체인의 비용과 수요 환경을 봅니다.
+      meaning: 항공우주 부품 가격입니다. 위성, 발사체, 항공 장비를 만드는 비용이 커지는지 볼 때 참고합니다.
     - id: PCU325414325414
       name: 미국 생물학적 제제 PPI
       industry: 바이오
@@ -240,14 +242,14 @@ dashboard:
       unit: 지수
       frequency: 월간
       group: 진단 가격
-      meaning: 진단 제품 가격 흐름으로 진단/바이오 수요와 가격 환경을 확인합니다.
+      meaning: 진단 제품의 생산자 가격입니다. 진단 장비와 검사 제품 가격이 오르는지 내리는지 볼 때 참고합니다.
     - id: PCU3359133591
       name: 미국 저장 배터리 제조 PPI
       industry: 배터리
       unit: 지수
       frequency: 월간
       group: 배터리 가격
-      meaning: 저장 배터리 제조 가격 흐름으로 배터리 셀 업황과 마진 환경을 확인합니다.
+      meaning: 저장 배터리 제조 가격입니다. 배터리 셀 업체의 원가 부담과 판매 가격 흐름을 볼 때 참고합니다.
     - id: DEXKOUS
       name: 원/달러 환율
       industry: 매크로
@@ -271,35 +273,35 @@ dashboard:
       unit: "%"
       frequency: 일간
       group: 금리
-      meaning: ECB 예금금리는 유로존 단기금리와 유로화 유동성 환경을 보여주는 핵심 정책금리입니다.
+      meaning: ECB 예금금리는 유로존 단기금리와 유로화 자금 흐름을 보여주는 핵심 정책금리입니다.
     - id: IRSTCI01JPM156N
       name: 일본 단기금리
       industry: 매크로
       unit: "%"
       frequency: 월간
       group: 금리
-      meaning: 일본 단기금리는 일본은행 정책기조와 엔화 캐리 트레이드 환경을 보는 proxy입니다.
+      meaning: 일본 단기금리는 일본은행의 정책 방향과 엔화 자금 흐름을 볼 때 참고합니다.
     - id: IRSTCI01KRM156N
       name: 한국 단기금리
       industry: 매크로
       unit: "%"
       frequency: 월간
       group: 금리
-      meaning: 한국 단기금리는 국내 원화 유동성과 통화정책 환경을 보여주는 proxy입니다.
+      meaning: 한국 단기금리는 국내 자금시장 금리와 원화 유동성을 보여줍니다.
     - id: IR3TIB01CNM156N
       name: 중국 3개월 은행간 금리
       industry: 매크로
       unit: "%"
       frequency: 월간
       group: 금리
-      meaning: 중국 3개월 은행간 금리는 중국 금융시장의 단기 유동성과 경기부양 강도를 보는 proxy입니다.
+      meaning: 중국 3개월 은행간 금리는 중국 금융시장의 자금 사정과 경기부양 강도를 볼 때 참고합니다.
     - id: IRSTCI01IDM156N
-      name: 동남아 금리 proxy(인도네시아)
+      name: 동남아 금리(인도네시아)
       industry: 매크로
       unit: "%"
       frequency: 월간
       group: 금리
-      meaning: 인도네시아 단기금리는 동남아 신흥국 금리와 달러 유동성 민감도를 보는 대표 proxy입니다.
+      meaning: 인도네시아 단기금리는 동남아 신흥국의 금리 부담과 달러 자금 흐름을 볼 때 참고합니다.
   reference_metrics:
     - industry: 반도체
       name: DRAM/NAND 가격 대체 지표
@@ -461,7 +463,7 @@ dashboard:
       source_url: https://www.worldbank.org/en/research/commodity-markets
       frequency: 월간
       status: partial
-      note: 원자재 공개 엑셀을 붙이면 배터리 소재 가격 proxy를 자동화할 수 있습니다.
+      note: 원자재 공개 엑셀을 붙이면 배터리 소재 가격을 자동으로 업데이트할 수 있습니다.
 
 equities:
   enabled: true
@@ -472,132 +474,172 @@ equities:
       symbol: 005930.KS
       industry: 반도체
       depth: 메모리 반도체
+      meaning: 삼성전자 주가는 메모리 반도체, 파운드리, 스마트폰 사업에 대한 시장 기대를 보여줍니다.
     - name: NVIDIA(NVDA)
       symbol: NVDA
       industry: 반도체
       depth: AI/GPU
+      meaning: NVIDIA 주가는 AI GPU와 데이터센터 반도체 수요에 대한 시장 기대를 보여줍니다.
     - name: SK하이닉스(000660.KS)
       symbol: 000660.KS
       industry: 반도체
       depth: 메모리 반도체
+      meaning: SK하이닉스 주가는 DRAM, NAND, HBM 같은 메모리 업황에 대한 시장 기대를 보여줍니다.
     - name: Micron(MU)
       symbol: MU
       industry: 반도체
       depth: 메모리 반도체
+      meaning: Micron 주가는 글로벌 메모리 반도체 가격과 수요 회복 기대를 보여줍니다.
     - name: AMD(AMD)
       symbol: AMD
       industry: 반도체
       depth: AI/GPU
+      meaning: AMD 주가는 AI GPU와 CPU 시장에서 경쟁력이 얼마나 커질지에 대한 시장 기대를 보여줍니다.
     - name: Intel(INTC)
       symbol: INTC
       industry: 반도체
       depth: CPU/프로세서
+      meaning: Intel 주가는 CPU 수요와 파운드리 전환 전략에 대한 시장 평가를 보여줍니다.
     - name: TSMC(TSM)
       symbol: TSM
       industry: 반도체
       depth: 파운드리
+      meaning: TSMC 주가는 첨단 파운드리 수요와 주요 반도체 고객사의 주문 기대를 보여줍니다.
     - name: ASML(ASML)
       symbol: ASML
       industry: 반도체
       depth: 장비
+      meaning: ASML 주가는 EUV 노광장비 수요와 첨단 반도체 설비투자 기대를 보여줍니다.
     - name: Applied Materials(AMAT)
       symbol: AMAT
       industry: 반도체
       depth: 장비
+      meaning: Applied Materials 주가는 반도체 공정 장비 투자 흐름에 대한 시장 기대를 보여줍니다.
     - name: Lam Research(LRCX)
       symbol: LRCX
       industry: 반도체
       depth: 장비
+      meaning: Lam Research 주가는 메모리와 파운드리 설비투자 회복 기대를 보여줍니다.
     - name: NAVER(035420.KS)
       symbol: 035420.KS
       industry: 데이터인프라
+      meaning: NAVER 주가는 국내 클라우드, AI, 인터넷 서비스 성장에 대한 시장 기대를 보여줍니다.
     - name: Microsoft(MSFT)
       symbol: MSFT
       industry: 데이터인프라
+      meaning: Microsoft 주가는 Azure, AI 서비스, 데이터센터 투자 기대를 보여줍니다.
     - name: 현대차(005380.KS)
       symbol: 005380.KS
       industry: 자동차
+      meaning: 현대차 주가는 글로벌 자동차 판매와 전동화 전략에 대한 시장 평가를 보여줍니다.
     - name: Toyota(TM)
       symbol: TM
       industry: 자동차
+      meaning: Toyota 주가는 글로벌 완성차 수요와 하이브리드 경쟁력에 대한 시장 평가를 보여줍니다.
     - name: LG에너지솔루션(373220.KS)
       symbol: 373220.KS
       industry: 전기차
+      meaning: LG에너지솔루션 주가는 전기차 배터리 수요와 셀 업체 수익성 기대를 보여줍니다.
     - name: Tesla(TSLA)
       symbol: TSLA
       industry: 전기차
+      meaning: Tesla 주가는 전기차 판매, 자율주행, 에너지 사업 성장 기대를 보여줍니다.
     - name: HD현대중공업(329180.KS)
       symbol: 329180.KS
       industry: 조선
+      meaning: HD현대중공업 주가는 선박 수주와 조선업 이익 개선 기대를 보여줍니다.
     - name: Huntington Ingalls(HII)
       symbol: HII
       industry: 조선
+      meaning: Huntington Ingalls 주가는 미국 군함 건조와 방산 조선 수요에 대한 시장 평가를 보여줍니다.
     - name: POSCO홀딩스(005490.KS)
       symbol: 005490.KS
       industry: 철강/소재
+      meaning: POSCO홀딩스 주가는 철강 경기와 배터리 소재 사업 기대를 함께 보여줍니다.
     - name: Nucor(NUE)
       symbol: NUE
       industry: 철강/소재
+      meaning: Nucor 주가는 미국 철강 수요와 철강 가격 흐름에 대한 시장 평가를 보여줍니다.
     - name: LG화학(051910.KS)
       symbol: 051910.KS
       industry: 화학/정유
+      meaning: LG화학 주가는 화학 제품 마진과 배터리 소재 성장 기대를 보여줍니다.
     - name: Exxon Mobil(XOM)
       symbol: XOM
       industry: 화학/정유
+      meaning: Exxon Mobil 주가는 유가, 정제마진, 에너지 수요에 대한 시장 평가를 보여줍니다.
     - name: KB금융(105560.KS)
       symbol: 105560.KS
       industry: 은행/금융
+      meaning: KB금융 주가는 국내 금리, 대출 성장, 은행 건전성에 대한 시장 평가를 보여줍니다.
     - name: JPMorgan Chase(JPM)
       symbol: JPM
       industry: 은행/금융
+      meaning: JPMorgan Chase 주가는 미국 금리, 대출 수요, 신용위험에 대한 시장 평가를 보여줍니다.
     - name: 현대건설(000720.KS)
       symbol: 000720.KS
       industry: 건설/부동산
+      meaning: 현대건설 주가는 국내외 건설 수주와 부동산 경기 기대를 보여줍니다.
     - name: D.R. Horton(DHI)
       symbol: DHI
       industry: 건설/부동산
+      meaning: D.R. Horton 주가는 미국 주택 수요와 모기지 금리 부담에 대한 시장 평가를 보여줍니다.
     - name: 한화에어로스페이스(012450.KS)
       symbol: 012450.KS
       industry: 방산
+      meaning: 한화에어로스페이스 주가는 방산 수주와 항공우주 성장 기대를 보여줍니다.
     - name: Lockheed Martin(LMT)
       symbol: LMT
       industry: 방산
+      meaning: Lockheed Martin 주가는 미국 방산 예산과 주요 무기체계 수요에 대한 시장 평가를 보여줍니다.
     - name: Coinbase(COIN)
       symbol: COIN
       industry: 스테이블코인
+      meaning: Coinbase 주가는 암호자산 거래와 스테이블코인 관련 수익 기대를 보여줍니다.
     - name: Circle(CRCL)
       symbol: CRCL
       industry: 스테이블코인
+      meaning: Circle 주가는 USDC 유통량과 스테이블코인 결제 시장 성장 기대를 보여줍니다.
     - name: 한국전력(015760.KS)
       symbol: 015760.KS
       industry: 전력
+      meaning: 한국전력 주가는 전력요금, 발전 원가, 전력 수요에 대한 시장 평가를 보여줍니다.
     - name: GE Vernova(GEV)
       symbol: GEV
       industry: 전력
+      meaning: GE Vernova 주가는 전력망, 발전 설비, 에너지 전환 투자 기대를 보여줍니다.
     - name: 두산로보틱스(454910.KS)
       symbol: 454910.KS
       industry: 로봇
+      meaning: 두산로보틱스 주가는 협동로봇 수요와 자동화 투자 기대를 보여줍니다.
     - name: Teradyne(TER)
       symbol: TER
       industry: 로봇
+      meaning: Teradyne 주가는 반도체 테스트 장비와 산업 자동화 수요에 대한 시장 평가를 보여줍니다.
     - name: 쎄트렉아이(099320.KQ)
       symbol: 099320.KQ
       industry: 우주
+      meaning: 쎄트렉아이 주가는 위성 시스템 수주와 국내 우주 산업 성장 기대를 보여줍니다.
     - name: Rocket Lab(RKLB)
       symbol: RKLB
       industry: 우주
+      meaning: Rocket Lab 주가는 발사 서비스와 위성 제조 수요에 대한 시장 기대를 보여줍니다.
     - name: 삼성바이오로직스(207940.KS)
       symbol: 207940.KS
       industry: 바이오
+      meaning: 삼성바이오로직스 주가는 바이오의약품 위탁생산 수요와 증설 기대를 보여줍니다.
     - name: Eli Lilly(LLY)
       symbol: LLY
       industry: 바이오
+      meaning: Eli Lilly 주가는 비만, 당뇨, 신약 파이프라인 성장 기대를 보여줍니다.
     - name: 삼성SDI(006400.KS)
       symbol: 006400.KS
       industry: 배터리
+      meaning: 삼성SDI 주가는 전기차 배터리와 에너지저장장치 수요에 대한 시장 평가를 보여줍니다.
     - name: Albemarle(ALB)
       symbol: ALB
       industry: 배터리
+      meaning: Albemarle 주가는 리튬 가격과 배터리 원재료 수요에 대한 시장 평가를 보여줍니다.
     - name: 코스피
       symbol: ^KS11
       industry: 매크로
@@ -651,7 +693,7 @@ world_bank_commodities:
       column: Nickel
       unit: "$/mt"
       group: 배터리 원재료
-      meaning: 니켈 가격은 배터리 양극재 원가와 소재 업체 마진 환경을 보여주는 원재료 proxy입니다.
+      meaning: 니켈 가격은 배터리 양극재 원가에 큰 영향을 줍니다. 가격이 오르면 소재 업체와 배터리 업체의 수익성이 달라질 수 있습니다.
     - name: 유럽 천연가스 가격
       industry: 전력
       column: Natural gas, Europe
@@ -663,7 +705,7 @@ world_bank_commodities:
       column: Coal, Australian
       unit: "$/mt"
       group: 에너지 가격
-      meaning: 석탄 가격은 화력발전 원가와 전력 가격 압력을 확인하는 원료 proxy입니다.
+      meaning: 석탄 가격은 화력발전 원가에 영향을 줍니다. 가격이 오르면 전력 생산 비용이 커질 수 있습니다.
 
 sec_capex:
   enabled: true
@@ -706,7 +748,7 @@ usaspending:
         - B
         - C
         - D
-      meaning: 미국 국방부가 집행한 계약 의무액으로 방산 예산 집행과 수주 환경의 큰 흐름을 확인합니다.
+      meaning: 미국 국방부가 실제로 계약에 배정한 금액입니다. 방산 예산이 어느 분야로 흘러가는지 볼 때 중요합니다.
     - name: 미국 방산 제조 계약 의무액
       industry: 방산
       group: 국방 계약
@@ -732,7 +774,7 @@ usaspending:
         - B
         - C
         - D
-      meaning: NASA 계약 의무액은 우주 장비와 서비스 수요, 정부 우주 예산 집행 흐름을 보여주는 proxy입니다.
+      meaning: NASA 계약 의무액은 미국 정부가 우주 장비와 서비스에 실제로 얼마나 돈을 쓰고 있는지 보여줍니다.
 
 eia:
   enabled: true
@@ -761,7 +803,7 @@ eia:
       unit: cents/kWh
       frequency: 월간
       group: 전력 가격
-      meaning: 전력 가격은 유틸리티 매출 환경과 산업 전력 비용 부담을 보여주는 가격 지표입니다.
+      meaning: 전력 가격은 전력 회사 매출과 산업 전기요금 부담을 보여주는 가격 지표입니다.
     - name: 미국 휘발유 가격
       industry: 화학/정유
       series_id: PET.EMM_EPM0_PTE_NUS_DPG.W
@@ -769,7 +811,7 @@ eia:
       unit: "$/gal"
       frequency: 주간
       group: 제품 가격
-      meaning: 휘발유 가격은 정유 제품 수요와 crack spread 방향을 간접적으로 확인하는 proxy입니다.
+      meaning: 휘발유 가격은 정유 제품 수요와 정유사 마진 방향을 볼 때 참고합니다.
     - name: 미국 디젤 가격
       industry: 화학/정유
       series_id: PET.EMD_EPD2D_PTE_NUS_DPG.W
@@ -777,7 +819,7 @@ eia:
       unit: "$/gal"
       frequency: 주간
       group: 제품 가격
-      meaning: 디젤 가격은 물류/산업 수요와 정유 제품 마진 환경을 보여주는 proxy입니다.
+      meaning: 디젤 가격은 물류와 산업 활동, 정유사 마진 방향을 볼 때 참고합니다.
 
 openfda:
   enabled: true
@@ -826,7 +868,7 @@ afdc:
       field: stations
       unit: 곳
       group: 충전 인프라
-      meaning: 미국 EV 충전소 수는 전기차 보급 환경과 충전 인프라 투자 흐름을 보여주는 지표입니다.
+      meaning: 미국 EV 충전소 수는 전기차를 이용하기 쉬워지고 있는지와 충전 인프라 투자 흐름을 보여줍니다.
     - name: 미국 EV 충전 포트 수
       industry: 전기차
       field: ports
@@ -943,12 +985,12 @@ korea_exports:
       hs_code: "854232"
       industry: 반도체
       depth: 메모리 반도체
-      meaning: 한국 메모리 반도체 수출 흐름입니다. DRAM, NAND, HBM 등 메모리 업황과 가격/물량 사이클을 보는 핵심 proxy입니다.
+      meaning: 한국 메모리 반도체 수출 금액입니다. DRAM, NAND, HBM 수요가 강한지 약한지 볼 때 중요합니다.
     - name: 프로세서/컨트롤러 IC
       hs_code: "854231"
       industry: 반도체
       depth: CPU/프로세서
-      meaning: 한국 프로세서와 컨트롤러 집적회로 수출 흐름입니다. CPU, MCU, 컨트롤러 계열 비메모리 수요를 보는 proxy입니다.
+      meaning: 한국 프로세서와 컨트롤러 집적회로 수출 금액입니다. CPU, MCU, 컨트롤러 계열 수요가 살아나는지 볼 때 참고합니다.
     - name: 반도체 소자
       hs_code: "8541"
       industry: 반도체

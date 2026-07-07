@@ -9,9 +9,9 @@
 - 자동차: 미국 자동차 판매, 한국 승용차 수출, 현대차/Toyota 주가
 - 전기차: 한국 순수 전기차 수출, 미국 EV 충전소/충전 포트 수, LG에너지솔루션/Tesla 주가
 - 조선: 한국 선박 수출, HD현대중공업/Huntington Ingalls 주가, BDI/신조선가/운임지수 자동화 후보
-- 철강/소재: 철광석/구리/알루미늄 원자재 proxy, POSCO홀딩스/Nucor 주가
+- 철강/소재: 철광석/구리/알루미늄 원자재 가격, POSCO홀딩스/Nucor 주가
 - 화학/정유: WTI/Brent, 미국 화학 PPI, LG화학/Exxon Mobil 주가
-- 은행/금융: 기준금리 proxy, 장단기 금리차, FRED 등급별 회사채 OAS, ECOS 한국 회사채-국고채 스프레드, 연체율, 은행 대출, KB금융/JPMorgan 주가
+- 은행/금융: 기준금리, 장단기 금리차, FRED 등급별 회사채 OAS, ECOS 한국 회사채-국고채 스프레드, 연체율, 은행 대출, KB금융/JPMorgan 주가
 - 건설/부동산: 미국 주택착공/건축허가/모기지/주택가격, 한국 미분양/주택가격/건축허가, 현대건설/D.R. Horton 주가
 - 방산: 미국 방산 자본재 신규주문/수주잔고, 미국 국방부/방산 제조 계약 의무액, 한국 무기류/탄약 수출, 한화에어로스페이스/Lockheed Martin 주가
 - 스테이블코인: DefiLlama 전체/USDT/USDC 유통량, Coinbase/Circle 주가
@@ -23,7 +23,7 @@
 - 매크로: 원/달러 환율, VIX, 미국/유럽/일본/한국/중국/동남아 금리, 코스피/코스닥/나스닥/S&P 500/다우 지수
 
 무료로 안정적인 공식 API가 없는 지표는 대시보드에서 `부분 자동화` 또는 `수작업` 상태로 표시합니다.
-개별 회사채 스프레드는 무료 공식 API로 안정 수집하기 어려워, 현재 MVP는 FRED의 등급별 미국 회사채 OAS를 신용 스프레드 proxy로 사용합니다.
+개별 회사채 스프레드는 무료 공식 API로 안정 수집하기 어려워, 현재 MVP는 FRED의 등급별 미국 회사채 OAS로 신용위험 변화를 봅니다.
 
 ## 로컬 실행
 
@@ -40,14 +40,21 @@ industry-dashboard --config config.yaml --out site
 
 ## VSCode에서 외형 수정
 
-외형만 바꿀 때는 API를 다시 수집하지 않고 기존 `site/data/dashboard.json`을 재사용합니다.
+디자인을 빠르게 잡을 때는 더미데이터 미리보기 모드를 사용합니다. API 호출이나 기존 데이터 파일을 기다리지 않고,
+`dashboard.py`를 저장할 때마다 즉시 `site/index.html`을 다시 만들고 브라우저를 새로고침합니다.
 
 ```bash
-.venv/bin/python scripts/dev_dashboard.py
+.venv/bin/python scripts/dev_dashboard.py --mock
 ```
 
 터미널에 표시되는 `http://127.0.0.1:8000/` 주소를 브라우저나 VSCode Simple Browser로 열면 됩니다.  
 `src/macro_telegram_report/dashboard.py`의 `MODERN_HTML_TEMPLATE` 안 CSS/HTML/JS를 수정하면 `site/index.html`이 자동으로 다시 생성되고 브라우저가 새로고침됩니다.
+
+실제 수집 데이터를 기준으로 외형을 확인하고 싶을 때는 기존 `site/data/dashboard.json`을 재사용합니다.
+
+```bash
+.venv/bin/python scripts/dev_dashboard.py
+```
 
 데이터까지 새로 수집하고 싶을 때만 아래처럼 실행합니다.
 
@@ -71,9 +78,12 @@ industry-dashboard --config config.yaml --out site
 - `NREL_API_KEY`: NLR/NREL Alternative Fuel Stations 무료 API 키
 - `OPENFDA_API_KEY`: openFDA 선택 API 키. 없어도 실행되지만 rate limit이 낮습니다.
 - `KOSIS_API_KEY`: KOSIS OpenAPI 무료 API 키
+- `GEMINI_API_KEY`: 매일 아침 AI 브리핑 생성용 Gemini API 키. GitHub Actions에서만 사용하고 공개 사이트에는 요약문만 배포합니다.
 - `USER_PAGES_DEPLOY_KEY`: 공개 Pages 저장소에 배포하기 위한 SSH deploy key
 
 키가 없으면 해당 데이터 소스의 지표만 `키 필요`로 표시되고, 나머지 대시보드는 계속 생성됩니다.
+`GEMINI_API_KEY`가 없거나 호출에 실패하면 AI 브리핑은 룰 기반 요약으로 대체됩니다. 기본 모델은 무료 티어에서 쓰기 쉬운 `gemini-3.1-flash-lite`이며, 필요하면 `GEMINI_MODEL` 환경변수로 바꿀 수 있습니다.
+AI 브리핑은 `docs/industry_narratives.yaml`의 산업별 짧은 내러티브를 참고하되, 그날 변동이 큰 산업만 추려 프롬프트에 전달합니다.
 
 ## 설정
 

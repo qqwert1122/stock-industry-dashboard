@@ -15,6 +15,7 @@ from urllib.parse import urljoin
 from zoneinfo import ZoneInfo
 
 import requests
+import yaml
 from bs4 import BeautifulSoup
 from openpyxl import load_workbook
 
@@ -23,6 +24,8 @@ from .utils import add_months, fmt_number, fmt_pct, fmt_signed, month_key, pct_c
 from .wsts import find_wsts_xlsx_url, parse_wsts_sheet
 
 FRED_OBSERVATIONS_URL = "https://api.stlouisfed.org/fred/series/observations"
+GEMINI_DEFAULT_MODEL = "gemini-3.1-flash-lite"
+GEMINI_GENERATE_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 DEFAULT_INDUSTRIES = [
     "반도체",
     "데이터인프라",
@@ -64,11 +67,11 @@ INDUSTRY_ICONS = {
 INDUSTRY_SUMMARIES = {
     "반도체": "메모리, 파운드리, 장비, AI 인프라 수요를 함께 봅니다.",
     "자동차": "완성차 판매와 승용차 수출로 자동차 수요 사이클을 봅니다.",
-    "전기차": "순수 전기차 수출과 EV 판매 proxy로 전기차 침투율 흐름을 봅니다.",
-    "조선": "운임, 선가, 발주, 선박 수출을 통해 수주 환경을 점검합니다.",
-    "철강/소재": "원자재 가격과 중국 제조업 경기를 소재 업황 proxy로 봅니다.",
+    "전기차": "순수 전기차 수출과 EV 판매 흐름으로 전기차 보급 속도를 봅니다.",
+    "조선": "운임, 선가, 발주, 선박 수출로 조선 수요와 이익 사이클을 봅니다.",
+    "철강/소재": "원자재 가격과 중국 제조업 경기로 소재 수요를 봅니다.",
     "화학/정유": "유가, 원료, 제품 스프레드로 마진 방향을 확인합니다.",
-    "은행/금융": "금리, 스프레드, 대출, 연체율로 금융 환경을 봅니다.",
+    "은행/금융": "금리, 스프레드, 대출, 연체율로 은행 수익성과 신용위험을 봅니다.",
     "건설/부동산": "착공, 허가, 금리, 가격으로 부동산 선행 흐름을 봅니다.",
     "방산": "수주, 생산, 수출 흐름으로 방산 수요를 확인합니다.",
     "스테이블코인": "온체인 달러 유동성과 결제/거래 수요를 봅니다.",
@@ -78,7 +81,7 @@ INDUSTRY_SUMMARIES = {
     "바이오": "바이오 제품 가격과 수출 흐름으로 업황을 봅니다.",
     "배터리": "배터리 가격, 원재료, 수출 흐름으로 셀/소재 업황을 봅니다.",
     "데이터인프라": "서버와 네트워크 인프라 투자 흐름을 봅니다.",
-    "매크로": "환율과 변동성으로 시장 환경을 빠르게 확인합니다.",
+    "매크로": "환율, 변동성, 금리로 시장 분위기를 빠르게 확인합니다.",
 }
 EN_INDUSTRY_LABELS = {
     "반도체": "Semiconductors",
@@ -115,7 +118,7 @@ EN_GROUP_LABELS = {
     "중국 경기": "China Macro",
     "에너지 가격": "Energy Prices",
     "원유/원료": "Crude/Feedstock",
-    "화학 스프레드 proxy": "Chemical Spread Proxy",
+    "화학 스프레드": "Chemical Spreads",
     "스프레드/마진": "Spreads/Margins",
     "금리": "Rates",
     "스프레드": "Spreads",
@@ -128,7 +131,7 @@ EN_GROUP_LABELS = {
     "주택 시장": "Housing Market",
     "환율": "FX",
     "리스크": "Risk",
-    "시장 환경": "Market Conditions",
+    "시장 분위기": "Market Mood",
     "핵심 지표": "Core Metrics",
     "수주잔고": "Order Backlog",
     "신규주문": "New Orders",
@@ -139,7 +142,7 @@ EN_GROUP_LABELS = {
     "전력 수요/생산": "Power Demand/Generation",
     "CAPEX": "CAPEX",
     "산업 장비 가격": "Industrial Equipment Prices",
-    "설비투자 proxy": "Capex Proxy",
+    "설비투자": "Capex/Investment",
     "항공우주 가격": "Aerospace Prices",
     "우주/방산 생산": "Space/Defense Production",
     "바이오 가격": "Biotech Prices",
@@ -377,9 +380,9 @@ CAPEX_MEANINGS_EN = {
 EN_MEANING_LABELS = {
     "반도체 업황의 현재 수요 강도와 재고 순환을 확인하는 월간 지표입니다.": "Monthly indicator for semiconductor demand strength and inventory cycles.",
     "글로벌 반도체 매출 흐름으로 업황의 수요 강도와 재고 순환을 확인합니다.": "Tracks global semiconductor revenue to read demand strength and inventory cycles.",
-    "반도체 가격 압력과 공급자 가격 흐름을 보는 가격 proxy입니다.": "Price proxy for semiconductor pricing pressure and producer price trends.",
+    "반도체 생산자 가격입니다. 반도체 가격이 오르는지 내리는지 볼 때 참고합니다.": "Semiconductor producer prices help show whether semiconductor prices are moving up or down.",
     "할인율과 금융주 마진 기대를 좌우하는 시장 금리입니다.": "Market rate that drives discount rates and bank margin expectations.",
-    "경기 기대와 은행 순이자마진 환경을 함께 보여주는 지표입니다.": "Shows both growth expectations and the net interest margin backdrop for banks.",
+    "경기 기대와 은행 순이자마진 방향을 함께 보여주는 지표입니다.": "Shows both growth expectations and the direction of bank net interest margins.",
     "신용 위험과 자금 조달 여건이 얼마나 빡빡한지 확인합니다.": "Measures credit risk and how tight funding conditions are.",
     "미국 투자등급 회사채 OAS는 우량 회사채 신용위험과 자금조달 여건을 보여주는 지표입니다.": "US investment grade corporate OAS shows credit risk and funding conditions for higher-quality corporate bonds.",
     "BBB 회사채 OAS는 경기 둔화와 신용위험 확대에 민감한 투자등급 하단 스프레드입니다.": "BBB corporate OAS tracks the lower end of investment grade credit, which is sensitive to slowdown and credit stress.",
@@ -393,25 +396,25 @@ EN_MEANING_LABELS = {
     "주택 구매 부담과 부동산 수요에 직접 영향을 주는 비용입니다.": "Financing cost that directly affects housing affordability and real estate demand.",
     "가계 자산 효과와 부동산 경기 방향성을 확인합니다.": "Shows household wealth effects and the direction of the housing cycle.",
     "정유, 화학 원가와 인플레이션 압력을 동시에 움직이는 원재료 가격입니다.": "Feedstock price that affects refining, chemical costs, and inflation pressure.",
-    "석유 제품 가격으로 정유 제품 수요와 crack spread 방향을 간접적으로 확인합니다.": "Oil product price proxy for refined product demand and crack spread direction.",
-    "화학 제품 가격 사이클과 마진 방향을 간접적으로 봅니다.": "Proxy for chemical product price cycles and margin direction.",
+    "석유 제품 가격입니다. 정유 제품 수요와 정유사 마진 방향을 볼 때 참고합니다.": "Oil product prices help show refined-product demand and refining-margin direction.",
+    "화학 제품 생산자 가격입니다. 제품 가격이 원가보다 빠르게 움직이는지 볼 때 참고합니다.": "Chemical producer prices help show whether selling prices are moving faster than input costs.",
     "철강 원가와 중국 투자 수요를 반영하는 핵심 원재료입니다.": "Core raw material reflecting steel costs and Chinese investment demand.",
     "전기화와 제조업 경기를 민감하게 반영하는 경기 민감 금속입니다.": "Cyclical metal that is sensitive to electrification and manufacturing activity.",
     "경량 소재와 제조업 수요, 전력비 영향을 함께 받는 소재 가격입니다.": "Material price affected by lightweighting demand, manufacturing demand, and power costs.",
-    "배터리 양극재 원가와 소재 업체 마진 환경을 보여주는 원재료 proxy입니다.": "Raw material proxy for battery cathode costs and materials-company margins.",
-    "니켈 가격은 배터리 양극재 원가와 소재 업체 마진 환경을 보여주는 원재료 proxy입니다.": "Nickel price is a raw material proxy for battery cathode costs and materials-company margins.",
+    "배터리 양극재 원가에 큰 영향을 주는 원재료 가격입니다.": "Raw material price with a large impact on battery cathode costs.",
+    "니켈 가격은 배터리 양극재 원가에 큰 영향을 줍니다. 가격이 오르면 소재 업체와 배터리 업체의 수익성이 달라질 수 있습니다.": "Nickel prices have a large impact on battery cathode costs and can change margins for materials and battery companies.",
     "전력 생산 원가와 산업 에너지 비용을 좌우하는 에너지 원료 지표입니다.": "Energy feedstock indicator that drives power generation costs and industrial energy costs.",
     "천연가스 가격은 전력 생산 원가와 산업 에너지 비용을 좌우하는 에너지 원료 지표입니다.": "Natural gas price indicates power generation costs and industrial energy cost pressure.",
-    "석탄 가격은 화력발전 원가와 전력 가격 압력을 확인하는 원료 proxy입니다.": "Coal price is a feedstock proxy for thermal power costs and power price pressure.",
+    "석탄 가격은 화력발전 원가에 영향을 줍니다. 가격이 오르면 전력 생산 비용이 커질 수 있습니다.": "Coal prices affect thermal power generation costs and can raise power production costs when they rise.",
     "완성차 수요와 소비 경기 흐름을 확인하는 판매 지표입니다.": "Sales indicator for automaker demand and consumer-cycle conditions.",
     "순수 전기차 수출 흐름으로 EV 수요와 국내 전기차 생산 모멘텀을 확인합니다.": "Tracks BEV export flows to read EV demand and domestic EV production momentum.",
     "순수 전기차 수출 흐름으로 전기차 완성차 수요와 국내 EV 생산 모멘텀을 확인합니다.": "Tracks BEV export flows to read EV demand and domestic EV production momentum.",
-    "방산 발주와 생산 사이클을 통해 방산 업체의 수요 환경을 확인합니다.": "Reads defense-company demand through order and production cycles.",
+    "방산 발주와 생산 사이클을 통해 방산 업체 수요가 강해지는지 확인합니다.": "Tracks whether defense-company demand is strengthening through orders and production cycles.",
     "달러 연동 스테이블코인의 유통량 변화로 온체인 달러 유동성과 결제/거래 수요를 확인합니다.": "Tracks USD-pegged stablecoin supply to read on-chain dollar liquidity and payment/trading demand.",
     "전력 생산과 가격 흐름으로 전력 인프라와 전력 수요 사이클을 확인합니다.": "Tracks power production and prices to read power infrastructure and demand cycles.",
-    "빅테크 CAPEX는 AI 데이터센터, 서버, 전력 인프라 투자 수요를 보여주는 핵심 proxy입니다.": "Big Tech CAPEX is a core proxy for AI data center, server, and power infrastructure investment demand.",
-    "설비투자와 로봇 부품 수요를 가늠하는 proxy 지표입니다.": "Proxy for capex and robotics component demand.",
-    "항공우주 생산과 가격 흐름으로 우주 밸류체인의 수요 환경을 확인합니다.": "Reads space value-chain demand through aerospace production and price trends.",
+    "빅테크 CAPEX는 AI 데이터센터, 서버, 전력 인프라에 실제로 투자가 늘어나는지 보여줍니다.": "Big Tech CAPEX shows whether investment in AI data centers, servers, and power infrastructure is actually rising.",
+    "공장 자동화와 로봇 설비 투자가 늘어나는지 볼 때 참고합니다.": "Helps show whether factory automation and robotics investment is increasing.",
+    "항공우주 장비 생산과 가격 흐름입니다. 우주 산업의 주문과 비용 부담을 볼 때 참고합니다.": "Aerospace equipment production and price trends help show space-industry orders and cost pressure.",
     "바이오 의약품과 진단 제품의 가격 사이클을 확인하는 지표입니다.": "Tracks the pricing cycle for biologics and diagnostics products.",
     "배터리 제품 가격 흐름으로 셀/소재 밸류체인의 업황을 점검합니다.": "Checks battery cell/materials conditions through battery product price trends.",
     "수출주 원화 환산 매출과 외국인 수급에 영향을 주는 매크로 변수입니다.": "Macro variable affecting exporters' KRW-translated revenue and foreign investor flows.",
@@ -420,22 +423,22 @@ EN_MEANING_LABELS = {
     "투자 판단에 필요한 업황 변화를 확인합니다.": "Tracks industry changes relevant to investment decisions.",
     "미국 방산 자본재 발주 흐름으로 방산 수요와 수주 모멘텀을 확인합니다.": "Tracks US defense capital goods orders to read defense demand and order momentum.",
     "아직 매출로 인식되지 않은 방산 수주잔고의 축적과 감소를 확인합니다.": "Tracks the buildup and drawdown of defense order backlog not yet recognized as revenue.",
-    "전력 생산 가격 흐름으로 전력 인프라와 유틸리티 수익 환경을 확인합니다.": "Tracks power producer prices to read power infrastructure and utility revenue conditions.",
+    "전력 생산 가격입니다. 전기요금과 전력 회사의 수익성이 좋아질지 나빠질지 볼 때 참고합니다.": "Power producer prices help show the direction of electricity prices and utility profitability.",
     "유틸리티 실물 생산 흐름으로 전력 수요와 경기 민감도를 확인합니다.": "Uses utilities production to read power demand and cyclical sensitivity.",
-    "설비투자와 로봇 수요에 가까운 산업용 기계 발주 흐름을 확인합니다.": "Tracks industrial machinery orders as a proxy for capex and robotics demand.",
+    "자동화와 로봇 수요에 가까운 산업용 기계 발주 흐름을 확인합니다.": "Tracks industrial machinery orders tied to automation and robotics demand.",
     "로봇과 설비투자 설비에 들어가는 산업 제어장치 가격 흐름을 확인합니다.": "Tracks industrial control equipment prices used in robotics and capex equipment.",
     "우주와 방산 장비 생산 사이클을 함께 보여주는 월간 생산 지표입니다.": "Monthly production indicator for both space and defense equipment cycles.",
-    "항공우주 부품 가격 흐름으로 우주 밸류체인의 비용과 수요 환경을 봅니다.": "Tracks aerospace parts prices to read cost and demand conditions in the space value chain.",
+    "항공우주 부품 가격입니다. 위성, 발사체, 항공 장비를 만드는 비용이 커지는지 볼 때 참고합니다.": "Aerospace parts prices help show whether the cost of satellites, launch vehicles, and aerospace equipment is rising.",
     "바이오 의약품 제조 가격 흐름으로 바이오 업황의 가격 사이클을 확인합니다.": "Tracks biologics manufacturing prices to read the biotech pricing cycle.",
-    "진단 제품 가격 흐름으로 진단/바이오 수요와 가격 환경을 확인합니다.": "Tracks diagnostics product prices to read diagnostics/biotech demand and pricing conditions.",
-    "저장 배터리 제조 가격 흐름으로 배터리 셀 업황과 마진 환경을 확인합니다.": "Tracks storage battery manufacturing prices to read battery cell conditions and margins.",
-    "미국 국방부가 집행한 계약 의무액으로 방산 예산 집행과 수주 환경의 큰 흐름을 확인합니다.": "Uses US DoD contract obligations to read the broad trend in defense budget execution and order conditions.",
+    "진단 제품의 생산자 가격입니다. 진단 장비와 검사 제품 가격이 오르는지 내리는지 볼 때 참고합니다.": "Diagnostics producer prices help show whether diagnostic equipment and test-product prices are rising or falling.",
+    "저장 배터리 제조 가격입니다. 배터리 셀 업체의 원가 부담과 판매 가격 흐름을 볼 때 참고합니다.": "Storage battery manufacturing prices help show battery-cell cost pressure and selling-price trends.",
+    "미국 국방부가 실제로 계약에 배정한 금액입니다. 방산 예산이 어느 분야로 흘러가는지 볼 때 중요합니다.": "US DoD contract obligations show where defense budget dollars are actually being committed.",
     "미국 연방 방산/항공우주 제조업 계약 의무액으로 방산 제조 밸류체인의 수주 모멘텀을 확인합니다.": "Uses US federal defense/aerospace manufacturing obligations to read order momentum across the defense manufacturing value chain.",
-    "NASA 계약 의무액은 우주 장비와 서비스 수요, 정부 우주 예산 집행 흐름을 보여주는 proxy입니다.": "NASA contract obligations proxy demand for space equipment and services and government space budget execution.",
+    "NASA 계약 의무액은 미국 정부가 우주 장비와 서비스에 실제로 얼마나 돈을 쓰고 있는지 보여줍니다.": "NASA contract obligations show how much the US government is actually spending on space equipment and services.",
     "FDA 의약품 승인 관련 기록 수로 바이오 규제 이벤트와 신약 모멘텀을 확인합니다.": "Counts FDA drug approval records to read biotech regulatory events and new-drug momentum.",
     "Phase 3 임상 시작 건수는 후기 파이프라인 활동성과 바이오 투자심리의 이벤트 밀도를 보여줍니다.": "Phase 3 trial starts show late-stage pipeline activity and event density for biotech sentiment.",
     "글로벌 발사 건수로 우주 산업 활동성과 위성 인프라 수요를 확인합니다.": "Global launch count indicates space industry activity and satellite infrastructure demand.",
-    "미국 EV 충전소 수는 전기차 보급 환경과 충전 인프라 투자 흐름을 보여주는 지표입니다.": "US EV charging station count shows EV adoption conditions and charging infrastructure investment trends.",
+    "미국 EV 충전소 수는 전기차를 이용하기 쉬워지고 있는지와 충전 인프라 투자 흐름을 보여줍니다.": "US EV charging station count shows whether EVs are getting easier to use and how charging infrastructure investment is moving.",
     "미국 EV 충전 포트 수는 전기차 이용 편의성과 인프라 확장 속도를 확인하는 지표입니다.": "US EV charging port count shows EV usability and the pace of infrastructure expansion.",
 }
 
@@ -448,6 +451,7 @@ def build_dashboard_site(config: dict[str, Any], output_dir: str | Path, session
     previous_payload = load_previous_dashboard_payload(data_path / "dashboard.json")
     payload = build_dashboard_payload(config, session)
     annotate_dashboard_updates(payload, previous_payload)
+    payload["morning_briefing"] = build_morning_briefing(payload, session)
     json_text = json.dumps(payload, ensure_ascii=False, indent=2)
 
     copy_dashboard_assets(output_path)
@@ -574,6 +578,518 @@ def daily_change_item(
         "previous_display_value": previous.get("display_value", "") if previous else "",
         "previous_observed_label": previous.get("observed_label", "") if previous else "",
     }
+
+
+def build_morning_briefing(payload: dict[str, Any], session: requests.Session) -> dict[str, Any]:
+    briefing = rule_based_morning_briefing(payload)
+    if str(os.getenv("GEMINI_BRIEFING_ENABLED", "1")).strip().lower() in {"0", "false", "no", "off"}:
+        briefing["status"] = "disabled"
+        briefing["status_message"] = "Gemini 요약 비활성화"
+        return briefing
+
+    api_key = os.getenv("GEMINI_API_KEY", "").strip()
+    if not api_key:
+        briefing["status"] = "skipped"
+        briefing["status_message"] = "Gemini API 키 없음"
+        return briefing
+
+    model = os.getenv("GEMINI_MODEL", GEMINI_DEFAULT_MODEL).strip() or GEMINI_DEFAULT_MODEL
+    try:
+        prompt = gemini_morning_briefing_prompt(payload, briefing)
+        raw_text = request_gemini_briefing(session, api_key, model, prompt)
+        parsed = parse_json_object(raw_text)
+        return normalize_gemini_briefing(parsed, briefing, model)
+    except Exception as exc:  # noqa: BLE001 - the dashboard should still publish without AI text.
+        briefing["status"] = "error"
+        briefing["status_message"] = f"Gemini 요약 실패: {exc}"
+        briefing["model"] = model
+        return briefing
+
+
+def rule_based_morning_briefing(payload: dict[str, Any]) -> dict[str, Any]:
+    metrics = [metric for metric in payload.get("metrics", []) if isinstance(metric, dict)]
+    top_movers = top_mover_metrics(metrics)
+    improving_industries = industry_signal_rows(metrics, "change_pct", reverse=True)[:3]
+    slowing_industries = industry_signal_rows(metrics, "yoy_pct", reverse=False)[:3]
+    equity_leads = equity_lead_rows(metrics)[:3]
+    source_issues = [
+        {
+            "name": str(source.get("name") or ""),
+            "status": str(source.get("status") or ""),
+            "message": str(source.get("message") or ""),
+        }
+        for source in payload.get("source_status", [])
+        if isinstance(source, dict) and source.get("status") != "ok"
+    ]
+    headline = "오늘 변한 지표가 업황에 주는 의미를 먼저 확인하세요."
+    if top_movers:
+        first = top_movers[0]
+        headline = f"{first['industry']} {first['name']} 변화가 눈에 띕니다."
+    return {
+        "status": "fallback",
+        "status_message": "룰 기반 요약",
+        "model": "",
+        "generated_label": str(payload.get("generated_label") or ""),
+        "headline": headline,
+        "summary": rule_based_summary(top_movers, improving_industries, slowing_industries, source_issues),
+        "bullets": rule_based_bullets(top_movers, improving_industries, slowing_industries, equity_leads),
+        "top_movers": top_movers,
+        "improving_industries": improving_industries,
+        "slowing_industries": slowing_industries,
+        "equity_leads": equity_leads,
+        "source_issues": source_issues,
+    }
+
+
+def narrative_context_for_briefing(briefing: dict[str, Any], limit: int = 6) -> dict[str, Any]:
+    narratives = load_industry_narratives()
+    if not narratives:
+        return {}
+
+    industry_order = relevant_briefing_industries(briefing, limit)
+    industry_map = narratives.get("industries") if isinstance(narratives.get("industries"), dict) else {}
+    selected = []
+    for industry in industry_order:
+        item = industry_map.get(industry) if isinstance(industry_map, dict) else None
+        if not isinstance(item, dict):
+            continue
+        selected.append(
+            {
+                "industry": industry,
+                "narrative": short_text(item.get("narrative"), "", 130),
+                "focus_metrics": [short_text(value, "", 32) for value in list(item.get("key_metrics") or [])[:4]],
+                "lens": short_text(item.get("lens"), "", 130),
+            }
+        )
+    if not selected:
+        return {}
+    return {
+        "as_of": str(narratives.get("as_of") or ""),
+        "global_frame": short_text(narratives.get("global_frame"), "", 170),
+        "common_rules": [short_text(value, "", 90) for value in list(narratives.get("common_rules") or [])[:3]],
+        "stock_market": compact_stock_market_narrative(narratives.get("stock_market")),
+        "industries": selected,
+    }
+
+
+def compact_stock_market_narrative(value: Any) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        return {}
+    return {
+        "narrative": short_text(value.get("narrative"), "", 230),
+        "key_signals": [short_text(item, "", 32) for item in list(value.get("key_signals") or [])[:5]],
+        "lens": short_text(value.get("lens"), "", 170),
+        "rotation": short_text(value.get("rotation"), "", 130),
+    }
+
+
+def relevant_briefing_industries(briefing: dict[str, Any], limit: int) -> list[str]:
+    ordered: list[str] = []
+
+    def add(industry: Any) -> None:
+        text = str(industry or "").strip()
+        if text and text not in ordered:
+            ordered.append(text)
+
+    for metric in briefing.get("top_movers") or []:
+        if isinstance(metric, dict):
+            add(metric.get("industry"))
+    for section in ("improving_industries", "slowing_industries", "equity_leads"):
+        for row in briefing.get(section) or []:
+            if isinstance(row, dict):
+                add(row.get("industry"))
+                for metric in row.get("drivers") or []:
+                    if isinstance(metric, dict):
+                        add(metric.get("industry"))
+    return ordered[:limit]
+
+
+def load_industry_narratives() -> dict[str, Any]:
+    candidates = [
+        Path.cwd() / "docs" / "industry_narratives.yaml",
+        Path(__file__).resolve().parents[2] / "docs" / "industry_narratives.yaml",
+    ]
+    for path in candidates:
+        if not path.exists():
+            continue
+        try:
+            data = yaml.safe_load(path.read_text(encoding="utf-8"))
+        except (OSError, yaml.YAMLError):
+            return {}
+        return data if isinstance(data, dict) else {}
+    return {}
+
+
+def top_mover_metrics(metrics: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    updated = [metric for metric in metrics if metric.get("daily_status") in {"updated", "new"}]
+    candidates = updated or metrics
+    ranked = [
+        metric
+        for metric in candidates
+        if to_float(metric.get("change_pct")) is not None
+    ]
+    ranked.sort(key=lambda metric: abs(to_float(metric.get("change_pct")) or 0.0), reverse=True)
+    return [brief_metric(metric) for metric in ranked[:5]]
+
+
+def industry_signal_rows(
+    metrics: list[dict[str, Any]], field: str, *, reverse: bool
+) -> list[dict[str, Any]]:
+    by_industry: dict[str, list[tuple[float, dict[str, Any]]]] = defaultdict(list)
+    for metric in metrics:
+        value = to_float(metric.get(field))
+        if value is None:
+            continue
+        signal = value * metric_direction(metric)
+        by_industry[str(metric.get("industry") or "매크로")].append((signal, metric))
+
+    rows: list[dict[str, Any]] = []
+    for industry, items in by_industry.items():
+        if not items:
+            continue
+        score = sum(signal for signal, _metric in items) / len(items)
+        drivers = sorted(items, key=lambda item: abs(item[0]), reverse=True)[:2]
+        rows.append(
+            {
+                "industry": industry,
+                "score": round(score, 2),
+                "drivers": [brief_metric(metric) for _signal, metric in drivers],
+            }
+        )
+    rows.sort(key=lambda row: row["score"], reverse=reverse)
+    return rows
+
+
+def equity_lead_rows(metrics: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    by_industry: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for metric in metrics:
+        by_industry[str(metric.get("industry") or "매크로")].append(metric)
+
+    rows: list[dict[str, Any]] = []
+    for industry, items in by_industry.items():
+        equities = [metric for metric in items if str(metric.get("group") or "") == "대표주가"]
+        fundamentals = [metric for metric in items if str(metric.get("group") or "") != "대표주가"]
+        equity_values = [to_float(metric.get("change_pct")) for metric in equities]
+        fundamental_values = [to_float(metric.get("change_pct")) for metric in fundamentals]
+        equity_values = [value for value in equity_values if value is not None]
+        fundamental_values = [value for value in fundamental_values if value is not None]
+        if not equity_values or not fundamental_values:
+            continue
+        equity_score = sum(equity_values) / len(equity_values)
+        fundamental_score = sum(fundamental_values) / len(fundamental_values)
+        gap = equity_score - fundamental_score
+        if abs(equity_score) < 2 and abs(gap) < 3:
+            continue
+        if equity_score * fundamental_score > 0 and abs(gap) < 5:
+            continue
+        rows.append(
+            {
+                "industry": industry,
+                "equity_score": round(equity_score, 2),
+                "fundamental_score": round(fundamental_score, 2),
+                "gap": round(gap, 2),
+                "drivers": [
+                    brief_metric(max(equities, key=lambda metric: abs(to_float(metric.get("change_pct")) or 0.0))),
+                    brief_metric(max(fundamentals, key=lambda metric: abs(to_float(metric.get("change_pct")) or 0.0))),
+                ],
+            }
+        )
+    rows.sort(key=lambda row: abs(row["gap"]), reverse=True)
+    return rows
+
+
+def metric_direction(metric: dict[str, Any]) -> int:
+    text = " ".join(
+        str(metric.get(key) or "")
+        for key in ("name", "group", "meaning")
+    )
+    lower_is_better_keywords = (
+        "VIX",
+        "스프레드",
+        "금리",
+        "연체율",
+        "모기지",
+        "위험",
+        "리스크",
+    )
+    return -1 if any(keyword in text for keyword in lower_is_better_keywords) else 1
+
+
+def brief_metric(metric: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "id": str(metric.get("id") or ""),
+        "industry": str(metric.get("industry") or ""),
+        "group": str(metric.get("group") or ""),
+        "kind": metric_kind_label(metric),
+        "name": str(metric.get("name") or ""),
+        "value": str(metric.get("display_value") or ""),
+        "observed_label": str(metric.get("observed_label") or ""),
+        "change_pct": to_float(metric.get("change_pct")),
+        "change_pct_label": str(metric.get("change_pct_label") or ""),
+        "yoy_pct": to_float(metric.get("yoy_pct")),
+        "yoy_pct_label": str(metric.get("yoy_pct_label") or ""),
+        "meaning": short_text(metric.get("meaning"), "", 120),
+    }
+
+
+def metric_kind_label(metric: dict[str, Any]) -> str:
+    group = str(metric.get("group") or "")
+    name = str(metric.get("name") or "")
+    text = f"{group} {name}"
+    if group == "대표주가":
+        return "대표주가(주식 가격)"
+    if group == "시장지수":
+        return "시장지수"
+    if "WSTS" in text or "판매액" in group:
+        return "반도체 판매액"
+    if "CAPEX" in text.upper():
+        return "설비투자(CAPEX)"
+    if any(keyword in text for keyword in ("원자재", "유가", "철광석", "구리", "알루미늄", "니켈", "석탄", "천연가스")):
+        return "원자재/에너지 가격"
+    if any(keyword in text for keyword in ("금리", "스프레드", "OAS", "연체율", "대출")):
+        return "금융여건 지표"
+    if "수출" in text:
+        return "수출 지표"
+    if any(keyword in text for keyword in ("승인", "임상", "발사", "계약", "충전")):
+        return "산업 활동 지표"
+    return group or "업황 지표"
+
+
+def metric_change_meaning(metric: dict[str, Any]) -> str:
+    group = str(metric.get("group") or "")
+    name = str(metric.get("name") or "")
+    text = f"{group} {name}"
+    change = to_float(metric.get("change_pct"))
+    improved = change is None or change * metric_direction(metric) >= 0
+
+    if group == "대표주가":
+        return "실적이 바로 바뀌었다기보다, 시장이 해당 산업의 기대와 위험을 다시 가격에 반영한 신호로 볼 수 있습니다."
+    if group == "시장지수":
+        return "개별 산업보다 전체 투자심리와 위험 선호가 움직였는지 확인하는 신호입니다."
+    if "CAPEX" in text.upper():
+        return "AI와 클라우드 인프라 투자가 앞으로도 강하게 이어질지 보여주는 단서입니다."
+    if "판매액" in group or "WSTS" in group:
+        return "반도체가 실제로 얼마나 팔리고 있는지 보여주기 때문에 업황의 바닥과 회복 속도를 보는 데 중요합니다."
+    if any(keyword in text for keyword in ("원자재", "유가", "철광석", "구리", "알루미늄", "리튬")):
+        return "소재와 제조업의 비용 부담이 커지는지 줄어드는지 확인하는 지표입니다."
+    if any(keyword in text for keyword in ("금리", "스프레드", "모기지", "연체율")):
+        return "돈을 빌리는 부담과 금융 스트레스가 완화되는지 악화되는지 보는 지표입니다."
+    if any(keyword in text for keyword in ("승인", "임상", "발사", "계약", "충전")):
+        return "해당 산업의 실제 활동량과 투자 속도가 살아나는지 확인하는 힌트입니다."
+    return "하루 가격 움직임만 보기보다, 같은 산업의 수요·투자·실적 지표와 같이 보면 의미가 더 분명해집니다." if improved else "단기 변동일 수 있으니, 같은 산업의 수요·투자·실적 지표도 함께 확인하는 편이 좋습니다."
+
+
+def metric_change_summary(metric: dict[str, Any]) -> str:
+    change = str(metric.get("change_pct_label") or "변동")
+    kind = str(metric.get("kind") or metric.get("group") or "지표")
+    return f"{metric['industry']}의 {kind}인 {metric['name']}가 {change} 움직였습니다. {metric_change_meaning(metric)}"
+
+
+def topic_label(text: str) -> str:
+    return f"{text}{topic_particle(text)}"
+
+
+def topic_particle(text: str) -> str:
+    for char in reversed(str(text or "").strip()):
+        code = ord(char)
+        if 0xAC00 <= code <= 0xD7A3:
+            return "은" if (code - 0xAC00) % 28 else "는"
+        if char.isalnum():
+            return "는"
+    return "는"
+
+
+def rule_based_summary(
+    top_movers: list[dict[str, Any]],
+    improving_industries: list[dict[str, Any]],
+    slowing_industries: list[dict[str, Any]],
+    source_issues: list[dict[str, Any]],
+) -> str:
+    parts = []
+    if top_movers:
+        parts.append(metric_change_summary(top_movers[0]))
+    if improving_industries:
+        industry = improving_industries[0]["industry"]
+        parts.append(f"{industry} 쪽은 최근 지표 흐름이 상대적으로 좋아져 수요나 투자 강도가 살아있는지 볼 만합니다.")
+    if slowing_industries:
+        industry = slowing_industries[0]["industry"]
+        parts.append(f"{topic_label(industry)} 전년 대비 힘이 약해진 항목이 있어, 회복이 이어지는지 한 번 더 확인하는 게 좋습니다.")
+    if source_issues:
+        parts.append("일부 지표는 아직 새 값이 들어오지 않았을 수 있어 오늘 바뀐 항목을 우선 보면 됩니다.")
+    return " ".join(parts) or "오늘 새로 해석할 만큼 크게 움직인 지표가 아직 많지 않습니다."
+
+
+def rule_based_bullets(
+    top_movers: list[dict[str, Any]],
+    improving_industries: list[dict[str, Any]],
+    slowing_industries: list[dict[str, Any]],
+    equity_leads: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    bullets: list[dict[str, Any]] = []
+    if top_movers:
+        bullets.append(
+            {
+                "title": "급변 지표",
+                "body": metric_change_summary(top_movers[0]),
+                "metric_ids": [item["id"] for item in top_movers[:3] if item.get("id")],
+            }
+        )
+    if improving_industries:
+        row = improving_industries[0]
+        bullets.append(
+            {
+                "title": "좋아진 흐름",
+                "body": f"{topic_label(row['industry'])} 여러 지표가 상대적으로 좋아져 수요나 투자 강도가 유지되는지 볼 만합니다.",
+                "metric_ids": [item["id"] for item in row.get("drivers", []) if item.get("id")],
+            }
+        )
+    if slowing_industries:
+        row = slowing_industries[0]
+        bullets.append(
+            {
+                "title": "주의할 흐름",
+                "body": f"{topic_label(row['industry'])} 전년 대비 힘이 약해진 항목이 있어 회복 속도를 조심해서 봐야 합니다.",
+                "metric_ids": [item["id"] for item in row.get("drivers", []) if item.get("id")],
+            }
+        )
+    if equity_leads:
+        row = equity_leads[0]
+        bullets.append(
+            {
+                "title": "주가와 지표 차이",
+                "body": f"{topic_label(row['industry'])} 주가와 실제 지표의 움직임 차이가 커서 기대가 앞서가는지 확인이 필요합니다.",
+                "metric_ids": [item["id"] for item in row.get("drivers", []) if item.get("id")],
+            }
+        )
+    return bullets
+
+def gemini_morning_briefing_prompt(payload: dict[str, Any], briefing: dict[str, Any]) -> str:
+    context = {
+        "generated_label": payload.get("generated_label", ""),
+        "narrative_context": narrative_context_for_briefing(briefing),
+        "top_movers": briefing.get("top_movers", []),
+        "improving_industries": briefing.get("improving_industries", []),
+        "slowing_industries": briefing.get("slowing_industries", []),
+        "equity_leads": briefing.get("equity_leads", []),
+        "source_issues": briefing.get("source_issues", []),
+        "daily_changes": payload.get("daily_changes", {}),
+    }
+    return (
+        "너는 개인 투자자가 매일 아침 산업별 지표 대시보드를 빠르게 훑도록 돕는 한국어 브리핑 작성자다.\n"
+        "아래 JSON 데이터만 근거로 사용하고, 매수/매도 추천이나 목표가는 쓰지 마라.\n"
+        "가장 중요한 목표는 오늘 바뀐 지표가 어떤 의미인지 쉬운 말로 설명하는 것이다.\n"
+        "각 지표를 언급할 때는 name만 쓰지 말고 반드시 kind와 industry를 함께 써라. 예: '로봇 대표주가(주식 가격) Teradyne(TER)'처럼 쓴다.\n"
+        "narrative_context는 시장이 요즘 그 산업을 보는 관점이다. 단, 지표 데이터와 충돌하면 지표 데이터를 우선하고 내러티브는 해석 렌즈로만 사용하라.\n"
+        "narrative_context.stock_market은 주식시장 전체가 주가를 가격화하는 방식이다. 대표주가가 움직일 때는 산업 실물지표와 stock_market의 밸류에이션·금리·포지셔닝 렌즈를 함께 사용하라.\n"
+        "어려운 통계 용어를 피하고, 수요가 강해졌는지, 비용 부담이 커졌는지, 투자심리가 흔들렸는지처럼 사용자가 바로 이해할 수 있게 써라.\n"
+        "주가 지표는 기업 실적 자체가 아니라 시장 기대와 위험 선호가 움직인 신호라는 점을 구분해서 설명하라.\n"
+        "월간·분기 지표는 새 발표 전까지 그대로일 수 있으니, daily_changes와 top_movers를 우선해서 해석하라.\n"
+        "불확실하거나 데이터 공백이 있으면 사용자 친화적으로 짧게 말하라.\n"
+        "출력은 설명 없이 JSON 객체 하나만 반환하라.\n"
+        "스키마: {\"headline\": string, \"summary\": string, \"bullets\": "
+        "[{\"title\": string, \"body\": string, \"metric_ids\": [string]}]}\n"
+        "headline은 40자 이내로 오늘의 핵심 변화를 쉽게 말하라.\n"
+        "summary는 2문장 이내로 '무엇이 변했고 왜 봐야 하는지'를 설명하라.\n"
+        "bullets는 3~5개이며 title은 '급변 지표', '좋아진 흐름', '주의할 흐름', '주가와 지표 차이'처럼 짧은 항목명으로 쓰고, body는 '변한 지표의 종류 + 의미 + 다음에 볼 것'을 한 문장으로 써라.\n"
+        f"데이터:\n{json.dumps(context, ensure_ascii=False, separators=(',', ':'))}"
+    )
+
+
+def request_gemini_briefing(
+    session: requests.Session, api_key: str, model: str, prompt: str
+) -> str:
+    url = GEMINI_GENERATE_URL.format(model=model)
+    response = session.post(
+        url,
+        headers={
+            "x-goog-api-key": api_key,
+            "Content-Type": "application/json",
+        },
+        json={
+            "contents": [{"role": "user", "parts": [{"text": prompt}]}],
+            "generationConfig": {
+                "temperature": 0.2,
+                "maxOutputTokens": 900,
+                "responseMimeType": "application/json",
+            },
+        },
+        timeout=30,
+    )
+    response.raise_for_status()
+    text = extract_gemini_text(response.json())
+    if not text:
+        raise RuntimeError("Gemini 응답에 텍스트가 없습니다.")
+    return text
+
+
+def extract_gemini_text(payload: dict[str, Any]) -> str:
+    candidates = payload.get("candidates")
+    if not isinstance(candidates, list) or not candidates:
+        return ""
+    content = candidates[0].get("content") if isinstance(candidates[0], dict) else None
+    parts = content.get("parts") if isinstance(content, dict) else None
+    if not isinstance(parts, list):
+        return ""
+    texts = [str(part.get("text") or "") for part in parts if isinstance(part, dict)]
+    return "\n".join(text for text in texts if text).strip()
+
+
+def parse_json_object(text: str) -> dict[str, Any]:
+    cleaned = text.strip()
+    if cleaned.startswith("```"):
+        cleaned = re.sub(r"^```(?:json)?\s*", "", cleaned)
+        cleaned = re.sub(r"\s*```$", "", cleaned)
+    start = cleaned.find("{")
+    end = cleaned.rfind("}")
+    if start != -1 and end != -1 and end > start:
+        cleaned = cleaned[start : end + 1]
+    parsed = json.loads(cleaned)
+    if not isinstance(parsed, dict):
+        raise ValueError("Gemini JSON 응답이 객체가 아닙니다.")
+    return parsed
+
+
+def normalize_gemini_briefing(
+    parsed: dict[str, Any], fallback: dict[str, Any], model: str
+) -> dict[str, Any]:
+    briefing = dict(fallback)
+    briefing.update(
+        {
+            "status": "ok",
+            "status_message": "Gemini 요약",
+            "model": model,
+            "headline": short_text(parsed.get("headline"), fallback.get("headline", ""), 80),
+            "summary": short_text(parsed.get("summary"), fallback.get("summary", ""), 360),
+            "bullets": normalize_briefing_bullets(parsed.get("bullets"), fallback.get("bullets", [])),
+        }
+    )
+    return briefing
+
+
+def normalize_briefing_bullets(value: Any, fallback: Any) -> list[dict[str, Any]]:
+    items = value if isinstance(value, list) else fallback
+    bullets: list[dict[str, Any]] = []
+    for item in items[:5]:
+        if not isinstance(item, dict):
+            continue
+        metric_ids = item.get("metric_ids")
+        bullets.append(
+            {
+                "title": short_text(item.get("title"), "체크포인트", 40),
+                "body": short_text(item.get("body"), "", 220),
+                "metric_ids": [
+                    str(metric_id)
+                    for metric_id in (metric_ids if isinstance(metric_ids, list) else [])
+                    if metric_id
+                ][:3],
+            }
+        )
+    return bullets
+
+def short_text(value: Any, fallback: Any, max_length: int) -> str:
+    text = str(value if value not in (None, "") else fallback or "").strip()
+    text = re.sub(r"\s+", " ", text)
+    return text[:max_length]
 
 
 def copy_dashboard_assets(output_path: Path) -> None:
@@ -1126,7 +1642,7 @@ def parse_yahoo_chart_points(payload: dict[str, Any]) -> tuple[list[tuple[date, 
 
 
 def equity_price_meaning(name: str) -> str:
-    return f"{name}는 해당 산업을 대표하는 상장사의 주가 흐름으로 시장이 반영하는 성장성과 리스크를 확인하는 proxy입니다."
+    return f"{name} 주가는 시장이 해당 기업의 성장성과 위험을 어떻게 평가하는지 보여줍니다."
 
 
 def collect_stablecoin_metrics(
@@ -2285,7 +2801,7 @@ def collect_afdc_metrics(
                 group=str(item.get("group") or "충전 인프라"),
                 meaning=str(
                     item.get("meaning")
-                    or "미국 EV 충전 인프라 규모로 전기차 보급 환경과 인프라 투자 흐름을 확인합니다."
+                    or "미국 EV 충전 인프라 규모로 전기차를 이용하기 쉬워지고 있는지 확인합니다."
                 ),
             )
         )
@@ -3005,15 +3521,9 @@ def english_metric_meaning(meaning: str, industry: str = "") -> str:
         item = english_export_item(export_match.group(1))
         return f"{item} exports track external demand and price/volume cycles for the item."
 
-    stock_match = re.match(
-        r"^(.+) 주가는 해당 산업을 대표하는 상장사의 주가 흐름으로 시장이 반영하는 성장성과 리스크를 확인하는 proxy입니다\\.$",
-        meaning,
-    )
+    stock_match = re.match(r"^(.+) 주가는 시장이 해당 기업의 성장성과 위험을 어떻게 평가하는지 보여줍니다\\.$", meaning)
     if stock_match:
-        return (
-            f"{stock_match.group(1)} stock price is a representative listed-company "
-            "proxy for market-implied growth and risk in the industry."
-        )
+        return f"{stock_match.group(1)} stock price shows how the market values the company's growth and risk."
 
     capex_match = re.match(
         r"^(.+)의 CAPEX는 데이터센터, 서버, AI 인프라 같은 장기 설비투자 규모를 보여줍니다\. "
@@ -3027,10 +3537,10 @@ def english_metric_meaning(meaning: str, industry: str = "") -> str:
             "and AI infrastructure demand."
         )
 
-    industry_match = re.match(r"^(.+) 업황을 해석하기 위한 보조 지표입니다\\.$", meaning)
+    industry_match = re.match(r"^(.+) 흐름을 이해할 때 참고하는 보조 지표입니다\\.$", meaning)
     if industry_match:
         target_industry = english_industry(industry_match.group(1) or industry)
-        return f"Supplementary indicator for interpreting {target_industry} industry conditions."
+        return f"Supplementary indicator for understanding {target_industry} industry trends."
 
     return meaning
 
@@ -3075,7 +3585,7 @@ def infer_metric_group(industry: str, name: str) -> str:
     if industry == "로봇":
         if "PPI" in name:
             return "산업 장비 가격"
-        return "설비투자 proxy"
+        return "설비투자"
     if industry == "우주":
         if "PPI" in name:
             return "항공우주 가격"
@@ -3101,7 +3611,7 @@ def infer_metric_group(industry: str, name: str) -> str:
     if industry == "화학/정유":
         if "유가" in name:
             return "에너지 가격"
-        return "화학 스프레드 proxy"
+        return "화학 스프레드"
     if industry == "자동차":
         return "판매/수요"
     if industry == "전기차":
@@ -3151,11 +3661,11 @@ def infer_metric_meaning(industry: str, name: str) -> str:
     if "WSTS" in name:
         return wsts_metric_meaning("Worldwide", False)
     if "반도체 PPI" in name:
-        return "반도체 가격 압력과 공급자 가격 흐름을 보는 가격 proxy입니다."
+        return "반도체 생산자 가격입니다. 반도체 가격이 오르는지 내리는지 볼 때 참고합니다."
     if "국채금리" in name:
         return "할인율과 금융주 마진 기대를 좌우하는 시장 금리입니다."
     if "금리차" in name:
-        return "경기 기대와 은행 순이자마진 환경을 함께 보여주는 지표입니다."
+        return "경기 기대와 은행 순이자마진 방향을 함께 보여주는 지표입니다."
     if "회사채" in name:
         return "신용 위험과 자금 조달 여건이 얼마나 빡빡한지 확인합니다."
     if "연체" in name:
@@ -3173,9 +3683,9 @@ def infer_metric_meaning(industry: str, name: str) -> str:
     if "유가" in name:
         return "정유, 화학 원가와 인플레이션 압력을 동시에 움직이는 원재료 가격입니다."
     if "휘발유" in name or "디젤" in name:
-        return "석유 제품 가격으로 정유 제품 수요와 crack spread 방향을 간접적으로 확인합니다."
+        return "석유 제품 가격입니다. 정유 제품 수요와 정유사 마진 방향을 볼 때 참고합니다."
     if "화학 PPI" in name:
-        return "화학 제품 가격 사이클과 마진 방향을 간접적으로 봅니다."
+        return "화학 제품 생산자 가격입니다. 제품 가격이 원가보다 빠르게 움직이는지 볼 때 참고합니다."
     if "철광석" in name:
         return "철강 원가와 중국 투자 수요를 반영하는 핵심 원재료입니다."
     if "구리" in name:
@@ -3183,7 +3693,7 @@ def infer_metric_meaning(industry: str, name: str) -> str:
     if "알루미늄" in name:
         return "경량 소재와 제조업 수요, 전력비 영향을 함께 받는 소재 가격입니다."
     if "니켈" in name:
-        return "배터리 양극재 원가와 소재 업체 마진 환경을 보여주는 원재료 proxy입니다."
+        return "배터리 양극재 원가에 큰 영향을 주는 원재료 가격입니다."
     if "천연가스" in name or "석탄" in name:
         return "전력 생산 원가와 산업 에너지 비용을 좌우하는 에너지 원료 지표입니다."
     if "자동차 판매" in name:
@@ -3191,7 +3701,7 @@ def infer_metric_meaning(industry: str, name: str) -> str:
     if "전기차" in name:
         return "순수 전기차 수출 흐름으로 EV 수요와 국내 전기차 생산 모멘텀을 확인합니다."
     if "방산" in name:
-        return "방산 발주와 생산 사이클을 통해 방산 업체의 수요 환경을 확인합니다."
+        return "방산 발주와 생산 사이클을 통해 방산 업체 수요가 강해지는지 확인합니다."
     if "스테이블코인" in name or "USDT" in name or "USDC" in name:
         return stablecoin_meaning()
     if "전력" in name or "유틸리티" in name:
@@ -3199,9 +3709,9 @@ def infer_metric_meaning(industry: str, name: str) -> str:
     if industry == "데이터인프라" or "CAPEX" in name.upper():
         return sec_capex_meaning(name)
     if "산업용 기계" in name or "산업 제어" in name:
-        return "설비투자와 로봇 부품 수요를 가늠하는 proxy 지표입니다."
+        return "공장 자동화와 로봇 설비 투자가 늘어나는지 볼 때 참고합니다."
     if "우주" in name or "항공우주" in name:
-        return "항공우주 생산과 가격 흐름으로 우주 밸류체인의 수요 환경을 확인합니다."
+        return "항공우주 장비 생산과 가격 흐름입니다. 우주 산업의 주문과 비용 부담을 볼 때 참고합니다."
     if "생물학적" in name or "체외진단" in name:
         return "바이오 의약품과 진단 제품의 가격 사이클을 확인하는 지표입니다."
     if "배터리" in name:
@@ -3213,7 +3723,7 @@ def infer_metric_meaning(industry: str, name: str) -> str:
     if "수출" in name:
         return "해당 품목의 대외 수요와 가격/물량 사이클을 확인합니다."
     if industry:
-        return f"{industry} 업황을 해석하기 위한 보조 지표입니다."
+        return f"{industry} 흐름을 이해할 때 참고하는 보조 지표입니다."
     return "투자 판단에 필요한 업황 변화를 확인합니다."
 
 
@@ -3357,8 +3867,17 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       --line: #e6e6e6;
       --menu: #f0f0f0;
       --menu-active: #e6e6e6;
-      --chart-up: #d83b32;
-      --chart-down: #2f6fd6;
+      --detail-stat-bg: #f8f8f8;
+      --branch-line: #e0e0e0;
+      --ai-card-bg: linear-gradient(135deg, rgba(6, 182, 212, 0.06) 0%, rgba(59, 130, 246, 0.08) 48%, rgba(79, 70, 229, 0.10) 100%);
+      --ai-card-border: rgba(59, 130, 246, 0.12);
+      --ai-inset-bg: rgba(255, 255, 255, 0.46);
+      --ai-inset-border: rgba(59, 130, 246, 0.10);
+      --ai-bullet-text: #7a7a7a;
+      --ai-bullet-body: #9a9a9a;
+      --favorite-star: #f59e0b;
+      --chart-up: #f23645;
+      --chart-down: #1f5eff;
       --shadow: 0 10px 26px rgba(0, 0, 0, 0.06);
       --menu-shadow: 0 8px 24px rgba(0, 0, 0, 0.055);
     }
@@ -3374,6 +3893,15 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       --line: #303030;
       --menu: #242424;
       --menu-active: #303030;
+      --detail-stat-bg: #1a1a1a;
+      --branch-line: #3c3c3c;
+      --ai-card-bg: linear-gradient(135deg, rgba(6, 182, 212, 0.10) 0%, rgba(59, 130, 246, 0.12) 48%, rgba(79, 70, 229, 0.14) 100%);
+      --ai-card-border: rgba(96, 165, 250, 0.18);
+      --ai-inset-bg: rgba(255, 255, 255, 0.045);
+      --ai-inset-border: rgba(96, 165, 250, 0.12);
+      --ai-bullet-text: #a8a8a8;
+      --ai-bullet-body: #898989;
+      --favorite-star: #fbbf24;
       --shadow: none;
       --menu-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
     }
@@ -3405,6 +3933,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     body.theme-ready .reorder-actions button,
     body.theme-ready .currency-toggle,
     body.theme-ready .theme-toggle,
+    body.theme-ready .scroll-top-button,
     body.theme-ready .industry,
     body.theme-ready .industry-head,
     body.theme-ready .industry-icon-wrap,
@@ -3439,6 +3968,18 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       color: inherit;
     }
 
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
     .shell {
       display: grid;
       grid-template-columns: 232px minmax(0, 1fr);
@@ -3454,7 +3995,8 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       top: 22px;
       align-self: start;
       min-width: 0;
-      min-height: calc(100vh - 44px);
+      height: calc(100vh - 44px);
+      max-height: calc(100vh - 44px);
       display: grid;
       grid-template-rows: minmax(0, 1fr) auto auto;
       gap: 12px;
@@ -3475,6 +4017,24 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       align-content: start;
       overflow-y: auto;
       padding-right: 2px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      cursor: grab;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      user-select: none;
+    }
+
+    .side-menu::-webkit-scrollbar {
+      display: none;
+    }
+
+    .side-menu.is-drag-scrolling {
+      cursor: grabbing;
+    }
+
+    .side-menu.is-drag-scrolling * {
+      cursor: grabbing !important;
     }
 
     .menu-item {
@@ -3506,11 +4066,41 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     }
 
     .side-menu button[aria-pressed="true"] {
-      background: var(--menu-active);
+      color: var(--text);
     }
 
     .side-menu button[aria-current="true"] {
       background: var(--menu-active);
+      color: var(--text);
+    }
+
+    .menu-depth-list {
+      display: grid;
+      gap: 3px;
+      margin: 4px 0 6px 6px;
+      padding-left: 4px;
+    }
+
+    .menu-depth-item {
+      min-width: 0;
+    }
+
+    .side-menu .menu-depth-button {
+      min-height: 31px;
+      border-radius: 10px;
+      padding: 0 10px;
+      color: var(--muted);
+      font-size: 12.5px;
+      font-weight: 500;
+    }
+
+    .side-menu .menu-depth-button[aria-current="true"] {
+      color: var(--text);
+      background: var(--menu-active);
+    }
+
+    .sidebar.is-reordering .menu-depth-list {
+      display: none;
     }
 
     .drawer-head,
@@ -3548,7 +4138,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     .drag-handle {
       position: absolute;
       right: 10px;
-      top: 50%;
+      top: 19px;
       width: 18px;
       height: 18px;
       display: grid;
@@ -3730,13 +4320,56 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       font-weight: 400;
     }
 
+    .scroll-top-button {
+      position: fixed;
+      right: max(18px, env(safe-area-inset-right));
+      bottom: max(18px, env(safe-area-inset-bottom));
+      z-index: 58;
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 999px;
+      display: inline-grid;
+      place-items: center;
+      flex: 0 0 auto;
+      background: var(--menu);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 16px;
+      box-shadow: var(--menu-shadow);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(10px);
+    }
+
+    body.theme-ready .scroll-top-button {
+      transition:
+        background-color 520ms ease,
+        border-color 520ms ease,
+        box-shadow 520ms ease,
+        color 520ms ease,
+        opacity 180ms ease,
+        transform 180ms ease,
+        visibility 180ms ease;
+    }
+
+    body.show-scroll-top .scroll-top-button {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
     .currency-toggle:hover,
-    .theme-toggle:hover {
+    .theme-toggle:hover,
+    .scroll-top-button:hover {
       background: var(--menu-active);
     }
 
     .currency-toggle:focus-visible,
-    .theme-toggle:focus-visible {
+    .theme-toggle:focus-visible,
+    .scroll-top-button:focus-visible {
       outline: 2px solid var(--text);
       outline-offset: 3px;
     }
@@ -3895,6 +4528,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       body.theme-ready .reorder-actions button,
       body.theme-ready .currency-toggle,
       body.theme-ready .theme-toggle,
+      body.theme-ready .scroll-top-button,
       body.theme-ready .industry,
       body.theme-ready .industry-head,
       body.theme-ready .industry-icon-wrap,
@@ -3938,6 +4572,367 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       margin: 4px 0 18px;
     }
 
+    .morning-briefing {
+      position: relative;
+      min-width: 0;
+      display: grid;
+      gap: 16px;
+      margin: 0 0 18px;
+      padding: 16px;
+      border: 1px solid var(--ai-card-border);
+      border-radius: 24px;
+      background: var(--ai-card-bg);
+      overflow: hidden;
+    }
+
+    .morning-briefing-head {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .morning-briefing h2,
+    .morning-briefing h3 {
+      margin: 0;
+    }
+
+    .morning-briefing h2 {
+      font-size: 17px;
+      line-height: 1.2;
+      font-weight: 760;
+    }
+
+    .briefing-title {
+      min-width: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ai-sparkle-icon {
+      width: 22px;
+      height: 22px;
+      flex: 0 0 auto;
+      overflow: visible;
+      filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.18));
+      animation: aiSparklePulse 1800ms ease-in-out infinite;
+    }
+
+    .ai-sparkle-icon path {
+      fill: url(#aiSparkleGradient);
+    }
+
+    @keyframes aiSparklePulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.07);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ai-sparkle-icon {
+        animation: none;
+      }
+    }
+
+    .briefing-meta {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 7px;
+      border-radius: 999px;
+      background: var(--ai-inset-bg);
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1;
+      white-space: nowrap;
+      border: 1px solid var(--ai-inset-border);
+    }
+
+    .briefing-headline {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.32;
+      font-weight: 760;
+    }
+
+    .briefing-summary {
+      margin: -2px 0 0;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+    }
+
+    .briefing-bullets {
+      min-width: 0;
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0 0 0 18px;
+    }
+
+    .briefing-bullet {
+      min-width: 0;
+      padding-left: 2px;
+      color: var(--ai-bullet-text);
+    }
+
+    .briefing-bullet::marker {
+      color: var(--ai-bullet-text);
+      font-size: 0.9em;
+    }
+
+    .briefing-bullet-button,
+    .briefing-bullet-static {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      border: 0;
+      background: transparent;
+      color: var(--ai-bullet-text);
+      padding: 0;
+      text-align: left;
+    }
+
+    .briefing-bullet-button {
+      cursor: pointer;
+    }
+
+    .briefing-bullet-button:hover .briefing-bullet-title {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .briefing-bullet-title {
+      display: inline;
+      margin-right: 5px;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 500;
+    }
+
+    .briefing-bullet-body {
+      display: inline;
+      color: var(--ai-bullet-body);
+      font-size: 12px;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
+
+    .briefing-disclaimer {
+      margin: -2px 0 0;
+      padding-top: 10px;
+      border-top: 1px solid var(--ai-inset-border);
+      display: grid;
+      grid-template-columns: 16px minmax(0, 1fr);
+      gap: 7px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
+    .briefing-disclaimer-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      display: inline-grid;
+      place-items: center;
+      background: var(--menu);
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1;
+    }
+
+    .favorite-metrics {
+      min-width: 0;
+      display: grid;
+      gap: 16px;
+      margin: 46px 0 30px;
+      padding-bottom: 12px;
+    }
+
+    .favorite-metrics-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: flex-start;
+      gap: 7px;
+      padding: 0 4px;
+    }
+
+    .favorite-metrics .favorite-metrics-head h2 {
+      margin: 0;
+      color: var(--text);
+      font-size: 20px;
+      line-height: 1.12;
+      font-weight: 900;
+    }
+
+    .favorite-metrics-count {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.1;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .favorite-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 220px));
+      gap: 10px;
+      justify-content: start;
+      min-width: 0;
+    }
+
+    .favorite-card {
+      position: relative;
+      min-width: 0;
+      min-height: 132px;
+      display: grid;
+      grid-template-rows: auto minmax(38px, 1fr);
+      gap: 9px;
+      border: 0;
+      border-radius: 24px;
+      background: var(--menu);
+      color: var(--text);
+      padding: 16px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .favorite-card-star {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      width: 32px;
+      height: 32px;
+      border: 0;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: rgba(255, 255, 255, 0.42);
+      color: var(--favorite-star);
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    body.theme-dark .favorite-card-star {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .favorite-card-star:hover {
+      background: var(--menu-active);
+    }
+
+    .favorite-card:hover {
+      background: var(--menu-active);
+    }
+
+    .favorite-card:focus-visible,
+    .favorite-card-star:focus-visible {
+      outline: 2px solid var(--text);
+      outline-offset: 3px;
+    }
+
+    .favorite-card-top {
+      min-width: 0;
+      display: grid;
+      gap: 5px;
+      padding-right: 34px;
+    }
+
+    .favorite-card-title {
+      min-width: 0;
+      color: var(--text);
+      font-size: 10.5px;
+      line-height: 1.24;
+      font-weight: 400;
+      overflow-wrap: anywhere;
+    }
+
+    .favorite-card-value {
+      color: var(--text);
+      font-size: 18px;
+      line-height: 1.08;
+      font-weight: 560;
+      overflow-wrap: anywhere;
+    }
+
+    .favorite-card-meta {
+      color: var(--muted);
+      font-size: 10.5px;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .favorite-card-chart {
+      min-width: 0;
+      align-self: end;
+    }
+
+    .favorite-card-chart .chart-mini {
+      width: 100%;
+      height: 42px;
+      max-height: 42px;
+    }
+
+    .daily-update-details {
+      min-width: 0;
+      margin: -4px 0 0;
+    }
+
+    .daily-update-summary {
+      width: max-content;
+      max-width: 100%;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      list-style: none;
+      margin-left: 10px;
+      padding: 0 4px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 11.5px;
+      line-height: 1.45;
+      font-weight: 400;
+      cursor: pointer;
+      opacity: 0.72;
+      user-select: none;
+    }
+
+    .daily-update-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .daily-update-summary:hover {
+      opacity: 1;
+      color: var(--text);
+    }
+
+    .daily-update-summary-icon {
+      display: inline-block;
+      transform: translateY(-0.5px);
+      transition: transform 180ms ease;
+    }
+
+    .daily-update-details[open] .daily-update-summary-icon {
+      transform: translateY(-0.5px) rotate(90deg);
+    }
+
+    .daily-update-panel {
+      margin-top: 8px;
+    }
+
     .daily-updates-head {
       display: flex;
       align-items: end;
@@ -3949,17 +4944,20 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     .daily-updates h2 {
       margin: 0;
-      font-size: 17px;
+      font-size: 13px;
       line-height: 1.2;
-      font-weight: 680;
+      font-weight: 500;
+      color: var(--muted);
     }
 
     .daily-update-counts {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      justify-content: flex-end;
+      justify-content: flex-start;
       gap: 6px;
+      margin-top: 8px;
+      padding: 0 4px;
       color: var(--muted);
       font-size: 11px;
       line-height: 1;
@@ -3991,7 +4989,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     .daily-update-row {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 120px 128px;
+      grid-template-columns: minmax(0, 1fr) 120px 104px 148px;
       align-items: center;
       gap: 10px;
       width: 100%;
@@ -4028,7 +5026,8 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     }
 
     .daily-update-meta,
-    .daily-update-value {
+    .daily-update-value,
+    .daily-update-change {
       min-width: 0;
       color: var(--muted);
       font-size: 11px;
@@ -4041,6 +5040,31 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     .daily-update-value {
       color: var(--text);
       text-align: right;
+    }
+
+    .daily-update-change {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    .daily-update-change i {
+      flex: 0 0 auto;
+      font-size: 10px;
+    }
+
+    .daily-update-change-abs,
+    .daily-update-change-pct {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .daily-update-change-pct {
+      opacity: 0.9;
     }
 
     .industry {
@@ -4085,18 +5109,41 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     .industry h2 {
       margin: 0;
       font-size: 20px;
-      line-height: 1.18;
-      font-weight: 800;
+      line-height: 1.12;
+      font-weight: 900;
     }
 
     .group {
       padding: 0 0 22px;
     }
 
+    .depth-tree {
+      --depth-content-left: 48px;
+      --depth-line-left: 10px;
+      --depth-corner-gap: 16px;
+      --depth-corner-left: calc(var(--depth-line-left) - var(--depth-content-left));
+      --depth-corner-width: calc(var(--depth-content-left) - var(--depth-line-left) - var(--depth-corner-gap));
+      --depth-corner-height: 17px;
+      position: relative;
+      margin-left: 0;
+      padding-left: var(--depth-content-left);
+    }
+
+    .depth-tree::before {
+      content: "";
+      position: absolute;
+      left: var(--depth-line-left);
+      top: var(--depth-branch-top, 14px);
+      width: 1px;
+      height: var(--depth-branch-height, 0px);
+      background: var(--branch-line);
+      border-radius: 999px;
+    }
+
     .depth-section {
       position: relative;
-      margin-left: 8px;
-      padding: 0 0 26px 26px;
+      margin-left: 0;
+      padding: 0 0 28px;
       border-bottom: 0;
     }
 
@@ -4109,36 +5156,37 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       position: relative;
       margin: 20px 0 10px;
       color: var(--text);
-      font-size: 19px;
+      font-size: 16px;
       line-height: 1.2;
-      font-weight: 720;
+      font-weight: 500;
     }
 
     .depth-title::before {
       content: "";
       position: absolute;
-      left: -25px;
+      box-sizing: border-box;
+      left: var(--depth-corner-left);
       top: 50%;
-      width: 18px;
-      height: 18px;
-      border-left: 2px solid var(--muted);
-      border-bottom: 2px solid var(--muted);
-      border-bottom-left-radius: 12px;
-      opacity: 0.52;
+      width: var(--depth-corner-width);
+      height: var(--depth-corner-height);
+      border-left: 1px solid var(--branch-line);
+      border-bottom: 1px solid var(--branch-line);
+      border-bottom-left-radius: 18px;
       transform: translateY(-100%);
     }
 
     .depth-section .group-title {
-      margin-top: 10px;
+      margin: 10px 0 12px;
       color: var(--muted);
-      font-size: 14px;
+      font-size: 16px;
+      font-weight: 500;
     }
 
     .group-title {
       margin: 14px 0 12px 10px;
       color: var(--text);
       font-size: 16px;
-      font-weight: 680;
+      font-weight: 500;
     }
 
     .metric-table-wrap {
@@ -4203,10 +5251,11 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     }
 
     .metric-name-cell { width: 22%; }
-    .metric-description-cell { width: 30%; }
-    .metric-date-cell { width: 11%; }
+    .metric-description-cell { width: 28%; }
+    .metric-date-cell { width: 10%; }
     .metric-value-cell { width: 12%; }
-    .metric-chart-cell { width: 14%; }
+    .metric-chart-cell { width: 13%; }
+    .metric-favorite-cell { width: 5%; }
 
     .metric-toggle {
       width: 100%;
@@ -4254,7 +5303,28 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       height: 7px;
       border-radius: 999px;
       background: var(--chart-up);
-      box-shadow: 0 0 0 3px rgba(216, 59, 50, 0.11);
+      box-shadow: 0 0 0 3px rgba(242, 54, 69, 0.12);
+      transform-origin: center;
+      animation: updateDotBreath 1700ms ease-in-out infinite;
+    }
+
+    @keyframes updateDotBreath {
+      0%, 100% {
+        opacity: 0.86;
+        transform: scale(1);
+        box-shadow: 0 0 0 3px rgba(242, 54, 69, 0.12);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.28);
+        box-shadow: 0 0 0 6px rgba(242, 54, 69, 0.045);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .metric-update-dot {
+        animation: none;
+      }
     }
 
     .metric-new-badge {
@@ -4264,7 +5334,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       height: 17px;
       padding: 0 6px;
       border-radius: 999px;
-      background: #2f6fd6;
+      background: var(--chart-up);
       color: #fff;
       font-size: 9.5px;
       line-height: 1;
@@ -4323,6 +5393,33 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       font-size: 10px;
     }
 
+    .metric-favorite-cell {
+      text-align: right;
+    }
+
+    .metric-favorite-button {
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 999px;
+      display: inline-grid;
+      place-items: center;
+      background: var(--menu);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .metric-favorite-button:hover {
+      background: var(--menu-active);
+      color: var(--text);
+    }
+
+    .metric-favorite-button.is-active {
+      background: var(--menu-active);
+      color: var(--favorite-star);
+    }
+
     .chart-mini {
       height: 34px;
       max-height: 34px;
@@ -4377,7 +5474,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       padding: 10px 12px;
       border: 1px solid var(--line);
       border-radius: 6px;
-      background: var(--menu);
+      background: var(--detail-stat-bg);
     }
 
     .detail-label {
@@ -4575,7 +5672,19 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     .chart text {
       fill: var(--muted);
       font-size: 10.5px;
-      font-weight: 650;
+      font-weight: 400;
+    }
+
+    .chart text.level-max {
+      fill: var(--chart-down);
+    }
+
+    .chart text.level-min {
+      fill: var(--chart-up);
+    }
+
+    .chart text.level-current {
+      fill: var(--text);
     }
 
     .axis-line {
@@ -4585,14 +5694,34 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     .guide {
       stroke: var(--line);
-      stroke-width: 1;
+      stroke-width: 0.7;
       stroke-dasharray: 4 4;
     }
 
     .chart-background-line {
       stroke: var(--line);
-      stroke-width: 1;
-      opacity: 0.42;
+      stroke-width: 0.55;
+      stroke-dasharray: 3 5;
+      opacity: 0.44;
+    }
+
+    .chart-background-line.level-line {
+      opacity: 0.92;
+      stroke-width: 0.7;
+      stroke-dasharray: 4 5;
+    }
+
+    .chart-background-line.level-max {
+      stroke: var(--chart-down);
+    }
+
+    .chart-background-line.level-min {
+      stroke: var(--chart-up);
+    }
+
+    .chart-background-line.level-current {
+      stroke: var(--text);
+      stroke-width: 1.5;
     }
 
     .trend-line {
@@ -4650,7 +5779,8 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         z-index: 70;
         width: min(320px, calc(100vw - 54px));
         max-width: calc(100vw - 54px);
-        min-height: 100dvh;
+        height: 100dvh;
+        max-height: 100dvh;
         grid-template-rows: auto minmax(0, 1fr) auto auto;
         padding: 14px;
         border-radius: 0 20px 20px 0;
@@ -4707,6 +5837,8 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         overflow-x: hidden;
         overflow-y: auto;
         padding: 0 2px 0 0;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
       }
 
       .side-menu button {
@@ -4758,18 +5890,27 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
       .currency-toggle,
       .theme-toggle {
-        min-width: 0;
-        width: 42px;
+        min-width: 76px;
+        width: auto;
         height: 40px;
-        grid-template-columns: 18px 14px;
-        gap: 2px;
-        padding: 0;
+        grid-template-columns: 18px auto 14px;
+        gap: 5px;
+        padding: 0 9px;
+        border-radius: 24px;
         font-size: 12px;
+      }
+
+      .scroll-top-button {
+        right: max(14px, env(safe-area-inset-right));
+        bottom: max(18px, env(safe-area-inset-bottom));
+        width: 40px;
+        height: 40px;
+        font-size: 15px;
       }
 
       .currency-toggle .toggle-label,
       .theme-toggle .toggle-label {
-        display: none;
+        display: inline;
       }
 
       .currency-icon-slot,
@@ -4793,13 +5934,79 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         margin: 0 0 14px;
       }
 
+      .morning-briefing {
+        gap: 13px;
+        margin-bottom: 12px;
+        padding: 13px;
+      }
+
+      .morning-briefing-head {
+        align-items: center;
+        gap: 8px;
+      }
+
+      .morning-briefing h2 {
+        font-size: 16px;
+      }
+
+      .briefing-meta {
+        font-size: 10px;
+      }
+
+      .briefing-headline {
+        font-size: 15px;
+      }
+
+      .briefing-summary,
+      .briefing-bullet-body {
+        font-size: 11.5px;
+      }
+
+      .favorite-metrics {
+        gap: 14px;
+        margin: 38px 0 24px;
+        padding-bottom: 10px;
+      }
+
+      .favorite-metrics .favorite-metrics-head h2 {
+        font-size: 18px;
+      }
+
+      .favorite-metrics-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .favorite-card {
+        min-height: 116px;
+        padding: 14px;
+      }
+
+      .favorite-card-star {
+        right: 8px;
+        top: 8px;
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+      }
+
+      .favorite-card-value {
+        font-size: 15px;
+      }
+
       .daily-updates-head {
         align-items: start;
         padding: 0 2px;
       }
 
       .daily-updates h2 {
-        font-size: 15px;
+        font-size: 12px;
+      }
+
+      .daily-update-summary {
+        font-size: 11px;
+        margin-left: 8px;
+        padding: 0 2px;
       }
 
       .daily-update-counts {
@@ -4821,8 +6028,19 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         padding: 8px 7px;
       }
 
+      .daily-update-main {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      .daily-update-value {
+        grid-column: 2;
+        grid-row: 1;
+      }
+
       .daily-update-meta {
-        grid-column: 1 / -1;
+        grid-column: 1;
+        grid-row: 2;
         font-size: 10.5px;
       }
 
@@ -4830,8 +6048,16 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         font-size: 12px;
       }
 
-      .daily-update-value {
+      .daily-update-value,
+      .daily-update-change {
         font-size: 10.5px;
+      }
+
+      .daily-update-change {
+        grid-column: 2;
+        grid-row: 2;
+        align-self: center;
+        gap: 3px;
       }
 
       .industry-head {
@@ -4856,25 +6082,35 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
       .group { padding: 0 0 18px; }
 
+      .depth-section .group-title,
       .group-title {
         margin: 12px 0 10px 8px;
+        font-size: 15px;
       }
 
       .depth-title {
         margin: 18px 0 8px;
-        font-size: 17px;
+        font-size: 15px;
+      }
+
+      .depth-tree {
+        --depth-content-left: 42px;
+        --depth-line-left: 8px;
+        --depth-corner-gap: 14px;
+        --depth-corner-height: 15px;
+      }
+
+      .depth-tree::before {
+        left: var(--depth-line-left);
       }
 
       .depth-section {
-        margin-left: 4px;
-        padding-left: 22px;
+        margin-left: 0;
+        padding-left: 0;
       }
 
       .depth-title::before {
-        left: -21px;
-        width: 15px;
-        height: 16px;
-        border-bottom-left-radius: 10px;
+        border-bottom-left-radius: 16px;
       }
 
       .metric-table-wrap {
@@ -4943,9 +6179,10 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         content: none;
       }
 
-      .metric-name-cell { width: 52%; }
+      .metric-name-cell { width: 46%; }
       .metric-value-cell { width: 20%; }
-      .metric-chart-cell { width: 28%; }
+      .metric-chart-cell { width: 26%; }
+      .metric-favorite-cell { width: 8%; }
 
       .metric-name {
         font-size: 12.5px;
@@ -4982,6 +6219,12 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       .metric-chart-cell .chart-mini {
         height: 30px;
         max-height: 30px;
+      }
+
+      .metric-favorite-button {
+        width: 30px;
+        height: 30px;
+        font-size: 12.5px;
       }
 
       .metric-detail-row td {
@@ -5089,6 +6332,9 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         </button>
         <h1 data-i18n="title">산업별 지표 대시보드</h1>
         <div class="topbar-actions">
+          <button class="scroll-top-button" id="scrollTopButton" type="button" aria-label="최상단 이동" title="최상단 이동">
+            <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+          </button>
           <button class="currency-toggle" id="currencyToggle" type="button" aria-label="원화 표시" title="원화 표시">
             <span class="currency-icon-slot" aria-hidden="true">
               <i class="fa-solid fa-dollar-sign currency-icon currency-icon-dollar"></i>
@@ -5117,23 +6363,27 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     const DASHBOARD_DATA = __DASHBOARD_JSON__;
     const state = {
       activeIndustry: "",
+      activeDepth: "",
       isReordering: false,
       draftIndustryOrder: null,
       draggedMenuItem: null,
       language: "ko",
-      currency: "usd"
+      currency: "usd",
+      favoriteMetricIds: new Set()
     };
+    const favoriteMetricStorageKey = "dashboard-favorite-metrics";
     const mobileDrawerQuery = window.matchMedia ? window.matchMedia("(max-width: 760px)") : { matches: false };
     let scrollSpyFrame = 0;
+    let suppressMenuClick = false;
     const groupOrder = [
       "판매액(WSTS)", "판매액", "시장 매출", "가격/수요", "투자/장비", "수출",
       "판매/수요", "판매량", "배터리 원재료",
       "운임/해운", "선가/발주",
       "원자재 가격", "중국 경기",
-      "에너지 가격", "원유/원료", "화학 스프레드 proxy", "스프레드/마진",
+      "에너지 가격", "원유/원료", "화학 스프레드", "스프레드/마진",
       "금리", "신용 스프레드", "스프레드", "금리/스프레드", "은행 건전성", "대출/건전성",
       "주택 경기", "건설 선행", "금융비용", "주택 시장",
-      "시장지수", "환율", "리스크", "시장 환경", "핵심 지표", "대표주가"
+      "시장지수", "환율", "리스크", "시장 분위기", "핵심 지표", "대표주가"
     ];
     const translations = {
       ko: {
@@ -5165,6 +6415,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         drawerTitle: "메뉴",
         openMenu: "메뉴 열기",
         closeMenu: "메뉴 닫기",
+        scrollTop: "최상단 이동",
         toggleTheme: "다크모드 전환",
         showKrw: "원화 표시",
         showUsd: "달러 표시",
@@ -5176,6 +6427,15 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         tooltipValue: "지표",
         tooltipChange: "증감",
         todayChanges: "오늘 변경",
+        showDailyChanges: "오늘 변경된 내용 확인하기",
+        morningBriefing: "AI 요약",
+        aiBriefing: "AI 요약",
+        fallbackBriefing: "룰 기반 요약",
+        favoriteMetrics: "별표한 지표",
+        favoriteCount: "개",
+        addFavorite: "별표 추가",
+        removeFavorite: "별표 해제",
+        briefingDisclaimer: "이 브리핑은 AI가 공개 지표를 바탕으로 자동 생성한 참고 자료입니다. 실제 투자 판단 전에는 원자료와 리스크를 함께 확인하세요.",
         updatedCount: "업데이트",
         newCount: "신규",
         noDailyChanges: "오늘 변경된 지표 없음",
@@ -5211,6 +6471,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         drawerTitle: "Menu",
         openMenu: "Open menu",
         closeMenu: "Close menu",
+        scrollTop: "Back to top",
         toggleTheme: "Toggle dark mode",
         showKrw: "Show KRW",
         showUsd: "Show USD",
@@ -5222,6 +6483,15 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         tooltipValue: "Value",
         tooltipChange: "Change",
         todayChanges: "Today",
+        showDailyChanges: "View today's changes",
+        morningBriefing: "AI Summary",
+        aiBriefing: "AI summary",
+        fallbackBriefing: "Rule summary",
+        favoriteMetrics: "Starred Metrics",
+        favoriteCount: "items",
+        addFavorite: "Add star",
+        removeFavorite: "Remove star",
+        briefingDisclaimer: "This summary is for quick reference from public indicators and is not investment advice or a buy/sell recommendation.",
         updatedCount: "Updated",
         newCount: "New",
         noDailyChanges: "No changed metrics today",
@@ -5437,18 +6707,76 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       return orderedIndustries(baseVisibleIndustries());
     }
 
-    function industryId(industry) {
-      return `industry-${Array.from(industry).map((char) => char.charCodeAt(0).toString(36)).join("-")}`;
+    function idSegment(value) {
+      return Array.from(String(value || "")).map((char) => char.charCodeAt(0).toString(36)).join("-");
     }
 
-    function setActiveIndustry(industry) {
-      if (!industry || state.activeIndustry === industry) return;
+    function industryId(industry) {
+      return `industry-${idSegment(industry)}`;
+    }
+
+    function depthId(industry, depth) {
+      return `${industryId(industry)}-depth-${idSegment(depth)}`;
+    }
+
+    function semiconductorDepthEntries() {
+      const semiconductorMetrics = DASHBOARD_DATA.metrics.filter((metric) => metric.industry === "반도체");
+      return [...groupMetrics(semiconductorMetrics, (metric) => metric.depth || "전체 업황").entries()]
+        .sort(([a], [b]) => depthRank(a) - depthRank(b) || String(a).localeCompare(String(b), "ko"))
+        .filter(([depth, items]) => depth !== "전체 업황" && items.length);
+    }
+
+    function setActiveIndustry(industry, depth = "") {
+      if (!industry) return;
       state.activeIndustry = industry;
+      state.activeDepth = depth || "";
       document.querySelectorAll("[data-industry]").forEach((button) => {
         const active = button.dataset.industry === industry;
         button.setAttribute("aria-pressed", String(active));
+        button.setAttribute("aria-current", String(active && !state.activeDepth));
+      });
+      document.querySelectorAll("[data-menu-depth]").forEach((button) => {
+        const active = button.dataset.depthIndustry === industry && button.dataset.depthName === state.activeDepth;
+        button.setAttribute("aria-pressed", String(active));
         button.setAttribute("aria-current", String(active));
       });
+    }
+
+    function renderMenuDepths(industry) {
+      if (industry !== "반도체") return "";
+      const depthItems = semiconductorDepthEntries().map(([depth, items]) => `
+        <div class="menu-depth-item">
+          <button type="button" class="menu-depth-button" data-menu-depth data-depth-industry="${escapeHtml(industry)}" data-depth-name="${escapeHtml(depth)}" data-target="${depthId(industry, depth)}" aria-pressed="${state.activeIndustry === industry && state.activeDepth === depth}" aria-current="${state.activeIndustry === industry && state.activeDepth === depth}" ${state.isReordering ? 'tabindex="-1"' : ""}>
+            ${escapeHtml(localizedDepth(depth, items))}
+          </button>
+        </div>
+      `).join("");
+      return depthItems ? `<div class="menu-depth-list">${depthItems}</div>` : "";
+    }
+
+    function setBranchLine(container, markerSelector, topProperty, heightProperty, branchHeight, endInset = 0, startOvershoot = 0) {
+      const markers = [...container.querySelectorAll(markerSelector)];
+      if (!markers.length) return;
+      const containerBox = container.getBoundingClientRect();
+      const firstBox = markers[0].getBoundingClientRect();
+      const lastBox = markers[markers.length - 1].getBoundingClientRect();
+      const top = firstBox.top - containerBox.top + firstBox.height / 2 - branchHeight - startOvershoot;
+      const end = lastBox.top - containerBox.top + lastBox.height / 2 - endInset;
+      const topPx = Math.max(0, Math.round(top));
+      const endPx = Math.max(topPx, Math.round(end));
+      container.style.setProperty(topProperty, `${topPx}px`);
+      container.style.setProperty(heightProperty, `${endPx - topPx}px`);
+    }
+
+    function updateBranchLines() {
+      document.querySelectorAll(".depth-tree").forEach((tree) => {
+        const cornerHeight = Number.parseFloat(getComputedStyle(tree).getPropertyValue("--depth-corner-height")) || 17;
+        setBranchLine(tree, ".depth-title", "--depth-branch-top", "--depth-branch-height", cornerHeight, cornerHeight);
+      });
+    }
+
+    function scheduleBranchLineUpdate() {
+      requestAnimationFrame(updateBranchLines);
     }
 
     function renderFilters() {
@@ -5458,9 +6786,10 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       }
       document.getElementById("industryFilters").innerHTML = industries.map((industry) => `
         <div class="menu-item" data-menu-item data-industry-item="${escapeHtml(industry)}" draggable="${state.isReordering}">
-          <button type="button" data-industry="${escapeHtml(industry)}" data-target="${industryId(industry)}" aria-pressed="${state.activeIndustry === industry}" aria-current="${state.activeIndustry === industry}" ${state.isReordering ? 'tabindex="-1"' : ""}>
+          <button type="button" data-industry="${escapeHtml(industry)}" data-target="${industryId(industry)}" aria-pressed="${state.activeIndustry === industry}" aria-current="${state.activeIndustry === industry && !state.activeDepth}" ${state.isReordering ? 'tabindex="-1"' : ""}>
             ${escapeHtml(localizedIndustry(industry))}
           </button>
+          ${renderMenuDepths(industry)}
           <span class="drag-handle" aria-hidden="true"><i class="fa-solid fa-grip-lines"></i></span>
         </div>
       `).join("");
@@ -5475,7 +6804,21 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
           closeDrawerOnMobile();
         });
       });
+      document.querySelectorAll("[data-menu-depth]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (state.isReordering) return;
+          const industry = button.dataset.depthIndustry;
+          const depth = button.dataset.depthName;
+          const target = document.getElementById(button.dataset.target);
+          if (!industry || !depth || !target) return;
+          setActiveIndustry(industry, depth);
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+          closeDrawerOnMobile();
+        });
+      });
       initMenuDrag();
+      initMenuScrollDrag();
+      scheduleBranchLineUpdate();
     }
 
     function formatAxisValue(value) {
@@ -5576,26 +6919,52 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       return kept;
     }
 
-    function separatedLabelPositions(levels, minY, maxY, minGap = 13) {
+    function separatedLabelPositions(levels, minY, maxY, minGap = 11) {
       const sorted = [...levels]
         .sort((a, b) => a.y - b.y)
-        .map((level) => ({ ...level, labelY: Math.min(maxY, Math.max(minY, level.y)) }));
-      for (let index = 1; index < sorted.length; index += 1) {
-        if (sorted[index].labelY - sorted[index - 1].labelY < minGap) {
-          sorted[index].labelY = sorted[index - 1].labelY + minGap;
-        }
+        .map((level) => ({ ...level, preferredY: Math.min(maxY, Math.max(minY, level.y)) }));
+      if (sorted.length <= 1) {
+        return sorted.map((level) => ({ ...level, labelY: level.preferredY }));
       }
-      for (let index = sorted.length - 1; index >= 0; index -= 1) {
-        if (sorted[index].labelY > maxY) {
-          sorted[index].labelY = maxY;
-        }
-        if (index > 0 && sorted[index].labelY - sorted[index - 1].labelY < minGap) {
-          sorted[index - 1].labelY = sorted[index].labelY - minGap;
-        }
+
+      const availableGap = (maxY - minY) / Math.max(sorted.length - 1, 1);
+      const gap = Math.min(minGap, availableGap);
+      const groups = sorted.map((_, index) => ({ start: index, end: index }));
+      const positions = new Array(sorted.length);
+
+      const layoutGroups = () => {
+        groups.forEach((group) => {
+          const count = group.end - group.start + 1;
+          let startSum = 0;
+          for (let index = group.start; index <= group.end; index += 1) {
+            startSum += sorted[index].preferredY - (index - group.start) * gap;
+          }
+          const rawStart = startSum / count;
+          const minStart = minY;
+          const maxStart = maxY - (count - 1) * gap;
+          const start = Math.min(maxStart, Math.max(minStart, rawStart));
+          for (let index = group.start; index <= group.end; index += 1) {
+            positions[index] = start + (index - group.start) * gap;
+          }
+        });
+      };
+
+      for (let pass = 0; pass < sorted.length; pass += 1) {
+        layoutGroups();
+        const mergeIndex = groups.findIndex((group, index) => {
+          const next = groups[index + 1];
+          return next && positions[next.start] - positions[group.end] < gap - 0.01;
+        });
+        if (mergeIndex === -1) break;
+        const current = groups[mergeIndex];
+        const next = groups[mergeIndex + 1];
+        groups.splice(mergeIndex, 2, { start: current.start, end: next.end });
       }
-      return sorted.map((level) => ({
+      layoutGroups();
+
+      return sorted.map((level, index) => ({
         ...level,
-        labelY: Math.min(maxY, Math.max(minY, level.labelY))
+        labelY: Math.min(maxY, Math.max(minY, positions[index]))
       }));
     }
 
@@ -5731,17 +7100,25 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         return `${x.toFixed(1)},${y.toFixed(1)}`;
       }).join(" ");
       const trend = latest >= first ? "up" : "down";
-      const levelValues = [];
-      [max, latest, min].forEach((value) => {
-        if (!levelValues.some((existing) => Math.abs(existing - value) < 1e-9)) {
-          levelValues.push(value);
+      const levelEntries = [];
+      [
+        { value: max, type: "max" },
+        { value: latest, type: "current" },
+        { value: min, type: "min" }
+      ].forEach((candidate) => {
+        const existing = levelEntries.find((entry) => Math.abs(entry.value - candidate.value) < 1e-9);
+        if (existing) {
+          existing.types.push(candidate.type);
+        } else {
+          levelEntries.push({ value: candidate.value, types: [candidate.type] });
         }
       });
       const levels = separatedLabelPositions(
-        levelValues.map((value) => ({
-          value,
-          label: formatAxisValue(value),
-          y: yFor(value)
+        levelEntries.map((entry) => ({
+          value: entry.value,
+          label: formatAxisValue(entry.value),
+          y: yFor(entry.value),
+          className: entry.types.map((type) => `level-${type}`).join(" ")
         })),
         levelMinY,
         levelMaxY
@@ -5749,12 +7126,12 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       const yAxis = levels.map((level) => {
         const labelY = level.labelY;
         return `<g>
-          <text x="${axisGuideStart.toFixed(1)}" y="${(labelY + 3).toFixed(1)}" text-anchor="end">${level.label}</text>
+          <text class="${level.className}" x="${axisGuideStart.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="end" dominant-baseline="middle">${level.label}</text>
         </g>`;
       }).join("");
       const ticks = chartTicks(displayPoints, left, right, true, xFor);
       const yBackgroundLines = levels.map((level) => `
-        <line x1="${left}" y1="${level.y.toFixed(1)}" x2="${right}" y2="${level.y.toFixed(1)}" class="chart-background-line"></line>
+        <line x1="${left}" y1="${level.y.toFixed(1)}" x2="${right}" y2="${level.y.toFixed(1)}" class="chart-background-line level-line ${level.className}"></line>
       `).join("");
       const xBackgroundLines = ticks.map((tick) => `
         <line x1="${tick.x.toFixed(1)}" y1="${top}" x2="${tick.x.toFixed(1)}" y2="${axisY}" class="chart-background-line"></line>
@@ -5880,7 +7257,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
           ? `<line x1="50" y1="${labelY.toFixed(1)}" x2="${left}" y2="${y.toFixed(1)}" class="guide"></line>`
           : "";
         return `<g>
-          <text x="8" y="${(labelY + 3).toFixed(1)}">${level.label}</text>
+          <text x="8" y="${labelY.toFixed(1)}" dominant-baseline="middle">${level.label}</text>
           ${connector}
           <line x1="${left}" y1="${y.toFixed(1)}" x2="${right}" y2="${y.toFixed(1)}" class="guide"></line>
         </g>`;
@@ -5935,6 +7312,62 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       return "";
     }
 
+    function metricById(metricId) {
+      return (DASHBOARD_DATA.metrics || []).find((metric) => metric.id === metricId) || null;
+    }
+
+    function savedFavoriteMetricIds() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(favoriteMetricStorageKey) || "[]");
+        if (!Array.isArray(parsed)) return [];
+        const validIds = new Set((DASHBOARD_DATA.metrics || []).map((metric) => metric.id));
+        return parsed.map(String).filter((id) => validIds.has(id));
+      } catch (_error) {
+        return [];
+      }
+    }
+
+    function saveFavoriteMetricIds() {
+      localStorage.setItem(favoriteMetricStorageKey, JSON.stringify([...state.favoriteMetricIds]));
+    }
+
+    function initFavoriteMetrics() {
+      state.favoriteMetricIds = new Set(savedFavoriteMetricIds());
+    }
+
+    function isFavoriteMetric(metricId) {
+      return state.favoriteMetricIds.has(metricId);
+    }
+
+    function favoriteButtonMarkup(metric) {
+      const active = isFavoriteMetric(metric.id);
+      const label = active ? t("removeFavorite") : t("addFavorite");
+      return `<button class="metric-favorite-button${active ? " is-active" : ""}" type="button" data-favorite-toggle="${escapeHtml(metric.id)}" aria-label="${escapeHtml(label)}" title="${escapeHtml(label)}" aria-pressed="${active ? "true" : "false"}">
+        <i class="fa-${active ? "solid" : "regular"} fa-star" aria-hidden="true"></i>
+      </button>`;
+    }
+
+    function toggleFavoriteMetric(metricId) {
+      if (!metricById(metricId)) return;
+      if (state.favoriteMetricIds.has(metricId)) {
+        state.favoriteMetricIds.delete(metricId);
+      } else {
+        state.favoriteMetricIds.add(metricId);
+      }
+      saveFavoriteMetricIds();
+      renderDailyUpdates();
+      renderIndustries();
+    }
+
+    function initFavoriteButtons() {
+      document.querySelectorAll("[data-favorite-toggle]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          toggleFavoriteMetric(button.dataset.favoriteToggle);
+        });
+      });
+    }
+
     function metricDetail(metric) {
       return `<div class="metric-detail-panel">
         <div class="metric-detail-inner">
@@ -5981,9 +7414,12 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         <td class="metric-chart-cell" data-label="${escapeHtml(t("chart"))}">
           ${chart(metric.history, "chart-mini", metric)}
         </td>
+        <td class="metric-favorite-cell" data-label="${escapeHtml(t("favoriteMetrics"))}">
+          ${favoriteButtonMarkup(metric)}
+        </td>
       </tr>
       <tr class="metric-detail-row" id="${detailId}" aria-hidden="true">
-        <td colspan="6">${metricDetail(metric)}</td>
+        <td colspan="7">${metricDetail(metric)}</td>
       </tr>`;
     }
 
@@ -6005,6 +7441,97 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       document.querySelectorAll("[data-daily-update-metric]").forEach((button) => {
         button.addEventListener("click", () => jumpToMetric(button.dataset.dailyUpdateMetric));
       });
+      document.querySelectorAll("[data-briefing-metric]").forEach((button) => {
+        button.addEventListener("click", () => jumpToMetric(button.dataset.briefingMetric));
+      });
+      document.querySelectorAll("[data-favorite-card]").forEach((button) => {
+        button.addEventListener("click", () => jumpToMetric(button.dataset.favoriteCard));
+        button.addEventListener("keydown", (event) => {
+          if (event.target.closest("[data-favorite-toggle]")) return;
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          jumpToMetric(button.dataset.favoriteCard);
+        });
+      });
+    }
+
+    function briefingStatusLabel(briefing) {
+      if (briefing?.status === "ok") return t("aiBriefing");
+      return t("fallbackBriefing");
+    }
+
+    function aiSparkleIconMarkup() {
+      return `<svg class="ai-sparkle-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="aiSparkleGradient" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#3b82f6"></stop>
+            <stop offset="0.52" stop-color="#5c6cff"></stop>
+            <stop offset="1" stop-color="#6366f1"></stop>
+          </linearGradient>
+        </defs>
+        <path d="M11.017 2.814C11.213 1.777 12.787 1.777 12.983 2.814L14.034 8.372C14.189 9.189 14.811 9.811 15.628 9.966L21.186 11.017C22.223 11.213 22.223 12.787 21.186 12.983L15.628 14.034C14.811 14.189 14.189 14.811 14.034 15.628L12.983 21.186C12.787 22.223 11.213 22.223 11.017 21.186L9.966 15.628C9.811 14.811 9.189 14.189 8.372 14.034L2.814 12.983C1.777 12.787 1.777 11.213 2.814 11.017L8.372 9.966C9.189 9.811 9.811 9.189 9.966 8.372Z"></path>
+      </svg>`;
+    }
+
+    function briefingBulletMarkup(item) {
+      const metricIds = Array.isArray(item?.metric_ids) ? item.metric_ids.filter(Boolean) : [];
+      const content = `<span class="briefing-bullet-title">${escapeHtml(item?.title || "")}</span>
+        <span class="briefing-bullet-body">${escapeHtml(item?.body || "")}</span>`;
+      if (metricIds.length) {
+        return `<li class="briefing-bullet"><button class="briefing-bullet-button" type="button" data-briefing-metric="${escapeHtml(metricIds[0])}">${content}</button></li>`;
+      }
+      return `<li class="briefing-bullet"><span class="briefing-bullet-static">${content}</span></li>`;
+    }
+
+    function renderMorningBriefing() {
+      const briefing = DASHBOARD_DATA.morning_briefing || {};
+      if (!briefing.headline && !briefing.summary) return "";
+      const bullets = Array.isArray(briefing.bullets) ? briefing.bullets : [];
+      return `<section class="morning-briefing">
+        <div class="morning-briefing-head">
+          <div class="briefing-title">
+            ${aiSparkleIconMarkup()}
+            <h2>${escapeHtml(t("morningBriefing"))}</h2>
+          </div>
+        </div>
+        <p class="briefing-headline">${escapeHtml(briefing.headline || "")}</p>
+        ${briefing.summary ? `<p class="briefing-summary">${escapeHtml(briefing.summary)}</p>` : ""}
+        ${bullets.length ? `<ul class="briefing-bullets">${bullets.map(briefingBulletMarkup).join("")}</ul>` : ""}
+        <p class="briefing-disclaimer">
+          <span class="briefing-disclaimer-icon" aria-hidden="true"><i class="fa-solid fa-info"></i></span>
+          <span>${escapeHtml(t("briefingDisclaimer"))}</span>
+        </p>
+      </section>`;
+    }
+
+    function favoriteMetrics() {
+      return (DASHBOARD_DATA.metrics || []).filter((metric) => state.favoriteMetricIds.has(metric.id));
+    }
+
+    function favoriteMetricCard(metric) {
+      return `<div class="favorite-card" role="button" tabindex="0" data-favorite-card="${escapeHtml(metric.id)}">
+        <button class="favorite-card-star" type="button" data-favorite-toggle="${escapeHtml(metric.id)}" aria-label="${escapeHtml(t("removeFavorite"))}" title="${escapeHtml(t("removeFavorite"))}">
+          <i class="fa-solid fa-star" aria-hidden="true"></i>
+        </button>
+        <span class="favorite-card-top">
+          <span class="favorite-card-meta">${escapeHtml(localizedIndustry(metric.industry))} · ${escapeHtml(localizedGroup(metric.group, [metric]))}</span>
+          <span class="favorite-card-title">${escapeHtml(localizedField(metric, "name"))}</span>
+          <span class="favorite-card-value">${escapeHtml(displayMetricValue(metric))}</span>
+        </span>
+        <span class="favorite-card-chart">${chart(metric.history, "chart-mini", metric)}</span>
+      </div>`;
+    }
+
+    function renderFavoriteMetrics() {
+      const metrics = favoriteMetrics();
+      if (!metrics.length) return "";
+      return `<section class="favorite-metrics">
+        <div class="favorite-metrics-head">
+          <h2>${escapeHtml(t("favoriteMetrics"))}</h2>
+          <span class="favorite-metrics-count">${metrics.length}${state.language === "ko" ? "" : " "}${escapeHtml(t("favoriteCount"))}</span>
+        </div>
+        <div class="favorite-metrics-grid">${metrics.map(favoriteMetricCard).join("")}</div>
+      </section>`;
     }
 
     function renderDailyUpdates() {
@@ -6022,28 +7549,40 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
           </span>
           <span class="daily-update-meta">${escapeHtml(localizedIndustry(metric.industry))} · ${escapeHtml(localizedGroup(metric.group, [metric]))} · ${escapeHtml(dateText(metric.observed_label))}</span>
           <span class="daily-update-value">${escapeHtml(displayMetricValue(metric))}</span>
+          <span class="daily-update-change ${directionClass(metric.change_pct)}">
+            <i class="fa-solid ${trendIconClass(metric.change_pct)}" aria-hidden="true"></i>
+            <span class="daily-update-change-abs">${escapeHtml(displayMetricChange(metric) || "n/a")}</span>
+            <span class="daily-update-change-pct">${escapeHtml(metric.change_pct_label || "n/a")}</span>
+          </span>
         </button>
       `).join("");
-      section.innerHTML = `<div class="daily-updates-head">
-        <h2>${escapeHtml(t("todayChanges"))}</h2>
-        <div class="daily-update-counts" aria-label="${escapeHtml(t("todayChanges"))}">
-          <span class="daily-update-count">${escapeHtml(t("updatedCount"))} ${updatedCount}</span>
-          <span class="daily-update-count">${escapeHtml(t("newCount"))} ${newCount}</span>
+      section.innerHTML = `${renderMorningBriefing()}<details class="daily-update-details">
+        <summary class="daily-update-summary">
+          <span>${escapeHtml(t("showDailyChanges"))}</span>
+          <span class="daily-update-summary-icon" aria-hidden="true">›</span>
+        </summary>
+        <div class="daily-update-panel">
+          <div class="daily-update-list">
+            ${rows || `<div class="daily-update-empty">${escapeHtml(t("noDailyChanges"))}</div>`}
+          </div>
+          <div class="daily-update-counts" aria-label="${escapeHtml(t("todayChanges"))}">
+            <span class="daily-update-count">${escapeHtml(t("updatedCount"))} ${updatedCount}</span>
+            <span class="daily-update-count">${escapeHtml(t("newCount"))} ${newCount}</span>
+          </div>
         </div>
-      </div>
-      <div class="daily-update-list">
-        ${rows || `<div class="daily-update-empty">${escapeHtml(t("noDailyChanges"))}</div>`}
-      </div>`;
+      </details>${renderFavoriteMetrics()}`;
       initDailyUpdateLinks();
     }
 
     function renderIndustry(industry, metrics) {
       const icon = DASHBOARD_DATA.industry_icons?.[industry] || "";
-      const renderGroups = (items) => [...groupMetrics(items, (metric) => metric.group || "핵심 지표").entries()]
+      const renderGroups = (items, hiddenGroup = "") => [...groupMetrics(items, (metric) => metric.group || "핵심 지표").entries()]
         .sort(([a], [b]) => groupRank(a) - groupRank(b) || String(a).localeCompare(String(b), "ko"))
-        .map(([group, items]) => `
-          <section class="group">
-            <div class="group-title">${escapeHtml(localizedGroup(group, items))}</div>
+        .map(([group, items]) => {
+          const groupTitle = group === hiddenGroup ? "" : `<div class="group-title">${escapeHtml(localizedGroup(group, items))}</div>`;
+          return `
+            <section class="group">
+            ${groupTitle}
             <div class="metric-table-wrap">
               <table class="metric-table">
                 <colgroup>
@@ -6053,6 +7592,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
                   <col class="metric-date-cell">
                   <col class="metric-value-cell">
                   <col class="metric-chart-cell">
+                  <col class="metric-favorite-cell">
                 </colgroup>
                 <thead>
                   <tr>
@@ -6062,25 +7602,38 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
                     <th scope="col">${escapeHtml(t("nextUpdate"))}</th>
                     <th scope="col" data-mobile-label="${escapeHtml(t("metricValueShort"))}">${escapeHtml(t("currentValue"))}</th>
                     <th scope="col" data-mobile-label="${escapeHtml(t("chart"))}">${escapeHtml(t("chart"))}</th>
+                    <th scope="col"><span class="sr-only">${escapeHtml(t("favoriteMetrics"))}</span></th>
                   </tr>
                 </thead>
                 <tbody>${items.map(metricRows).join("")}</tbody>
               </table>
             </div>
           </section>
-        `).join("");
-      const groupHtml = industry === "반도체"
+        `;
+        }).join("");
+      const semiconductorGroups = industry === "반도체"
         ? [...groupMetrics(metrics, (metric) => metric.depth || "전체 업황").entries()]
             .sort(([a], [b]) => depthRank(a) - depthRank(b) || String(a).localeCompare(String(b), "ko"))
-            .map(([depth, items]) => depth === "전체 업황"
-              ? renderGroups(items)
-              : `
-                <section class="depth-section">
-                  <div class="depth-title">${escapeHtml(localizedDepth(depth, items))}</div>
-                  ${renderGroups(items)}
-                </section>
-              `
-            ).join("")
+        : [];
+      const renderDepthSection = ([depth, items]) => `
+        <section class="depth-section" id="${depthId(industry, depth)}" data-depth-section data-depth-name="${escapeHtml(depth)}">
+          <div class="depth-title">${escapeHtml(localizedDepth(depth, items))}</div>
+          ${renderGroups(items, depth)}
+        </section>
+      `;
+      const groupHtml = industry === "반도체"
+        ? [
+            ...semiconductorGroups
+              .filter(([depth]) => depth === "전체 업황")
+              .map(([, items]) => renderGroups(items)),
+            (() => {
+              const depthHtml = semiconductorGroups
+                .filter(([depth]) => depth !== "전체 업황")
+                .map(renderDepthSection)
+                .join("");
+              return depthHtml ? `<div class="depth-tree">${depthHtml}</div>` : "";
+            })()
+          ].join("")
         : renderGroups(metrics);
 
       return `<article class="industry" id="${industryId(industry)}" data-industry-section data-industry-name="${escapeHtml(industry)}">
@@ -6107,6 +7660,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         .map((industry) => renderIndustry(industry, byIndustry.get(industry)))
         .join("");
       initMetricRows();
+      scheduleBranchLineUpdate();
       updateActiveFromScroll();
     }
 
@@ -6127,6 +7681,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
           });
         }
       }
+      scheduleBranchLineUpdate();
     }
 
     function tooltipMarkup(point) {
@@ -6192,6 +7747,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       document.querySelectorAll("[data-metric-row]").forEach((row) => {
         row.addEventListener("click", () => toggleMetricRow(row));
       });
+      initFavoriteButtons();
       initDetailChartTooltips();
     }
 
@@ -6243,6 +7799,68 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         event.preventDefault();
         state.draftIndustryOrder = currentMenuOrder();
       };
+    }
+
+    function initMenuScrollDrag() {
+      const menu = document.getElementById("industryFilters");
+      if (!menu || menu.dataset.scrollDragReady === "true") return;
+      menu.dataset.scrollDragReady = "true";
+      let dragState = null;
+
+      menu.addEventListener("pointerdown", (event) => {
+        if (state.isReordering || event.button !== 0 || menu.scrollHeight <= menu.clientHeight) return;
+        dragState = {
+          pointerId: event.pointerId,
+          startX: event.clientX,
+          startY: event.clientY,
+          startScrollTop: menu.scrollTop,
+          moved: false,
+          captured: false
+        };
+      });
+
+      menu.addEventListener("pointermove", (event) => {
+        if (!dragState || dragState.pointerId !== event.pointerId || state.isReordering) return;
+        const deltaX = event.clientX - dragState.startX;
+        const deltaY = event.clientY - dragState.startY;
+        const dragThreshold = event.pointerType === "touch" ? 12 : 7;
+        if (Math.abs(deltaY) > dragThreshold && Math.abs(deltaY) > Math.abs(deltaX)) {
+          const maxScrollTop = Math.max(0, menu.scrollHeight - menu.clientHeight);
+          const nextScrollTop = Math.min(maxScrollTop, Math.max(0, dragState.startScrollTop - deltaY));
+          dragState.moved = true;
+          suppressMenuClick = true;
+          menu.classList.add("is-drag-scrolling");
+          if (!dragState.captured) {
+            menu.setPointerCapture?.(event.pointerId);
+            dragState.captured = true;
+          }
+          menu.scrollTop = nextScrollTop;
+          event.preventDefault();
+        }
+      });
+
+      const stopDrag = (event) => {
+        if (!dragState || dragState.pointerId !== event.pointerId) return;
+        if (dragState.moved) {
+          window.setTimeout(() => {
+            suppressMenuClick = false;
+          }, 80);
+        }
+        menu.classList.remove("is-drag-scrolling");
+        if (dragState.captured) {
+          menu.releasePointerCapture?.(event.pointerId);
+        }
+        dragState = null;
+      };
+
+      menu.addEventListener("pointerup", stopDrag);
+      menu.addEventListener("pointercancel", stopDrag);
+      menu.addEventListener("click", (event) => {
+        if (!suppressMenuClick) return;
+        event.preventDefault();
+        event.stopPropagation();
+        suppressMenuClick = false;
+      }, true);
     }
 
     function setSettingsOpen(open) {
@@ -6308,6 +7926,8 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       document.getElementById("mobileMenuToggle")?.setAttribute("aria-label", t("openMenu"));
       document.getElementById("drawerClose")?.setAttribute("aria-label", t("closeMenu"));
       document.getElementById("settingsToggle")?.setAttribute("aria-label", t("settings"));
+      document.getElementById("scrollTopButton")?.setAttribute("aria-label", t("scrollTop"));
+      document.getElementById("scrollTopButton")?.setAttribute("title", t("scrollTop"));
       document.getElementById("themeToggle")?.setAttribute("aria-label", t("toggleTheme"));
       document.getElementById("themeToggle")?.setAttribute("title", t("toggleTheme"));
       const languageLabel = document.getElementById("languageSettingLabel");
@@ -6453,6 +8073,18 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       });
     }
 
+    function initScrollTopButton() {
+      document.getElementById("scrollTopButton")?.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+      updateScrollTopButtonVisibility();
+    }
+
+    function updateScrollTopButtonVisibility() {
+      const revealAt = Math.max(280, window.innerHeight * 0.35);
+      document.body.classList.toggle("show-scroll-top", window.scrollY > revealAt);
+    }
+
     function setDrawerOpen(open) {
       const drawer = document.getElementById("mobileDrawer");
       const toggle = document.getElementById("mobileMenuToggle");
@@ -6504,13 +8136,24 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
           break;
         }
       }
-      setActiveIndustry(current.dataset.industryName);
+      let currentDepth = "";
+      if (current.dataset.industryName === "반도체") {
+        for (const section of current.querySelectorAll("[data-depth-section]")) {
+          if (section.getBoundingClientRect().top <= anchor) {
+            currentDepth = section.dataset.depthName || "";
+          } else {
+            break;
+          }
+        }
+      }
+      setActiveIndustry(current.dataset.industryName, currentDepth);
     }
 
     function onScrollSpy() {
       if (scrollSpyFrame) return;
       scrollSpyFrame = requestAnimationFrame(() => {
         scrollSpyFrame = 0;
+        updateScrollTopButtonVisibility();
         updateActiveFromScroll();
       });
     }
@@ -6518,6 +8161,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     let resizeRenderFrame = 0;
     function onDashboardResize() {
       onScrollSpy();
+      scheduleBranchLineUpdate();
       if (resizeRenderFrame) return;
       resizeRenderFrame = requestAnimationFrame(() => {
         resizeRenderFrame = 0;
@@ -6547,6 +8191,8 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     initSettings();
     initTheme();
     initCurrency();
+    initFavoriteMetrics();
+    initScrollTopButton();
     initMobileDrawer();
     render();
   </script>
@@ -6909,10 +8555,10 @@ GROUPED_HTML_TEMPLATE = """<!doctype html>
       "판매/수요", "판매량", "배터리 원재료",
       "운임/해운", "선가/발주",
       "원자재 가격", "중국 경기",
-      "에너지 가격", "원유/원료", "화학 스프레드 proxy", "스프레드/마진",
+      "에너지 가격", "원유/원료", "화학 스프레드", "스프레드/마진",
       "금리", "스프레드", "금리/스프레드", "은행 건전성", "대출/건전성",
       "주택 경기", "건설 선행", "금융비용", "주택 시장",
-      "시장지수", "환율", "리스크", "시장 환경", "핵심 지표"
+      "시장지수", "환율", "리스크", "시장 분위기", "핵심 지표"
     ];
 
     function escapeHtml(value) {
