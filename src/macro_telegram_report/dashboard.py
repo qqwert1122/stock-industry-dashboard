@@ -3474,7 +3474,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     }
 
     .metric-detail-row.is-open .metric-detail-panel {
-      max-height: 640px;
+      max-height: 680px;
       opacity: 1;
       transform: translateY(0);
       border-top: 1px solid var(--line);
@@ -3492,17 +3492,17 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px 12px;
       align-content: start;
-      padding: 12px;
-      border-radius: 12px;
-      background: var(--menu);
+      padding: 0;
+      border-radius: 0;
+      background: transparent;
     }
 
     .detail-stat {
       min-width: 0;
-      padding: 6px 4px;
-      border: 0;
-      border-radius: 0;
-      background: transparent;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--menu);
     }
 
     .detail-label {
@@ -3528,15 +3528,15 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       width: 100%;
       max-width: 100%;
       display: grid;
-      grid-template-columns: 62px minmax(0, 1fr);
+      grid-template-columns: 54px minmax(0, 1fr);
       align-items: stretch;
       overflow: hidden;
       padding: 2px 0 10px;
     }
 
     .detail-chart-axis {
-      width: 62px;
-      min-width: 62px;
+      width: 54px;
+      min-width: 54px;
       height: 190px;
       border-right: 0;
       border-radius: 8px 0 0 8px;
@@ -3714,6 +3714,12 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       stroke-dasharray: 4 4;
     }
 
+    .chart-background-line {
+      stroke: var(--line);
+      stroke-width: 1;
+      opacity: 0.42;
+    }
+
     .trend-line {
       fill: none;
       stroke-width: 3;
@@ -3847,10 +3853,19 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       }
 
       .topbar {
+        position: sticky;
+        top: 8px;
+        z-index: 50;
         display: grid;
         grid-template-columns: 42px minmax(0, 1fr) auto;
         align-items: center;
         gap: 8px;
+        margin: -2px 0 2px;
+        padding: 6px;
+        border-radius: 28px;
+        background: color-mix(in srgb, var(--surface) 88%, transparent);
+        box-shadow: var(--menu-shadow);
+        backdrop-filter: blur(16px);
       }
 
       .topbar-actions {
@@ -4027,14 +4042,14 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       }
 
       .detail-chart {
-        grid-template-columns: 52px minmax(0, 1fr);
+        grid-template-columns: 48px minmax(0, 1fr);
         overflow: hidden;
         padding: 0 0 6px;
       }
 
       .detail-chart-axis {
-        width: 52px;
-        min-width: 52px;
+        width: 48px;
+        min-width: 48px;
         height: 126px;
       }
 
@@ -4047,11 +4062,12 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       .detail-stats {
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 5px 7px;
-        padding: 9px;
+        padding: 0;
       }
 
       .detail-stat {
-        padding: 3px 2px;
+        padding: 7px 6px;
+        border-radius: 10px;
       }
 
       .detail-label {
@@ -4576,7 +4592,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     function detailChartWidth(points) {
       const count = Array.isArray(points) ? points.length : 0;
-      return Math.max(760, count * 54);
+      return Math.max(620, count * 34);
     }
 
     function detailChartUnit(metric) {
@@ -4604,21 +4620,23 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       const chartStyle = ` style="--detail-chart-width: ${svgWidth}px"`;
       const axisClass = "chart detail-chart-axis";
       const plotClass = "chart chart-detail";
-      const left = 16;
-      const right = svgWidth - 16;
+      const axisWidth = 54;
+      const axisGuideStart = 44;
+      const left = 8;
+      const right = svgWidth - 8;
       const emptyPlot = `<svg class="${plotClass}"${chartStyle} viewBox="0 0 ${svgWidth} 158" role="img" aria-label="trend unavailable">
         <line x1="${left}" y1="72" x2="${right}" y2="72" class="guide"></line>
       </svg>`;
       if (!displayPoints || displayPoints.length < 2) {
         return `<div class="detail-chart">
-          <svg class="${axisClass}" viewBox="0 0 62 158" aria-hidden="true"></svg>
+          <svg class="${axisClass}" viewBox="0 0 ${axisWidth} 158" aria-hidden="true"></svg>
           <div class="detail-chart-scroll">${emptyPlot}</div>
         </div>`;
       }
       const values = displayPoints.map((point) => point.value).filter((value) => typeof value === "number" && Number.isFinite(value));
       if (values.length < 2) {
         return `<div class="detail-chart">
-          <svg class="${axisClass}" viewBox="0 0 62 158" aria-hidden="true"></svg>
+          <svg class="${axisClass}" viewBox="0 0 ${axisWidth} 158" aria-hidden="true"></svg>
           <div class="detail-chart-scroll">${emptyPlot}</div>
         </div>`;
       }
@@ -4654,12 +4672,20 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       const yAxis = levels.map((level) => {
         const labelY = level.labelY;
         return `<g>
-          <text x="8" y="${(labelY + 3).toFixed(1)}">${level.label}</text>
+          <text x="4" y="${(labelY + 3).toFixed(1)}">${level.label}</text>
         </g>`;
       }).join("");
-      const xGuides = chartTicks(displayPoints, left, right, true).map((tick) => `
-        <text x="${tick.x.toFixed(1)}" y="146" text-anchor="middle">${tick.label}</text>
+      const ticks = chartTicks(displayPoints, left, right, true);
+      const yBackgroundLines = levels.map((level) => `
+        <line x1="${left}" y1="${level.y.toFixed(1)}" x2="${right}" y2="${level.y.toFixed(1)}" class="chart-background-line"></line>
       `).join("");
+      const xBackgroundLines = ticks.map((tick) => `
+        <line x1="${tick.x.toFixed(1)}" y1="16" x2="${tick.x.toFixed(1)}" y2="126" class="chart-background-line"></line>
+      `).join("");
+      const xGuides = ticks.map((tick) => {
+        const anchor = tick.x <= left + 2 ? "start" : tick.x >= right - 2 ? "end" : "middle";
+        return `<text x="${tick.x.toFixed(1)}" y="146" text-anchor="${anchor}">${tick.label}</text>`;
+      }).join("");
       const tooltipUnit = detailChartUnit(metric || {});
       const pointHits = displayPoints.map((point, index) => {
         const x = left + (index / Math.max(displayPoints.length - 1, 1)) * (right - left);
@@ -4674,12 +4700,14 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       const latestX = right;
       const latestY = yFor(latest);
       return `<div class="detail-chart">
-        <svg class="${axisClass}" viewBox="0 0 62 158" aria-hidden="true">
+        <svg class="${axisClass}" viewBox="0 0 ${axisWidth} 158" aria-hidden="true">
           ${yAxis}
-          <line x1="50" y1="126" x2="62" y2="126" class="axis-line"></line>
+          <line x1="${axisGuideStart}" y1="126" x2="${axisWidth}" y2="126" class="axis-line"></line>
         </svg>
         <div class="detail-chart-scroll">
           <svg class="${plotClass}"${chartStyle} viewBox="0 0 ${svgWidth} 158" role="img" aria-label="trend">
+            ${yBackgroundLines}
+            ${xBackgroundLines}
             <line x1="${left}" y1="126" x2="${right}" y2="126" class="axis-line"></line>
             ${xGuides}
             <polyline points="${points}" class="trend-line ${trend}"></polyline>
@@ -4944,7 +4972,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         const scroller = detail.querySelector(".detail-chart-scroll");
         if (scroller) {
           requestAnimationFrame(() => {
-            scroller.scrollLeft = scroller.scrollWidth;
+            scroller.scrollLeft = Math.max(0, scroller.scrollWidth - scroller.clientWidth);
           });
         }
       }
