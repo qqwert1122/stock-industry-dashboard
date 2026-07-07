@@ -3524,6 +3524,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     }
 
     .detail-chart {
+      position: relative;
       width: 100%;
       max-width: 100%;
       display: grid;
@@ -3559,6 +3560,56 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     .detail-chart-scroll .chart-detail {
       border-left: 0;
       border-radius: 0 8px 8px 0;
+    }
+
+    .detail-chart-tooltip {
+      position: absolute;
+      z-index: 5;
+      left: 0;
+      top: 0;
+      width: min(220px, calc(100vw - 44px));
+      padding: 9px 10px;
+      border-radius: 12px;
+      background: var(--text);
+      color: var(--surface);
+      box-shadow: var(--menu-shadow);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 12px);
+      transition: opacity 140ms ease, transform 140ms ease;
+    }
+
+    .detail-chart-tooltip.is-visible {
+      opacity: 1;
+      transform: translate(-50%, 8px);
+    }
+
+    .detail-tooltip-title {
+      margin-bottom: 6px;
+      color: inherit;
+      font-size: 11px;
+      line-height: 1.25;
+      font-weight: 650;
+      overflow-wrap: anywhere;
+    }
+
+    .detail-tooltip-row {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 8px;
+      align-items: baseline;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .detail-tooltip-label {
+      color: color-mix(in srgb, currentColor 62%, transparent);
+    }
+
+    .detail-tooltip-value {
+      min-width: 0;
+      text-align: right;
+      overflow-wrap: anywhere;
     }
 
     .metric-grid {
@@ -3638,6 +3689,14 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       overflow: visible;
     }
 
+    .chart.chart-mini,
+    .chart.detail-chart-axis,
+    .detail-chart-scroll .chart.chart-detail {
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+    }
+
     .chart text {
       fill: var(--muted);
       font-size: 10.5px;
@@ -3667,6 +3726,11 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     .current-dot.up { fill: var(--chart-up); }
     .current-dot.down { fill: var(--chart-down); }
+
+    .detail-point-hit {
+      cursor: crosshair;
+      pointer-events: all;
+    }
 
     .empty {
       display: none;
@@ -4138,7 +4202,10 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         currencyKrwName: "원화",
         currencyUsdName: "달러",
         themeLightName: "라이트",
-        themeDarkName: "다크"
+        themeDarkName: "다크",
+        tooltipPeriod: "연도",
+        tooltipValue: "지표",
+        tooltipChange: "증감"
       },
       en: {
         title: "Industry Metrics Dashboard",
@@ -4175,7 +4242,10 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         currencyKrwName: "KRW",
         currencyUsdName: "USD",
         themeLightName: "Light",
-        themeDarkName: "Dark"
+        themeDarkName: "Dark",
+        tooltipPeriod: "Period",
+        tooltipValue: "Value",
+        tooltipChange: "Change"
       }
     };
 
@@ -4438,6 +4508,15 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       return { year, month };
     }
 
+    function chartPointDateLabel(dateText) {
+      const date = chartDateParts(dateText);
+      if (!date) return dateText || "";
+      if (state.language === "en") {
+        return `${monthLabel(date.month)} ${date.year}`;
+      }
+      return `${String(date.year).slice(2)}년 ${date.month}월`;
+    }
+
     function detailTickLabel(point, seenYears) {
       const date = chartDateParts(point.date);
       if (!date) return "";
@@ -4500,6 +4579,25 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       return Math.max(760, count * 54);
     }
 
+    function detailChartUnit(metric) {
+      const scale = state.currency === "krw" ? dollarUnitScale(metric || {}) : null;
+      return scale ? scale.unit : localizedUnit(metric || {});
+    }
+
+    function detailPointValueLabel(value, unit) {
+      return formatMetricNumberWithUnit(value, unit);
+    }
+
+    function detailPointChangeLabel(point, previous, unit) {
+      if (!previous || typeof point.value !== "number" || typeof previous.value !== "number") return "n/a";
+      if (!Number.isFinite(point.value) || !Number.isFinite(previous.value)) return "n/a";
+      const absolute = point.value - previous.value;
+      const pct = previous.value === 0 ? null : (absolute / Math.abs(previous.value)) * 100;
+      const absoluteLabel = formatMetricNumberWithUnit(absolute, unit, true, true);
+      const pctLabel = typeof pct === "number" && Number.isFinite(pct) ? `${numberText(pct, true)}%` : "n/a";
+      return `${absoluteLabel} / ${pctLabel}`;
+    }
+
     function detailChart(history, metric = null) {
       const displayPoints = displayHistory(history, metric);
       const svgWidth = detailChartWidth(displayPoints);
@@ -4554,22 +4652,25 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         118
       );
       const yAxis = levels.map((level) => {
-        const y = level.y;
         const labelY = level.labelY;
-        const connector = Math.abs(labelY - y) > 7
-          ? `<line x1="50" y1="${labelY.toFixed(1)}" x2="62" y2="${y.toFixed(1)}" class="guide"></line>`
-          : "";
         return `<g>
           <text x="8" y="${(labelY + 3).toFixed(1)}">${level.label}</text>
-          ${connector}
         </g>`;
       }).join("");
-      const yGuides = levels.map((level) => `
-        <line x1="${left}" y1="${level.y.toFixed(1)}" x2="${right}" y2="${level.y.toFixed(1)}" class="guide"></line>
-      `).join("");
       const xGuides = chartTicks(displayPoints, left, right, true).map((tick) => `
         <text x="${tick.x.toFixed(1)}" y="146" text-anchor="middle">${tick.label}</text>
       `).join("");
+      const tooltipUnit = detailChartUnit(metric || {});
+      const pointHits = displayPoints.map((point, index) => {
+        const x = left + (index / Math.max(displayPoints.length - 1, 1)) * (right - left);
+        const y = yFor(point.value);
+        const previous = index > 0 ? displayPoints[index - 1] : null;
+        return `<circle class="detail-point-hit" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="10" fill="transparent" stroke="transparent" tabindex="0"
+          data-tooltip-title="${escapeHtml(localizedField(metric, "name"))}"
+          data-tooltip-date="${escapeHtml(chartPointDateLabel(point.date))}"
+          data-tooltip-value="${escapeHtml(detailPointValueLabel(point.value, tooltipUnit))}"
+          data-tooltip-change="${escapeHtml(detailPointChangeLabel(point, previous, tooltipUnit))}"></circle>`;
+      }).join("");
       const latestX = right;
       const latestY = yFor(latest);
       return `<div class="detail-chart">
@@ -4579,13 +4680,14 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         </svg>
         <div class="detail-chart-scroll">
           <svg class="${plotClass}"${chartStyle} viewBox="0 0 ${svgWidth} 158" role="img" aria-label="trend">
-            ${yGuides}
             <line x1="${left}" y1="126" x2="${right}" y2="126" class="axis-line"></line>
             ${xGuides}
             <polyline points="${points}" class="trend-line ${trend}"></polyline>
             <circle cx="${latestX}" cy="${latestY.toFixed(1)}" r="4" class="current-dot ${trend}"></circle>
+            ${pointHits}
           </svg>
         </div>
+        <div class="detail-chart-tooltip" role="status" aria-live="polite"></div>
       </div>`;
     }
 
@@ -4848,10 +4950,70 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       }
     }
 
+    function tooltipMarkup(point) {
+      return `<div class="detail-tooltip-title">${escapeHtml(point.dataset.tooltipTitle || "")}</div>
+        <div class="detail-tooltip-row">
+          <span class="detail-tooltip-label">${escapeHtml(t("tooltipPeriod"))}</span>
+          <span class="detail-tooltip-value">${escapeHtml(point.dataset.tooltipDate || "")}</span>
+        </div>
+        <div class="detail-tooltip-row">
+          <span class="detail-tooltip-label">${escapeHtml(t("tooltipValue"))}</span>
+          <span class="detail-tooltip-value">${escapeHtml(point.dataset.tooltipValue || "")}</span>
+        </div>
+        <div class="detail-tooltip-row">
+          <span class="detail-tooltip-label">${escapeHtml(t("tooltipChange"))}</span>
+          <span class="detail-tooltip-value">${escapeHtml(point.dataset.tooltipChange || "")}</span>
+        </div>`;
+    }
+
+    function showDetailTooltip(point, pinned = false) {
+      const chart = point.closest(".detail-chart");
+      const tooltip = chart?.querySelector(".detail-chart-tooltip");
+      if (!chart || !tooltip) return;
+      chart.dataset.tooltipPinned = pinned ? "true" : "false";
+      tooltip.innerHTML = tooltipMarkup(point);
+      tooltip.classList.add("is-visible");
+      const chartRect = chart.getBoundingClientRect();
+      const pointRect = point.getBoundingClientRect();
+      const rawLeft = pointRect.left + pointRect.width / 2 - chartRect.left;
+      const rawTop = pointRect.top - chartRect.top;
+      const tooltipWidth = tooltip.offsetWidth || 180;
+      const tooltipHeight = tooltip.offsetHeight || 80;
+      const left = Math.min(Math.max(rawLeft, tooltipWidth / 2 + 4), chartRect.width - tooltipWidth / 2 - 4);
+      const top = Math.min(Math.max(rawTop + 4, 4), Math.max(4, chartRect.height - tooltipHeight - 16));
+      tooltip.style.left = `${left}px`;
+      tooltip.style.top = `${top}px`;
+    }
+
+    function hideDetailTooltip(chart, force = false) {
+      if (!chart) return;
+      if (!force && chart.dataset.tooltipPinned === "true") return;
+      chart.dataset.tooltipPinned = "false";
+      const tooltip = chart.querySelector(".detail-chart-tooltip");
+      tooltip?.classList.remove("is-visible");
+    }
+
+    function initDetailChartTooltips() {
+      document.querySelectorAll(".detail-point-hit").forEach((point) => {
+        point.addEventListener("mouseenter", () => showDetailTooltip(point, false));
+        point.addEventListener("focus", () => showDetailTooltip(point, false));
+        point.addEventListener("click", (event) => {
+          event.stopPropagation();
+          showDetailTooltip(point, true);
+        });
+        point.addEventListener("mouseleave", () => hideDetailTooltip(point.closest(".detail-chart")));
+        point.addEventListener("blur", () => hideDetailTooltip(point.closest(".detail-chart")));
+      });
+      document.querySelectorAll(".detail-chart-scroll").forEach((scroller) => {
+        scroller.addEventListener("scroll", () => hideDetailTooltip(scroller.closest(".detail-chart"), true), { passive: true });
+      });
+    }
+
     function initMetricRows() {
       document.querySelectorAll("[data-metric-row]").forEach((row) => {
         row.addEventListener("click", () => toggleMetricRow(row));
       });
+      initDetailChartTooltips();
     }
 
     function currentMenuOrder() {
@@ -5174,6 +5336,15 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     window.addEventListener("scroll", onScrollSpy, { passive: true });
     window.addEventListener("resize", onScrollSpy);
+    document.addEventListener("click", (event) => {
+      if (event.target.closest(".detail-point-hit")) return;
+      document.querySelectorAll(".detail-chart").forEach((chart) => hideDetailTooltip(chart, true));
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        document.querySelectorAll(".detail-chart").forEach((chart) => hideDetailTooltip(chart, true));
+      }
+    });
 
     function render() {
       renderFilters();
