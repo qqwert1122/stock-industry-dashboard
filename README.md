@@ -5,7 +5,7 @@
 ## 현재 MVP
 
 - 반도체: WSTS 월간/3개월 평균 반도체 판매액, 한국 반도체 수출, 미국 반도체 PPI, 삼성전자/NVIDIA 주가
-- 데이터인프라: Microsoft/Amazon/Alphabet/Meta CAPEX, NAVER/Microsoft 주가
+- 데이터인프라: Microsoft/Amazon/Alphabet/Meta/Oracle CAPEX, NAVER/Microsoft 주가
 - 자동차: 미국 자동차 판매, 한국 승용차 수출, 현대차/Toyota 주가
 - 전기차: 한국 순수 전기차 수출, 미국 EV 충전소/충전 포트 수, LG에너지솔루션/Tesla 주가
 - 조선: 한국 선박 수출, HD현대중공업/Huntington Ingalls 주가, BDI/신조선가/운임지수 자동화 후보
