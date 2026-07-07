@@ -2961,7 +2961,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       background: transparent;
       color: var(--text);
       font-size: 12.5px;
-      font-weight: 720;
+      font-weight: 400;
       text-align: left;
     }
 
@@ -2972,7 +2972,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     .settings-meta {
       color: var(--muted);
       font-size: 11px;
-      font-weight: 760;
+      font-weight: 400;
     }
 
     .reorder-actions {
@@ -3062,6 +3062,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       min-width: 0;
       white-space: nowrap;
       line-height: 1;
+      transform: translateY(0);
     }
 
     .toggle-chevron {
@@ -3088,20 +3089,20 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       display: grid;
       place-items: center;
       opacity: 0;
-      transform: translate(-50%, -50%) scale(0.7) rotate(-18deg);
+      transform: translate(-50%, -50%) translateY(-15px);
       transition: opacity 220ms ease, transform 220ms ease;
     }
 
     body.currency-usd .currency-icon-dollar,
     body.currency-krw .currency-icon-won {
       opacity: 1;
-      transform: translate(-50%, -50%) scale(1) rotate(0deg);
+      transform: translate(-50%, -50%) translateY(0);
     }
 
     body.currency-usd .currency-icon-won,
     body.currency-krw .currency-icon-dollar {
       opacity: 0;
-      transform: translate(-50%, -50%) scale(0.7) rotate(18deg);
+      transform: translate(-50%, -50%) translateY(-15px);
     }
 
     .theme-toggle:disabled {
@@ -3118,7 +3119,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       place-items: center;
       color: currentColor;
       opacity: 0;
-      transform: translate(-50%, -50%) translate3d(30px, 26px, 0) scale(0.72) rotate(36deg);
+      transform: translate(-50%, -50%) translateY(-15px);
       transform-origin: center;
       pointer-events: none;
     }
@@ -3126,50 +3127,74 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     body:not(.theme-dark) .theme-icon-sun,
     body.theme-dark .theme-icon-moon {
       opacity: 1;
-      transform: translate(-50%, -50%) translate3d(0, 0, 0) scale(1) rotate(0deg);
+      transform: translate(-50%, -50%) translateY(0);
     }
 
     body:not(.theme-dark) .theme-icon-moon,
     body.theme-dark .theme-icon-sun {
       opacity: 0;
-      transform: translate(-50%, -50%) translate3d(30px, 26px, 0) scale(0.72) rotate(36deg);
+      transform: translate(-50%, -50%) translateY(-15px);
     }
 
+    .toggle-label.is-exiting {
+      animation: toggleLabelExit 240ms ease forwards;
+    }
+
+    .toggle-label.is-entering {
+      animation: toggleLabelEnter 300ms ease forwards;
+    }
+
+    .currency-icon.is-exiting,
     .theme-icon.is-exiting {
-      animation: themeIconExit 520ms cubic-bezier(0.65, 0, 0.35, 1) forwards;
+      animation: toggleIconExit 240ms ease forwards;
     }
 
+    .currency-icon.is-entering,
     .theme-icon.is-entering {
-      animation: themeIconEnter 520ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      animation: toggleIconEnter 300ms ease forwards;
     }
 
-    @keyframes themeIconExit {
+    @keyframes toggleLabelExit {
       0% {
         opacity: 1;
-        transform: translate(-50%, -50%) translate3d(0, 0, 0) scale(1) rotate(0deg);
-      }
-      45% {
-        opacity: 0.92;
-        transform: translate(-50%, -50%) translate3d(-14px, -12px, 0) scale(0.94) rotate(-16deg);
+        transform: translateY(0);
       }
       100% {
         opacity: 0;
-        transform: translate(-50%, -50%) translate3d(-38px, 30px, 0) scale(0.66) rotate(-52deg);
+        transform: translateY(14px);
       }
     }
 
-    @keyframes themeIconEnter {
+    @keyframes toggleLabelEnter {
       0% {
         opacity: 0;
-        transform: translate(-50%, -50%) translate3d(38px, 30px, 0) scale(0.66) rotate(52deg);
-      }
-      55% {
-        opacity: 0.96;
-        transform: translate(-50%, -50%) translate3d(14px, -12px, 0) scale(0.94) rotate(16deg);
+        transform: translateY(-14px);
       }
       100% {
         opacity: 1;
-        transform: translate(-50%, -50%) translate3d(0, 0, 0) scale(1) rotate(0deg);
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes toggleIconExit {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) translateY(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) translateY(15px);
+      }
+    }
+
+    @keyframes toggleIconEnter {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) translateY(-15px);
+      }
+      100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) translateY(0);
       }
     }
 
@@ -3209,6 +3234,10 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         transition-duration: 1ms;
       }
 
+      .toggle-label.is-exiting,
+      .toggle-label.is-entering,
+      .currency-icon.is-exiting,
+      .currency-icon.is-entering,
       .theme-icon.is-exiting,
       .theme-icon.is-entering {
         animation-duration: 1ms;
@@ -3217,7 +3246,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     .industry-stack {
       display: grid;
-      gap: 0;
+      gap: 4px;
       min-width: 0;
     }
 
@@ -3225,7 +3254,6 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       min-width: 0;
       scroll-margin-top: 22px;
       padding-bottom: 28px;
-      border-bottom: 1px solid var(--line);
       background: transparent;
       box-shadow: none;
       overflow: visible;
@@ -3233,7 +3261,6 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     .industry:last-child {
       padding-bottom: 0;
-      border-bottom: 0;
     }
 
     .industry-head {
@@ -3274,7 +3301,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     }
 
     .group-title {
-      margin-bottom: 12px;
+      margin: 14px 0 12px 10px;
       color: var(--text);
       font-size: 16px;
       font-weight: 800;
@@ -3496,31 +3523,42 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       overflow-wrap: anywhere;
     }
 
-    .detail-note {
-      grid-column: 1 / -1;
-      margin: 4px 0 0;
-      padding: 10px 4px 0;
-      border-top: 1px solid var(--line);
-      color: var(--muted);
-      font-size: 12.5px;
-      line-height: 1.5;
-      overflow-wrap: anywhere;
-    }
-
     .detail-chart {
       width: 100%;
       max-width: 100%;
+      display: grid;
+      grid-template-columns: 62px minmax(0, 1fr);
+      align-items: stretch;
+      overflow: hidden;
+      padding: 2px 0 10px;
+    }
+
+    .detail-chart-axis {
+      width: 62px;
+      min-width: 62px;
+      height: 190px;
+      border-right: 0;
+      border-radius: 8px 0 0 8px;
+      display: block;
+    }
+
+    .detail-chart-scroll {
+      min-width: 0;
       overflow-x: auto;
       overflow-y: hidden;
-      padding: 2px 0 10px;
       -webkit-overflow-scrolling: touch;
     }
 
-    .detail-chart .chart {
+    .detail-chart-scroll .chart {
       width: max(100%, var(--detail-chart-width, 760px));
       min-width: max(100%, var(--detail-chart-width, 760px));
       height: 190px;
       display: block;
+    }
+
+    .detail-chart-scroll .chart-detail {
+      border-left: 0;
+      border-radius: 0 8px 8px 0;
     }
 
     .metric-grid {
@@ -3804,6 +3842,10 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
       .group { padding: 0 0 18px; }
 
+      .group-title {
+        margin: 12px 0 10px 8px;
+      }
+
       .metric-table-wrap {
         overflow-x: visible;
         overflow-y: visible;
@@ -3921,13 +3963,20 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       }
 
       .detail-chart {
-        overflow-x: hidden;
+        grid-template-columns: 52px minmax(0, 1fr);
+        overflow: hidden;
         padding: 0 0 6px;
       }
 
-      .detail-chart .chart {
-        width: 100%;
-        min-width: 100%;
+      .detail-chart-axis {
+        width: 52px;
+        min-width: 52px;
+        height: 126px;
+      }
+
+      .detail-chart-scroll .chart {
+        width: max(100%, var(--detail-chart-width, 760px));
+        min-width: max(100%, var(--detail-chart-width, 760px));
         height: 126px;
       }
 
@@ -3950,10 +3999,6 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         margin-top: 3px;
         font-size: 12px;
         line-height: 1.12;
-      }
-
-      .detail-note {
-        display: none;
       }
 
       .metric-grid { grid-template-columns: 1fr; }
@@ -4374,6 +4419,16 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       return state.language === "en" ? shortYear : `${shortYear}년`;
     }
 
+    function monthLabel(month) {
+      const monthNumber = Number(month);
+      if (!Number.isFinite(monthNumber)) return "";
+      if (state.language === "en") {
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        return monthNames[Math.max(0, Math.min(11, monthNumber - 1))] || String(monthNumber);
+      }
+      return `${monthNumber}월`;
+    }
+
     function chartDateParts(dateText) {
       const match = String(dateText || "").match(/^(\\d{4})-(\\d{1,2})/);
       if (!match) return null;
@@ -4391,7 +4446,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         return yearLabel(point.date);
       }
       if ([3, 6, 9].includes(date.month)) {
-        return String(date.month);
+        return monthLabel(date.month);
       }
       return "";
     }
@@ -4443,6 +4498,95 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     function detailChartWidth(points) {
       const count = Array.isArray(points) ? points.length : 0;
       return Math.max(760, count * 54);
+    }
+
+    function detailChart(history, metric = null) {
+      const displayPoints = displayHistory(history, metric);
+      const svgWidth = detailChartWidth(displayPoints);
+      const chartStyle = ` style="--detail-chart-width: ${svgWidth}px"`;
+      const axisClass = "chart detail-chart-axis";
+      const plotClass = "chart chart-detail";
+      const left = 16;
+      const right = svgWidth - 16;
+      const emptyPlot = `<svg class="${plotClass}"${chartStyle} viewBox="0 0 ${svgWidth} 158" role="img" aria-label="trend unavailable">
+        <line x1="${left}" y1="72" x2="${right}" y2="72" class="guide"></line>
+      </svg>`;
+      if (!displayPoints || displayPoints.length < 2) {
+        return `<div class="detail-chart">
+          <svg class="${axisClass}" viewBox="0 0 62 158" aria-hidden="true"></svg>
+          <div class="detail-chart-scroll">${emptyPlot}</div>
+        </div>`;
+      }
+      const values = displayPoints.map((point) => point.value).filter((value) => typeof value === "number" && Number.isFinite(value));
+      if (values.length < 2) {
+        return `<div class="detail-chart">
+          <svg class="${axisClass}" viewBox="0 0 62 158" aria-hidden="true"></svg>
+          <div class="detail-chart-scroll">${emptyPlot}</div>
+        </div>`;
+      }
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+      const latest = displayPoints[displayPoints.length - 1].value;
+      const first = displayPoints[0].value;
+      const span = max - min || 1;
+      const top = 16;
+      const bottom = 116;
+      const yFor = (value) => bottom - ((value - min) / span) * (bottom - top);
+      const points = displayPoints.map((point, index) => {
+        const x = left + (index / Math.max(displayPoints.length - 1, 1)) * (right - left);
+        const y = yFor(point.value);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(" ");
+      const trend = latest >= first ? "up" : "down";
+      const levelValues = [];
+      [max, latest, min].forEach((value) => {
+        if (!levelValues.some((existing) => Math.abs(existing - value) < 1e-9)) {
+          levelValues.push(value);
+        }
+      });
+      const levels = separatedLabelPositions(
+        levelValues.map((value) => ({
+          value,
+          label: formatAxisValue(value),
+          y: yFor(value)
+        })),
+        14,
+        118
+      );
+      const yAxis = levels.map((level) => {
+        const y = level.y;
+        const labelY = level.labelY;
+        const connector = Math.abs(labelY - y) > 7
+          ? `<line x1="50" y1="${labelY.toFixed(1)}" x2="62" y2="${y.toFixed(1)}" class="guide"></line>`
+          : "";
+        return `<g>
+          <text x="8" y="${(labelY + 3).toFixed(1)}">${level.label}</text>
+          ${connector}
+        </g>`;
+      }).join("");
+      const yGuides = levels.map((level) => `
+        <line x1="${left}" y1="${level.y.toFixed(1)}" x2="${right}" y2="${level.y.toFixed(1)}" class="guide"></line>
+      `).join("");
+      const xGuides = chartTicks(displayPoints, left, right, true).map((tick) => `
+        <text x="${tick.x.toFixed(1)}" y="146" text-anchor="middle">${tick.label}</text>
+      `).join("");
+      const latestX = right;
+      const latestY = yFor(latest);
+      return `<div class="detail-chart">
+        <svg class="${axisClass}" viewBox="0 0 62 158" aria-hidden="true">
+          ${yAxis}
+          <line x1="50" y1="126" x2="62" y2="126" class="axis-line"></line>
+        </svg>
+        <div class="detail-chart-scroll">
+          <svg class="${plotClass}"${chartStyle} viewBox="0 0 ${svgWidth} 158" role="img" aria-label="trend">
+            ${yGuides}
+            <line x1="${left}" y1="126" x2="${right}" y2="126" class="axis-line"></line>
+            ${xGuides}
+            <polyline points="${points}" class="trend-line ${trend}"></polyline>
+            <circle cx="${latestX}" cy="${latestY.toFixed(1)}" r="4" class="current-dot ${trend}"></circle>
+          </svg>
+        </div>
+      </div>`;
     }
 
     function miniChart(history, metric = null) {
@@ -4572,7 +4716,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     function metricDetail(metric) {
       return `<div class="metric-detail-panel">
         <div class="metric-detail-inner">
-          <div class="detail-chart">${chart(metric.history, "chart-detail", metric)}</div>
+          ${detailChart(metric.history, metric)}
           <div class="detail-stats">
             ${detailStat(t("currentValue"), displayMetricValue(metric))}
             ${detailStat(t("previousChange"), displayMetricChange(metric), directionClass(metric.change_abs))}
@@ -4580,7 +4724,6 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
             ${detailStat(t("yoy"), metric.yoy_pct_label, directionClass(metric.yoy_pct))}
             ${detailStat(t("visiblePeriod"), metric.period_label || metric.observed_label || "")}
             ${detailStat(t("updateFrequency"), localizedField(metric, "frequency") || t("irregular"))}
-            <p class="detail-note">${escapeHtml(localizedField(metric, "meaning"))}</p>
           </div>
         </div>
       </div>`;
@@ -4696,7 +4839,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       detail.setAttribute("aria-hidden", String(!expanded));
       toggle.setAttribute("aria-expanded", String(expanded));
       if (expanded) {
-        const scroller = detail.querySelector(".detail-chart");
+        const scroller = detail.querySelector(".detail-chart-scroll");
         if (scroller) {
           requestAnimationFrame(() => {
             scroller.scrollLeft = scroller.scrollWidth;
@@ -4774,12 +4917,44 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       label.textContent = document.body.classList.contains("theme-dark") ? t("darkModeState") : t("lightMode");
     }
 
+    function themeToggleLabelText(theme = null) {
+      const selectedTheme = theme || (document.body.classList.contains("theme-dark") ? "dark" : "light");
+      return selectedTheme === "dark" ? t("themeDarkName") : t("themeLightName");
+    }
+
     function updateThemeToggleLabel() {
       const label = document.getElementById("themeToggleLabel");
       if (!label) return;
-      label.textContent = document.body.classList.contains("theme-dark")
-        ? t("themeDarkName")
-        : t("themeLightName");
+      label.textContent = themeToggleLabelText();
+    }
+
+    function animateToggleContent(toggle, outgoing, incoming, label, nextLabel, swapState) {
+      if (!toggle) {
+        swapState();
+        return;
+      }
+      toggle.disabled = true;
+      [outgoing, incoming, label].forEach((element) => {
+        element?.classList.remove("is-exiting", "is-entering");
+      });
+      void toggle.offsetWidth;
+      outgoing?.classList.add("is-exiting");
+      label?.classList.add("is-exiting");
+      window.setTimeout(() => {
+        swapState();
+        if (label) {
+          label.textContent = nextLabel;
+          label.classList.remove("is-exiting");
+          label.classList.add("is-entering");
+        }
+        incoming?.classList.add("is-entering");
+      }, 150);
+      window.setTimeout(() => {
+        [outgoing, incoming, label].forEach((element) => {
+          element?.classList.remove("is-exiting", "is-entering");
+        });
+        toggle.disabled = false;
+      }, 470);
     }
 
     function updateLanguageText() {
@@ -4865,12 +5040,12 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       updateReorderControls();
     }
 
-    function applyTheme(theme) {
+    function applyTheme(theme, options = {}) {
       const isDark = theme === "dark";
       document.body.classList.toggle("theme-dark", isDark);
       localStorage.setItem("dashboard-theme", isDark ? "dark" : "light");
       updateThemeSettingLabel();
-      updateThemeToggleLabel();
+      if (options.updateToggleLabel !== false) updateThemeToggleLabel();
     }
 
     function animateThemeToggle(nextTheme) {
@@ -4878,19 +5053,10 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       const isDark = document.body.classList.contains("theme-dark");
       const outgoing = toggle.querySelector(isDark ? ".theme-icon-moon" : ".theme-icon-sun");
       const incoming = toggle.querySelector(isDark ? ".theme-icon-sun" : ".theme-icon-moon");
-      toggle.disabled = true;
-      toggle.querySelectorAll(".theme-icon").forEach((icon) => {
-        icon.classList.remove("is-exiting", "is-entering");
+      const label = document.getElementById("themeToggleLabel");
+      animateToggleContent(toggle, outgoing, incoming, label, themeToggleLabelText(nextTheme), () => {
+        applyTheme(nextTheme, { updateToggleLabel: false });
       });
-      void toggle.offsetWidth;
-      outgoing.classList.add("is-exiting");
-      incoming.classList.add("is-entering");
-      applyTheme(nextTheme);
-      window.setTimeout(() => {
-        outgoing.classList.remove("is-exiting");
-        incoming.classList.remove("is-entering");
-        toggle.disabled = false;
-      }, 540);
     }
 
     function initTheme() {
@@ -4903,29 +5069,44 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       });
     }
 
-    function updateCurrencyButton() {
+    function currencyToggleLabelText(currency = state.currency) {
+      return currency === "krw" ? t("currencyKrwName") : t("currencyUsdName");
+    }
+
+    function updateCurrencyButton(options = {}) {
       const toggle = document.getElementById("currencyToggle");
       if (!toggle) return;
       const isKrw = state.currency === "krw";
       toggle.setAttribute("aria-label", isKrw ? t("showUsd") : t("showKrw"));
       toggle.setAttribute("title", isKrw ? t("showUsd") : t("showKrw"));
       const label = document.getElementById("currencyToggleLabel");
-      if (label) label.textContent = isKrw ? t("currencyKrwName") : t("currencyUsdName");
+      if (label && options.updateLabel !== false) label.textContent = currencyToggleLabelText();
     }
 
-    function applyCurrency(currency) {
+    function applyCurrency(currency, options = {}) {
       state.currency = currency === "krw" ? "krw" : "usd";
       document.body.classList.toggle("currency-krw", state.currency === "krw");
       document.body.classList.toggle("currency-usd", state.currency === "usd");
       localStorage.setItem("dashboard-currency", state.currency);
-      updateCurrencyButton();
+      updateCurrencyButton(options);
+    }
+
+    function animateCurrencyToggle(nextCurrency) {
+      const toggle = document.getElementById("currencyToggle");
+      const isKrw = state.currency === "krw";
+      const outgoing = toggle.querySelector(isKrw ? ".currency-icon-won" : ".currency-icon-dollar");
+      const incoming = toggle.querySelector(isKrw ? ".currency-icon-dollar" : ".currency-icon-won");
+      const label = document.getElementById("currencyToggleLabel");
+      animateToggleContent(toggle, outgoing, incoming, label, currencyToggleLabelText(nextCurrency), () => {
+        applyCurrency(nextCurrency, { updateLabel: false });
+        renderIndustries();
+      });
     }
 
     function initCurrency() {
       applyCurrency(localStorage.getItem("dashboard-currency") === "krw" ? "krw" : "usd");
       document.getElementById("currencyToggle").addEventListener("click", () => {
-        applyCurrency(state.currency === "usd" ? "krw" : "usd");
-        renderIndustries();
+        animateCurrencyToggle(state.currency === "usd" ? "krw" : "usd");
       });
     }
 
