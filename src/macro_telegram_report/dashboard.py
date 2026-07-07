@@ -4058,17 +4058,17 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     .industry-head {
       display: grid;
-      grid-template-columns: 86px minmax(0, 1fr);
-      gap: 16px;
+      grid-template-columns: 96px minmax(0, 1fr);
+      gap: 18px;
       align-items: center;
-      padding: 22px 0 16px;
+      padding: 24px 0 18px;
       border-bottom: 0;
       background: transparent;
     }
 
     .industry-icon-wrap {
-      width: 86px;
-      height: 86px;
+      width: 96px;
+      height: 96px;
       border-radius: 999px;
       display: grid;
       place-items: center;
@@ -4076,8 +4076,8 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     }
 
     .industry-icon {
-      width: 76px;
-      height: 76px;
+      width: 88px;
+      height: 88px;
       object-fit: contain;
       display: block;
     }
@@ -4094,8 +4094,10 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     }
 
     .depth-section {
-      padding: 0 0 26px;
-      border-bottom: 1px solid var(--line);
+      position: relative;
+      margin-left: 8px;
+      padding: 0 0 26px 26px;
+      border-bottom: 0;
     }
 
     .depth-section:last-child {
@@ -4104,11 +4106,24 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     }
 
     .depth-title {
-      margin: 20px 0 8px 10px;
+      position: relative;
+      margin: 20px 0 10px;
       color: var(--text);
       font-size: 19px;
       line-height: 1.2;
-      font-weight: 850;
+      font-weight: 720;
+    }
+
+    .depth-title::before {
+      content: "";
+      position: absolute;
+      left: -25px;
+      top: -2px;
+      width: 16px;
+      height: 18px;
+      border-left: 1.5px solid var(--line);
+      border-bottom: 1.5px solid var(--line);
+      border-bottom-left-radius: 10px;
     }
 
     .depth-section .group-title {
@@ -4121,7 +4136,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       margin: 14px 0 12px 10px;
       color: var(--text);
       font-size: 16px;
-      font-weight: 800;
+      font-weight: 680;
     }
 
     .metric-table-wrap {
@@ -4818,19 +4833,19 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       }
 
       .industry-head {
-        grid-template-columns: 72px minmax(0, 1fr);
+        grid-template-columns: 80px minmax(0, 1fr);
         gap: 12px;
         padding: 18px 0 12px;
       }
 
       .industry-icon-wrap {
-        width: 72px;
-        height: 72px;
+        width: 80px;
+        height: 80px;
       }
 
       .industry-icon {
-        width: 64px;
-        height: 64px;
+        width: 74px;
+        height: 74px;
       }
 
       .industry h2 {
@@ -4844,8 +4859,20 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       }
 
       .depth-title {
-        margin: 18px 0 8px 8px;
+        margin: 18px 0 8px;
         font-size: 17px;
+      }
+
+      .depth-section {
+        margin-left: 4px;
+        padding-left: 22px;
+      }
+
+      .depth-title::before {
+        left: -21px;
+        width: 13px;
+        height: 16px;
+        border-bottom-left-radius: 9px;
       }
 
       .metric-table-wrap {
