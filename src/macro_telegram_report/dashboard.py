@@ -4118,12 +4118,14 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       content: "";
       position: absolute;
       left: -25px;
-      top: -2px;
-      width: 16px;
+      top: 50%;
+      width: 18px;
       height: 18px;
-      border-left: 1.5px solid var(--line);
-      border-bottom: 1.5px solid var(--line);
-      border-bottom-left-radius: 10px;
+      border-left: 2px solid var(--muted);
+      border-bottom: 2px solid var(--muted);
+      border-bottom-left-radius: 12px;
+      opacity: 0.52;
+      transform: translateY(-100%);
     }
 
     .depth-section .group-title {
@@ -4870,9 +4872,9 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
       .depth-title::before {
         left: -21px;
-        width: 13px;
+        width: 15px;
         height: 16px;
-        border-bottom-left-radius: 9px;
+        border-bottom-left-radius: 10px;
       }
 
       .metric-table-wrap {
@@ -6070,12 +6072,15 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       const groupHtml = industry === "반도체"
         ? [...groupMetrics(metrics, (metric) => metric.depth || "전체 업황").entries()]
             .sort(([a], [b]) => depthRank(a) - depthRank(b) || String(a).localeCompare(String(b), "ko"))
-            .map(([depth, items]) => `
-              <section class="depth-section">
-                <div class="depth-title">${escapeHtml(localizedDepth(depth, items))}</div>
-                ${renderGroups(items)}
-              </section>
-            `).join("")
+            .map(([depth, items]) => depth === "전체 업황"
+              ? renderGroups(items)
+              : `
+                <section class="depth-section">
+                  <div class="depth-title">${escapeHtml(localizedDepth(depth, items))}</div>
+                  ${renderGroups(items)}
+                </section>
+              `
+            ).join("")
         : renderGroups(metrics);
 
       return `<article class="industry" id="${industryId(industry)}" data-industry-section data-industry-name="${escapeHtml(industry)}">
