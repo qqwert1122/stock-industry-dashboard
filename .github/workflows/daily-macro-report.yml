@@ -41,6 +41,7 @@ jobs:
           SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
           NREL_API_KEY: ${{ secrets.NREL_API_KEY }}
           OPENFDA_API_KEY: ${{ secrets.OPENFDA_API_KEY }}
+          KOSIS_API_KEY: ${{ secrets.KOSIS_API_KEY }}
         run: industry-dashboard --config config.yaml --out site
 
       - name: Deploy to public Pages repository

@@ -6,11 +6,14 @@ from macro_telegram_report.dashboard import (
     collect_stablecoin_metrics,
     completed_months,
     fiscal_month_to_calendar_date,
+    kosis_code_param,
     make_metric,
     month_date_range,
     openfda_month_range,
     parse_eia_period,
     parse_eia_points,
+    parse_kosis_period,
+    parse_kosis_points,
     parse_usaspending_monthly_amounts,
     parse_world_bank_month,
     render_dashboard_html,
@@ -272,6 +275,20 @@ class DashboardTest(unittest.TestCase):
         )
         self.assertEqual(month_date_range(date(2026, 2, 1)), (date(2026, 2, 1), date(2026, 2, 28)))
         self.assertEqual(openfda_month_range(date(2026, 6, 1)), ("20260601", "20260630"))
+
+    def test_kosis_helpers(self):
+        self.assertEqual(kosis_code_param(["a0", "a1"]), "a0+a1+")
+        self.assertEqual(kosis_code_param("sales"), "sales+")
+        self.assertEqual(parse_kosis_period("202605", "M"), date(2026, 5, 1))
+        self.assertEqual(parse_kosis_period("2025", "Y"), date(2025, 1, 1))
+        payload = [
+            {"PRD_DE": "202604", "DT": "80,100"},
+            {"PRD_DE": "202605", "DT": "82,000"},
+        ]
+        self.assertEqual(
+            parse_kosis_points(payload, "M"),
+            [(date(2026, 4, 1), 80100.0), (date(2026, 5, 1), 82000.0)],
+        )
 
 
 if __name__ == "__main__":

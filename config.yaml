@@ -563,6 +563,47 @@ afdc:
       group: 충전 인프라
       meaning: 미국 EV 충전 포트 수는 전기차 이용 편의성과 인프라 확장 속도를 확인하는 지표입니다.
 
+kosis:
+  enabled: true
+  endpoint: https://kosis.kr/openapi/Param/statisticsParameterData.do
+  source_url: https://kosis.kr/openapi/
+  items:
+    - name: 한국 미분양 주택
+      industry: 건설/부동산
+      org_id: "116"
+      tbl_id: DT_MLTM_2082
+      item_id: 13103871087T1
+      objL1: 13102871087A.0001
+      objL2: 13102871087B.0001
+      unit: 호
+      frequency: 월간
+      group: 주택 재고
+      meaning: 전국 미분양 주택 수로 주택 공급 부담과 건설사 재고 리스크를 확인합니다.
+    - name: 한국 주택매매가격지수
+      industry: 건설/부동산
+      org_id: "101"
+      tbl_id: DT_1YL13501E
+      item_id: sales
+      objL1: a0
+      unit: 지수
+      frequency: 월간
+      group: 국내 주택
+      meaning: 전국 주택매매가격지수로 국내 주택가격 사이클과 가계 자산 효과를 확인합니다.
+    - name: 한국 건축허가 동수
+      industry: 건설/부동산
+      org_id: "116"
+      tbl_id: DT_MLTM_2200
+      item_id: 13103792710T1
+      objL1: 13102792710A.0001
+      objL2: 13102792710B.0001
+      objL3: 13102792710C.0001
+      objL4: 13102792710D.0001
+      objL5: 13102792710E.0001
+      unit: 동
+      frequency: 월간
+      group: 건설 허가
+      meaning: 건축허가 동수는 향후 건설 활동과 건축 경기의 선행 흐름을 보여줍니다.
+
 fred:
   enabled: true
   series:

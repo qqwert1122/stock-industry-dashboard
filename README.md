@@ -1,6 +1,6 @@
 # 산업별 핵심 지표 대시보드
 
-매일 아침 GitHub Actions가 FRED, WSTS, 관세청 수출, World Bank 원자재, SEC CAPEX, USAspending, EIA, openFDA, ClinicalTrials.gov, Launch Library, NLR/NREL 데이터를 수집하고 정적 웹 대시보드를 생성해 GitHub Pages에 배포합니다. 내 컴퓨터가 꺼져 있어도 GitHub 서버에서 실행됩니다.
+매일 아침 GitHub Actions가 FRED, WSTS, 관세청 수출, World Bank 원자재, SEC CAPEX, USAspending, EIA, openFDA, ClinicalTrials.gov, Launch Library, NLR/NREL, KOSIS 데이터를 수집하고 정적 웹 대시보드를 생성해 GitHub Pages에 배포합니다. 내 컴퓨터가 꺼져 있어도 GitHub 서버에서 실행됩니다.
 
 ## 현재 MVP
 
@@ -12,7 +12,7 @@
 - 철강/소재: FRED 원자재 가격 proxy
 - 화학/정유: WTI/Brent, 미국 화학 PPI
 - 은행/금융: 기준금리 proxy, 장단기 금리차, 회사채 스프레드, 연체율, 은행 대출
-- 건설/부동산: 주택착공, 건축허가, 모기지 금리, 주택가격지수
+- 건설/부동산: 미국 주택착공/건축허가/모기지/주택가격, 한국 미분양/주택가격/건축허가
 - 방산: 미국 방산 자본재 신규주문/수주잔고, 미국 국방부/방산 제조 계약 의무액, 한국 무기류/탄약 수출
 - 스테이블코인: DefiLlama 전체/USDT/USDC 유통량
 - 전력: 미국 전력 생산 PPI, 유틸리티 산업생산, 전력 판매/발전량/가격, 에너지 원료 가격, 한국 전력 장비 수출
@@ -38,11 +38,9 @@ industry-dashboard --config config.yaml --out site
 
 ## GitHub Pages 배포
 
-1. 이 폴더를 GitHub 저장소로 올립니다.
-2. 저장소의 `Settings > Pages`에서 `Source`를 `GitHub Actions`로 설정합니다.
-3. 저장소의 `Settings > Secrets and variables > Actions`에 필요한 키를 등록합니다.
-4. `Actions` 탭에서 `Daily Industry Dashboard` workflow를 한 번 수동 실행합니다.
-5. 이후 매일 23:00 UTC, 즉 한국시간 08:00에 다시 수집하고 Pages에 배포합니다.
+1. 이 private 저장소에서 `Daily Industry Dashboard` workflow를 실행합니다.
+2. workflow가 `site/`를 생성한 뒤 공개 저장소 `qqwert1122/qqwert1122.github.io`의 `stock-industry-dashboard/` 폴더로 배포합니다.
+3. 이후 매일 23:00 UTC, 즉 한국시간 08:00에 다시 수집하고 배포합니다.
 
 ## Secrets
 
@@ -52,6 +50,8 @@ industry-dashboard --config config.yaml --out site
 - `SEC_USER_AGENT`: SEC fair access용 User-Agent. 선택값이지만 이메일이나 연락 가능한 URL을 넣는 것을 권장합니다.
 - `NREL_API_KEY`: NLR/NREL Alternative Fuel Stations 무료 API 키
 - `OPENFDA_API_KEY`: openFDA 선택 API 키. 없어도 실행되지만 rate limit이 낮습니다.
+- `KOSIS_API_KEY`: KOSIS OpenAPI 무료 API 키
+- `USER_PAGES_DEPLOY_KEY`: 공개 Pages 저장소에 배포하기 위한 SSH deploy key
 
 키가 없으면 해당 데이터 소스의 지표만 `키 필요`로 표시되고, 나머지 대시보드는 계속 생성됩니다.
 
@@ -71,6 +71,7 @@ industry-dashboard --config config.yaml --out site
 - `clinical_trials.items`: ClinicalTrials.gov 임상 이벤트 지표
 - `launch_library.items`: Launch Library 우주 발사 이벤트 지표
 - `afdc.items`: NLR/NREL EV 충전 인프라 지표
+- `kosis.items`: KOSIS 한국 주택/건설 통계 지표
 - `dashboard.reference_metrics`: 아직 완전 자동화하지 않은 무료/공식 데이터 후보
 
 ## 데이터 저장 구조
@@ -93,6 +94,7 @@ site/
 - 관세청 품목별 수출입실적 API: https://www.data.go.kr/data/15101609/openapi.do
 - DefiLlama Stablecoins: https://defillama.com/stablecoins
 - World Bank Commodity Markets: https://www.worldbank.org/en/research/commodity-markets
+- KOSIS OpenAPI: https://kosis.kr/openapi/
 - SEC EDGAR APIs: https://www.sec.gov/search-filings/edgar-application-programming-interfaces
 - USAspending API: https://api.usaspending.gov/
 - EIA Open Data: https://www.eia.gov/opendata/

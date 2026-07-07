@@ -153,6 +153,9 @@ EN_GROUP_LABELS = {
     "임상 이벤트": "Clinical Trial Events",
     "발사 이벤트": "Launch Events",
     "충전 인프라": "Charging Infrastructure",
+    "주택 재고": "Housing Inventory",
+    "국내 주택": "Korea Housing",
+    "건설 허가": "Construction Permits",
 }
 EN_FREQUENCY_LABELS = {
     "일간": "Daily",
@@ -209,6 +212,9 @@ EN_METRIC_NAME_LABELS = {
     "글로벌 우주 발사 건수": "Global Space Launch Count",
     "미국 EV 충전소 수": "US EV Charging Stations",
     "미국 EV 충전 포트 수": "US EV Charging Ports",
+    "한국 미분양 주택": "Korea Unsold Homes",
+    "한국 주택매매가격지수": "Korea Home Sale Price Index",
+    "한국 건축허가 동수": "Korea Building Permits Count",
     "미국 10년 국채금리": "US 10Y Treasury Yield",
     "미국 2년 국채금리": "US 2Y Treasury Yield",
     "미국 10Y-2Y 금리차": "US 10Y-2Y Treasury Spread",
@@ -372,6 +378,7 @@ def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -
         ("ClinicalTrials.gov", collect_clinical_trials_metrics),
         ("Launch Library", collect_launch_library_metrics),
         ("AFDC EV 충전", collect_afdc_metrics),
+        ("KOSIS", collect_kosis_metrics),
         ("한국 수출", collect_korea_export_metrics),
     ]
     for source_name, collector in collectors:
@@ -1703,6 +1710,184 @@ def collect_afdc_metrics(
             )
         )
     return metrics
+
+
+def collect_kosis_metrics(
+    config: dict[str, Any], session: requests.Session, today: date
+) -> list[dict[str, Any]]:
+    del today
+    kosis_config = config.get("kosis", {})
+    if not kosis_config.get("enabled", True):
+        return []
+
+    items = kosis_config.get("items", [])
+    if not items:
+        return []
+
+    api_key = os.getenv("KOSIS_API_KEY", "").strip()
+    endpoint = str(
+        kosis_config.get("endpoint")
+        or "https://kosis.kr/openapi/Param/statisticsParameterData.do"
+    )
+    source_url = str(kosis_config.get("source_url") or "https://kosis.kr/openapi/")
+    history_limit = int(config.get("dashboard", {}).get("history_points", 48))
+
+    if not api_key:
+        return [
+            make_metric(
+                industry=str(item.get("industry") or "건설/부동산"),
+                name=str(item.get("name") or item.get("tbl_id") or "KOSIS 지표"),
+                source="KOSIS OpenAPI",
+                source_url=source_url,
+                frequency=str(item.get("frequency") or "월간"),
+                automation="무료 공식 API 자동 수집",
+                status="needs_key",
+                note="GitHub Secrets에 KOSIS_API_KEY 등록 필요",
+                group=str(item.get("group") or "국내 주택"),
+                meaning=str(item.get("meaning") or ""),
+            )
+            for item in items
+            if item.get("tbl_id") and item.get("item_id")
+        ]
+
+    metrics: list[dict[str, Any]] = []
+    for item in items:
+        name = str(item.get("name") or item.get("tbl_id") or "KOSIS 지표")
+        org_id = str(item.get("org_id") or item.get("orgId") or "").strip()
+        tbl_id = str(item.get("tbl_id") or item.get("tblId") or "").strip()
+        item_id = item.get("item_id") or item.get("itmId")
+        prd_se = str(item.get("prd_se") or item.get("prdSe") or "M").strip()
+        if not org_id or not tbl_id or not item_id:
+            continue
+
+        params: dict[str, Any] = {
+            "method": "getList",
+            "apiKey": api_key,
+            "format": "json",
+            "jsonVD": "Y",
+            "prdSe": prd_se,
+            "newEstPrdCnt": int(item.get("history_points") or history_limit),
+            "prdInterval": int(item.get("prd_interval") or 1),
+            "orgId": org_id,
+            "tblId": tbl_id,
+            "itmId": kosis_code_param(item_id),
+        }
+        for index in range(1, 9):
+            key = f"objL{index}"
+            value = item.get(key)
+            if value is not None:
+                params[key] = kosis_code_param(value)
+
+        try:
+            response = session.get(endpoint, params=params, timeout=(5, 30))
+            response.raise_for_status()
+            payload = response.json()
+            points = parse_kosis_points(payload, prd_se)
+            if not points:
+                metrics.append(
+                    make_metric(
+                        industry=str(item.get("industry") or "건설/부동산"),
+                        name=name,
+                        source="KOSIS OpenAPI",
+                        source_url=source_url,
+                        frequency=str(item.get("frequency") or "월간"),
+                        automation="무료 공식 API 자동 수집",
+                        status="error",
+                        note="관측값 없음",
+                        group=str(item.get("group") or "국내 주택"),
+                        meaning=str(item.get("meaning") or ""),
+                    )
+                )
+                continue
+
+            latest_date, latest_value = points[-1]
+            previous_value = points[-2][1] if len(points) > 1 else None
+            yoy_value = find_yoy_value(points, latest_date)
+            metrics.append(
+                make_metric(
+                    industry=str(item.get("industry") or "건설/부동산"),
+                    name=name,
+                    source="KOSIS OpenAPI",
+                    source_url=source_url,
+                    frequency=str(item.get("frequency") or "월간"),
+                    automation="무료 공식 API 자동 수집",
+                    status="ok",
+                    value=latest_value,
+                    unit=str(item.get("unit") or ""),
+                    observed_at=latest_date.isoformat(),
+                    previous_value=previous_value,
+                    yoy_value=yoy_value,
+                    history=points[-history_limit:],
+                    group=str(item.get("group") or "국내 주택"),
+                    meaning=str(item.get("meaning") or ""),
+                )
+            )
+        except Exception as exc:  # noqa: BLE001 - one KOSIS table should not break the page.
+            metrics.append(
+                make_metric(
+                    industry=str(item.get("industry") or "건설/부동산"),
+                    name=name,
+                    source="KOSIS OpenAPI",
+                    source_url=source_url,
+                    frequency=str(item.get("frequency") or "월간"),
+                    automation="무료 공식 API 자동 수집",
+                    status="error",
+                    note=str(exc),
+                    group=str(item.get("group") or "국내 주택"),
+                    meaning=str(item.get("meaning") or ""),
+                )
+            )
+    return metrics
+
+
+def kosis_code_param(value: object) -> str:
+    if isinstance(value, list):
+        codes = [str(item).strip() for item in value if str(item).strip()]
+    else:
+        codes = [part.strip() for part in str(value).replace(",", "+").split("+") if part.strip()]
+    return "+".join(codes) + ("+" if codes else "")
+
+
+def parse_kosis_points(payload: object, prd_se: str) -> list[tuple[date, float]]:
+    if isinstance(payload, dict):
+        error_code = payload.get("err") or payload.get("errCd")
+        if error_code:
+            raise ValueError(str(payload.get("errMsg") or payload))
+        rows = payload.get("data") or payload.get("result") or []
+    else:
+        rows = payload
+
+    monthly_values: dict[date, float] = {}
+    if not isinstance(rows, list):
+        return []
+
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        observed_at = parse_kosis_period(row.get("PRD_DE") or row.get("prdDe"), prd_se)
+        value = to_float(row.get("DT") or row.get("dt"))
+        if observed_at is None or value is None:
+            continue
+        monthly_values[observed_at] = monthly_values.get(observed_at, 0.0) + value
+    return sorted(monthly_values.items())
+
+
+def parse_kosis_period(value: object, prd_se: str = "M") -> date | None:
+    text = re.sub(r"[^0-9]", "", str(value or ""))
+    if not text:
+        return None
+    period = prd_se.upper()
+    try:
+        if period == "M" and len(text) >= 6:
+            return date(int(text[:4]), int(text[4:6]), 1)
+        if period == "Q" and len(text) >= 5:
+            quarter = int(text[4])
+            return date(int(text[:4]), (quarter - 1) * 3 + 1, 1)
+        if len(text) >= 4:
+            return date(int(text[:4]), 1, 1)
+    except ValueError:
+        return None
+    return None
 
 
 def completed_months(today: date, months_back: int) -> list[date]:
@@ -3109,6 +3294,19 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       border-top: 1px solid var(--line);
       color: var(--text);
       vertical-align: middle;
+    }
+
+    .metric-table tbody,
+    .metric-table tbody button,
+    .metric-table tbody strong,
+    .metric-table tbody .metric-name,
+    .metric-table tbody .metric-date,
+    .metric-table tbody .metric-current-value,
+    .metric-table tbody .metric-change-badge,
+    .metric-table tbody .metric-mobile-description,
+    .metric-table tbody .detail-label,
+    .metric-table tbody .detail-value {
+      font-weight: 400;
     }
 
     .metric-row {
