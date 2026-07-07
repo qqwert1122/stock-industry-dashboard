@@ -4933,20 +4933,39 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       const seenYears = new Set();
       const ticks = [];
       history.forEach((point, index) => {
+        const yearText = yearLabel(point.date);
         const label = includeQuarterMonths
           ? detailTickLabel(point, seenYears)
-          : yearLabel(point.date);
+          : yearText;
         if (!label) return;
         const key = includeQuarterMonths ? `${point.date}-${label}` : String(point.date).slice(0, 4);
         if (seen.has(key)) return;
         seen.add(key);
         const x = left + (index / Math.max(history.length - 1, 1)) * (right - left);
-        ticks.push({ label, x });
+        ticks.push({ label, x, priority: label === yearText ? 2 : 1 });
       });
       if (ticks.length === 1 && history.length > 1) {
-        ticks.push({ label: yearLabel(history[history.length - 1].date), x: right });
+        ticks.push({ label: yearLabel(history[history.length - 1].date), x: right, priority: 2 });
       }
-      return ticks.filter((tick, index) => index === 0 || tick.label !== ticks[index - 1].label);
+      return compactChartTicks(
+        ticks.filter((tick, index) => index === 0 || tick.label !== ticks[index - 1].label),
+        includeQuarterMonths ? 46 : 54
+      );
+    }
+
+    function compactChartTicks(ticks, minGap) {
+      const kept = [];
+      ticks.forEach((tick) => {
+        const previous = kept[kept.length - 1];
+        if (!previous || tick.x - previous.x >= minGap) {
+          kept.push(tick);
+          return;
+        }
+        if ((tick.priority || 0) > (previous.priority || 0)) {
+          kept[kept.length - 1] = tick;
+        }
+      });
+      return kept;
     }
 
     function separatedLabelPositions(levels, minY, maxY, minGap = 13) {
@@ -5005,7 +5024,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       const isMobileChart = mobileDrawerQuery.matches;
       const chartHeight = isMobileChart ? 158 : 190;
       const axisWidth = isMobileChart ? 40 : 42;
-      const axisGuideStart = axisWidth - 6;
+      const axisGuideStart = axisWidth - 2;
       const left = 1;
       const right = svgWidth - 1;
       const top = isMobileChart ? 12 : 18;
@@ -5014,19 +5033,19 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       const labelBottom = chartHeight - 12;
       const levelMinY = top - 2;
       const levelMaxY = bottom + 2;
-      const emptyPlot = `<svg class="${plotClass}"${chartStyle} viewBox="0 0 ${svgWidth} ${chartHeight}" role="img" aria-label="trend unavailable">
+      const emptyPlot = `<svg class="${plotClass}"${chartStyle} viewBox="0 0 ${svgWidth} ${chartHeight}" preserveAspectRatio="none" role="img" aria-label="trend unavailable">
         <line x1="${left}" y1="${(top + bottom) / 2}" x2="${right}" y2="${(top + bottom) / 2}" class="guide"></line>
       </svg>`;
       if (!displayPoints || displayPoints.length < 2) {
         return `<div class="detail-chart">
-          <svg class="${axisClass}" viewBox="0 0 ${axisWidth} ${chartHeight}" aria-hidden="true"></svg>
+          <svg class="${axisClass}" viewBox="0 0 ${axisWidth} ${chartHeight}" preserveAspectRatio="none" aria-hidden="true"></svg>
           <div class="detail-chart-scroll">${emptyPlot}</div>
         </div>`;
       }
       const values = displayPoints.map((point) => point.value).filter((value) => typeof value === "number" && Number.isFinite(value));
       if (values.length < 2) {
         return `<div class="detail-chart">
-          <svg class="${axisClass}" viewBox="0 0 ${axisWidth} ${chartHeight}" aria-hidden="true"></svg>
+          <svg class="${axisClass}" viewBox="0 0 ${axisWidth} ${chartHeight}" preserveAspectRatio="none" aria-hidden="true"></svg>
           <div class="detail-chart-scroll">${emptyPlot}</div>
         </div>`;
       }
@@ -5088,12 +5107,12 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       const latestX = right;
       const latestY = yFor(latest);
       return `<div class="detail-chart">
-        <svg class="${axisClass}" viewBox="0 0 ${axisWidth} ${chartHeight}" aria-hidden="true">
+        <svg class="${axisClass}" viewBox="0 0 ${axisWidth} ${chartHeight}" preserveAspectRatio="none" aria-hidden="true">
           ${yAxis}
           <line x1="${axisGuideStart}" y1="${axisY}" x2="${axisWidth}" y2="${axisY}" class="axis-line"></line>
         </svg>
         <div class="detail-chart-scroll">
-          <svg class="${plotClass}"${chartStyle} viewBox="0 0 ${svgWidth} ${chartHeight}" role="img" aria-label="trend">
+          <svg class="${plotClass}"${chartStyle} viewBox="0 0 ${svgWidth} ${chartHeight}" preserveAspectRatio="none" role="img" aria-label="trend">
             ${yBackgroundLines}
             ${xBackgroundLines}
             <line x1="${left}" y1="${axisY}" x2="${right}" y2="${axisY}" class="axis-line"></line>
