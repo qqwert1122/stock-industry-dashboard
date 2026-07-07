@@ -1775,11 +1775,15 @@ def collect_kosis_metrics(
         for index in range(1, 9):
             key = f"objL{index}"
             value = item.get(key)
-            if value is not None:
-                params[key] = kosis_code_param(value)
+            params[key] = kosis_code_param(value) if value is not None else ""
 
         try:
-            response = session.get(endpoint, params=params, timeout=(5, 30))
+            response = session.get(
+                endpoint,
+                params=params,
+                headers={"User-Agent": "Mozilla/5.0 stock-industry-dashboard/1.0"},
+                timeout=(10, 60),
+            )
             response.raise_for_status()
             payload = response.json()
             points = parse_kosis_points(payload, prd_se)
