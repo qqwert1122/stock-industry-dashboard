@@ -44,6 +44,24 @@ jobs:
           KOSIS_API_KEY: ${{ secrets.KOSIS_API_KEY }}
         run: industry-dashboard --config config.yaml --out site
 
+      - name: Log KOSIS diagnostics
+        env:
+          KOSIS_API_KEY: ${{ secrets.KOSIS_API_KEY }}
+        run: |
+          python - <<'PY'
+          import requests
+          import yaml
+
+          from macro_telegram_report.dashboard import collect_kosis_metrics
+
+          with open("config.yaml", "r", encoding="utf-8") as handle:
+              config = yaml.safe_load(handle)
+
+          for metric in collect_kosis_metrics(config, requests.Session(), __import__("datetime").date.today()):
+              note = str(metric.get("note") or "").replace("\n", " ")[:240]
+              print(f"KOSIS detail: {metric['name']} | {metric['status']} | {note}")
+          PY
+
       - name: Deploy to public Pages repository
         env:
           USER_PAGES_DEPLOY_KEY: ${{ secrets.USER_PAGES_DEPLOY_KEY }}
