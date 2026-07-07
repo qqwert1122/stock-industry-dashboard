@@ -3025,18 +3025,22 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     .currency-toggle,
     .theme-toggle {
-      width: 44px;
-      height: 44px;
+      min-width: 94px;
+      height: 40px;
       border: 0;
-      border-radius: 999px;
-      display: grid;
-      place-items: center;
+      border-radius: 24px;
+      display: inline-grid;
+      grid-template-columns: 20px auto 18px;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
       position: relative;
-      overflow: hidden;
       background: var(--menu);
       color: var(--text);
       cursor: pointer;
-      font-size: 17px;
+      padding: 0 11px;
+      font-size: 13px;
+      font-weight: 740;
     }
 
     .currency-toggle:hover,
@@ -3050,9 +3054,27 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       outline-offset: 3px;
     }
 
-    .currency-toggle {
+    .toggle-label {
+      min-width: 0;
+      white-space: nowrap;
+      line-height: 1;
+    }
+
+    .toggle-chevron {
+      width: 16px;
+      height: 16px;
+      color: var(--muted);
+      stroke-width: 2;
+    }
+
+    .currency-icon-slot,
+    .theme-icon-orbit {
+      position: relative;
+      width: 20px;
+      height: 20px;
+      display: block;
+      overflow: hidden;
       font-size: 16px;
-      font-weight: 820;
     }
 
     .currency-icon {
@@ -3082,13 +3104,6 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       cursor: default;
     }
 
-    .theme-icon-orbit {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
     .theme-icon {
       position: absolute;
       left: 50%;
@@ -3104,14 +3119,14 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       pointer-events: none;
     }
 
-    body:not(.theme-dark) .theme-icon-moon,
-    body.theme-dark .theme-icon-sun {
+    body:not(.theme-dark) .theme-icon-sun,
+    body.theme-dark .theme-icon-moon {
       opacity: 1;
       transform: translate(-50%, -50%) translate3d(0, 0, 0) scale(1) rotate(0deg);
     }
 
-    body:not(.theme-dark) .theme-icon-sun,
-    body.theme-dark .theme-icon-moon {
+    body:not(.theme-dark) .theme-icon-moon,
+    body.theme-dark .theme-icon-sun {
       opacity: 0;
       transform: translate(-50%, -50%) translate3d(30px, 26px, 0) scale(0.72) rotate(36deg);
     }
@@ -3252,15 +3267,12 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     .group {
       padding: 0 0 22px;
-      border-bottom: 1px solid var(--line);
     }
-
-    .group:last-child { border-bottom: 0; }
 
     .group-title {
       margin-bottom: 12px;
       color: var(--text);
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 800;
     }
 
@@ -3739,6 +3751,28 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         gap: 6px;
       }
 
+      .currency-toggle,
+      .theme-toggle {
+        min-width: 82px;
+        height: 38px;
+        grid-template-columns: 18px auto 14px;
+        gap: 5px;
+        padding: 0 8px;
+        font-size: 12px;
+      }
+
+      .currency-icon-slot,
+      .theme-icon-orbit {
+        width: 18px;
+        height: 18px;
+        font-size: 15px;
+      }
+
+      .toggle-chevron {
+        width: 14px;
+        height: 14px;
+      }
+
       h1 {
         min-width: 0;
         font-size: clamp(18px, 5vw, 22px);
@@ -3975,14 +4009,20 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         <h1 data-i18n="title">산업별 지표 대시보드</h1>
         <div class="topbar-actions">
           <button class="currency-toggle" id="currencyToggle" type="button" aria-label="원화 표시" title="원화 표시">
-            <i class="fa-solid fa-dollar-sign currency-icon currency-icon-dollar" aria-hidden="true"></i>
-            <i class="fa-solid fa-won-sign currency-icon currency-icon-won" aria-hidden="true"></i>
+            <span class="currency-icon-slot" aria-hidden="true">
+              <i class="fa-solid fa-dollar-sign currency-icon currency-icon-dollar"></i>
+              <i class="fa-solid fa-won-sign currency-icon currency-icon-won"></i>
+            </span>
+            <span class="toggle-label" id="currencyToggleLabel">달러</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="toggle-chevron lucide lucide-chevrons-up-down-icon lucide-chevrons-up-down" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
           </button>
           <button class="theme-toggle" id="themeToggle" type="button" aria-label="다크모드 전환" title="다크모드 전환">
             <span class="theme-icon-orbit" aria-hidden="true">
-              <i class="fa-solid fa-moon theme-icon theme-icon-moon"></i>
               <i class="fa-solid fa-sun theme-icon theme-icon-sun"></i>
+              <i class="fa-solid fa-moon theme-icon theme-icon-moon"></i>
             </span>
+            <span class="toggle-label" id="themeToggleLabel">라이트</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="toggle-chevron lucide lucide-chevrons-up-down-icon lucide-chevrons-up-down" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
           </button>
         </div>
       </header>
@@ -4045,7 +4085,11 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         closeMenu: "메뉴 닫기",
         toggleTheme: "다크모드 전환",
         showKrw: "원화 표시",
-        showUsd: "달러 표시"
+        showUsd: "달러 표시",
+        currencyKrwName: "원화",
+        currencyUsdName: "달러",
+        themeLightName: "라이트",
+        themeDarkName: "다크"
       },
       en: {
         title: "Industry Metrics Dashboard",
@@ -4078,7 +4122,11 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         closeMenu: "Close menu",
         toggleTheme: "Toggle dark mode",
         showKrw: "Show KRW",
-        showUsd: "Show USD"
+        showUsd: "Show USD",
+        currencyKrwName: "KRW",
+        currencyUsdName: "USD",
+        themeLightName: "Light",
+        themeDarkName: "Dark"
       }
     };
 
@@ -4722,6 +4770,14 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       label.textContent = document.body.classList.contains("theme-dark") ? t("darkModeState") : t("lightMode");
     }
 
+    function updateThemeToggleLabel() {
+      const label = document.getElementById("themeToggleLabel");
+      if (!label) return;
+      label.textContent = document.body.classList.contains("theme-dark")
+        ? t("themeDarkName")
+        : t("themeLightName");
+    }
+
     function updateLanguageText() {
       document.documentElement.lang = state.language;
       document.querySelectorAll("[data-i18n]").forEach((element) => {
@@ -4737,6 +4793,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       const languageLabel = document.getElementById("languageSettingLabel");
       if (languageLabel) languageLabel.textContent = state.language === "ko" ? "KO" : "EN";
       updateThemeSettingLabel();
+      updateThemeToggleLabel();
       updateCurrencyButton();
     }
 
@@ -4809,13 +4866,14 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       document.body.classList.toggle("theme-dark", isDark);
       localStorage.setItem("dashboard-theme", isDark ? "dark" : "light");
       updateThemeSettingLabel();
+      updateThemeToggleLabel();
     }
 
     function animateThemeToggle(nextTheme) {
       const toggle = document.getElementById("themeToggle");
       const isDark = document.body.classList.contains("theme-dark");
-      const outgoing = toggle.querySelector(isDark ? ".theme-icon-sun" : ".theme-icon-moon");
-      const incoming = toggle.querySelector(isDark ? ".theme-icon-moon" : ".theme-icon-sun");
+      const outgoing = toggle.querySelector(isDark ? ".theme-icon-moon" : ".theme-icon-sun");
+      const incoming = toggle.querySelector(isDark ? ".theme-icon-sun" : ".theme-icon-moon");
       toggle.disabled = true;
       toggle.querySelectorAll(".theme-icon").forEach((icon) => {
         icon.classList.remove("is-exiting", "is-entering");
@@ -4847,6 +4905,8 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       const isKrw = state.currency === "krw";
       toggle.setAttribute("aria-label", isKrw ? t("showUsd") : t("showKrw"));
       toggle.setAttribute("title", isKrw ? t("showUsd") : t("showKrw"));
+      const label = document.getElementById("currencyToggleLabel");
+      if (label) label.textContent = isKrw ? t("currencyKrwName") : t("currencyUsdName");
     }
 
     function applyCurrency(currency) {
