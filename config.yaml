@@ -258,6 +258,48 @@ dashboard:
       industry: 매크로
       unit: ""
       frequency: 일간
+    - id: DFEDTARU
+      name: 미국 연준 기준금리 상단
+      industry: 매크로
+      unit: "%"
+      frequency: 일간
+      group: 금리
+      meaning: 미국 연준 기준금리 상단은 글로벌 할인율과 달러 유동성의 기준이 되는 정책금리입니다.
+    - id: ECBDFR
+      name: 유럽 ECB 예금금리
+      industry: 매크로
+      unit: "%"
+      frequency: 일간
+      group: 금리
+      meaning: ECB 예금금리는 유로존 단기금리와 유로화 유동성 환경을 보여주는 핵심 정책금리입니다.
+    - id: IRSTCI01JPM156N
+      name: 일본 단기금리
+      industry: 매크로
+      unit: "%"
+      frequency: 월간
+      group: 금리
+      meaning: 일본 단기금리는 일본은행 정책기조와 엔화 캐리 트레이드 환경을 보는 proxy입니다.
+    - id: IRSTCI01KRM156N
+      name: 한국 단기금리
+      industry: 매크로
+      unit: "%"
+      frequency: 월간
+      group: 금리
+      meaning: 한국 단기금리는 국내 원화 유동성과 통화정책 환경을 보여주는 proxy입니다.
+    - id: IR3TIB01CNM156N
+      name: 중국 3개월 은행간 금리
+      industry: 매크로
+      unit: "%"
+      frequency: 월간
+      group: 금리
+      meaning: 중국 3개월 은행간 금리는 중국 금융시장의 단기 유동성과 경기부양 강도를 보는 proxy입니다.
+    - id: IRSTCI01IDM156N
+      name: 동남아 금리 proxy(인도네시아)
+      industry: 매크로
+      unit: "%"
+      frequency: 월간
+      group: 금리
+      meaning: 인도네시아 단기금리는 동남아 신흥국 금리와 달러 유동성 민감도를 보는 대표 proxy입니다.
   reference_metrics:
     - industry: 반도체
       name: DRAM/NAND 가격 대체 지표
