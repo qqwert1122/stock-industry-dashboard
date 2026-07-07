@@ -162,6 +162,16 @@ EN_GROUP_LABELS = {
     "신용 스프레드": "Credit Spreads",
     "시장지수": "Market Indexes",
 }
+EN_DEPTH_LABELS = {
+    "전체 업황": "Overall Cycle",
+    "메모리 반도체": "Memory Semiconductors",
+    "AI/GPU": "AI/GPU",
+    "CPU/프로세서": "CPU/Processors",
+    "파운드리": "Foundry",
+    "장비": "Equipment",
+    "패키징/후공정": "Packaging/Back-end",
+    "소자/부품": "Devices/Components",
+}
 EN_FREQUENCY_LABELS = {
     "일간": "Daily",
     "주간": "Weekly",
@@ -188,6 +198,8 @@ EN_UNIT_LABELS = {
 }
 EN_EXPORT_ITEM_LABELS = {
     "반도체 IC": "Semiconductor ICs",
+    "메모리 IC": "Memory ICs",
+    "프로세서/컨트롤러 IC": "Processor/Controller ICs",
     "반도체 소자": "Semiconductor Devices",
     "무선통신기기": "Wireless Communication Devices",
     "승용차": "Passenger Cars",
@@ -246,6 +258,10 @@ EN_METRIC_NAME_LABELS = {
     "알루미늄": "Aluminum",
     "미국 자동차 판매": "US Auto Sales",
     "미국 반도체 PPI": "US Semiconductor PPI",
+    "미국 반도체 제조 PPI": "US Semiconductor Device Manufacturing PPI",
+    "미국 반도체 장비 PPI": "US Semiconductor Machinery PPI",
+    "미국 반도체 장비/부품 PPI": "US Semiconductor Machinery and Parts PPI",
+    "미국 반도체 패키징 PPI": "US Semiconductor IC Packaging PPI",
     "미국 방산 자본재 신규주문": "US Defense Capital Goods New Orders",
     "미국 방산 자본재 수주잔고": "US Defense Capital Goods Backlog",
     "미국 전력 생산 PPI": "US Electric Power Generation PPI",
@@ -429,7 +445,9 @@ def build_dashboard_site(config: dict[str, Any], output_dir: str | Path, session
     data_path = output_path / "data"
     data_path.mkdir(parents=True, exist_ok=True)
 
+    previous_payload = load_previous_dashboard_payload(data_path / "dashboard.json")
     payload = build_dashboard_payload(config, session)
+    annotate_dashboard_updates(payload, previous_payload)
     json_text = json.dumps(payload, ensure_ascii=False, indent=2)
 
     copy_dashboard_assets(output_path)
@@ -437,6 +455,125 @@ def build_dashboard_site(config: dict[str, Any], output_dir: str | Path, session
     (output_path / "index.html").write_text(render_dashboard_html(payload), encoding="utf-8")
     (output_path / ".nojekyll").write_text("", encoding="utf-8")
     return payload
+
+
+def load_previous_dashboard_payload(path: Path) -> dict[str, Any] | None:
+    if not path.exists():
+        return None
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    return payload if isinstance(payload, dict) else None
+
+
+def annotate_dashboard_updates(payload: dict[str, Any], previous_payload: dict[str, Any] | None) -> None:
+    metrics = payload.get("metrics", [])
+    if not isinstance(metrics, list):
+        payload["daily_changes"] = empty_daily_changes(payload)
+        return
+
+    previous_metrics = previous_payload.get("metrics", []) if isinstance(previous_payload, dict) else []
+    previous_by_id = {
+        str(metric.get("id")): metric
+        for metric in previous_metrics
+        if isinstance(metric, dict) and metric.get("id")
+    }
+    changed_metrics: list[dict[str, Any]] = []
+
+    for metric in metrics:
+        if not isinstance(metric, dict):
+            continue
+        previous = previous_by_id.get(str(metric.get("id") or ""))
+        status = ""
+        if previous_payload and previous is None:
+            status = "new"
+        elif previous_payload and previous is not None and metric_was_updated(metric, previous):
+            status = "updated"
+
+        metric["daily_status"] = status
+        metric["is_new"] = status == "new"
+        metric["is_updated_today"] = status == "updated"
+        if previous:
+            metric["previous_run_observed_at"] = previous.get("observed_at", "")
+            metric["previous_run_value"] = previous.get("value")
+            metric["previous_run_display_value"] = previous.get("display_value", "")
+        if status:
+            changed_metrics.append(daily_change_item(metric, previous, status))
+
+    payload["daily_changes"] = {
+        "date": str(payload.get("generated_at") or "")[:10],
+        "has_previous": bool(previous_payload),
+        "updated_count": sum(1 for item in changed_metrics if item["status"] == "updated"),
+        "new_count": sum(1 for item in changed_metrics if item["status"] == "new"),
+        "metrics": changed_metrics,
+    }
+
+
+def empty_daily_changes(payload: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "date": str(payload.get("generated_at") or "")[:10],
+        "has_previous": False,
+        "updated_count": 0,
+        "new_count": 0,
+        "metrics": [],
+    }
+
+
+def metric_was_updated(metric: dict[str, Any], previous: dict[str, Any]) -> bool:
+    if str(metric.get("observed_at") or "") != str(previous.get("observed_at") or ""):
+        return True
+    if not numeric_values_equal(metric.get("value"), previous.get("value")):
+        return True
+
+    current_latest = latest_history_point(metric)
+    previous_latest = latest_history_point(previous)
+    if current_latest or previous_latest:
+        if str((current_latest or {}).get("date") or "") != str((previous_latest or {}).get("date") or ""):
+            return True
+        if not numeric_values_equal(
+            (current_latest or {}).get("value"),
+            (previous_latest or {}).get("value"),
+        ):
+            return True
+    return False
+
+
+def latest_history_point(metric: dict[str, Any]) -> dict[str, Any] | None:
+    history = metric.get("history")
+    if not isinstance(history, list) or not history:
+        return None
+    latest = history[-1]
+    return latest if isinstance(latest, dict) else None
+
+
+def numeric_values_equal(left: object, right: object) -> bool:
+    left_number = to_float(left)
+    right_number = to_float(right)
+    if left_number is None or right_number is None:
+        return left == right
+    tolerance = max(1e-9, abs(right_number) * 1e-9)
+    return abs(left_number - right_number) <= tolerance
+
+
+def daily_change_item(
+    metric: dict[str, Any], previous: dict[str, Any] | None, status: str
+) -> dict[str, Any]:
+    return {
+        "id": metric.get("id", ""),
+        "status": status,
+        "industry": metric.get("industry", ""),
+        "industry_en": metric.get("industry_en", ""),
+        "group": metric.get("group", ""),
+        "group_en": metric.get("group_en", ""),
+        "name": metric.get("name", ""),
+        "name_en": metric.get("name_en", ""),
+        "display_value": metric.get("display_value", ""),
+        "observed_label": metric.get("observed_label", ""),
+        "change_pct_label": metric.get("change_pct_label", ""),
+        "previous_display_value": previous.get("display_value", "") if previous else "",
+        "previous_observed_label": previous.get("observed_label", "") if previous else "",
+    }
 
 
 def copy_dashboard_assets(output_path: Path) -> None:
@@ -450,8 +587,8 @@ def copy_dashboard_assets(output_path: Path) -> None:
 
     target = output_path / "assets" / "industry-icons"
     if target.exists():
-        shutil.rmtree(target)
-    shutil.copytree(source, target)
+        shutil.rmtree(target, ignore_errors=True)
+    shutil.copytree(source, target, dirs_exist_ok=True)
 
 
 def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -> dict[str, Any]:
@@ -549,6 +686,7 @@ def collect_fred_metrics(
                 status="needs_key",
                 note="GitHub Secrets에 FRED_API_KEY 등록 필요",
                 group=str(series.get("group") or ""),
+                depth=str(series.get("depth") or ""),
                 meaning=str(series.get("meaning") or ""),
             )
             for series in series_config
@@ -585,6 +723,7 @@ def collect_fred_metrics(
                         automation="무료로 안정적으로 자동화 가능",
                         status="error",
                         note="관측값 없음",
+                        depth=str(series.get("depth") or ""),
                     )
                 )
                 continue
@@ -609,6 +748,7 @@ def collect_fred_metrics(
                     history=points[-history_limit:],
                     note=str(series.get("note") or ""),
                     group=str(series.get("group") or ""),
+                    depth=str(series.get("depth") or ""),
                     meaning=str(series.get("meaning") or ""),
                 )
             )
@@ -903,6 +1043,7 @@ def collect_equity_price_metrics(
                         status="error",
                         note="관측값 없음",
                         group=str(item.get("group") or "대표주가"),
+                        depth=str(item.get("depth") or ""),
                         meaning=str(item.get("meaning") or equity_price_meaning(name)),
                     )
                 )
@@ -932,6 +1073,7 @@ def collect_equity_price_metrics(
                     history=points[-history_limit:],
                     note=str(item.get("note") or ""),
                     group=str(item.get("group") or "대표주가"),
+                    depth=str(item.get("depth") or ""),
                     meaning=str(item.get("meaning") or equity_price_meaning(name)),
                 )
             )
@@ -947,6 +1089,7 @@ def collect_equity_price_metrics(
                     status="error",
                     note=str(exc),
                     group=str(item.get("group") or "대표주가"),
+                    depth=str(item.get("depth") or ""),
                     meaning=str(item.get("meaning") or equity_price_meaning(name)),
                 )
             )
@@ -2473,6 +2616,7 @@ def wsts_sheet_metrics(
                     status="error",
                     note="선택한 지역 데이터 없음",
                     group="판매액(WSTS)",
+                    depth="전체 업황",
                     meaning=meaning,
                 )
             )
@@ -2498,6 +2642,7 @@ def wsts_sheet_metrics(
                 yoy_value=yoy_value,
                 history=billion_points[-history_limit:],
                 group="판매액(WSTS)",
+                depth="전체 업황",
                 meaning=meaning,
             )
         )
@@ -2540,6 +2685,7 @@ def collect_korea_export_metrics(
                     status="needs_key",
                     note="GitHub Secrets에 DATA_GO_KR_SERVICE_KEY 등록 필요",
                     group=str(item.get("group") or "수출"),
+                    depth=str(item.get("depth") or ""),
                     meaning=str(item.get("meaning") or export_meaning(name)),
                 )
             )
@@ -2567,6 +2713,7 @@ def collect_korea_export_metrics(
                         status="error",
                         note=f"{month_key(start_month)}-{month_key(end_month)} 관측값 없음",
                         group=str(item.get("group") or "수출"),
+                        depth=str(item.get("depth") or ""),
                         meaning=str(item.get("meaning") or export_meaning(name)),
                     )
                 )
@@ -2592,6 +2739,7 @@ def collect_korea_export_metrics(
                     yoy_value=yoy_value,
                     history=points,
                     group=str(item.get("group") or "수출"),
+                    depth=str(item.get("depth") or ""),
                     meaning=str(item.get("meaning") or export_meaning(name)),
                 )
             )
@@ -2607,6 +2755,7 @@ def collect_korea_export_metrics(
                     status="error",
                     note=str(exc),
                     group=str(item.get("group") or "수출"),
+                    depth=str(item.get("depth") or ""),
                     meaning=str(item.get("meaning") or export_meaning(name)),
                 )
             )
@@ -2668,6 +2817,7 @@ def make_metric(
     history: list[tuple[date, float]] | None = None,
     note: str = "",
     group: str = "",
+    depth: str = "",
     meaning: str = "",
 ) -> dict[str, Any]:
     change_abs = value - previous_value if value is not None and previous_value is not None else None
@@ -2680,10 +2830,12 @@ def make_metric(
     ]
     resolved_group = group or infer_metric_group(industry, name)
     resolved_meaning = meaning or infer_metric_meaning(industry, name)
+    resolved_depth = depth or infer_metric_depth(industry, name, resolved_group)
 
     return {
         "id": metric_id,
         "industry": industry,
+        "depth": resolved_depth,
         "group": resolved_group,
         "name": name,
         "meaning": resolved_meaning,
@@ -2733,6 +2885,8 @@ def visible_dashboard_metrics(metrics: list[dict[str, Any]]) -> list[dict[str, A
                     "id": metric["id"],
                     "industry": clean_display_text(metric["industry"]),
                     "industry_en": english_industry(clean_display_text(metric["industry"])),
+                    "depth": clean_display_text(metric.get("depth") or ""),
+                    "depth_en": english_depth(clean_display_text(metric.get("depth") or "")),
                     "group": clean_display_text(metric["group"]),
                     "group_en": english_group(clean_display_text(metric["group"])),
                     "name": clean_display_text(metric["name"]),
@@ -2783,6 +2937,10 @@ def english_industry(industry: str) -> str:
 
 def english_group(group: str) -> str:
     return EN_GROUP_LABELS.get(group, group)
+
+
+def english_depth(depth: str) -> str:
+    return EN_DEPTH_LABELS.get(depth, depth)
 
 
 def english_frequency(frequency: str) -> str:
@@ -2858,8 +3016,8 @@ def english_metric_meaning(meaning: str, industry: str = "") -> str:
         )
 
     capex_match = re.match(
-        r"^(.+)의 CAPEX는 데이터센터, 서버, AI 인프라 같은 장기 설비투자 규모를 보여줍니다\\. "
-        r"투자가 커질수록 클라우드와 AI 인프라 수요가 강하다는 신호로 볼 수 있습니다\\.$",
+        r"^(.+)의 CAPEX는 데이터센터, 서버, AI 인프라 같은 장기 설비투자 규모를 보여줍니다\. "
+        r"투자가 커질수록 클라우드와 AI 인프라 수요가 강하다는 신호로 볼 수 있습니다\.$",
         meaning,
     )
     if capex_match:
@@ -2954,6 +3112,32 @@ def infer_metric_group(industry: str, name: str) -> str:
         if "VIX" in name:
             return "리스크"
     return "핵심 지표"
+
+
+def infer_metric_depth(industry: str, name: str, group: str = "") -> str:
+    if industry != "반도체":
+        return ""
+
+    text = f"{name} {group}"
+    if name in WSTS_REGION_MEANINGS or name.startswith("3MMA - ") or "전체" in text:
+        return "전체 업황"
+    if any(keyword in text for keyword in ["메모리", "DRAM", "NAND", "HBM", "SK하이닉스", "Micron", "삼성전자"]):
+        return "메모리 반도체"
+    if any(keyword in text for keyword in ["NVIDIA", "엔비디아", "GPU"]):
+        return "AI/GPU"
+    if "AMD" in text:
+        return "AI/GPU"
+    if any(keyword in text for keyword in ["CPU", "프로세서", "컨트롤러", "Intel"]):
+        return "CPU/프로세서"
+    if any(keyword in text for keyword in ["TSMC", "파운드리"]):
+        return "파운드리"
+    if any(keyword in text for keyword in ["ASML", "Applied Materials", "Lam Research", "장비"]):
+        return "장비"
+    if any(keyword in text for keyword in ["패키징", "후공정", "패키지"]):
+        return "패키징/후공정"
+    if any(keyword in text for keyword in ["소자", "부품", "트랜지스터", "다이오드", "웨이퍼"]):
+        return "소자/부품"
+    return "전체 업황"
 
 
 def infer_metric_meaning(industry: str, name: str) -> str:
@@ -3543,7 +3727,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       cursor: pointer;
       padding: 0 11px;
       font-size: 13px;
-      font-weight: 740;
+      font-weight: 400;
     }
 
     .currency-toggle:hover,
@@ -3749,6 +3933,116 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       min-width: 0;
     }
 
+    .daily-updates {
+      min-width: 0;
+      margin: 4px 0 18px;
+    }
+
+    .daily-updates-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 0 8px;
+      padding: 0 4px;
+    }
+
+    .daily-updates h2 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.2;
+      font-weight: 680;
+    }
+
+    .daily-update-counts {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .daily-update-count {
+      padding: 6px 8px;
+      border-radius: 999px;
+      background: var(--menu);
+    }
+
+    .daily-update-list {
+      max-height: 238px;
+      overflow: auto;
+      border-radius: 6px;
+      background: var(--line);
+      display: grid;
+      gap: 1px;
+    }
+
+    .daily-update-row,
+    .daily-update-empty {
+      min-width: 0;
+      border: 0;
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .daily-update-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 120px 128px;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 9px 10px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .daily-update-row:hover {
+      background: var(--menu);
+    }
+
+    .daily-update-empty {
+      padding: 14px 12px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .daily-update-main {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .daily-update-title {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 12.5px;
+      line-height: 1.2;
+      font-weight: 400;
+    }
+
+    .daily-update-meta,
+    .daily-update-value {
+      min-width: 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .daily-update-value {
+      color: var(--text);
+      text-align: right;
+    }
+
     .industry {
       min-width: 0;
       scroll-margin-top: 22px;
@@ -3797,6 +4091,30 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     .group {
       padding: 0 0 22px;
+    }
+
+    .depth-section {
+      padding: 0 0 26px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .depth-section:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .depth-title {
+      margin: 20px 0 8px 10px;
+      color: var(--text);
+      font-size: 19px;
+      line-height: 1.2;
+      font-weight: 850;
+    }
+
+    .depth-section .group-title {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
     }
 
     .group-title {
@@ -3859,6 +4177,10 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       background: var(--menu);
     }
 
+    .metric-row.is-highlighted td {
+      background: var(--menu-active);
+    }
+
     .metric-row.is-expanded td {
       background: var(--menu-active);
     }
@@ -3894,6 +4216,43 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       line-height: 1.26;
       font-weight: 780;
       overflow-wrap: anywhere;
+    }
+
+    .metric-name-wrap {
+      min-width: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      max-width: 100%;
+      vertical-align: top;
+    }
+
+    .metric-name-wrap .metric-name {
+      min-width: 0;
+    }
+
+    .metric-update-dot {
+      flex: 0 0 auto;
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--chart-up);
+      box-shadow: 0 0 0 3px rgba(216, 59, 50, 0.11);
+    }
+
+    .metric-new-badge {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      height: 17px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: #2f6fd6;
+      color: #fff;
+      font-size: 9.5px;
+      line-height: 1;
+      font-weight: 650;
+      letter-spacing: 0;
     }
 
     .metric-description {
@@ -4000,7 +4359,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       min-width: 0;
       padding: 10px 12px;
       border: 1px solid var(--line);
-      border-radius: 12px;
+      border-radius: 6px;
       background: var(--menu);
     }
 
@@ -4413,6 +4772,51 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         font-size: clamp(18px, 5vw, 22px);
       }
 
+      .daily-updates {
+        margin: 0 0 14px;
+      }
+
+      .daily-updates-head {
+        align-items: start;
+        padding: 0 2px;
+      }
+
+      .daily-updates h2 {
+        font-size: 15px;
+      }
+
+      .daily-update-counts {
+        gap: 4px;
+        font-size: 10.5px;
+      }
+
+      .daily-update-count {
+        padding: 5px 7px;
+      }
+
+      .daily-update-list {
+        max-height: 210px;
+      }
+
+      .daily-update-row {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 5px 8px;
+        padding: 8px 7px;
+      }
+
+      .daily-update-meta {
+        grid-column: 1 / -1;
+        font-size: 10.5px;
+      }
+
+      .daily-update-title {
+        font-size: 12px;
+      }
+
+      .daily-update-value {
+        font-size: 10.5px;
+      }
+
       .industry-head {
         grid-template-columns: 72px minmax(0, 1fr);
         gap: 12px;
@@ -4437,6 +4841,11 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
       .group-title {
         margin: 12px 0 10px 8px;
+      }
+
+      .depth-title {
+        margin: 18px 0 8px 8px;
+        font-size: 17px;
       }
 
       .metric-table-wrap {
@@ -4581,7 +4990,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
       .detail-stat {
         padding: 7px 6px;
-        border-radius: 10px;
+        border-radius: 6px;
       }
 
       .detail-label {
@@ -4669,6 +5078,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
           </button>
         </div>
       </header>
+      <section class="daily-updates" id="dailyUpdates"></section>
       <section class="industry-stack" id="industryStack"></section>
       <div class="empty" id="empty" data-i18n="empty">표시할 지표가 없습니다.</div>
     </section>
@@ -4735,7 +5145,13 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         themeDarkName: "다크",
         tooltipPeriod: "연도",
         tooltipValue: "지표",
-        tooltipChange: "증감"
+        tooltipChange: "증감",
+        todayChanges: "오늘 변경",
+        updatedCount: "업데이트",
+        newCount: "신규",
+        noDailyChanges: "오늘 변경된 지표 없음",
+        updatedBadge: "업데이트",
+        newBadge: "New"
       },
       en: {
         title: "Industry Metrics Dashboard",
@@ -4775,7 +5191,13 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         themeDarkName: "Dark",
         tooltipPeriod: "Period",
         tooltipValue: "Value",
-        tooltipChange: "Change"
+        tooltipChange: "Change",
+        todayChanges: "Today",
+        updatedCount: "Updated",
+        newCount: "New",
+        noDailyChanges: "No changed metrics today",
+        updatedBadge: "Updated",
+        newBadge: "New"
       }
     };
 
@@ -4800,6 +5222,12 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       if (state.language !== "en") return group || "";
       const first = items.find((item) => item.group === group && item.group_en);
       return first?.group_en || group || "";
+    }
+
+    function localizedDepth(depth, items = []) {
+      if (state.language !== "en") return depth || "";
+      const first = items.find((item) => item.depth === depth && item.depth_en);
+      return first?.depth_en || depth || "";
     }
 
     function localizedUnit(metric) {
@@ -4934,6 +5362,22 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       return index === -1 ? 999 : index;
     }
 
+    const depthOrder = ["전체 업황", "메모리 반도체", "AI/GPU", "CPU/프로세서", "파운드리", "장비", "패키징/후공정", "소자/부품"];
+
+    function depthRank(depth) {
+      const index = depthOrder.indexOf(depth);
+      return index === -1 ? 999 : index;
+    }
+
+    function groupMetrics(items, keyFn) {
+      if (Map.groupBy) return Map.groupBy(items, keyFn);
+      return items.reduce((map, item) => {
+        const key = keyFn(item);
+        map.set(key, [...(map.get(key) || []), item]);
+        return map;
+      }, new Map());
+    }
+
     function baseVisibleIndustries() {
       return DASHBOARD_DATA.industries.filter((industry) =>
         DASHBOARD_DATA.metrics.some((metric) => metric.industry === industry)
@@ -5061,7 +5505,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       return "";
     }
 
-    function chartTicks(history, left, right, includeQuarterMonths = false) {
+    function chartTicks(history, left, right, includeQuarterMonths = false, xForPoint = null) {
       const seen = new Set();
       const seenYears = new Set();
       const ticks = [];
@@ -5074,7 +5518,9 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         const key = includeQuarterMonths ? `${point.date}-${label}` : String(point.date).slice(0, 4);
         if (seen.has(key)) return;
         seen.add(key);
-        const x = left + (index / Math.max(history.length - 1, 1)) * (right - left);
+        const x = xForPoint
+          ? xForPoint(point, index)
+          : left + (index / Math.max(history.length - 1, 1)) * (right - left);
         ticks.push({ label, x, priority: label === yearText ? 2 : 1 });
       });
       if (ticks.length === 1 && history.length > 1) {
@@ -5124,9 +5570,70 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       }));
     }
 
+    function chartTimeValue(point) {
+      const match = String(point?.date || "").match(/^(\\d{4})-(\\d{1,2})(?:-(\\d{1,2}))?/);
+      if (!match) return null;
+      const year = Number(match[1]);
+      const month = Number(match[2]);
+      const day = match[3] ? Number(match[3]) : 1;
+      if (!Number.isFinite(year) || !Number.isFinite(month) || !Number.isFinite(day)) return null;
+      return Date.UTC(year, month - 1, day);
+    }
+
+    function chartMonthSpan(points) {
+      if (!Array.isArray(points) || points.length < 2) return 0;
+      const first = chartDateParts(points[0].date);
+      const last = chartDateParts(points[points.length - 1].date);
+      if (!first || !last) return 0;
+      return Math.max(0, (last.year - first.year) * 12 + (last.month - first.month));
+    }
+
+    function chartTimeBounds(points) {
+      const times = (points || [])
+        .map(chartTimeValue)
+        .filter((value) => typeof value === "number" && Number.isFinite(value));
+      if (times.length < 2) return null;
+      const min = Math.min(...times);
+      const max = Math.max(...times);
+      return max > min ? { min, max } : null;
+    }
+
+    function chartXScale(points, left, right) {
+      const bounds = chartTimeBounds(points);
+      if (!bounds) {
+        return (point, index) => left + (index / Math.max(points.length - 1, 1)) * (right - left);
+      }
+      return (point, index) => {
+        const time = chartTimeValue(point);
+        if (typeof time !== "number" || !Number.isFinite(time)) {
+          return left + (index / Math.max(points.length - 1, 1)) * (right - left);
+        }
+        const ratio = Math.min(1, Math.max(0, (time - bounds.min) / (bounds.max - bounds.min)));
+        return left + ratio * (right - left);
+      };
+    }
+
+    function detailChartAvailableWidth() {
+      const containerWidth = document.getElementById("industryStack")?.clientWidth
+        || document.querySelector(".content")?.clientWidth
+        || window.innerWidth
+        || 520;
+      const axisWidth = mobileDrawerQuery.matches ? 40 : 42;
+      const minimum = mobileDrawerQuery.matches ? 360 : 520;
+      return Math.max(minimum, Math.floor(containerWidth - axisWidth));
+    }
+
     function detailChartWidth(points) {
       const count = Array.isArray(points) ? points.length : 0;
-      return Math.max(520, count * 22);
+      const perPointWidth = mobileDrawerQuery.matches ? 18 : 22;
+      const perMonthWidth = mobileDrawerQuery.matches ? 11 : 14;
+      const monthSpan = chartMonthSpan(points);
+      const width = Math.max(
+        detailChartAvailableWidth(),
+        count * perPointWidth,
+        monthSpan > 0 ? (monthSpan + 1) * perMonthWidth : 0
+      );
+      return Math.min(4200, width);
     }
 
     function detailChartUnit(metric) {
@@ -5188,8 +5695,9 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       const first = displayPoints[0].value;
       const span = max - min || 1;
       const yFor = (value) => bottom - ((value - min) / span) * (bottom - top);
+      const xFor = chartXScale(displayPoints, left, right);
       const points = displayPoints.map((point, index) => {
-        const x = left + (index / Math.max(displayPoints.length - 1, 1)) * (right - left);
+        const x = xFor(point, index);
         const y = yFor(point.value);
         return `${x.toFixed(1)},${y.toFixed(1)}`;
       }).join(" ");
@@ -5215,7 +5723,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
           <text x="${axisGuideStart.toFixed(1)}" y="${(labelY + 3).toFixed(1)}" text-anchor="end">${level.label}</text>
         </g>`;
       }).join("");
-      const ticks = chartTicks(displayPoints, left, right, true);
+      const ticks = chartTicks(displayPoints, left, right, true, xFor);
       const yBackgroundLines = levels.map((level) => `
         <line x1="${left}" y1="${level.y.toFixed(1)}" x2="${right}" y2="${level.y.toFixed(1)}" class="chart-background-line"></line>
       `).join("");
@@ -5228,7 +5736,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       }).join("");
       const tooltipUnit = detailChartUnit(metric || {});
       const pointHits = displayPoints.map((point, index) => {
-        const x = left + (index / Math.max(displayPoints.length - 1, 1)) * (right - left);
+        const x = xFor(point, index);
         const y = yFor(point.value);
         const previous = index > 0 ? displayPoints[index - 1] : null;
         return `<circle class="detail-point-hit" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="10" fill="transparent" stroke="transparent" tabindex="0"
@@ -5237,7 +5745,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
           data-tooltip-value="${escapeHtml(detailPointValueLabel(point.value, tooltipUnit))}"
           data-tooltip-change="${escapeHtml(detailPointChangeLabel(point, previous, tooltipUnit))}"></circle>`;
       }).join("");
-      const latestX = right;
+      const latestX = xFor(displayPoints[displayPoints.length - 1], displayPoints.length - 1);
       const latestY = yFor(latest);
       return `<div class="detail-chart">
         <svg class="${axisClass}" viewBox="0 0 ${axisWidth} ${chartHeight}" preserveAspectRatio="none" aria-hidden="true">
@@ -5312,8 +5820,11 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       const top = 16;
       const bottom = 116;
       const yFor = (value) => bottom - ((value - min) / span) * (bottom - top);
+      const xFor = isDetailChart ? chartXScale(displayPoints, left, right) : null;
       const points = displayPoints.map((point, index) => {
-        const x = left + (index / Math.max(displayPoints.length - 1, 1)) * (right - left);
+        const x = xFor
+          ? xFor(point, index)
+          : left + (index / Math.max(displayPoints.length - 1, 1)) * (right - left);
         const y = yFor(point.value);
         return `${x.toFixed(1)},${y.toFixed(1)}`;
       }).join(" ");
@@ -5345,10 +5856,12 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
           <line x1="${left}" y1="${y.toFixed(1)}" x2="${right}" y2="${y.toFixed(1)}" class="guide"></line>
         </g>`;
       }).join("");
-      const xGuides = chartTicks(history, left, right, isDetailChart).map((tick) => `
+      const xGuides = chartTicks(displayPoints, left, right, isDetailChart, xFor).map((tick) => `
         <text x="${tick.x.toFixed(1)}" y="146" text-anchor="middle">${tick.label}</text>
       `).join("");
-      const latestX = right;
+      const latestX = xFor
+        ? xFor(displayPoints[displayPoints.length - 1], displayPoints.length - 1)
+        : right;
       const latestY = yFor(latest);
       return `<svg class="${chartClass}"${chartStyle} viewBox="0 0 ${svgWidth} 158" role="img" aria-label="trend">
         ${yGuides}
@@ -5383,6 +5896,16 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       </div>`;
     }
 
+    function metricStatusMarkup(metric) {
+      if (metric?.daily_status === "new") {
+        return `<span class="metric-new-badge">${escapeHtml(t("newBadge"))}</span>`;
+      }
+      if (metric?.daily_status === "updated") {
+        return `<span class="metric-update-dot" aria-label="${escapeHtml(t("updatedBadge"))}" title="${escapeHtml(t("updatedBadge"))}"></span>`;
+      }
+      return "";
+    }
+
     function metricDetail(metric) {
       return `<div class="metric-detail-panel">
         <div class="metric-detail-inner">
@@ -5401,10 +5924,13 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     function metricRows(metric) {
       const detailId = `metric-detail-${metric.id}`;
-      return `<tr class="metric-row" data-metric-row data-detail-id="${detailId}">
+      return `<tr class="metric-row" data-metric-row data-metric-id="${escapeHtml(metric.id)}" data-detail-id="${detailId}">
         <td class="metric-name-cell" data-label="${escapeHtml(t("metric"))}">
           <button class="metric-toggle" type="button" data-metric-toggle aria-expanded="false" aria-controls="${detailId}">
-            <span class="metric-name">${escapeHtml(localizedField(metric, "name"))}</span>
+            <span class="metric-name-wrap">
+              <span class="metric-name">${escapeHtml(localizedField(metric, "name"))}</span>
+              ${metricStatusMarkup(metric)}
+            </span>
             <span class="metric-mobile-description">${escapeHtml(localizedField(metric, "meaning"))}</span>
           </button>
         </td>
@@ -5432,16 +5958,59 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       </tr>`;
     }
 
+    function changedMetrics() {
+      return (DASHBOARD_DATA.metrics || []).filter((metric) =>
+        metric.daily_status === "updated" || metric.daily_status === "new"
+      );
+    }
+
+    function jumpToMetric(metricId) {
+      const row = document.querySelector(`[data-metric-id="${metricId}"]`);
+      if (!row) return;
+      row.scrollIntoView({ behavior: "smooth", block: "center" });
+      row.classList.add("is-highlighted");
+      window.setTimeout(() => row.classList.remove("is-highlighted"), 1400);
+    }
+
+    function initDailyUpdateLinks() {
+      document.querySelectorAll("[data-daily-update-metric]").forEach((button) => {
+        button.addEventListener("click", () => jumpToMetric(button.dataset.dailyUpdateMetric));
+      });
+    }
+
+    function renderDailyUpdates() {
+      const section = document.getElementById("dailyUpdates");
+      if (!section) return;
+      const summary = DASHBOARD_DATA.daily_changes || {};
+      const changes = changedMetrics();
+      const updatedCount = Number(summary.updated_count || changes.filter((metric) => metric.daily_status === "updated").length);
+      const newCount = Number(summary.new_count || changes.filter((metric) => metric.daily_status === "new").length);
+      const rows = changes.map((metric) => `
+        <button class="daily-update-row" type="button" data-daily-update-metric="${escapeHtml(metric.id)}">
+          <span class="daily-update-main">
+            ${metricStatusMarkup(metric)}
+            <span class="daily-update-title">${escapeHtml(localizedField(metric, "name"))}</span>
+          </span>
+          <span class="daily-update-meta">${escapeHtml(localizedIndustry(metric.industry))} · ${escapeHtml(localizedGroup(metric.group, [metric]))} · ${escapeHtml(dateText(metric.observed_label))}</span>
+          <span class="daily-update-value">${escapeHtml(displayMetricValue(metric))}</span>
+        </button>
+      `).join("");
+      section.innerHTML = `<div class="daily-updates-head">
+        <h2>${escapeHtml(t("todayChanges"))}</h2>
+        <div class="daily-update-counts" aria-label="${escapeHtml(t("todayChanges"))}">
+          <span class="daily-update-count">${escapeHtml(t("updatedCount"))} ${updatedCount}</span>
+          <span class="daily-update-count">${escapeHtml(t("newCount"))} ${newCount}</span>
+        </div>
+      </div>
+      <div class="daily-update-list">
+        ${rows || `<div class="daily-update-empty">${escapeHtml(t("noDailyChanges"))}</div>`}
+      </div>`;
+      initDailyUpdateLinks();
+    }
+
     function renderIndustry(industry, metrics) {
-      const groups = Map.groupBy
-        ? Map.groupBy(metrics, (metric) => metric.group || "핵심 지표")
-        : metrics.reduce((map, metric) => {
-            const key = metric.group || "핵심 지표";
-            map.set(key, [...(map.get(key) || []), metric]);
-            return map;
-          }, new Map());
       const icon = DASHBOARD_DATA.industry_icons?.[industry] || "";
-      const groupHtml = [...groups.entries()]
+      const renderGroups = (items) => [...groupMetrics(items, (metric) => metric.group || "핵심 지표").entries()]
         .sort(([a], [b]) => groupRank(a) - groupRank(b) || String(a).localeCompare(String(b), "ko"))
         .map(([group, items]) => `
           <section class="group">
@@ -5471,6 +6040,16 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
             </div>
           </section>
         `).join("");
+      const groupHtml = industry === "반도체"
+        ? [...groupMetrics(metrics, (metric) => metric.depth || "전체 업황").entries()]
+            .sort(([a], [b]) => depthRank(a) - depthRank(b) || String(a).localeCompare(String(b), "ko"))
+            .map(([depth, items]) => `
+              <section class="depth-section">
+                <div class="depth-title">${escapeHtml(localizedDepth(depth, items))}</div>
+                ${renderGroups(items)}
+              </section>
+            `).join("")
+        : renderGroups(metrics);
 
       return `<article class="industry" id="${industryId(industry)}" data-industry-section data-industry-name="${escapeHtml(industry)}">
         <div class="industry-head">
@@ -5711,6 +6290,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       localStorage.setItem("dashboard-language", state.language);
       updateLanguageText();
       renderFilters();
+      renderDailyUpdates();
       renderIndustries();
     }
 
@@ -5829,6 +6409,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       const label = document.getElementById("currencyToggleLabel");
       animateToggleContent(toggle, outgoing, incoming, label, currencyToggleLabelText(nextCurrency), () => {
         applyCurrency(nextCurrency, { updateLabel: false });
+        renderDailyUpdates();
         renderIndustries();
       });
     }
@@ -5902,8 +6483,18 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       });
     }
 
+    let resizeRenderFrame = 0;
+    function onDashboardResize() {
+      onScrollSpy();
+      if (resizeRenderFrame) return;
+      resizeRenderFrame = requestAnimationFrame(() => {
+        resizeRenderFrame = 0;
+        renderIndustries();
+      });
+    }
+
     window.addEventListener("scroll", onScrollSpy, { passive: true });
-    window.addEventListener("resize", onScrollSpy);
+    window.addEventListener("resize", onDashboardResize);
     document.addEventListener("click", (event) => {
       if (event.target.closest(".detail-point-hit")) return;
       document.querySelectorAll(".detail-chart").forEach((chart) => hideDetailTooltip(chart, true));
@@ -5916,6 +6507,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     function render() {
       renderFilters();
+      renderDailyUpdates();
       renderIndustries();
     }
 

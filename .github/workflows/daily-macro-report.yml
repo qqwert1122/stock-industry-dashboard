@@ -33,6 +33,12 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e .
 
+      - name: Fetch previous dashboard data
+        run: |
+          mkdir -p site/data
+          curl -fsSL https://qqwert1122.github.io/stock-industry-dashboard/data/dashboard.json \
+            -o site/data/dashboard.json || true
+
       - name: Build dashboard
         env:
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}

@@ -4,7 +4,7 @@
 
 ## 현재 MVP
 
-- 반도체: WSTS 월간/3개월 평균 반도체 판매액, 한국 반도체 수출, 미국 반도체 PPI, 삼성전자/NVIDIA 주가
+- 반도체: WSTS 월간/3개월 평균 반도체 판매액, 메모리/프로세서 수출, 반도체/장비/패키징 PPI, 메모리·GPU·CPU·파운드리·장비 대표주
 - 데이터인프라: Microsoft/Amazon/Alphabet/Meta/Oracle/CoreWeave CAPEX, NAVER/Microsoft 주가
 - 자동차: 미국 자동차 판매, 한국 승용차 수출, 현대차/Toyota 주가
 - 전기차: 한국 순수 전기차 수출, 미국 EV 충전소/충전 포트 수, LG에너지솔루션/Tesla 주가
@@ -82,6 +82,7 @@ industry-dashboard --config config.yaml --out site
 - `dashboard.fred_series`: FRED API/CSV로 자동 수집할 지표
 - `ecos.credit_spreads`: ECOS 시장금리에서 계산할 한국 회사채-국고채 스프레드
 - `equities.items`: Yahoo Finance chart JSON에서 가져올 산업 대표 상장사 주가와 시장지수
+- `depth`: 같은 산업 안에서 한 번 더 나누는 하위 구획. 현재 반도체의 메모리, AI/GPU, CPU/프로세서, 파운드리, 장비 구획에 사용합니다.
 - `wsts.regions`: WSTS에서 표시할 지역
 - `korea_exports.items`: 관세청 HS 코드별 수출 지표
 - `stablecoins.assets`: DefiLlama에서 가져올 스테이블코인 유통량 지표

@@ -136,6 +136,41 @@ dashboard:
       industry: 반도체
       unit: 지수
       frequency: 월간
+      depth: 전체 업황
+      group: 가격/수요
+      meaning: 미국 반도체 전반의 생산자 가격 흐름입니다. 반도체 가격 압력과 업황의 큰 방향을 볼 때 참고합니다.
+    - id: PCU334413334413
+      name: 미국 반도체 제조 PPI
+      industry: 반도체
+      unit: 지수
+      frequency: 월간
+      depth: 소자/부품
+      group: 가격/수요
+      meaning: 미국 반도체 및 관련 소자 제조 가격 흐름입니다. 칩과 웨이퍼 등 기초 반도체 부품 가격 환경을 확인합니다.
+    - id: PCU333242333242
+      name: 미국 반도체 장비 PPI
+      industry: 반도체
+      unit: 지수
+      frequency: 월간
+      depth: 장비
+      group: 투자/장비
+      meaning: 반도체 장비 제조 가격 흐름입니다. 장비 업체의 가격 환경과 설비투자 비용 압력을 볼 때 참고합니다.
+    - id: PCU3332423332420
+      name: 미국 반도체 장비/부품 PPI
+      industry: 반도체
+      unit: 지수
+      frequency: 월간
+      depth: 장비
+      group: 투자/장비
+      meaning: 반도체 장비와 부품 가격 흐름입니다. 노광, 식각, 증착 등 장비 공급망의 가격 압력을 보는 proxy입니다.
+    - id: PCU3344133344131
+      name: 미국 반도체 패키징 PPI
+      industry: 반도체
+      unit: 지수
+      frequency: 월간
+      depth: 패키징/후공정
+      group: 가격/수요
+      meaning: 집적회로 패키징 가격 흐름입니다. 고성능 반도체 후공정과 패키징 비용 압력을 볼 때 참고합니다.
     - id: ADEFNO
       name: 미국 방산 자본재 신규주문
       industry: 방산
@@ -394,9 +429,43 @@ equities:
     - name: 삼성전자(005930.KS)
       symbol: 005930.KS
       industry: 반도체
+      depth: 메모리 반도체
     - name: NVIDIA(NVDA)
       symbol: NVDA
       industry: 반도체
+      depth: AI/GPU
+    - name: SK하이닉스(000660.KS)
+      symbol: 000660.KS
+      industry: 반도체
+      depth: 메모리 반도체
+    - name: Micron(MU)
+      symbol: MU
+      industry: 반도체
+      depth: 메모리 반도체
+    - name: AMD(AMD)
+      symbol: AMD
+      industry: 반도체
+      depth: AI/GPU
+    - name: Intel(INTC)
+      symbol: INTC
+      industry: 반도체
+      depth: CPU/프로세서
+    - name: TSMC(TSM)
+      symbol: TSM
+      industry: 반도체
+      depth: 파운드리
+    - name: ASML(ASML)
+      symbol: ASML
+      industry: 반도체
+      depth: 장비
+    - name: Applied Materials(AMAT)
+      symbol: AMAT
+      industry: 반도체
+      depth: 장비
+    - name: Lam Research(LRCX)
+      symbol: LRCX
+      industry: 반도체
+      depth: 장비
     - name: NAVER(035420.KS)
       symbol: 035420.KS
       industry: 데이터인프라
@@ -826,12 +895,26 @@ korea_exports:
     - name: 반도체 IC
       hs_code: "8542"
       industry: 반도체
+      depth: 전체 업황
+      meaning: 한국 집적회로 수출 흐름입니다. 메모리와 비메모리를 포함한 국내 반도체 수출의 큰 방향을 볼 때 사용합니다.
+    - name: 메모리 IC
+      hs_code: "854232"
+      industry: 반도체
+      depth: 메모리 반도체
+      meaning: 한국 메모리 반도체 수출 흐름입니다. DRAM, NAND, HBM 등 메모리 업황과 가격/물량 사이클을 보는 핵심 proxy입니다.
+    - name: 프로세서/컨트롤러 IC
+      hs_code: "854231"
+      industry: 반도체
+      depth: CPU/프로세서
+      meaning: 한국 프로세서와 컨트롤러 집적회로 수출 흐름입니다. CPU, MCU, 컨트롤러 계열 비메모리 수요를 보는 proxy입니다.
     - name: 반도체 소자
       hs_code: "8541"
       industry: 반도체
+      depth: 소자/부품
     - name: 무선통신기기
       hs_code: "8517"
       industry: 반도체
+      depth: 전체 업황
     - name: 승용차
       hs_code: "8703"
       industry: 자동차

@@ -3,6 +3,7 @@ from datetime import date, datetime, timezone
 
 from macro_telegram_report.dashboard import (
     DEFAULT_INDUSTRIES,
+    annotate_dashboard_updates,
     collect_stablecoin_metrics,
     completed_months,
     compute_spread_points,
@@ -128,6 +129,88 @@ class DashboardTest(unittest.TestCase):
 
         self.assertIn("테스트 대시보드", html)
         self.assertIn("DASHBOARD_DATA", html)
+
+    def test_annotate_dashboard_updates_detects_updated_and_new_metrics(self):
+        payload = {
+            "generated_at": "2026-07-07T08:00:00+09:00",
+            "metrics": [
+                {
+                    "id": "same",
+                    "industry": "반도체",
+                    "group": "판매액",
+                    "name": "기존 지표",
+                    "value": 12.0,
+                    "display_value": "12.0",
+                    "observed_at": "2026-06-01",
+                    "observed_label": "2026.06",
+                    "history": [{"date": "2026-06-01", "value": 12.0}],
+                },
+                {
+                    "id": "updated",
+                    "industry": "반도체",
+                    "group": "판매액",
+                    "name": "업데이트 지표",
+                    "value": 15.0,
+                    "display_value": "15.0",
+                    "observed_at": "2026-07-01",
+                    "observed_label": "2026.07",
+                    "history": [{"date": "2026-07-01", "value": 15.0}],
+                },
+                {
+                    "id": "new",
+                    "industry": "데이터인프라",
+                    "group": "CAPEX",
+                    "name": "신규 지표",
+                    "value": 1.0,
+                    "display_value": "1.0",
+                    "observed_at": "2026-07-01",
+                    "observed_label": "2026.07",
+                    "history": [{"date": "2026-07-01", "value": 1.0}],
+                },
+            ],
+        }
+        previous = {
+            "metrics": [
+                {
+                    "id": "same",
+                    "value": 12.0,
+                    "display_value": "12.0",
+                    "observed_at": "2026-06-01",
+                    "observed_label": "2026.06",
+                    "history": [{"date": "2026-06-01", "value": 12.0}],
+                },
+                {
+                    "id": "updated",
+                    "value": 14.0,
+                    "display_value": "14.0",
+                    "observed_at": "2026-06-01",
+                    "observed_label": "2026.06",
+                    "history": [{"date": "2026-06-01", "value": 14.0}],
+                },
+            ]
+        }
+
+        annotate_dashboard_updates(payload, previous)
+
+        statuses = {metric["id"]: metric["daily_status"] for metric in payload["metrics"]}
+        self.assertEqual(statuses["same"], "")
+        self.assertEqual(statuses["updated"], "updated")
+        self.assertEqual(statuses["new"], "new")
+        self.assertEqual(payload["daily_changes"]["updated_count"], 1)
+        self.assertEqual(payload["daily_changes"]["new_count"], 1)
+
+    def test_annotate_dashboard_updates_does_not_mark_everything_new_without_previous(self):
+        payload = {
+            "generated_at": "2026-07-07T08:00:00+09:00",
+            "metrics": [{"id": "metric", "value": 1.0, "history": []}],
+        }
+
+        annotate_dashboard_updates(payload, None)
+
+        self.assertEqual(payload["metrics"][0]["daily_status"], "")
+        self.assertEqual(payload["daily_changes"]["updated_count"], 0)
+        self.assertEqual(payload["daily_changes"]["new_count"], 0)
+        self.assertFalse(payload["daily_changes"]["has_previous"])
 
     def test_default_industries_include_new_categories(self):
         for industry in [
