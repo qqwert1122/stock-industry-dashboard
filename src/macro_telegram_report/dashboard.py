@@ -793,7 +793,7 @@ def collect_equity_price_metrics(
         symbol = str(item.get("symbol") or "").strip()
         if not symbol:
             continue
-        name = str(item.get("name") or f"{symbol} 주가")
+        name = str(item.get("name") or symbol)
         industry = str(item.get("industry") or "매크로")
         url = endpoint_template.format(symbol=symbol)
         quote_url = f"{source_url.rstrip('/')}/quote/{symbol}"
@@ -3894,15 +3894,15 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       width: 100%;
       max-width: 100%;
       display: grid;
-      grid-template-columns: 54px minmax(0, 1fr);
+      grid-template-columns: 42px minmax(0, 1fr);
       align-items: stretch;
       overflow: hidden;
       padding: 2px 0 10px;
     }
 
     .detail-chart-axis {
-      width: 54px;
-      min-width: 54px;
+      width: 42px;
+      min-width: 42px;
       height: 190px;
       border-right: 0;
       border-radius: 8px 0 0 8px;
@@ -3917,8 +3917,8 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     }
 
     .detail-chart-scroll .chart {
-      width: max(100%, var(--detail-chart-width, 760px));
-      min-width: max(100%, var(--detail-chart-width, 760px));
+      width: max(100%, var(--detail-chart-width, 520px));
+      min-width: max(100%, var(--detail-chart-width, 520px));
       height: 190px;
       display: block;
     }
@@ -4219,33 +4219,48 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       }
 
       .topbar {
-        position: sticky;
-        top: 8px;
-        z-index: 50;
-        display: grid;
-        grid-template-columns: 42px minmax(0, 1fr) auto;
-        align-items: center;
-        gap: 8px;
-        margin: -2px 0 2px;
-        padding: 6px;
-        border-radius: 28px;
-        background: color-mix(in srgb, var(--surface) 88%, transparent);
-        box-shadow: var(--menu-shadow);
-        backdrop-filter: blur(16px);
+        position: relative;
+        z-index: 1;
+        display: block;
+        min-height: 84px;
+        margin: 0;
+        padding: 52px 0 0;
+        background: transparent;
+        box-shadow: none;
+        backdrop-filter: none;
+      }
+
+      .mobile-menu-toggle {
+        position: fixed;
+        left: max(10px, env(safe-area-inset-left));
+        top: max(10px, env(safe-area-inset-top));
+        z-index: 58;
+        width: 40px;
+        height: 40px;
       }
 
       .topbar-actions {
+        position: fixed;
+        right: max(10px, env(safe-area-inset-right));
+        top: max(10px, env(safe-area-inset-top));
+        z-index: 58;
         gap: 6px;
       }
 
       .currency-toggle,
       .theme-toggle {
-        min-width: 82px;
-        height: 38px;
-        grid-template-columns: 18px auto 14px;
-        gap: 5px;
-        padding: 0 8px;
+        min-width: 0;
+        width: 42px;
+        height: 40px;
+        grid-template-columns: 18px 14px;
+        gap: 2px;
+        padding: 0;
         font-size: 12px;
+      }
+
+      .currency-toggle .toggle-label,
+      .theme-toggle .toggle-label {
+        display: none;
       }
 
       .currency-icon-slot,
@@ -4408,20 +4423,20 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       }
 
       .detail-chart {
-        grid-template-columns: 48px minmax(0, 1fr);
+        grid-template-columns: 38px minmax(0, 1fr);
         overflow: hidden;
         padding: 0 0 6px;
       }
 
       .detail-chart-axis {
-        width: 48px;
-        min-width: 48px;
+        width: 38px;
+        min-width: 38px;
         height: 126px;
       }
 
       .detail-chart-scroll .chart {
-        width: max(100%, var(--detail-chart-width, 760px));
-        min-width: max(100%, var(--detail-chart-width, 760px));
+        width: max(100%, var(--detail-chart-width, 520px));
+        min-width: max(100%, var(--detail-chart-width, 520px));
         height: 126px;
       }
 
@@ -4544,9 +4559,9 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       "운임/해운", "선가/발주",
       "원자재 가격", "중국 경기",
       "에너지 가격", "원유/원료", "화학 스프레드 proxy", "스프레드/마진",
-      "금리", "스프레드", "금리/스프레드", "은행 건전성", "대출/건전성",
+      "금리", "신용 스프레드", "스프레드", "금리/스프레드", "은행 건전성", "대출/건전성",
       "주택 경기", "건설 선행", "금융비용", "주택 시장",
-      "환율", "리스크", "시장 환경", "핵심 지표"
+      "환율", "리스크", "시장 환경", "핵심 지표", "대표주가"
     ];
     const translations = {
       ko: {
@@ -4781,6 +4796,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
     }
 
     function groupRank(group) {
+      if (group === "대표주가") return 10000;
       const index = groupOrder.indexOf(group);
       return index === -1 ? 999 : index;
     }
@@ -4958,7 +4974,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
 
     function detailChartWidth(points) {
       const count = Array.isArray(points) ? points.length : 0;
-      return Math.max(620, count * 34);
+      return Math.max(520, count * 22);
     }
 
     function detailChartUnit(metric) {
@@ -4986,10 +5002,10 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
       const chartStyle = ` style="--detail-chart-width: ${svgWidth}px"`;
       const axisClass = "chart detail-chart-axis";
       const plotClass = "chart chart-detail";
-      const axisWidth = 54;
-      const axisGuideStart = 44;
-      const left = 8;
-      const right = svgWidth - 8;
+      const axisWidth = 42;
+      const axisGuideStart = 36;
+      const left = 4;
+      const right = svgWidth - 4;
       const emptyPlot = `<svg class="${plotClass}"${chartStyle} viewBox="0 0 ${svgWidth} 158" role="img" aria-label="trend unavailable">
         <line x1="${left}" y1="72" x2="${right}" y2="72" class="guide"></line>
       </svg>`;
@@ -5338,7 +5354,7 @@ MODERN_HTML_TEMPLATE = """<!doctype html>
         const scroller = detail.querySelector(".detail-chart-scroll");
         if (scroller) {
           requestAnimationFrame(() => {
-            scroller.scrollLeft = Math.max(0, scroller.scrollWidth - scroller.clientWidth);
+            scroller.scrollLeft = 0;
           });
         }
       }

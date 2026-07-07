@@ -44,6 +44,7 @@ dashboard:
       industry: 은행/금융
       unit: "%"
       frequency: 일간
+      group: 신용 스프레드
     - id: BAMLC0A0CM
       name: 미국 투자등급 회사채 OAS
       industry: 은행/금융
@@ -390,100 +391,100 @@ equities:
   endpoint: https://query1.finance.yahoo.com/v8/finance/chart/{symbol}
   source_url: https://finance.yahoo.com/
   items:
-    - name: 삼성전자 주가
+    - name: 삼성전자(005930.KS)
       symbol: 005930.KS
       industry: 반도체
-    - name: NVIDIA 주가
+    - name: NVIDIA(NVDA)
       symbol: NVDA
       industry: 반도체
-    - name: NAVER 주가
+    - name: NAVER(035420.KS)
       symbol: 035420.KS
       industry: 데이터인프라
-    - name: Microsoft 주가
+    - name: Microsoft(MSFT)
       symbol: MSFT
       industry: 데이터인프라
-    - name: 현대차 주가
+    - name: 현대차(005380.KS)
       symbol: 005380.KS
       industry: 자동차
-    - name: Toyota 주가
+    - name: Toyota(TM)
       symbol: TM
       industry: 자동차
-    - name: LG에너지솔루션 주가
+    - name: LG에너지솔루션(373220.KS)
       symbol: 373220.KS
       industry: 전기차
-    - name: Tesla 주가
+    - name: Tesla(TSLA)
       symbol: TSLA
       industry: 전기차
-    - name: HD현대중공업 주가
+    - name: HD현대중공업(329180.KS)
       symbol: 329180.KS
       industry: 조선
-    - name: Huntington Ingalls 주가
+    - name: Huntington Ingalls(HII)
       symbol: HII
       industry: 조선
-    - name: POSCO홀딩스 주가
+    - name: POSCO홀딩스(005490.KS)
       symbol: 005490.KS
       industry: 철강/소재
-    - name: Nucor 주가
+    - name: Nucor(NUE)
       symbol: NUE
       industry: 철강/소재
-    - name: LG화학 주가
+    - name: LG화학(051910.KS)
       symbol: 051910.KS
       industry: 화학/정유
-    - name: Exxon Mobil 주가
+    - name: Exxon Mobil(XOM)
       symbol: XOM
       industry: 화학/정유
-    - name: KB금융 주가
+    - name: KB금융(105560.KS)
       symbol: 105560.KS
       industry: 은행/금융
-    - name: JPMorgan Chase 주가
+    - name: JPMorgan Chase(JPM)
       symbol: JPM
       industry: 은행/금융
-    - name: 현대건설 주가
+    - name: 현대건설(000720.KS)
       symbol: 000720.KS
       industry: 건설/부동산
-    - name: D.R. Horton 주가
+    - name: D.R. Horton(DHI)
       symbol: DHI
       industry: 건설/부동산
-    - name: 한화에어로스페이스 주가
+    - name: 한화에어로스페이스(012450.KS)
       symbol: 012450.KS
       industry: 방산
-    - name: Lockheed Martin 주가
+    - name: Lockheed Martin(LMT)
       symbol: LMT
       industry: 방산
-    - name: Coinbase 주가
+    - name: Coinbase(COIN)
       symbol: COIN
       industry: 스테이블코인
-    - name: Circle 주가
+    - name: Circle(CRCL)
       symbol: CRCL
       industry: 스테이블코인
-    - name: 한국전력 주가
+    - name: 한국전력(015760.KS)
       symbol: 015760.KS
       industry: 전력
-    - name: GE Vernova 주가
+    - name: GE Vernova(GEV)
       symbol: GEV
       industry: 전력
-    - name: 두산로보틱스 주가
+    - name: 두산로보틱스(454910.KS)
       symbol: 454910.KS
       industry: 로봇
-    - name: Teradyne 주가
+    - name: Teradyne(TER)
       symbol: TER
       industry: 로봇
-    - name: 쎄트렉아이 주가
+    - name: 쎄트렉아이(099320.KQ)
       symbol: 099320.KQ
       industry: 우주
-    - name: Rocket Lab 주가
+    - name: Rocket Lab(RKLB)
       symbol: RKLB
       industry: 우주
-    - name: 삼성바이오로직스 주가
+    - name: 삼성바이오로직스(207940.KS)
       symbol: 207940.KS
       industry: 바이오
-    - name: Eli Lilly 주가
+    - name: Eli Lilly(LLY)
       symbol: LLY
       industry: 바이오
-    - name: 삼성SDI 주가
+    - name: 삼성SDI(006400.KS)
       symbol: 006400.KS
       industry: 배터리
-    - name: Albemarle 주가
+    - name: Albemarle(ALB)
       symbol: ALB
       industry: 배터리
 
