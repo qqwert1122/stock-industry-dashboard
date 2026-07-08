@@ -180,7 +180,11 @@ class DashboardTest(unittest.TestCase):
         self.assertIn("updateDynamicDetailPlot", html)
         self.assertIn("scheduleDynamicDetailAxis", html)
         self.assertIn("data-band-toggle", html)
+        self.assertIn("lastUpdatedInline", html)
+        self.assertIn("gauge-summary-icon", html)
+        self.assertIn("percentileBandLabel", html)
         self.assertIn("percentileBandLegend", html)
+        self.assertIn('colspan="6"', html)
 
     def test_annotate_dashboard_updates_detects_updated_and_new_metrics(self):
         payload = {

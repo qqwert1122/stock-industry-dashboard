@@ -29,8 +29,8 @@
       --favorite-star: #f59e0b;
       --chart-up: #f23645;
       --chart-down: #1f5eff;
-      --shadow: 0 10px 26px rgba(0, 0, 0, 0.06);
-      --menu-shadow: 0 8px 24px rgba(0, 0, 0, 0.055);
+      --shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+      --menu-shadow: 0 7px 18px rgba(0, 0, 0, 0.045);
     }
 
     body.theme-dark {
@@ -53,8 +53,8 @@
       --ai-bullet-text: #a8a8a8;
       --ai-bullet-body: #898989;
       --favorite-star: #fbbf24;
-      --shadow: none;
-      --menu-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+      --shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+      --menu-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
     }
 
     * { box-sizing: border-box; }
@@ -437,6 +437,23 @@
       min-height: 46px;
     }
 
+    .title-wrap {
+      min-width: 0;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .last-updated-inline {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.2;
+      font-weight: 400;
+      opacity: 0.72;
+      white-space: nowrap;
+    }
+
     .topbar-actions {
       display: flex;
       align-items: center;
@@ -455,7 +472,7 @@
     .theme-toggle {
       min-width: 94px;
       height: 40px;
-      border: 0;
+      border: 1px solid var(--line);
       border-radius: 24px;
       display: inline-grid;
       grid-template-columns: 20px auto 18px;
@@ -478,7 +495,7 @@
       z-index: 58;
       width: 40px;
       height: 40px;
-      border: 0;
+      border: 1px solid var(--line);
       border-radius: 999px;
       display: inline-grid;
       place-items: center;
@@ -733,6 +750,7 @@
       border: 1px solid var(--ai-card-border);
       border-radius: 24px;
       background: var(--ai-card-bg);
+      box-shadow: var(--shadow);
       overflow: hidden;
     }
 
@@ -1046,18 +1064,19 @@
       max-width: 100%;
       display: inline-flex;
       align-items: center;
-      gap: 3px;
+      gap: 7px;
       list-style: none;
       margin-left: 10px;
-      padding: 0 4px;
-      border: 0;
-      background: transparent;
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--menu);
       color: var(--muted);
-      font-size: 11.5px;
-      line-height: 1.45;
+      font-size: 12.5px;
+      line-height: 1.2;
       font-weight: 400;
       cursor: pointer;
-      opacity: 0.72;
+      opacity: 1;
       user-select: none;
     }
 
@@ -1066,7 +1085,7 @@
     }
 
     .daily-update-summary:hover {
-      opacity: 1;
+      background: var(--menu-active);
       color: var(--text);
     }
 
@@ -1401,11 +1420,11 @@
       background: var(--menu-active);
     }
 
-    .metric-name-cell { width: 22%; }
-    .metric-description-cell { width: 28%; }
-    .metric-date-cell { width: 10%; }
-    .metric-value-cell { width: 12%; }
-    .metric-chart-cell { width: 13%; }
+    .metric-name-cell { width: 23%; }
+    .metric-description-cell { width: 29%; }
+    .metric-date-cell { width: 11%; }
+    .metric-value-cell { width: 18%; }
+    .metric-chart-cell { width: 14%; }
     .metric-favorite-cell { width: 5%; }
 
     .metric-toggle {
@@ -1612,7 +1631,7 @@
 
     .detail-stats {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 8px 12px;
       align-content: start;
       padding: 0;
@@ -1624,7 +1643,7 @@
       min-width: 0;
       padding: 10px 12px;
       border: 1px solid var(--line);
-      border-radius: 6px;
+      border-radius: 14px;
       background: var(--detail-stat-bg);
     }
 
@@ -1689,7 +1708,7 @@
       grid-column: 2;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
       min-width: 0;
       margin-top: 6px;
       padding-left: 2px;
@@ -1701,7 +1720,7 @@
     .chart-band-toggle {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
       min-width: 0;
       padding: 0;
       border: 0;
@@ -1713,10 +1732,10 @@
 
     .chart-band-toggle-dot {
       position: relative;
-      width: 15px;
-      height: 15px;
-      flex: 0 0 15px;
-      border: 1px solid rgba(59, 130, 246, 0.6);
+      width: 16px;
+      height: 16px;
+      flex: 0 0 16px;
+      border: 1px solid rgba(59, 130, 246, 0.7);
       border-radius: 999px;
       background: rgba(59, 130, 246, 0.11);
     }
@@ -1724,8 +1743,8 @@
     .chart-band-toggle-dot::after {
       content: "";
       position: absolute;
-      left: 4px;
-      top: 2px;
+      left: 4.5px;
+      top: 2.5px;
       width: 4px;
       height: 7px;
       border: solid #2563eb;
@@ -1734,7 +1753,7 @@
     }
 
     .chart-band-toggle[aria-pressed="false"] .chart-band-toggle-dot {
-      border-color: var(--line-strong);
+      border-color: var(--line);
       background: transparent;
     }
 
@@ -1743,32 +1762,23 @@
     }
 
     .chart-band-legend-label {
+      color: #2563eb;
+      font-weight: 650;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
-    .chart-median-legend {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+    .chart-band-legend-text {
       min-width: 0;
-      opacity: 0.9;
-    }
-
-    .chart-median-legend-line {
-      width: 20px;
-      height: 0;
-      border-top: 1px dashed rgba(59, 130, 246, 0.65);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .detail-chart.is-band-hidden .pct-band,
     .detail-chart.is-band-hidden .pct-band-median {
       display: none;
-    }
-
-    .detail-chart.is-band-hidden .chart-median-legend {
-      opacity: 0.42;
     }
 
     .detail-chart-tooltip {
@@ -2000,6 +2010,10 @@
     }
 
     @media (max-width: 760px) {
+      body {
+        font-size: 15px;
+      }
+
       .shell {
         grid-template-columns: 1fr;
         gap: 14px;
@@ -2045,6 +2059,9 @@
       .mobile-menu-toggle {
         display: grid;
         flex: 0 0 auto;
+        width: 46px;
+        height: 46px;
+        border: 1px solid var(--line);
       }
 
       .drawer-backdrop {
@@ -2100,9 +2117,9 @@
         position: relative;
         z-index: 1;
         display: block;
-        min-height: 84px;
+        min-height: 90px;
         margin: 0;
-        padding: 52px 0 0;
+        padding: 56px 0 0;
         background: transparent;
         box-shadow: none;
         backdrop-filter: none;
@@ -2113,8 +2130,6 @@
         left: max(10px, env(safe-area-inset-left));
         top: max(10px, env(safe-area-inset-top));
         z-index: 58;
-        width: 40px;
-        height: 40px;
       }
 
       .topbar-actions {
@@ -2122,27 +2137,27 @@
         right: max(10px, env(safe-area-inset-right));
         top: max(10px, env(safe-area-inset-top));
         z-index: 58;
-        gap: 6px;
+        gap: 7px;
       }
 
       .currency-toggle,
       .theme-toggle {
-        min-width: 76px;
+        min-width: 84px;
         width: auto;
-        height: 40px;
-        grid-template-columns: 18px auto 14px;
+        height: 46px;
+        grid-template-columns: 19px auto 15px;
         gap: 5px;
-        padding: 0 9px;
+        padding: 0 10px;
         border-radius: 24px;
-        font-size: 12px;
+        font-size: 13px;
       }
 
       .scroll-top-button {
         right: max(14px, env(safe-area-inset-right));
         bottom: max(18px, env(safe-area-inset-bottom));
-        width: 40px;
-        height: 40px;
-        font-size: 15px;
+        width: 46px;
+        height: 46px;
+        font-size: 16px;
       }
 
       .currency-toggle .toggle-label,
@@ -2164,7 +2179,15 @@
 
       h1 {
         min-width: 0;
-        font-size: clamp(18px, 5vw, 22px);
+        font-size: clamp(20px, 5.6vw, 24px);
+      }
+
+      .title-wrap {
+        gap: 6px 9px;
+      }
+
+      .last-updated-inline {
+        font-size: 11.5px;
       }
 
       .daily-updates {
@@ -2183,20 +2206,20 @@
       }
 
       .morning-briefing h2 {
-        font-size: 16px;
+        font-size: 17px;
       }
 
       .briefing-meta {
-        font-size: 10px;
+        font-size: 11px;
       }
 
       .briefing-headline {
-        font-size: 15px;
+        font-size: 16px;
       }
 
       .briefing-summary,
       .briefing-bullet-body {
-        font-size: 11.5px;
+        font-size: 12.5px;
       }
 
       .favorite-metrics {
@@ -2237,13 +2260,13 @@
       }
 
       .daily-updates h2 {
-        font-size: 12px;
+        font-size: 13px;
       }
 
       .daily-update-summary {
-        font-size: 11px;
+        font-size: 12.5px;
         margin-left: 8px;
-        padding: 0 2px;
+        padding: 8px 10px;
       }
 
       .daily-update-counts {
@@ -2282,12 +2305,12 @@
       }
 
       .daily-update-title {
-        font-size: 12px;
+        font-size: 13px;
       }
 
       .daily-update-value,
       .daily-update-change {
-        font-size: 10.5px;
+        font-size: 11.5px;
       }
 
       .daily-update-change {
@@ -2314,7 +2337,7 @@
       }
 
       .industry h2 {
-        font-size: 18px;
+        font-size: 20px;
       }
 
       .group { padding: 0 0 18px; }
@@ -2322,12 +2345,12 @@
       .depth-section .group-title,
       .group-title {
         margin: 12px 0 10px 8px;
-        font-size: 15px;
+        font-size: 16px;
       }
 
       .depth-title {
         margin: 18px 0 8px;
-        font-size: 15px;
+        font-size: 16px;
       }
 
       .depth-tree {
@@ -2383,7 +2406,6 @@
       .metric-table col.metric-date-cell,
       .metric-table th:nth-child(2),
       .metric-table th:nth-child(3),
-      .metric-table th:nth-child(4),
       .metric-table td.metric-description-cell,
       .metric-table td.metric-date-cell {
         display: none;
@@ -2416,13 +2438,13 @@
         content: none;
       }
 
-      .metric-name-cell { width: 46%; }
-      .metric-value-cell { width: 20%; }
-      .metric-chart-cell { width: 26%; }
-      .metric-favorite-cell { width: 8%; }
+      .metric-name-cell { width: 42%; }
+      .metric-value-cell { width: 24%; }
+      .metric-chart-cell { width: 25%; }
+      .metric-favorite-cell { width: 9%; }
 
       .metric-name {
-        font-size: 12.5px;
+        font-size: 13.5px;
         line-height: 1.22;
       }
 
@@ -2430,7 +2452,7 @@
         display: -webkit-box;
         margin-top: 4px;
         color: var(--muted);
-        font-size: 10.5px;
+        font-size: 11.5px;
         line-height: 1.28;
         font-weight: 580;
         overflow: hidden;
@@ -2439,7 +2461,7 @@
       }
 
       .metric-current-value {
-        font-size: 11.5px;
+        font-size: 12.5px;
         line-height: 1.2;
       }
 
@@ -2450,7 +2472,7 @@
       }
 
       .metric-change-badge {
-        font-size: 10.5px;
+        font-size: 11px;
       }
 
       .metric-chart-cell .chart-mini {
@@ -2459,9 +2481,9 @@
       }
 
       .metric-favorite-button {
-        width: 30px;
-        height: 30px;
-        font-size: 12.5px;
+        width: 34px;
+        height: 34px;
+        font-size: 13.5px;
       }
 
       .metric-detail-row td {
@@ -2492,25 +2514,29 @@
       }
 
       .detail-stats {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 5px 7px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 7px;
         padding: 0;
       }
 
       .detail-stat {
-        padding: 7px 6px;
-        border-radius: 6px;
+        padding: 9px 8px;
+        border-radius: 14px;
       }
 
       .detail-label {
-        font-size: 9.5px;
+        font-size: 10.5px;
         line-height: 1.12;
       }
 
       .detail-value {
         margin-top: 3px;
-        font-size: 12px;
+        font-size: 13px;
         line-height: 1.12;
+      }
+
+      .detail-chart-legend {
+        font-size: 11.5px;
       }
 
       .metric-grid { grid-template-columns: 1fr; }
@@ -2530,7 +2556,7 @@
     }
     .gauge-card {
       border: 1px solid var(--line);
-      border-radius: 14px;
+      border-radius: 24px;
       padding: 16px 18px;
       background: var(--panel);
       box-shadow: var(--shadow);
@@ -2573,56 +2599,102 @@
       box-shadow: 0 0 0 2px var(--panel);
     }
     .gauge-comment { margin: 12px 0 0; font-size: 13px; color: var(--muted); line-height: 1.55; }
-    .gauge-components { margin-top: 10px; font-size: 12px; }
-    .gauge-components summary { cursor: pointer; color: var(--muted); }
-    .gauge-component-list {
+    .gauge-components { margin-top: 12px; font-size: 12px; }
+    .gauge-components summary {
+      width: max-content;
+      max-width: 100%;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
       list-style: none;
-      margin: 8px 0 0;
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--menu);
+      color: var(--muted);
+      cursor: pointer;
+      user-select: none;
+    }
+    .gauge-components summary::-webkit-details-marker { display: none; }
+    .gauge-components summary:hover { background: var(--menu-active); color: var(--text); }
+    .gauge-summary-icon {
+      display: inline-block;
+      transform: translateY(-0.5px);
+      transition: transform 180ms ease;
+    }
+    .gauge-components[open] .gauge-summary-icon {
+      transform: translateY(-0.5px) rotate(90deg);
+    }
+    .gauge-component-list {
+      position: relative;
+      list-style: none;
+      margin: 10px 0 0;
       padding: 0;
       display: flex;
-      flex-direction: column;
-      gap: 6px;
+      gap: 8px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%);
+      mask-image: linear-gradient(90deg, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%);
+    }
+    .gauge-component-list::-webkit-scrollbar {
+      display: none;
+    }
+    .gauge-component-list li {
+      flex: 0 0 168px;
     }
     .gauge-component-list button,
     .gauge-component-static {
       width: 100%;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 4px 10px;
+      min-height: 88px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      align-content: start;
+      gap: 5px;
       background: var(--menu);
       border: none;
-      border-radius: 8px;
-      padding: 7px 10px;
+      border-radius: 24px;
+      padding: 12px;
       cursor: pointer;
       color: var(--text);
       font-size: 12px;
       text-align: left;
     }
     .gauge-component-static { cursor: default; }
-    .gauge-component-name { font-weight: 600; }
-    .gauge-component-heat { color: var(--muted); font-size: 11px; width: 100%; }
+    .gauge-component-name {
+      min-width: 0;
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .gauge-component-value {
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.1;
+      font-weight: 560;
+      overflow-wrap: anywhere;
+    }
+    .gauge-component-heat { color: var(--muted); font-size: 10.5px; line-height: 1.25; width: 100%; }
     .signal-chips { display: flex; flex-wrap: wrap; gap: 8px; }
     .signal-chip {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
       gap: 2px;
-      border-radius: 10px;
-      padding: 8px 12px;
-      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 12px;
+      border: 0;
       background: var(--menu);
       cursor: pointer;
       color: var(--text);
       font-size: 12px;
     }
     .signal-chip .signal-value { font-weight: 700; font-size: 13px; }
-    .signal-chip.signal-ok { border-color: rgba(34, 197, 94, 0.4); }
     .signal-chip.signal-ok .signal-value { color: #16a34a; }
-    .signal-chip.signal-warn { border-color: rgba(245, 158, 11, 0.5); }
     .signal-chip.signal-warn .signal-value { color: #d97706; }
-    .signal-chip.signal-alert { border-color: rgba(239, 68, 68, 0.55); }
     .signal-chip.signal-alert .signal-value { color: #dc2626; }
     .pct-badge {
       display: inline-block;
@@ -2715,7 +2787,10 @@
         <button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobileDrawer">
           <i class="fa-solid fa-bars" aria-hidden="true"></i>
         </button>
-        <h1 data-i18n="title">산업별 지표 대시보드</h1>
+        <div class="title-wrap">
+          <h1 data-i18n="title">산업별 지표 대시보드</h1>
+          <span class="last-updated-inline" id="lastUpdatedInline"></span>
+        </div>
         <div class="topbar-actions">
           <button class="scroll-top-button" id="scrollTopButton" type="button" aria-label="최상단 이동" title="최상단 이동">
             <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
@@ -2804,8 +2879,9 @@
         dataSince: "데이터 시작",
         rangeRecent: "최근",
         rangeFull: "전체 기간",
-        percentileBandLegend: "과거 20-80% 구간",
-        percentileMedianLegend: "과거 중앙값",
+        lastUpdatedInline: "최근 업데이트 일시",
+        percentileBandLabel: "백분위 밴드",
+        percentileBandLegend: "과거 20~80% 구간(중앙값)",
         heatLabel: "열기",
         staleBadge: "갱신 지연",
         yoy: "YoY",
@@ -2894,8 +2970,9 @@
         dataSince: "Data since",
         rangeRecent: "Recent",
         rangeFull: "Full history",
-        percentileBandLegend: "Historical 20-80% range",
-        percentileMedianLegend: "Historical median",
+        lastUpdatedInline: "Last updated",
+        percentileBandLabel: "Percentile band",
+        percentileBandLegend: "Historical 20-80% range (median)",
         heatLabel: "heat",
         staleBadge: "Stale",
         todayChanges: "Today",
@@ -3579,13 +3656,10 @@
           data-band-median="${band.median}"></line>` : "";
       const bandLegendMarkup = band ? `<div class="detail-chart-legend">
         <button type="button" class="chart-band-toggle" data-band-toggle aria-pressed="true">
+          <span class="chart-band-legend-label">${escapeHtml(t("percentileBandLabel"))}</span>
+          <span class="chart-band-legend-text">${escapeHtml(t("percentileBandLegend"))}</span>
           <span class="chart-band-toggle-dot" aria-hidden="true"></span>
-          <span class="chart-band-legend-label">${escapeHtml(t("percentileBandLegend"))}</span>
         </button>
-        <span class="chart-median-legend">
-          <span class="chart-median-legend-line" aria-hidden="true"></span>
-          <span>${escapeHtml(t("percentileMedianLegend"))}</span>
-        </span>
       </div>` : "";
       const points = displayPoints.map((point, index) => {
         const x = xFor(point, index);
@@ -3805,6 +3879,56 @@
       return `${year}년 ${month}월${day}`;
     }
 
+    function fullDateText(value, metric = null) {
+      if (!value) return t("irregular");
+      if (String(value).includes("비정기")) return t("irregular");
+      const parts = zonedDateParts(value, metric);
+      if (!parts) return value;
+      if (state.language === "en") {
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const month = monthNames[Math.max(0, Math.min(11, Number(parts.month) - 1))];
+        return parts.day ? `${month} ${Number(parts.day)}, ${parts.year}` : `${month} ${parts.year}`;
+      }
+      const month = String(Number(parts.month));
+      const day = parts.day ? ` ${Number(parts.day)}일` : "";
+      return `${parts.year}년 ${month}월${day}`;
+    }
+
+    function generatedAtLabel() {
+      const source = DASHBOARD_DATA.generated_at || DASHBOARD_DATA.generated_label;
+      let normalizedSource = String(source || "");
+      const kstMatch = normalizedSource.match(/^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2})(?::(\d{2}))? KST$/);
+      if (kstMatch) {
+        normalizedSource = `${kstMatch[1]}T${kstMatch[2]}:${kstMatch[3] || "00"}+09:00`;
+      }
+      const date = normalizedSource ? new Date(normalizedSource) : null;
+      if (!date || Number.isNaN(date.getTime())) return "";
+      const parts = {};
+      new Intl.DateTimeFormat("en-CA", {
+        timeZone: state.timeZone,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+        hourCycle: "h23"
+      }).formatToParts(date).forEach((part) => {
+        if (part.type !== "literal") parts[part.type] = part.value;
+      });
+      if (state.language === "en") {
+        return `${t("lastUpdatedInline")}: ${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute}:${parts.second}`;
+      }
+      return `${t("lastUpdatedInline")}: ${parts.year}년 ${parts.month}월 ${parts.day}일 ${parts.hour}:${parts.minute}:${parts.second}`;
+    }
+
+    function updateLastUpdatedInline() {
+      const target = document.getElementById("lastUpdatedInline");
+      if (!target) return;
+      target.textContent = generatedAtLabel();
+    }
+
     function detailStat(label, value, className = "") {
       return `<div class="detail-stat">
         <span class="detail-label">${escapeHtml(label)}</span>
@@ -3815,11 +3939,11 @@
     function displayPeriodLabel(metric) {
       const history = Array.isArray(metric?.history) ? metric.history : [];
       if (history.length) {
-        const start = dateText(history[0].date, metric);
-        const end = dateText(history[history.length - 1].date, metric);
+        const start = fullDateText(history[0].date, metric);
+        const end = fullDateText(history[history.length - 1].date, metric);
         return start === end ? start : `${start} - ${end}`;
       }
-      return dateText(metric?.observed_label || metric?.observed_at || "", metric);
+      return fullDateText(metric?.observed_label || metric?.observed_at || "", metric);
     }
 
     function metricStatusMarkup(metric) {
@@ -3907,6 +4031,8 @@
             ${detailStat(t("yoy"), metric.yoy_pct_label, directionClass(metric.yoy_pct))}
             ${percentileDetailStats(metric)}
             ${detailStat(t("visiblePeriod"), displayPeriodLabel(metric))}
+            ${detailStat(t("lastUpdated"), dateText(metric.observed_label || metric.observed_at, metric))}
+            ${detailStat(t("nextUpdate"), dateText(metric.next_update_label, metric))}
             ${detailStat(t("updateFrequency"), localizedField(metric, "frequency") || t("irregular"))}
           </div>
         </div>
@@ -3931,9 +4057,6 @@
         <td class="metric-date-cell" data-label="${escapeHtml(t("lastUpdated"))}">
           <span class="metric-date">${escapeHtml(dateText(metric.observed_label, metric))}</span>
         </td>
-        <td class="metric-date-cell" data-label="${escapeHtml(t("nextUpdate"))}">
-          <span class="metric-date">${escapeHtml(dateText(metric.next_update_label, metric))}</span>
-        </td>
         <td class="metric-value-cell" data-label="${escapeHtml(t("currentValue"))}">
           <span class="metric-value-wrap">
             <span class="metric-current-value">${escapeHtml(displayMetricValue(metric))}</span>
@@ -3949,7 +4072,7 @@
         </td>
       </tr>
       <tr class="metric-detail-row" id="${detailId}" aria-hidden="true">
-        <td colspan="7">${metricDetail(metric)}</td>
+        <td colspan="6">${metricDetail(metric)}</td>
       </tr>`;
     }
 
@@ -4103,7 +4226,10 @@
         </div>
         <p class="gauge-comment">${escapeHtml(thermo.comment || "")}</p>
         <details class="gauge-components">
-          <summary>${escapeHtml(t("thermometerBasis"))}</summary>
+          <summary>
+            <span>${escapeHtml(t("thermometerBasis"))}</span>
+            <span class="gauge-summary-icon" aria-hidden="true">›</span>
+          </summary>
           <ul class="gauge-component-list">${(thermo.components || []).map(gaugeComponentMarkup).join("")}</ul>
         </details>
       </div>` : "";
@@ -4260,7 +4386,6 @@
                   <col class="metric-name-cell">
                   <col class="metric-description-cell">
                   <col class="metric-date-cell">
-                  <col class="metric-date-cell">
                   <col class="metric-value-cell">
                   <col class="metric-chart-cell">
                   <col class="metric-favorite-cell">
@@ -4270,7 +4395,6 @@
                     <th scope="col" data-mobile-label="${escapeHtml(t("metricSummary"))}">${escapeHtml(t("metric"))}</th>
                     <th scope="col">${escapeHtml(t("description"))}</th>
                     <th scope="col">${escapeHtml(t("lastUpdated"))}</th>
-                    <th scope="col">${escapeHtml(t("nextUpdate"))}</th>
                     <th scope="col" data-mobile-label="${escapeHtml(t("metricValueShort"))}">${escapeHtml(t("currentValue"))}</th>
                     <th scope="col" data-mobile-label="${escapeHtml(t("chart"))}">${escapeHtml(t("chart"))}</th>
                     <th scope="col"><span class="sr-only">${escapeHtml(t("favoriteMetrics"))}</span></th>
@@ -4827,6 +4951,7 @@
       updateTimeZoneSettingLabel();
       updateThemeToggleLabel();
       updateCurrencyButton();
+      updateLastUpdatedInline();
     }
 
     function setLanguage(language) {
@@ -4847,6 +4972,7 @@
       state.timeZone = timeZone === timeZoneOptions.us ? timeZoneOptions.us : timeZoneOptions.korea;
       localStorage.setItem("dashboard-timezone", state.timeZone);
       updateTimeZoneSettingLabel();
+      updateLastUpdatedInline();
     }
 
     function toggleTimeZone() {
