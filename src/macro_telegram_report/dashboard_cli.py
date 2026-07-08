@@ -3,10 +3,9 @@ from __future__ import annotations
 import argparse
 import sys
 
-import requests
-
 from .config import load_config, load_dotenv
-from .dashboard import build_dashboard_site
+from .dashboard import build_dashboard_site, refresh_prices_site
+from .http_client import build_session
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -20,6 +19,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=".env",
         help="로컬 실행 때 읽을 env 파일 경로. GitHub Actions에서는 보통 사용하지 않습니다.",
     )
+    parser.add_argument(
+        "--prices-only",
+        action="store_true",
+        help="대표주/시장지수 시세만 갱신하는 경량 빌드(장중 갱신용).",
+    )
     return parser.parse_args(argv)
 
 
@@ -28,9 +32,11 @@ def main(argv: list[str] | None = None) -> int:
     load_dotenv(args.env_file)
     config = load_config(args.config)
 
-    with requests.Session() as session:
-        session.headers.update({"User-Agent": "industry-dashboard/0.1 (+personal-investing)"})
-        payload = build_dashboard_site(config, args.out, session)
+    with build_session() as session:
+        if args.prices_only:
+            payload = refresh_prices_site(config, args.out, session)
+        else:
+            payload = build_dashboard_site(config, args.out, session)
 
     for source in payload.get("source_status", []):
         print(f"{source['name']}: {source['status']} - {source['message']}")

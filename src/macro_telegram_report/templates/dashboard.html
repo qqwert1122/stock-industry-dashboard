@@ -1,0 +1,5111 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <title>산업별 지표 대시보드</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #ffffff;
+      --surface: #ffffff;
+      --sidebar: #f7f7f7;
+      --panel: #ffffff;
+      --text: #171717;
+      --muted: #6d6d6d;
+      --line: #e6e6e6;
+      --menu: #f0f0f0;
+      --menu-active: #e6e6e6;
+      --detail-stat-bg: #f8f8f8;
+      --branch-line: #e0e0e0;
+      --ai-card-bg: linear-gradient(135deg, rgba(6, 182, 212, 0.06) 0%, rgba(59, 130, 246, 0.08) 48%, rgba(79, 70, 229, 0.10) 100%);
+      --ai-card-border: rgba(59, 130, 246, 0.12);
+      --ai-inset-bg: rgba(255, 255, 255, 0.46);
+      --ai-inset-border: rgba(59, 130, 246, 0.10);
+      --ai-bullet-text: #7a7a7a;
+      --ai-bullet-body: #9a9a9a;
+      --favorite-star: #f59e0b;
+      --chart-up: #f23645;
+      --chart-down: #1f5eff;
+      --shadow: 0 10px 26px rgba(0, 0, 0, 0.06);
+      --menu-shadow: 0 8px 24px rgba(0, 0, 0, 0.055);
+    }
+
+    body.theme-dark {
+      color-scheme: dark;
+      --bg: #111111;
+      --surface: #151515;
+      --sidebar: #181818;
+      --panel: #1d1d1d;
+      --text: #f2f2f2;
+      --muted: #a7a7a7;
+      --line: #303030;
+      --menu: #242424;
+      --menu-active: #303030;
+      --detail-stat-bg: #1a1a1a;
+      --branch-line: #3c3c3c;
+      --ai-card-bg: linear-gradient(135deg, rgba(6, 182, 212, 0.10) 0%, rgba(59, 130, 246, 0.12) 48%, rgba(79, 70, 229, 0.14) 100%);
+      --ai-card-border: rgba(96, 165, 250, 0.18);
+      --ai-inset-bg: rgba(255, 255, 255, 0.045);
+      --ai-inset-border: rgba(96, 165, 250, 0.12);
+      --ai-bullet-text: #a8a8a8;
+      --ai-bullet-body: #898989;
+      --favorite-star: #fbbf24;
+      --shadow: none;
+      --menu-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    body.theme-ready {
+      transition: background-color 520ms ease, color 520ms ease;
+    }
+
+    body.theme-ready .sidebar,
+    body.theme-ready .side-menu button,
+    body.theme-ready .menu-item,
+    body.theme-ready .mobile-menu-toggle,
+    body.theme-ready .drawer-close,
+    body.theme-ready .drawer-backdrop,
+    body.theme-ready .settings-button,
+    body.theme-ready .settings-menu,
+    body.theme-ready .settings-menu button,
+    body.theme-ready .reorder-actions button,
+    body.theme-ready .currency-toggle,
+    body.theme-ready .theme-toggle,
+    body.theme-ready .scroll-top-button,
+    body.theme-ready .industry,
+    body.theme-ready .industry-head,
+    body.theme-ready .industry-icon-wrap,
+    body.theme-ready .group,
+    body.theme-ready .metric,
+    body.theme-ready .metric-table-wrap,
+    body.theme-ready .metric-table th,
+    body.theme-ready .metric-table td,
+    body.theme-ready .metric-toggle,
+    body.theme-ready .metric-detail-panel,
+    body.theme-ready .detail-stats,
+    body.theme-ready .detail-stat,
+    body.theme-ready .chart,
+    body.theme-ready .empty {
+      transition:
+        background-color 520ms ease,
+        border-color 520ms ease,
+        box-shadow 520ms ease,
+        color 520ms ease;
+    }
+
+    body.theme-ready .chart text,
+    body.theme-ready .axis-line,
+    body.theme-ready .guide,
+    body.theme-ready .trend-line,
+    body.theme-ready .current-dot {
+      transition: fill 520ms ease, stroke 520ms ease;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 232px minmax(0, 1fr);
+      gap: 26px;
+      width: min(1540px, 100%);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 22px 24px 42px;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 22px;
+      align-self: start;
+      min-width: 0;
+      height: calc(100vh - 44px);
+      max-height: calc(100vh - 44px);
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto auto;
+      gap: 12px;
+      padding: 14px;
+      border: 0;
+      border-radius: 18px;
+      background: var(--sidebar);
+      box-shadow: var(--menu-shadow);
+      overflow: visible;
+    }
+
+    .side-menu {
+      display: grid;
+      gap: 7px;
+      min-width: 0;
+      max-width: 100%;
+      min-height: 0;
+      align-content: start;
+      overflow-y: auto;
+      padding-right: 2px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      cursor: grab;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      user-select: none;
+    }
+
+    .side-menu::-webkit-scrollbar {
+      display: none;
+    }
+
+    .side-menu.is-drag-scrolling {
+      cursor: grabbing;
+    }
+
+    .side-menu.is-drag-scrolling * {
+      cursor: grabbing !important;
+    }
+
+    .menu-item {
+      position: relative;
+      min-width: 0;
+      border-radius: 12px;
+    }
+
+    .side-menu button {
+      width: 100%;
+      min-height: 38px;
+      border: 0;
+      border-radius: 12px;
+      background: transparent;
+      padding: 0 12px;
+      text-align: left;
+      font-size: 14px;
+      font-weight: 720;
+      cursor: pointer;
+    }
+
+    .sidebar.is-reordering .side-menu button {
+      padding-right: 36px;
+      cursor: grab;
+    }
+
+    .side-menu button:hover {
+      background: var(--menu);
+    }
+
+    .side-menu button[aria-pressed="true"] {
+      color: var(--text);
+    }
+
+    .side-menu button[aria-current="true"] {
+      background: var(--menu-active);
+      color: var(--text);
+    }
+
+    .menu-depth-list {
+      display: grid;
+      gap: 3px;
+      margin: 4px 0 6px 6px;
+      padding-left: 4px;
+    }
+
+    .menu-depth-item {
+      min-width: 0;
+    }
+
+    .side-menu .menu-depth-button {
+      min-height: 31px;
+      border-radius: 10px;
+      padding: 0 10px;
+      color: var(--muted);
+      font-size: 12.5px;
+      font-weight: 500;
+    }
+
+    .side-menu .menu-depth-button[aria-current="true"] {
+      color: var(--text);
+      background: var(--menu-active);
+    }
+
+    .sidebar.is-reordering .menu-depth-list {
+      display: none;
+    }
+
+    .drawer-head,
+    .mobile-menu-toggle,
+    .drawer-backdrop {
+      display: none;
+    }
+
+    .drawer-close,
+    .mobile-menu-toggle {
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 999px;
+      display: none;
+      place-items: center;
+      background: var(--menu);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 20px;
+      box-shadow: var(--menu-shadow);
+    }
+
+    .drawer-close:hover,
+    .mobile-menu-toggle:hover {
+      background: var(--menu-active);
+    }
+
+    .drawer-close:focus-visible,
+    .mobile-menu-toggle:focus-visible {
+      outline: 2px solid var(--text);
+      outline-offset: 3px;
+    }
+
+    .drag-handle {
+      position: absolute;
+      right: 10px;
+      top: 19px;
+      width: 18px;
+      height: 18px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-50%);
+      transition: opacity 180ms ease;
+    }
+
+    .sidebar.is-reordering .drag-handle {
+      opacity: 1;
+      pointer-events: auto;
+      cursor: grab;
+    }
+
+    .menu-item.is-dragging {
+      opacity: 0.45;
+    }
+
+    .menu-settings {
+      position: relative;
+      display: grid;
+      gap: 8px;
+    }
+
+    .settings-button,
+    .settings-menu button,
+    .reorder-actions button {
+      min-width: 0;
+      border: 0;
+      cursor: pointer;
+    }
+
+    .settings-button {
+      min-height: 40px;
+      border-radius: 14px;
+      display: grid;
+      grid-template-columns: 20px minmax(0, 1fr) 14px;
+      gap: 8px;
+      align-items: center;
+      padding: 0 12px;
+      background: var(--menu);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 760;
+      text-align: left;
+    }
+
+    .settings-button:hover,
+    .settings-button[aria-expanded="true"] {
+      background: var(--menu-active);
+    }
+
+    .settings-chevron {
+      color: var(--muted);
+      font-size: 11px;
+      transition: transform 180ms ease;
+    }
+
+    .settings-button[aria-expanded="true"] .settings-chevron {
+      transform: rotate(180deg);
+    }
+
+    .settings-menu {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: calc(100% + 8px);
+      z-index: 20;
+      display: grid;
+      gap: 5px;
+      padding: 7px;
+      border-radius: 14px;
+      background: var(--surface);
+      box-shadow: var(--menu-shadow);
+    }
+
+    .settings-menu[hidden],
+    .reorder-actions[hidden] {
+      display: none;
+    }
+
+    .settings-menu button {
+      min-height: 36px;
+      border-radius: 10px;
+      display: grid;
+      grid-template-columns: 18px minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      padding: 0 9px;
+      background: transparent;
+      color: var(--text);
+      font-size: 12.5px;
+      font-weight: 400;
+      text-align: left;
+    }
+
+    .settings-menu button:hover {
+      background: var(--menu);
+    }
+
+    .settings-meta {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 400;
+    }
+
+    .reorder-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .reorder-actions button {
+      min-height: 38px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 780;
+    }
+
+    .reorder-cancel {
+      background: var(--menu);
+      color: var(--text);
+    }
+
+    .reorder-save {
+      background: var(--chart-down);
+      color: #ffffff;
+    }
+
+    .content {
+      min-width: 0;
+      display: grid;
+      gap: 20px;
+      align-content: start;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      min-height: 46px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 0 0 auto;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(22px, 2.2vw, 30px);
+      line-height: 1.12;
+      font-weight: 810;
+    }
+
+    .currency-toggle,
+    .theme-toggle {
+      min-width: 94px;
+      height: 40px;
+      border: 0;
+      border-radius: 24px;
+      display: inline-grid;
+      grid-template-columns: 20px auto 18px;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      position: relative;
+      background: var(--menu);
+      color: var(--text);
+      cursor: pointer;
+      padding: 0 11px;
+      font-size: 13px;
+      font-weight: 400;
+    }
+
+    .scroll-top-button {
+      position: fixed;
+      right: max(18px, env(safe-area-inset-right));
+      bottom: max(18px, env(safe-area-inset-bottom));
+      z-index: 58;
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 999px;
+      display: inline-grid;
+      place-items: center;
+      flex: 0 0 auto;
+      background: var(--menu);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 16px;
+      box-shadow: var(--menu-shadow);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(10px);
+    }
+
+    body.theme-ready .scroll-top-button {
+      transition:
+        background-color 520ms ease,
+        border-color 520ms ease,
+        box-shadow 520ms ease,
+        color 520ms ease,
+        opacity 180ms ease,
+        transform 180ms ease,
+        visibility 180ms ease;
+    }
+
+    body.show-scroll-top .scroll-top-button {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .currency-toggle:hover,
+    .theme-toggle:hover,
+    .scroll-top-button:hover {
+      background: var(--menu-active);
+    }
+
+    .currency-toggle:focus-visible,
+    .theme-toggle:focus-visible,
+    .scroll-top-button:focus-visible {
+      outline: 2px solid var(--text);
+      outline-offset: 3px;
+    }
+
+    .toggle-label {
+      min-width: 0;
+      white-space: nowrap;
+      line-height: 1;
+      transform: translateY(0);
+    }
+
+    .toggle-chevron {
+      width: 16px;
+      height: 16px;
+      color: var(--muted);
+      stroke-width: 2;
+    }
+
+    .currency-icon-slot,
+    .theme-icon-orbit {
+      position: relative;
+      width: 20px;
+      height: 20px;
+      display: block;
+      overflow: hidden;
+      font-size: 16px;
+    }
+
+    .currency-icon {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      display: grid;
+      place-items: center;
+      opacity: 0;
+      transform: translate(-50%, -50%) translateY(-15px);
+      transition: opacity 220ms ease, transform 220ms ease;
+    }
+
+    body.currency-usd .currency-icon-dollar,
+    body.currency-krw .currency-icon-won {
+      opacity: 1;
+      transform: translate(-50%, -50%) translateY(0);
+    }
+
+    body.currency-usd .currency-icon-won,
+    body.currency-krw .currency-icon-dollar {
+      opacity: 0;
+      transform: translate(-50%, -50%) translateY(-15px);
+    }
+
+    .theme-toggle:disabled {
+      cursor: default;
+    }
+
+    .theme-icon {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 1em;
+      height: 1em;
+      display: grid;
+      place-items: center;
+      color: currentColor;
+      opacity: 0;
+      transform: translate(-50%, -50%) translateY(-15px);
+      transform-origin: center;
+      pointer-events: none;
+    }
+
+    body:not(.theme-dark) .theme-icon-sun,
+    body.theme-dark .theme-icon-moon {
+      opacity: 1;
+      transform: translate(-50%, -50%) translateY(0);
+    }
+
+    body:not(.theme-dark) .theme-icon-moon,
+    body.theme-dark .theme-icon-sun {
+      opacity: 0;
+      transform: translate(-50%, -50%) translateY(-15px);
+    }
+
+    .toggle-label.is-exiting {
+      animation: toggleLabelExit 240ms ease forwards;
+    }
+
+    .toggle-label.is-entering {
+      animation: toggleLabelEnter 300ms ease forwards;
+    }
+
+    .currency-icon.is-exiting,
+    .theme-icon.is-exiting {
+      animation: toggleIconExit 240ms ease forwards;
+    }
+
+    .currency-icon.is-entering,
+    .theme-icon.is-entering {
+      animation: toggleIconEnter 300ms ease forwards;
+    }
+
+    @keyframes toggleLabelExit {
+      0% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+    }
+
+    @keyframes toggleLabelEnter {
+      0% {
+        opacity: 0;
+        transform: translateY(-14px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes toggleIconExit {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) translateY(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) translateY(15px);
+      }
+    }
+
+    @keyframes toggleIconEnter {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) translateY(-15px);
+      }
+      100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) translateY(0);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body.theme-ready,
+      body.theme-ready .sidebar,
+      body.theme-ready .side-menu button,
+      body.theme-ready .menu-item,
+      body.theme-ready .mobile-menu-toggle,
+      body.theme-ready .drawer-close,
+      body.theme-ready .drawer-backdrop,
+      body.theme-ready .settings-button,
+      body.theme-ready .settings-menu,
+      body.theme-ready .settings-menu button,
+      body.theme-ready .reorder-actions button,
+      body.theme-ready .currency-toggle,
+      body.theme-ready .theme-toggle,
+      body.theme-ready .scroll-top-button,
+      body.theme-ready .industry,
+      body.theme-ready .industry-head,
+      body.theme-ready .industry-icon-wrap,
+      body.theme-ready .group,
+      body.theme-ready .metric,
+      body.theme-ready .metric-table-wrap,
+      body.theme-ready .metric-table th,
+      body.theme-ready .metric-table td,
+      body.theme-ready .metric-toggle,
+      body.theme-ready .metric-detail-panel,
+      body.theme-ready .detail-stats,
+      body.theme-ready .detail-stat,
+      body.theme-ready .chart,
+      body.theme-ready .empty,
+      body.theme-ready .chart text,
+      body.theme-ready .axis-line,
+      body.theme-ready .guide,
+      body.theme-ready .trend-line,
+      body.theme-ready .current-dot {
+        transition-duration: 1ms;
+      }
+
+      .toggle-label.is-exiting,
+      .toggle-label.is-entering,
+      .currency-icon.is-exiting,
+      .currency-icon.is-entering,
+      .theme-icon.is-exiting,
+      .theme-icon.is-entering {
+        animation-duration: 1ms;
+      }
+    }
+
+    .industry-stack {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .daily-updates {
+      min-width: 0;
+      margin: 4px 0 18px;
+    }
+
+    .morning-briefing {
+      position: relative;
+      min-width: 0;
+      display: grid;
+      gap: 16px;
+      margin: 0 0 18px;
+      padding: 16px;
+      border: 1px solid var(--ai-card-border);
+      border-radius: 24px;
+      background: var(--ai-card-bg);
+      overflow: hidden;
+    }
+
+    .morning-briefing-head {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .morning-briefing h2,
+    .morning-briefing h3 {
+      margin: 0;
+    }
+
+    .morning-briefing h2 {
+      font-size: 17px;
+      line-height: 1.2;
+      font-weight: 760;
+    }
+
+    .briefing-title {
+      min-width: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ai-sparkle-icon {
+      width: 22px;
+      height: 22px;
+      flex: 0 0 auto;
+      overflow: visible;
+      filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.18));
+      animation: aiSparklePulse 1800ms ease-in-out infinite;
+    }
+
+    .ai-sparkle-icon path {
+      fill: url(#aiSparkleGradient);
+    }
+
+    @keyframes aiSparklePulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.07);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ai-sparkle-icon {
+        animation: none;
+      }
+    }
+
+    .briefing-meta {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 7px;
+      border-radius: 999px;
+      background: var(--ai-inset-bg);
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1;
+      white-space: nowrap;
+      border: 1px solid var(--ai-inset-border);
+    }
+
+    .briefing-headline {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.32;
+      font-weight: 760;
+    }
+
+    .briefing-summary {
+      margin: -2px 0 0;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+    }
+
+    .briefing-bullets {
+      min-width: 0;
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0 0 0 18px;
+    }
+
+    .briefing-bullet {
+      min-width: 0;
+      padding-left: 2px;
+      color: var(--ai-bullet-text);
+    }
+
+    .briefing-bullet::marker {
+      color: var(--ai-bullet-text);
+      font-size: 0.9em;
+    }
+
+    .briefing-bullet-button,
+    .briefing-bullet-static {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      border: 0;
+      background: transparent;
+      color: var(--ai-bullet-text);
+      padding: 0;
+      text-align: left;
+    }
+
+    .briefing-bullet-button {
+      cursor: pointer;
+    }
+
+    .briefing-bullet-button:hover .briefing-bullet-title {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .briefing-bullet-title {
+      display: inline;
+      margin-right: 5px;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 500;
+    }
+
+    .briefing-bullet-body {
+      display: inline;
+      color: var(--ai-bullet-body);
+      font-size: 12px;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
+
+    .briefing-disclaimer {
+      margin: -2px 0 0;
+      padding-top: 10px;
+      border-top: 1px solid var(--ai-inset-border);
+      display: grid;
+      grid-template-columns: 16px minmax(0, 1fr);
+      gap: 7px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
+    .briefing-disclaimer-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      display: inline-grid;
+      place-items: center;
+      background: var(--menu);
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1;
+    }
+
+    .favorite-metrics {
+      min-width: 0;
+      display: grid;
+      gap: 16px;
+      margin: 46px 0 30px;
+      padding-bottom: 12px;
+    }
+
+    .favorite-metrics-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: flex-start;
+      gap: 7px;
+      padding: 0 4px;
+    }
+
+    .favorite-metrics .favorite-metrics-head h2 {
+      margin: 0;
+      color: var(--text);
+      font-size: 20px;
+      line-height: 1.12;
+      font-weight: 900;
+    }
+
+    .favorite-metrics-count {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.1;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .favorite-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 220px));
+      gap: 10px;
+      justify-content: start;
+      min-width: 0;
+    }
+
+    .favorite-card {
+      position: relative;
+      min-width: 0;
+      min-height: 132px;
+      display: grid;
+      grid-template-rows: auto minmax(38px, 1fr);
+      gap: 9px;
+      border: 0;
+      border-radius: 24px;
+      background: var(--menu);
+      color: var(--text);
+      padding: 16px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .favorite-card-star {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      width: 32px;
+      height: 32px;
+      border: 0;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: rgba(255, 255, 255, 0.42);
+      color: var(--favorite-star);
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    body.theme-dark .favorite-card-star {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .favorite-card-star:hover {
+      background: var(--menu-active);
+    }
+
+    .favorite-card:hover {
+      background: var(--menu-active);
+    }
+
+    .favorite-card:focus-visible,
+    .favorite-card-star:focus-visible {
+      outline: 2px solid var(--text);
+      outline-offset: 3px;
+    }
+
+    .favorite-card-top {
+      min-width: 0;
+      display: grid;
+      gap: 5px;
+      padding-right: 34px;
+    }
+
+    .favorite-card-title {
+      min-width: 0;
+      color: var(--text);
+      font-size: 10.5px;
+      line-height: 1.24;
+      font-weight: 400;
+      overflow-wrap: anywhere;
+    }
+
+    .favorite-card-value {
+      color: var(--text);
+      font-size: 18px;
+      line-height: 1.08;
+      font-weight: 560;
+      overflow-wrap: anywhere;
+    }
+
+    .favorite-card-meta {
+      color: var(--muted);
+      font-size: 10.5px;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .favorite-card-chart {
+      min-width: 0;
+      align-self: end;
+    }
+
+    .favorite-card-chart .chart-mini {
+      width: 100%;
+      height: 42px;
+      max-height: 42px;
+    }
+
+    .daily-update-details {
+      min-width: 0;
+      margin: -4px 0 0;
+    }
+
+    .daily-update-summary {
+      width: max-content;
+      max-width: 100%;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      list-style: none;
+      margin-left: 10px;
+      padding: 0 4px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 11.5px;
+      line-height: 1.45;
+      font-weight: 400;
+      cursor: pointer;
+      opacity: 0.72;
+      user-select: none;
+    }
+
+    .daily-update-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .daily-update-summary:hover {
+      opacity: 1;
+      color: var(--text);
+    }
+
+    .daily-update-summary-icon {
+      display: inline-block;
+      transform: translateY(-0.5px);
+      transition: transform 180ms ease;
+    }
+
+    .daily-update-details[open] .daily-update-summary-icon {
+      transform: translateY(-0.5px) rotate(90deg);
+    }
+
+    .daily-update-panel {
+      margin-top: 8px;
+    }
+
+    .daily-updates-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 0 8px;
+      padding: 0 4px;
+    }
+
+    .daily-updates h2 {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.2;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .daily-update-counts {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: 6px;
+      margin-top: 8px;
+      padding: 0 4px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .daily-update-count {
+      padding: 6px 8px;
+      border-radius: 999px;
+      background: var(--menu);
+    }
+
+    .daily-update-list {
+      max-height: 238px;
+      overflow: auto;
+      border-radius: 6px;
+      background: var(--line);
+      display: grid;
+      gap: 1px;
+    }
+
+    .daily-update-row,
+    .daily-update-empty {
+      min-width: 0;
+      border: 0;
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .daily-update-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 120px 104px 148px;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 9px 10px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .daily-update-row:hover {
+      background: var(--menu);
+    }
+
+    .daily-update-empty {
+      padding: 14px 12px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .daily-update-main {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .daily-update-title {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 12.5px;
+      line-height: 1.2;
+      font-weight: 400;
+    }
+
+    .daily-update-meta,
+    .daily-update-value,
+    .daily-update-change {
+      min-width: 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .daily-update-value {
+      color: var(--text);
+      text-align: right;
+    }
+
+    .daily-update-change {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    .daily-update-change i {
+      flex: 0 0 auto;
+      font-size: 10px;
+    }
+
+    .daily-update-change-abs,
+    .daily-update-change-pct {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .daily-update-change-pct {
+      opacity: 0.9;
+    }
+
+    .industry {
+      min-width: 0;
+      scroll-margin-top: 22px;
+      padding-bottom: 28px;
+      background: transparent;
+      box-shadow: none;
+      overflow: visible;
+    }
+
+    .industry:last-child {
+      padding-bottom: 0;
+    }
+
+    .industry-head {
+      display: grid;
+      grid-template-columns: 96px minmax(0, 1fr);
+      gap: 18px;
+      align-items: center;
+      padding: 24px 0 18px;
+      border-bottom: 0;
+      background: transparent;
+    }
+
+    .industry-icon-wrap {
+      width: 96px;
+      height: 96px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: var(--menu);
+    }
+
+    .industry-icon {
+      width: 88px;
+      height: 88px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .industry h2 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.12;
+      font-weight: 900;
+    }
+
+    .group {
+      padding: 0 0 22px;
+    }
+
+    .depth-tree {
+      --depth-content-left: 48px;
+      --depth-line-left: 10px;
+      --depth-corner-gap: 16px;
+      --depth-corner-left: calc(var(--depth-line-left) - var(--depth-content-left));
+      --depth-corner-width: calc(var(--depth-content-left) - var(--depth-line-left) - var(--depth-corner-gap));
+      --depth-corner-height: 17px;
+      position: relative;
+      margin-left: 0;
+      padding-left: var(--depth-content-left);
+    }
+
+    .depth-tree::before {
+      content: "";
+      position: absolute;
+      left: var(--depth-line-left);
+      top: var(--depth-branch-top, 14px);
+      width: 1px;
+      height: var(--depth-branch-height, 0px);
+      background: var(--branch-line);
+      border-radius: 999px;
+    }
+
+    .depth-section {
+      position: relative;
+      margin-left: 0;
+      padding: 0 0 28px;
+      border-bottom: 0;
+    }
+
+    .depth-section:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .depth-title {
+      position: relative;
+      margin: 20px 0 10px;
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.2;
+      font-weight: 500;
+    }
+
+    .depth-title::before {
+      content: "";
+      position: absolute;
+      box-sizing: border-box;
+      left: var(--depth-corner-left);
+      top: 50%;
+      width: var(--depth-corner-width);
+      height: var(--depth-corner-height);
+      border-left: 1px solid var(--branch-line);
+      border-bottom: 1px solid var(--branch-line);
+      border-bottom-left-radius: 18px;
+      transform: translateY(-100%);
+    }
+
+    .depth-section .group-title {
+      margin: 10px 0 12px;
+      color: var(--muted);
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .group-title {
+      margin: 14px 0 12px 10px;
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .metric-table-wrap {
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      border-radius: 0;
+      background: var(--panel);
+      overflow: hidden;
+    }
+
+    .metric-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    .metric-table th {
+      height: 34px;
+      padding: 0 12px;
+      background: var(--menu);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 820;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .metric-table td {
+      padding: 7px 12px;
+      border-top: 1px solid var(--line);
+      color: var(--text);
+      vertical-align: middle;
+    }
+
+    .metric-table tbody,
+    .metric-table tbody button,
+    .metric-table tbody strong,
+    .metric-table tbody .metric-name,
+    .metric-table tbody .metric-date,
+    .metric-table tbody .metric-current-value,
+    .metric-table tbody .metric-change-badge,
+    .metric-table tbody .metric-mobile-description,
+    .metric-table tbody .detail-label,
+    .metric-table tbody .detail-value {
+      font-weight: 400;
+    }
+
+    .metric-row {
+      cursor: pointer;
+    }
+
+    .metric-row:hover td {
+      background: var(--menu);
+    }
+
+    .metric-row.is-highlighted td {
+      background: var(--menu-active);
+    }
+
+    .metric-row.is-expanded td {
+      background: var(--menu-active);
+    }
+
+    .metric-name-cell { width: 22%; }
+    .metric-description-cell { width: 28%; }
+    .metric-date-cell { width: 10%; }
+    .metric-value-cell { width: 12%; }
+    .metric-chart-cell { width: 13%; }
+    .metric-favorite-cell { width: 5%; }
+
+    .metric-toggle {
+      width: 100%;
+      min-width: 0;
+      display: block;
+      align-items: center;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .metric-toggle:focus-visible {
+      outline: 2px solid var(--text);
+      outline-offset: 3px;
+      border-radius: 6px;
+    }
+
+    .metric-name {
+      min-width: 0;
+      font-size: 13px;
+      line-height: 1.26;
+      font-weight: 780;
+      overflow-wrap: anywhere;
+    }
+
+    .metric-name-wrap {
+      min-width: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      max-width: 100%;
+      vertical-align: top;
+    }
+
+    .metric-name-wrap .metric-name {
+      min-width: 0;
+    }
+
+    .metric-update-dot {
+      flex: 0 0 auto;
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--chart-up);
+      box-shadow: 0 0 0 3px rgba(242, 54, 69, 0.12);
+      transform-origin: center;
+      animation: updateDotBreath 1700ms ease-in-out infinite;
+    }
+
+    @keyframes updateDotBreath {
+      0%, 100% {
+        opacity: 0.86;
+        transform: scale(1);
+        box-shadow: 0 0 0 3px rgba(242, 54, 69, 0.12);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.28);
+        box-shadow: 0 0 0 6px rgba(242, 54, 69, 0.045);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .metric-update-dot {
+        animation: none;
+      }
+    }
+
+    .metric-new-badge {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      height: 17px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: var(--chart-up);
+      color: #fff;
+      font-size: 9.5px;
+      line-height: 1;
+      font-weight: 650;
+      letter-spacing: 0;
+    }
+
+    .metric-description {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .metric-mobile-description {
+      display: none;
+    }
+
+    .metric-date {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 680;
+      white-space: nowrap;
+    }
+
+    .metric-current-value {
+      display: block;
+      color: var(--text);
+      font-size: 12.5px;
+      line-height: 1.25;
+      font-weight: 820;
+      overflow-wrap: anywhere;
+    }
+
+    .metric-value-wrap {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .metric-change-badge {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 760;
+      white-space: nowrap;
+    }
+
+    .metric-change-badge i {
+      font-size: 10px;
+    }
+
+    .metric-favorite-cell {
+      text-align: right;
+    }
+
+    .metric-favorite-button {
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 999px;
+      display: inline-grid;
+      place-items: center;
+      background: var(--menu);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .metric-favorite-button:hover {
+      background: var(--menu-active);
+      color: var(--text);
+    }
+
+    .metric-favorite-button.is-active {
+      background: var(--menu-active);
+      color: var(--favorite-star);
+    }
+
+    .chart-mini {
+      height: 34px;
+      max-height: 34px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+    }
+
+    .metric-detail-row td {
+      padding: 0 14px;
+      border-top: 0;
+      background: var(--surface);
+    }
+
+    .metric-detail-panel {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition:
+        max-height 380ms ease,
+        opacity 260ms ease,
+        transform 260ms ease;
+    }
+
+    .metric-detail-row.is-open .metric-detail-panel {
+      max-height: 680px;
+      opacity: 1;
+      transform: translateY(0);
+      border-top: 1px solid var(--line);
+    }
+
+    .metric-detail-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 12px;
+      padding: 16px 0 18px;
+    }
+
+    .detail-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px 12px;
+      align-content: start;
+      padding: 0;
+      border-radius: 0;
+      background: transparent;
+    }
+
+    .detail-stat {
+      min-width: 0;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--detail-stat-bg);
+    }
+
+    .detail-label {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.2;
+      font-weight: 780;
+    }
+
+    .detail-value {
+      display: block;
+      margin-top: 6px;
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.15;
+      font-weight: 820;
+      overflow-wrap: anywhere;
+    }
+
+    .detail-chart {
+      position: relative;
+      width: 100%;
+      max-width: 100%;
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      align-items: stretch;
+      overflow: hidden;
+      padding: 2px 0 10px;
+    }
+
+    .detail-chart-axis {
+      width: 42px;
+      min-width: 42px;
+      height: 190px;
+      border-right: 0;
+      border-radius: 8px 0 0 8px;
+      display: block;
+    }
+
+    .detail-chart-scroll {
+      min-width: 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .detail-chart-scroll .chart {
+      width: max(100%, var(--detail-chart-width, 520px));
+      min-width: max(100%, var(--detail-chart-width, 520px));
+      height: 190px;
+      display: block;
+    }
+
+    .detail-chart-scroll .chart-detail {
+      border-left: 0;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .detail-chart-legend {
+      grid-column: 2;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      margin-top: 6px;
+      padding-left: 2px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.2;
+    }
+
+    .chart-band-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .chart-band-toggle-dot {
+      position: relative;
+      width: 15px;
+      height: 15px;
+      flex: 0 0 15px;
+      border: 1px solid rgba(59, 130, 246, 0.6);
+      border-radius: 999px;
+      background: rgba(59, 130, 246, 0.11);
+    }
+
+    .chart-band-toggle-dot::after {
+      content: "";
+      position: absolute;
+      left: 4px;
+      top: 2px;
+      width: 4px;
+      height: 7px;
+      border: solid #2563eb;
+      border-width: 0 1.6px 1.6px 0;
+      transform: rotate(45deg);
+    }
+
+    .chart-band-toggle[aria-pressed="false"] .chart-band-toggle-dot {
+      border-color: var(--line-strong);
+      background: transparent;
+    }
+
+    .chart-band-toggle[aria-pressed="false"] .chart-band-toggle-dot::after {
+      opacity: 0;
+    }
+
+    .chart-band-legend-label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .chart-median-legend {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      opacity: 0.9;
+    }
+
+    .chart-median-legend-line {
+      width: 20px;
+      height: 0;
+      border-top: 1px dashed rgba(59, 130, 246, 0.65);
+    }
+
+    .detail-chart.is-band-hidden .pct-band,
+    .detail-chart.is-band-hidden .pct-band-median {
+      display: none;
+    }
+
+    .detail-chart.is-band-hidden .chart-median-legend {
+      opacity: 0.42;
+    }
+
+    .detail-chart-tooltip {
+      position: absolute;
+      z-index: 5;
+      left: 0;
+      top: 0;
+      width: min(220px, calc(100vw - 44px));
+      padding: 9px 10px;
+      border-radius: 12px;
+      background: var(--text);
+      color: var(--surface);
+      box-shadow: var(--menu-shadow);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 12px);
+      transition: opacity 140ms ease, transform 140ms ease;
+    }
+
+    .detail-chart-tooltip.is-visible {
+      opacity: 1;
+      transform: translate(-50%, 8px);
+    }
+
+    .detail-tooltip-title {
+      margin-bottom: 6px;
+      color: inherit;
+      font-size: 11px;
+      line-height: 1.25;
+      font-weight: 650;
+      overflow-wrap: anywhere;
+    }
+
+    .detail-tooltip-row {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 8px;
+      align-items: baseline;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .detail-tooltip-label {
+      color: color-mix(in srgb, currentColor 62%, transparent);
+    }
+
+    .detail-tooltip-value {
+      min-width: 0;
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric {
+      min-height: 348px;
+      display: grid;
+      grid-template-rows: auto auto 158px;
+      gap: 13px;
+      padding: 15px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      overflow: hidden;
+    }
+
+    .metric h3 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.32;
+      font-weight: 790;
+      overflow-wrap: anywhere;
+    }
+
+    .meaning {
+      margin: 7px 0 0;
+      min-height: 38px;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
+    .metric-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    .value {
+      font-size: 31px;
+      line-height: 1;
+      font-weight: 820;
+      overflow-wrap: anywhere;
+    }
+
+    .deltas {
+      display: grid;
+      gap: 5px;
+      min-width: 92px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .deltas strong {
+      display: inline-block;
+      min-width: 54px;
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .positive { color: var(--chart-up) !important; }
+    .negative { color: var(--chart-down) !important; }
+
+    .chart {
+      width: 100%;
+      height: 158px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      overflow: visible;
+    }
+
+    .chart.chart-mini,
+    .chart.detail-chart-axis,
+    .detail-chart-scroll .chart.chart-detail {
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+    }
+
+    .chart text {
+      fill: var(--muted);
+      font-size: 10.5px;
+      font-weight: 400;
+    }
+
+    .chart text.level-max {
+      fill: var(--chart-down);
+    }
+
+    .chart text.level-min {
+      fill: var(--chart-up);
+    }
+
+    .chart text.level-current {
+      fill: var(--text);
+    }
+
+    .axis-line {
+      stroke: var(--line);
+      stroke-width: 1;
+    }
+
+    .guide {
+      stroke: var(--line);
+      stroke-width: 0.7;
+      stroke-dasharray: 4 4;
+    }
+
+    .chart-background-line {
+      stroke: var(--line);
+      stroke-width: 0.55;
+      stroke-dasharray: 3 5;
+      opacity: 0.44;
+    }
+
+    .chart-background-line.level-line {
+      opacity: 0.92;
+      stroke-width: 0.7;
+      stroke-dasharray: 4 5;
+    }
+
+    .chart-background-line.level-max {
+      stroke: var(--chart-down);
+    }
+
+    .chart-background-line.level-min {
+      stroke: var(--chart-up);
+    }
+
+    .chart-background-line.level-current {
+      stroke: var(--text);
+      stroke-width: 1.5;
+    }
+
+    .trend-line {
+      fill: none;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .trend-line.up { stroke: var(--chart-up); }
+    .trend-line.down { stroke: var(--chart-down); }
+
+    .current-dot.up { fill: var(--chart-up); }
+    .current-dot.down { fill: var(--chart-down); }
+
+    .detail-point-hit {
+      cursor: crosshair;
+      pointer-events: all;
+    }
+
+    .empty {
+      display: none;
+      margin: 28px 0;
+      padding: 26px;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 1180px) {
+      .shell {
+        grid-template-columns: 190px minmax(0, 1fr);
+        gap: 18px;
+        padding-inline: 18px;
+      }
+
+      .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 760px) {
+      .shell {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 14px 10px 30px;
+      }
+
+      body.drawer-open {
+        overflow: hidden;
+      }
+
+      .sidebar {
+        position: fixed;
+        inset: 0 auto 0 0;
+        z-index: 70;
+        width: min(320px, calc(100vw - 54px));
+        max-width: calc(100vw - 54px);
+        height: 100dvh;
+        max-height: 100dvh;
+        grid-template-rows: auto minmax(0, 1fr) auto auto;
+        padding: 14px;
+        border-radius: 0 20px 20px 0;
+        overflow: visible;
+        transform: translateX(calc(-100% - 24px));
+        transition: transform 260ms ease;
+      }
+
+      body.drawer-open .sidebar {
+        transform: translateX(0);
+      }
+
+      .drawer-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        min-width: 0;
+        padding: 2px 0 4px;
+        font-size: 15px;
+        font-weight: 820;
+      }
+
+      .drawer-close,
+      .mobile-menu-toggle {
+        display: grid;
+        flex: 0 0 auto;
+      }
+
+      .drawer-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        display: block;
+        background: rgba(18, 18, 18, 0.28);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 220ms ease;
+      }
+
+      .drawer-backdrop[hidden] {
+        display: none;
+      }
+
+      body.drawer-open .drawer-backdrop {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .side-menu {
+        display: grid;
+        gap: 7px;
+        max-width: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding: 0 2px 0 0;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+
+      .side-menu button {
+        width: 100%;
+        white-space: normal;
+      }
+
+      .sidebar.is-reordering .side-menu button {
+        padding-right: 34px;
+      }
+
+      .settings-menu {
+        position: static;
+        order: -1;
+      }
+
+      .reorder-actions {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .topbar {
+        position: relative;
+        z-index: 1;
+        display: block;
+        min-height: 84px;
+        margin: 0;
+        padding: 52px 0 0;
+        background: transparent;
+        box-shadow: none;
+        backdrop-filter: none;
+      }
+
+      .mobile-menu-toggle {
+        position: fixed;
+        left: max(10px, env(safe-area-inset-left));
+        top: max(10px, env(safe-area-inset-top));
+        z-index: 58;
+        width: 40px;
+        height: 40px;
+      }
+
+      .topbar-actions {
+        position: fixed;
+        right: max(10px, env(safe-area-inset-right));
+        top: max(10px, env(safe-area-inset-top));
+        z-index: 58;
+        gap: 6px;
+      }
+
+      .currency-toggle,
+      .theme-toggle {
+        min-width: 76px;
+        width: auto;
+        height: 40px;
+        grid-template-columns: 18px auto 14px;
+        gap: 5px;
+        padding: 0 9px;
+        border-radius: 24px;
+        font-size: 12px;
+      }
+
+      .scroll-top-button {
+        right: max(14px, env(safe-area-inset-right));
+        bottom: max(18px, env(safe-area-inset-bottom));
+        width: 40px;
+        height: 40px;
+        font-size: 15px;
+      }
+
+      .currency-toggle .toggle-label,
+      .theme-toggle .toggle-label {
+        display: inline;
+      }
+
+      .currency-icon-slot,
+      .theme-icon-orbit {
+        width: 18px;
+        height: 18px;
+        font-size: 15px;
+      }
+
+      .toggle-chevron {
+        width: 14px;
+        height: 14px;
+      }
+
+      h1 {
+        min-width: 0;
+        font-size: clamp(18px, 5vw, 22px);
+      }
+
+      .daily-updates {
+        margin: 0 0 14px;
+      }
+
+      .morning-briefing {
+        gap: 13px;
+        margin-bottom: 12px;
+        padding: 13px;
+      }
+
+      .morning-briefing-head {
+        align-items: center;
+        gap: 8px;
+      }
+
+      .morning-briefing h2 {
+        font-size: 16px;
+      }
+
+      .briefing-meta {
+        font-size: 10px;
+      }
+
+      .briefing-headline {
+        font-size: 15px;
+      }
+
+      .briefing-summary,
+      .briefing-bullet-body {
+        font-size: 11.5px;
+      }
+
+      .favorite-metrics {
+        gap: 14px;
+        margin: 38px 0 24px;
+        padding-bottom: 10px;
+      }
+
+      .favorite-metrics .favorite-metrics-head h2 {
+        font-size: 18px;
+      }
+
+      .favorite-metrics-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .favorite-card {
+        min-height: 116px;
+        padding: 14px;
+      }
+
+      .favorite-card-star {
+        right: 8px;
+        top: 8px;
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+      }
+
+      .favorite-card-value {
+        font-size: 15px;
+      }
+
+      .daily-updates-head {
+        align-items: start;
+        padding: 0 2px;
+      }
+
+      .daily-updates h2 {
+        font-size: 12px;
+      }
+
+      .daily-update-summary {
+        font-size: 11px;
+        margin-left: 8px;
+        padding: 0 2px;
+      }
+
+      .daily-update-counts {
+        gap: 4px;
+        font-size: 10.5px;
+      }
+
+      .daily-update-count {
+        padding: 5px 7px;
+      }
+
+      .daily-update-list {
+        max-height: 210px;
+      }
+
+      .daily-update-row {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 5px 8px;
+        padding: 8px 7px;
+      }
+
+      .daily-update-main {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      .daily-update-value {
+        grid-column: 2;
+        grid-row: 1;
+      }
+
+      .daily-update-meta {
+        grid-column: 1;
+        grid-row: 2;
+        font-size: 10.5px;
+      }
+
+      .daily-update-title {
+        font-size: 12px;
+      }
+
+      .daily-update-value,
+      .daily-update-change {
+        font-size: 10.5px;
+      }
+
+      .daily-update-change {
+        grid-column: 2;
+        grid-row: 2;
+        align-self: center;
+        gap: 3px;
+      }
+
+      .industry-head {
+        grid-template-columns: 80px minmax(0, 1fr);
+        gap: 12px;
+        padding: 18px 0 12px;
+      }
+
+      .industry-icon-wrap {
+        width: 80px;
+        height: 80px;
+      }
+
+      .industry-icon {
+        width: 74px;
+        height: 74px;
+      }
+
+      .industry h2 {
+        font-size: 18px;
+      }
+
+      .group { padding: 0 0 18px; }
+
+      .depth-section .group-title,
+      .group-title {
+        margin: 12px 0 10px 8px;
+        font-size: 15px;
+      }
+
+      .depth-title {
+        margin: 18px 0 8px;
+        font-size: 15px;
+      }
+
+      .depth-tree {
+        --depth-content-left: 42px;
+        --depth-line-left: 8px;
+        --depth-corner-gap: 14px;
+        --depth-corner-height: 15px;
+      }
+
+      .depth-tree::before {
+        left: var(--depth-line-left);
+      }
+
+      .depth-section {
+        margin-left: 0;
+        padding-left: 0;
+      }
+
+      .depth-title::before {
+        border-bottom-left-radius: 16px;
+      }
+
+      .metric-table-wrap {
+        overflow-x: visible;
+        overflow-y: visible;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .metric-table {
+        display: table;
+        width: 100%;
+        min-width: 0;
+        table-layout: fixed;
+      }
+
+      .metric-table thead {
+        display: table-header-group;
+      }
+
+      .metric-table tbody {
+        display: table-row-group;
+      }
+
+      .metric-table tr {
+        display: table-row;
+      }
+
+      .metric-table td {
+        display: table-cell;
+      }
+
+      .metric-table col.metric-description-cell,
+      .metric-table col.metric-date-cell,
+      .metric-table th:nth-child(2),
+      .metric-table th:nth-child(3),
+      .metric-table th:nth-child(4),
+      .metric-table td.metric-description-cell,
+      .metric-table td.metric-date-cell {
+        display: none;
+      }
+
+      .metric-table th[data-mobile-label] {
+        font-size: 0;
+      }
+
+      .metric-table th[data-mobile-label]::after {
+        content: attr(data-mobile-label);
+        font-size: 10.5px;
+      }
+
+      .metric-row {
+        padding: 0;
+        border-top: 0;
+      }
+
+      .metric-row:first-child {
+        border-top: 0;
+      }
+
+      .metric-row td {
+        padding: 7px 6px;
+        border-top: 1px solid var(--line);
+      }
+
+      .metric-row td:not(.metric-name-cell)::before {
+        content: none;
+      }
+
+      .metric-name-cell { width: 46%; }
+      .metric-value-cell { width: 20%; }
+      .metric-chart-cell { width: 26%; }
+      .metric-favorite-cell { width: 8%; }
+
+      .metric-name {
+        font-size: 12.5px;
+        line-height: 1.22;
+      }
+
+      .metric-mobile-description {
+        display: -webkit-box;
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 10.5px;
+        line-height: 1.28;
+        font-weight: 580;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+      }
+
+      .metric-current-value {
+        font-size: 11.5px;
+        line-height: 1.2;
+      }
+
+      .metric-value-wrap {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+
+      .metric-change-badge {
+        font-size: 10.5px;
+      }
+
+      .metric-chart-cell .chart-mini {
+        height: 30px;
+        max-height: 30px;
+      }
+
+      .metric-favorite-button {
+        width: 30px;
+        height: 30px;
+        font-size: 12.5px;
+      }
+
+      .metric-detail-row td {
+        padding: 0 6px;
+      }
+
+      .metric-detail-inner {
+        gap: 8px;
+        padding: 10px 0 12px;
+      }
+
+      .detail-chart {
+        grid-template-columns: 40px minmax(0, 1fr);
+        overflow: hidden;
+        padding: 0 0 6px;
+      }
+
+      .detail-chart-axis {
+        width: 40px;
+        min-width: 40px;
+        height: 158px;
+      }
+
+      .detail-chart-scroll .chart {
+        width: max(100%, var(--detail-chart-width, 520px));
+        min-width: max(100%, var(--detail-chart-width, 520px));
+        height: 158px;
+      }
+
+      .detail-stats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 5px 7px;
+        padding: 0;
+      }
+
+      .detail-stat {
+        padding: 7px 6px;
+        border-radius: 6px;
+      }
+
+      .detail-label {
+        font-size: 9.5px;
+        line-height: 1.12;
+      }
+
+      .detail-value {
+        margin-top: 3px;
+        font-size: 12px;
+        line-height: 1.12;
+      }
+
+      .metric-grid { grid-template-columns: 1fr; }
+      .metric-main { grid-template-columns: 1fr; }
+      .deltas {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        text-align: left;
+      }
+    }
+
+    /* ---------- 시장 온도계 / 침체 시그널 / 백분위 ---------- */
+    .market-gauges {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 14px;
+      margin: 0 0 18px;
+    }
+    .gauge-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px 18px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+    .gauge-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .gauge-card-head h3 { margin: 0; font-size: 15px; }
+    .thermometer-score {
+      font-weight: 700;
+      font-size: 13px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: var(--menu);
+      white-space: nowrap;
+    }
+    .thermometer-score.heat-hot { background: rgba(239, 68, 68, 0.14); color: #dc2626; }
+    .thermometer-score.heat-warm { background: rgba(249, 115, 22, 0.14); color: #ea580c; }
+    .thermometer-score.heat-neutral { background: rgba(234, 179, 8, 0.16); color: #a16207; }
+    .thermometer-score.heat-cool { background: rgba(59, 130, 246, 0.13); color: #2563eb; }
+    .thermometer-score.heat-cold { background: rgba(29, 78, 216, 0.15); color: #1d4ed8; }
+    .thermometer-track {
+      position: relative;
+      height: 10px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #1d4ed8, #3b82f6, #eab308, #f97316, #ef4444);
+    }
+    .thermometer-marker {
+      position: absolute;
+      top: -4px;
+      width: 4px;
+      height: 18px;
+      border-radius: 2px;
+      background: var(--text);
+      transform: translateX(-2px);
+      box-shadow: 0 0 0 2px var(--panel);
+    }
+    .gauge-comment { margin: 12px 0 0; font-size: 13px; color: var(--muted); line-height: 1.55; }
+    .gauge-components { margin-top: 10px; font-size: 12px; }
+    .gauge-components summary { cursor: pointer; color: var(--muted); }
+    .gauge-component-list {
+      list-style: none;
+      margin: 8px 0 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .gauge-component-list button,
+    .gauge-component-static {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 4px 10px;
+      background: var(--menu);
+      border: none;
+      border-radius: 8px;
+      padding: 7px 10px;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 12px;
+      text-align: left;
+    }
+    .gauge-component-static { cursor: default; }
+    .gauge-component-name { font-weight: 600; }
+    .gauge-component-heat { color: var(--muted); font-size: 11px; width: 100%; }
+    .signal-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .signal-chip {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+      border-radius: 10px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      background: var(--menu);
+      cursor: pointer;
+      color: var(--text);
+      font-size: 12px;
+    }
+    .signal-chip .signal-value { font-weight: 700; font-size: 13px; }
+    .signal-chip.signal-ok { border-color: rgba(34, 197, 94, 0.4); }
+    .signal-chip.signal-ok .signal-value { color: #16a34a; }
+    .signal-chip.signal-warn { border-color: rgba(245, 158, 11, 0.5); }
+    .signal-chip.signal-warn .signal-value { color: #d97706; }
+    .signal-chip.signal-alert { border-color: rgba(239, 68, 68, 0.55); }
+    .signal-chip.signal-alert .signal-value { color: #dc2626; }
+    .pct-badge {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--menu);
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .pct-badge.pct-high { background: rgba(239, 68, 68, 0.12); color: #dc2626; }
+    .pct-badge.pct-low { background: rgba(59, 130, 246, 0.12); color: #2563eb; }
+    .metric-stale-badge {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      background: rgba(245, 158, 11, 0.15);
+      color: #b45309;
+      white-space: nowrap;
+    }
+    .pct-band { fill: rgba(59, 130, 246, 0.08); }
+    body.theme-dark .pct-band { fill: rgba(96, 165, 250, 0.1); }
+    .pct-band-median { stroke: rgba(59, 130, 246, 0.55); stroke-width: 1; stroke-dasharray: 4 4; }
+    .detail-range-toggle { display: flex; gap: 6px; margin: 10px 0 0; }
+    .detail-range-toggle[hidden] { display: none; }
+    .detail-range-toggle button {
+      border: 1px solid var(--line);
+      background: var(--menu);
+      border-radius: 8px;
+      padding: 4px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      color: var(--muted);
+    }
+    .detail-range-toggle button.is-active { background: var(--menu-active); color: var(--text); font-weight: 700; }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <aside class="sidebar" id="mobileDrawer" aria-label="업종 메뉴">
+      <div class="drawer-head">
+        <span data-i18n="drawerTitle">메뉴</span>
+        <button class="drawer-close" id="drawerClose" type="button" aria-label="메뉴 닫기">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <nav class="side-menu" id="industryFilters" aria-label="업종 메뉴"></nav>
+      <div class="menu-settings" id="menuSettings">
+        <div class="settings-menu" id="settingsMenu" role="menu" hidden>
+          <button type="button" role="menuitem" data-setting-action="theme">
+            <i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i>
+            <span data-i18n="darkMode">다크모드</span>
+            <span class="settings-meta" id="themeSettingLabel"></span>
+          </button>
+          <button type="button" role="menuitem" data-setting-action="language">
+            <i class="fa-solid fa-language" aria-hidden="true"></i>
+            <span data-i18n="language">언어변경</span>
+            <span class="settings-meta" id="languageSettingLabel">KO</span>
+          </button>
+          <button type="button" role="menuitem" data-setting-action="timezone">
+            <i class="fa-solid fa-clock" aria-hidden="true"></i>
+            <span data-i18n="timeZone">시간대 변경</span>
+            <span class="settings-meta" id="timeZoneSettingLabel">한국</span>
+          </button>
+          <button type="button" role="menuitem" data-setting-action="reorder">
+            <i class="fa-solid fa-arrow-up-wide-short" aria-hidden="true"></i>
+            <span data-i18n="reorderMenu">메뉴 순서변경</span>
+            <span></span>
+          </button>
+        </div>
+        <button class="settings-button" id="settingsToggle" type="button" aria-label="설정" aria-expanded="false" aria-controls="settingsMenu">
+          <i class="fa-solid fa-gear" aria-hidden="true"></i>
+          <span data-i18n="settings">설정</span>
+          <i class="fa-solid fa-chevron-up settings-chevron" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="reorder-actions" id="reorderActions" hidden>
+        <button class="reorder-cancel" id="reorderCancel" type="button" data-i18n="cancel">취소</button>
+        <button class="reorder-save" id="reorderSave" type="button" data-i18n="save">저장</button>
+      </div>
+    </aside>
+    <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+    <section class="content">
+      <header class="topbar">
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobileDrawer">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+        <h1 data-i18n="title">산업별 지표 대시보드</h1>
+        <div class="topbar-actions">
+          <button class="scroll-top-button" id="scrollTopButton" type="button" aria-label="최상단 이동" title="최상단 이동">
+            <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+          </button>
+          <button class="currency-toggle" id="currencyToggle" type="button" aria-label="원화 표시" title="원화 표시">
+            <span class="currency-icon-slot" aria-hidden="true">
+              <i class="fa-solid fa-dollar-sign currency-icon currency-icon-dollar"></i>
+              <i class="fa-solid fa-won-sign currency-icon currency-icon-won"></i>
+            </span>
+            <span class="toggle-label" id="currencyToggleLabel">달러</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="toggle-chevron lucide lucide-chevrons-up-down-icon lucide-chevrons-up-down" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+          </button>
+          <button class="theme-toggle" id="themeToggle" type="button" aria-label="다크모드 전환" title="다크모드 전환">
+            <span class="theme-icon-orbit" aria-hidden="true">
+              <i class="fa-solid fa-sun theme-icon theme-icon-sun"></i>
+              <i class="fa-solid fa-moon theme-icon theme-icon-moon"></i>
+            </span>
+            <span class="toggle-label" id="themeToggleLabel">라이트</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="toggle-chevron lucide lucide-chevrons-up-down-icon lucide-chevrons-up-down" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+          </button>
+        </div>
+      </header>
+      <section class="daily-updates" id="dailyUpdates"></section>
+      <section class="industry-stack" id="industryStack"></section>
+      <div class="empty" id="empty" data-i18n="empty">표시할 지표가 없습니다.</div>
+    </section>
+  </main>
+
+  <script>
+    const DASHBOARD_DATA = __DASHBOARD_JSON__;
+    const state = {
+      activeIndustry: "",
+      activeDepth: "",
+      isReordering: false,
+      draftIndustryOrder: null,
+      draggedMenuItem: null,
+      language: "ko",
+      currency: "usd",
+      timeZone: "Asia/Seoul",
+      favoriteMetricIds: new Set()
+    };
+    const favoriteMetricStorageKey = "dashboard-favorite-metrics";
+    const mobileDrawerQuery = window.matchMedia ? window.matchMedia("(max-width: 760px)") : { matches: false };
+    let scrollSpyFrame = 0;
+    let suppressMenuClick = false;
+    const groupOrder = [
+      "판매액(WSTS)", "판매액", "시장 매출", "가격/수요", "투자/장비", "수출",
+      "판매/수요", "판매량", "배터리 원재료",
+      "운임/해운", "선가/발주",
+      "원자재 가격", "중국 경기",
+      "에너지 가격", "원유/원료", "화학 스프레드", "스프레드/마진",
+      "금리", "신용 스프레드", "스프레드", "금리/스프레드", "은행 건전성", "대출/건전성",
+      "주택 경기", "건설 선행", "금융비용", "주택 시장",
+      "시장지수", "환율", "리스크", "시장 분위기", "핵심 지표", "대표주가"
+    ];
+    const translations = {
+      ko: {
+        title: "산업별 지표 대시보드",
+        settings: "설정",
+        darkMode: "다크모드",
+        lightMode: "라이트",
+        darkModeState: "다크",
+        language: "언어변경",
+        timeZone: "시간대 변경",
+        timeZoneKorea: "한국",
+        timeZoneUs: "미국 동부",
+        reorderMenu: "메뉴 순서변경",
+        cancel: "취소",
+        save: "저장",
+        empty: "표시할 지표가 없습니다.",
+        metric: "지표",
+        description: "설명",
+        lastUpdated: "마지막 업데이트일",
+        nextUpdate: "다음 예정일",
+        chart: "차트",
+        metricSummary: "지표명/설명",
+        metricValueShort: "지표",
+        currentValue: "현재값",
+        previousChange: "전기 변화",
+        previousChangePct: "전기 변화율",
+        marketThermometer: "시장 온도계",
+        recessionSignals: "경기침체 시그널",
+        thermometerBasis: "계산 근거 보기",
+        percentile10y: "10년 백분위",
+        fullRange: "전체 기간 범위",
+        dataSince: "데이터 시작",
+        rangeRecent: "최근",
+        rangeFull: "전체 기간",
+        percentileBandLegend: "과거 20-80% 구간",
+        percentileMedianLegend: "과거 중앙값",
+        heatLabel: "열기",
+        staleBadge: "갱신 지연",
+        yoy: "YoY",
+        visiblePeriod: "표시 기간",
+        updateFrequency: "업데이트 주기",
+        irregular: "비정기",
+        menuLabel: "업종 메뉴",
+        drawerTitle: "메뉴",
+        openMenu: "메뉴 열기",
+        closeMenu: "메뉴 닫기",
+        scrollTop: "최상단 이동",
+        toggleTheme: "다크모드 전환",
+        showKrw: "원화 표시",
+        showUsd: "달러 표시",
+        currencyKrwName: "원화",
+        currencyUsdName: "달러",
+        themeLightName: "라이트",
+        themeDarkName: "다크",
+        tooltipPeriod: "연도",
+        tooltipValue: "지표",
+        tooltipChange: "증감",
+        todayChanges: "오늘 변경",
+        showDailyChanges: "오늘 변경된 내용 확인하기",
+        morningBriefing: "AI 요약",
+        aiBriefing: "AI 요약",
+        fallbackBriefing: "룰 기반 요약",
+        favoriteMetrics: "별표한 지표",
+        favoriteCount: "개",
+        addFavorite: "별표 추가",
+        removeFavorite: "별표 해제",
+        briefingDisclaimer: "이 브리핑은 AI가 공개 지표를 바탕으로 자동 생성한 참고 자료입니다. 실제 투자 판단 전에는 원자료와 리스크를 함께 확인하세요.",
+        updatedCount: "업데이트",
+        newCount: "신규",
+        noDailyChanges: "오늘 변경된 지표 없음",
+        updatedBadge: "업데이트",
+        newBadge: "New"
+      },
+      en: {
+        title: "Industry Metrics Dashboard",
+        settings: "Settings",
+        darkMode: "Dark mode",
+        lightMode: "Light",
+        darkModeState: "Dark",
+        language: "Language",
+        timeZone: "Time zone",
+        timeZoneKorea: "Korea",
+        timeZoneUs: "US Eastern",
+        reorderMenu: "Reorder menu",
+        cancel: "Cancel",
+        save: "Save",
+        empty: "No metrics to display.",
+        metric: "Metric",
+        description: "Description",
+        lastUpdated: "Last updated",
+        nextUpdate: "Next update",
+        chart: "Chart",
+        metricSummary: "Metric/description",
+        metricValueShort: "Value",
+        currentValue: "Current",
+        previousChange: "Previous change",
+        previousChangePct: "Previous %",
+        yoy: "YoY",
+        visiblePeriod: "Period",
+        updateFrequency: "Frequency",
+        irregular: "Irregular",
+        menuLabel: "Industry menu",
+        drawerTitle: "Menu",
+        openMenu: "Open menu",
+        closeMenu: "Close menu",
+        scrollTop: "Back to top",
+        toggleTheme: "Toggle dark mode",
+        showKrw: "Show KRW",
+        showUsd: "Show USD",
+        currencyKrwName: "KRW",
+        currencyUsdName: "USD",
+        themeLightName: "Light",
+        themeDarkName: "Dark",
+        tooltipPeriod: "Period",
+        tooltipValue: "Value",
+        tooltipChange: "Change",
+        marketThermometer: "Market Thermometer",
+        recessionSignals: "Recession Signals",
+        thermometerBasis: "How it's calculated",
+        percentile10y: "10y percentile",
+        fullRange: "All-time range",
+        dataSince: "Data since",
+        rangeRecent: "Recent",
+        rangeFull: "Full history",
+        percentileBandLegend: "Historical 20-80% range",
+        percentileMedianLegend: "Historical median",
+        heatLabel: "heat",
+        staleBadge: "Stale",
+        todayChanges: "Today",
+        showDailyChanges: "View today's changes",
+        morningBriefing: "AI Summary",
+        aiBriefing: "AI summary",
+        fallbackBriefing: "Rule summary",
+        favoriteMetrics: "Starred Metrics",
+        favoriteCount: "items",
+        addFavorite: "Add star",
+        removeFavorite: "Remove star",
+        briefingDisclaimer: "This summary is for quick reference from public indicators and is not investment advice or a buy/sell recommendation.",
+        updatedCount: "Updated",
+        newCount: "New",
+        noDailyChanges: "No changed metrics today",
+        updatedBadge: "Updated",
+        newBadge: "New"
+      }
+    };
+
+    function t(key) {
+      return translations[state.language]?.[key] || translations.ko[key] || key;
+    }
+
+    const timeZoneOptions = {
+      korea: "Asia/Seoul",
+      us: "America/New_York"
+    };
+
+    function localizedIndustry(industry) {
+      if (state.language !== "en") return industry || "";
+      return DASHBOARD_DATA.industry_labels_en?.[industry] || industry || "";
+    }
+
+    function localizedField(item, field) {
+      if (!item) return "";
+      if (state.language === "en") {
+        return item[`${field}_en`] || item[field] || "";
+      }
+      return item[field] || "";
+    }
+
+    function localizedGroup(group, items = []) {
+      if (state.language !== "en") return group || "";
+      const first = items.find((item) => item.group === group && item.group_en);
+      return first?.group_en || group || "";
+    }
+
+    function localizedDepth(depth, items = []) {
+      if (state.language !== "en") return depth || "";
+      const first = items.find((item) => item.depth === depth && item.depth_en);
+      return first?.depth_en || depth || "";
+    }
+
+    function localizedUnit(metric) {
+      if (!metric) return "";
+      return state.language === "en" ? (metric.unit_en || metric.unit || "") : (metric.unit || "");
+    }
+
+    function formatMetricNumberWithUnit(value, unit, signed = false, isChange = false) {
+      if (typeof value !== "number" || !Number.isFinite(value)) return "n/a";
+      const text = numberText(value, signed);
+      if (unit === "$B") {
+        const prefix = signed ? (value > 0 ? "+" : value < 0 ? "-" : "") : "";
+        return `${prefix}$${numberText(Math.abs(value))}B`;
+      }
+      if (unit === "%") return `${text}${isChange ? "%p" : "%"}`;
+      if (!unit) return text;
+      return `${text} ${unit}`;
+    }
+
+    function numberText(value, signed = false) {
+      if (typeof value !== "number" || !Number.isFinite(value)) return "n/a";
+      const abs = Math.abs(value);
+      const digits = abs >= 100 ? 1 : 2;
+      const formatted = abs.toLocaleString(state.language === "en" ? "en-US" : "ko-KR", {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits
+      });
+      if (!signed || value === 0) return formatted;
+      return `${value > 0 ? "+" : "-"}${formatted}`;
+    }
+
+    function dollarUnitScale(metric) {
+      const unit = String(metric.unit || "");
+      const rate = usdKrwRate();
+      const english = state.language === "en";
+      if (unit === "$B") return { scale: rate / 1000, unit: english ? "tn KRW" : "조원" };
+      if (unit.includes("백만달러")) {
+        return english ? { scale: rate / 1000, unit: "bn KRW" } : { scale: rate / 100, unit: "억원" };
+      }
+      if (unit === "$" || unit.includes("달러") || unit.toUpperCase().includes("USD")) {
+        return { scale: rate, unit: english ? "KRW" : "원" };
+      }
+      return null;
+    }
+
+    function isDollarMetric(metric) {
+      return Boolean(dollarUnitScale(metric));
+    }
+
+    function usdKrwRate() {
+      const match = DASHBOARD_DATA.metrics.find((metric) => {
+        const name = String(metric.name || "").toUpperCase();
+        return typeof metric.value === "number" &&
+          Number.isFinite(metric.value) &&
+          String(metric.unit || "") === "원" &&
+          (name.includes("환율") || name.includes("원/달러") || name.includes("USD/KRW"));
+      });
+      return match?.value || 1350;
+    }
+
+    function displayMetricValue(metric) {
+      const scale = state.currency === "krw" ? dollarUnitScale(metric) : null;
+      if (scale && typeof metric.value === "number" && Number.isFinite(metric.value)) {
+        const separator = state.language === "en" ? " " : "";
+        return `${numberText(metric.value * scale.scale)}${separator}${scale.unit}`;
+      }
+      if (state.language === "en" && typeof metric.value === "number" && Number.isFinite(metric.value)) {
+        return formatMetricNumberWithUnit(metric.value, localizedUnit(metric));
+      }
+      if (!scale || typeof metric.value !== "number" || !Number.isFinite(metric.value)) {
+        return metric.display_value;
+      }
+      return `${numberText(metric.value * scale.scale)}${scale.unit}`;
+    }
+
+    function displayMetricChange(metric) {
+      const scale = state.currency === "krw" ? dollarUnitScale(metric) : null;
+      if (scale && typeof metric.change_abs === "number" && Number.isFinite(metric.change_abs)) {
+        const separator = state.language === "en" ? " " : "";
+        return `${numberText(metric.change_abs * scale.scale, true)}${separator}${scale.unit}`;
+      }
+      if (state.language === "en" && typeof metric.change_abs === "number" && Number.isFinite(metric.change_abs)) {
+        return formatMetricNumberWithUnit(metric.change_abs, localizedUnit(metric), true, true);
+      }
+      if (!scale || typeof metric.change_abs !== "number" || !Number.isFinite(metric.change_abs)) {
+        return metric.change_abs_label;
+      }
+      return `${numberText(metric.change_abs * scale.scale, true)}${scale.unit}`;
+    }
+
+    function displayHistory(history, metric) {
+      const scale = state.currency === "krw" ? dollarUnitScale(metric || {}) : null;
+      if (!scale) return history;
+      return (history || []).map((point) => ({
+        ...point,
+        value: point.value * scale.scale
+      }));
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    function directionClass(value) {
+      if (typeof value !== "number" || !Number.isFinite(value) || value === 0) return "";
+      return value > 0 ? "positive" : "negative";
+    }
+
+    function trendIconClass(value) {
+      if (typeof value !== "number" || !Number.isFinite(value) || value === 0) return "fa-minus";
+      return value > 0 ? "fa-arrow-trend-up" : "fa-arrow-trend-down";
+    }
+
+    function metricChangeBadge(metric) {
+      const className = directionClass(metric.change_pct);
+      const label = metric.change_pct_label || "n/a";
+      return `<span class="metric-change-badge ${className}">
+        <i class="fa-solid ${trendIconClass(metric.change_pct)}" aria-hidden="true"></i>
+        <span>${escapeHtml(label)}</span>
+      </span>`;
+    }
+
+    function groupRank(group) {
+      if (group === "대표주가") return 10000;
+      const index = groupOrder.indexOf(group);
+      return index === -1 ? 999 : index;
+    }
+
+    const depthOrder = ["전체 업황", "메모리 반도체", "AI/GPU", "CPU/프로세서", "파운드리", "장비", "패키징/후공정", "소자/부품"];
+
+    function depthRank(depth) {
+      const index = depthOrder.indexOf(depth);
+      return index === -1 ? 999 : index;
+    }
+
+    function groupMetrics(items, keyFn) {
+      if (Map.groupBy) return Map.groupBy(items, keyFn);
+      return items.reduce((map, item) => {
+        const key = keyFn(item);
+        map.set(key, [...(map.get(key) || []), item]);
+        return map;
+      }, new Map());
+    }
+
+    function baseVisibleIndustries() {
+      return DASHBOARD_DATA.industries.filter((industry) =>
+        DASHBOARD_DATA.metrics.some((metric) => metric.industry === industry)
+      );
+    }
+
+    function storedIndustryOrder() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem("dashboard-industry-order") || "[]");
+        return Array.isArray(parsed) ? parsed.filter((item) => typeof item === "string") : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function orderedIndustries(industries, order = null) {
+      const selectedOrder = order || state.draftIndustryOrder || storedIndustryOrder();
+      const rank = new Map(selectedOrder.map((industry, index) => [industry, index]));
+      return [...industries].sort((a, b) => {
+        const aRank = rank.has(a) ? rank.get(a) : Number.MAX_SAFE_INTEGER;
+        const bRank = rank.has(b) ? rank.get(b) : Number.MAX_SAFE_INTEGER;
+        if (aRank !== bRank) return aRank - bRank;
+        return industries.indexOf(a) - industries.indexOf(b);
+      });
+    }
+
+    function visibleIndustries() {
+      return orderedIndustries(baseVisibleIndustries());
+    }
+
+    function idSegment(value) {
+      return Array.from(String(value || "")).map((char) => char.charCodeAt(0).toString(36)).join("-");
+    }
+
+    function industryId(industry) {
+      return `industry-${idSegment(industry)}`;
+    }
+
+    function depthId(industry, depth) {
+      return `${industryId(industry)}-depth-${idSegment(depth)}`;
+    }
+
+    function semiconductorDepthEntries() {
+      const semiconductorMetrics = DASHBOARD_DATA.metrics.filter((metric) => metric.industry === "반도체");
+      return [...groupMetrics(semiconductorMetrics, (metric) => metric.depth || "전체 업황").entries()]
+        .sort(([a], [b]) => depthRank(a) - depthRank(b) || String(a).localeCompare(String(b), "ko"))
+        .filter(([depth, items]) => depth !== "전체 업황" && items.length);
+    }
+
+    function setActiveIndustry(industry, depth = "") {
+      if (!industry) return;
+      state.activeIndustry = industry;
+      state.activeDepth = depth || "";
+      document.querySelectorAll("[data-industry]").forEach((button) => {
+        const active = button.dataset.industry === industry;
+        button.setAttribute("aria-pressed", String(active));
+        button.setAttribute("aria-current", String(active && !state.activeDepth));
+      });
+      document.querySelectorAll("[data-menu-depth]").forEach((button) => {
+        const active = button.dataset.depthIndustry === industry && button.dataset.depthName === state.activeDepth;
+        button.setAttribute("aria-pressed", String(active));
+        button.setAttribute("aria-current", String(active));
+      });
+    }
+
+    function renderMenuDepths(industry) {
+      if (industry !== "반도체") return "";
+      const depthItems = semiconductorDepthEntries().map(([depth, items]) => `
+        <div class="menu-depth-item">
+          <button type="button" class="menu-depth-button" data-menu-depth data-depth-industry="${escapeHtml(industry)}" data-depth-name="${escapeHtml(depth)}" data-target="${depthId(industry, depth)}" aria-pressed="${state.activeIndustry === industry && state.activeDepth === depth}" aria-current="${state.activeIndustry === industry && state.activeDepth === depth}" ${state.isReordering ? 'tabindex="-1"' : ""}>
+            ${escapeHtml(localizedDepth(depth, items))}
+          </button>
+        </div>
+      `).join("");
+      return depthItems ? `<div class="menu-depth-list">${depthItems}</div>` : "";
+    }
+
+    function setBranchLine(container, markerSelector, topProperty, heightProperty, branchHeight, endInset = 0, startOvershoot = 0) {
+      const markers = [...container.querySelectorAll(markerSelector)];
+      if (!markers.length) return;
+      const containerBox = container.getBoundingClientRect();
+      const firstBox = markers[0].getBoundingClientRect();
+      const lastBox = markers[markers.length - 1].getBoundingClientRect();
+      const top = firstBox.top - containerBox.top + firstBox.height / 2 - branchHeight - startOvershoot;
+      const end = lastBox.top - containerBox.top + lastBox.height / 2 - endInset;
+      const topPx = Math.max(0, Math.round(top));
+      const endPx = Math.max(topPx, Math.round(end));
+      container.style.setProperty(topProperty, `${topPx}px`);
+      container.style.setProperty(heightProperty, `${endPx - topPx}px`);
+    }
+
+    function updateBranchLines() {
+      document.querySelectorAll(".depth-tree").forEach((tree) => {
+        const cornerHeight = Number.parseFloat(getComputedStyle(tree).getPropertyValue("--depth-corner-height")) || 17;
+        setBranchLine(tree, ".depth-title", "--depth-branch-top", "--depth-branch-height", cornerHeight, cornerHeight);
+      });
+    }
+
+    function scheduleBranchLineUpdate() {
+      requestAnimationFrame(updateBranchLines);
+    }
+
+    function renderFilters() {
+      const industries = visibleIndustries();
+      if (!state.activeIndustry && industries.length) {
+        state.activeIndustry = industries[0];
+      }
+      document.getElementById("industryFilters").innerHTML = industries.map((industry) => `
+        <div class="menu-item" data-menu-item data-industry-item="${escapeHtml(industry)}" draggable="${state.isReordering}">
+          <button type="button" data-industry="${escapeHtml(industry)}" data-target="${industryId(industry)}" aria-pressed="${state.activeIndustry === industry}" aria-current="${state.activeIndustry === industry && !state.activeDepth}" ${state.isReordering ? 'tabindex="-1"' : ""}>
+            ${escapeHtml(localizedIndustry(industry))}
+          </button>
+          ${renderMenuDepths(industry)}
+          <span class="drag-handle" aria-hidden="true"><i class="fa-solid fa-grip-lines"></i></span>
+        </div>
+      `).join("");
+      document.querySelectorAll("[data-industry]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (state.isReordering) return;
+          const industry = button.dataset.industry;
+          const target = document.getElementById(button.dataset.target);
+          if (!industry || !target) return;
+          setActiveIndustry(industry);
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+          closeDrawerOnMobile();
+        });
+      });
+      document.querySelectorAll("[data-menu-depth]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (state.isReordering) return;
+          const industry = button.dataset.depthIndustry;
+          const depth = button.dataset.depthName;
+          const target = document.getElementById(button.dataset.target);
+          if (!industry || !depth || !target) return;
+          setActiveIndustry(industry, depth);
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+          closeDrawerOnMobile();
+        });
+      });
+      initMenuDrag();
+      initMenuScrollDrag();
+      scheduleBranchLineUpdate();
+    }
+
+    function formatAxisValue(value) {
+      const abs = Math.abs(value);
+      if (abs >= 1000) return `${(value / 1000).toFixed(1)}k`;
+      if (abs >= 100) return value.toFixed(0);
+      if (abs >= 10) return value.toFixed(1);
+      return value.toFixed(2);
+    }
+
+    function selectedTimeZoneKey() {
+      return state.timeZone === timeZoneOptions.us ? "us" : "korea";
+    }
+
+    function selectedTimeZoneLabel() {
+      return selectedTimeZoneKey() === "us" ? t("timeZoneUs") : t("timeZoneKorea");
+    }
+
+    function metricFrequencyText(metric) {
+      return String(metric?.frequency || metric?.frequency_en || "");
+    }
+
+    function isPeriodMetric(metric) {
+      const frequency = metricFrequencyText(metric);
+      return /월간|분기|연간|monthly|quarter|annual|year/i.test(frequency);
+    }
+
+    function shouldConvertDateForMetric(metric, value) {
+      const text = String(value || "");
+      const hasDay = /^(\d{4})[.-](\d{1,2})[.-](\d{1,2})/.test(text);
+      if (!hasDay) return false;
+      return !isPeriodMetric(metric);
+    }
+
+    function rawDateParts(value) {
+      const match = String(value || "").match(/^(\d{4})[.-](\d{1,2})(?:[.-](\d{1,2}))?/);
+      if (!match) return null;
+      const year = Number(match[1]);
+      const month = Number(match[2]);
+      const day = match[3] ? Number(match[3]) : null;
+      if (!Number.isFinite(year) || !Number.isFinite(month)) return null;
+      if (day !== null && !Number.isFinite(day)) return null;
+      return { year, month, day };
+    }
+
+    function zonedDateParts(value, metric = null) {
+      const raw = rawDateParts(value);
+      if (!raw) return null;
+      if (!raw.day || !shouldConvertDateForMetric(metric, value)) return raw;
+      const instant = new Date(Date.UTC(raw.year, raw.month - 1, raw.day));
+      const formatter = new Intl.DateTimeFormat("en-CA", {
+        timeZone: state.timeZone,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      });
+      const parts = {};
+      formatter.formatToParts(instant).forEach((part) => {
+        if (part.type !== "literal") parts[part.type] = part.value;
+      });
+      return {
+        year: Number(parts.year),
+        month: Number(parts.month),
+        day: Number(parts.day)
+      };
+    }
+
+    function yearLabel(dateText, metric = null) {
+      const parts = zonedDateParts(dateText, metric);
+      if (!parts) return "";
+      const year = Number(String(parts.year).slice(2, 4));
+      if (!Number.isFinite(year)) return "";
+      const shortYear = String(year).padStart(2, "0");
+      return state.language === "en" ? shortYear : `${shortYear}년`;
+    }
+
+    function monthLabel(month) {
+      const monthNumber = Number(month);
+      if (!Number.isFinite(monthNumber)) return "";
+      if (state.language === "en") {
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        return monthNames[Math.max(0, Math.min(11, monthNumber - 1))] || String(monthNumber);
+      }
+      return `${monthNumber}월`;
+    }
+
+    function chartDateParts(dateText, metric = null) {
+      const parts = zonedDateParts(dateText, metric);
+      if (!parts) return null;
+      return { year: parts.year, month: parts.month, day: parts.day || null };
+    }
+
+    function chartPointDateLabel(dateText, metric = null) {
+      const date = chartDateParts(dateText, metric);
+      if (!date) return dateText || "";
+      const day = date.day ? Number(date.day) : null;
+      if (state.language === "en") {
+        return day ? `${monthLabel(date.month)} ${day}, ${date.year}` : `${monthLabel(date.month)} ${date.year}`;
+      }
+      return day ? `${String(date.year).slice(2)}년 ${date.month}월 ${day}일` : `${String(date.year).slice(2)}년 ${date.month}월`;
+    }
+
+    function detailTickLabel(point, seenYears, metric = null) {
+      const date = chartDateParts(point.date, metric);
+      if (!date) return "";
+      if (!seenYears.has(date.year)) {
+        seenYears.add(date.year);
+        return yearLabel(point.date, metric);
+      }
+      if ([3, 6, 9].includes(date.month)) {
+        return monthLabel(date.month);
+      }
+      return "";
+    }
+
+    function chartTicks(history, left, right, includeQuarterMonths = false, xForPoint = null, metric = null) {
+      const seen = new Set();
+      const seenYears = new Set();
+      const ticks = [];
+      history.forEach((point, index) => {
+        const yearText = yearLabel(point.date, metric);
+        const label = includeQuarterMonths
+          ? detailTickLabel(point, seenYears, metric)
+          : yearText;
+        if (!label) return;
+        const key = includeQuarterMonths ? `${point.date}-${label}` : String(point.date).slice(0, 4);
+        if (seen.has(key)) return;
+        seen.add(key);
+        const x = xForPoint
+          ? xForPoint(point, index)
+          : left + (index / Math.max(history.length - 1, 1)) * (right - left);
+        ticks.push({ label, x, priority: label === yearText ? 2 : 1 });
+      });
+      if (ticks.length === 1 && history.length > 1) {
+        ticks.push({ label: yearLabel(history[history.length - 1].date, metric), x: right, priority: 2 });
+      }
+      return compactChartTicks(
+        ticks.filter((tick, index) => index === 0 || tick.label !== ticks[index - 1].label),
+        includeQuarterMonths ? 46 : 54
+      );
+    }
+
+    function compactChartTicks(ticks, minGap) {
+      const kept = [];
+      ticks.forEach((tick) => {
+        const previous = kept[kept.length - 1];
+        if (!previous || tick.x - previous.x >= minGap) {
+          kept.push(tick);
+          return;
+        }
+        if ((tick.priority || 0) > (previous.priority || 0)) {
+          kept[kept.length - 1] = tick;
+        }
+      });
+      return kept;
+    }
+
+    function separatedLabelPositions(levels, minY, maxY, minGap = 11) {
+      const sorted = [...levels]
+        .sort((a, b) => a.y - b.y)
+        .map((level) => ({ ...level, preferredY: Math.min(maxY, Math.max(minY, level.y)) }));
+      if (sorted.length <= 1) {
+        return sorted.map((level) => ({ ...level, labelY: level.preferredY }));
+      }
+
+      const availableGap = (maxY - minY) / Math.max(sorted.length - 1, 1);
+      const gap = Math.min(minGap, availableGap);
+      const groups = sorted.map((_, index) => ({ start: index, end: index }));
+      const positions = new Array(sorted.length);
+
+      const layoutGroups = () => {
+        groups.forEach((group) => {
+          const count = group.end - group.start + 1;
+          let startSum = 0;
+          for (let index = group.start; index <= group.end; index += 1) {
+            startSum += sorted[index].preferredY - (index - group.start) * gap;
+          }
+          const rawStart = startSum / count;
+          const minStart = minY;
+          const maxStart = maxY - (count - 1) * gap;
+          const start = Math.min(maxStart, Math.max(minStart, rawStart));
+          for (let index = group.start; index <= group.end; index += 1) {
+            positions[index] = start + (index - group.start) * gap;
+          }
+        });
+      };
+
+      for (let pass = 0; pass < sorted.length; pass += 1) {
+        layoutGroups();
+        const mergeIndex = groups.findIndex((group, index) => {
+          const next = groups[index + 1];
+          return next && positions[next.start] - positions[group.end] < gap - 0.01;
+        });
+        if (mergeIndex === -1) break;
+        const current = groups[mergeIndex];
+        const next = groups[mergeIndex + 1];
+        groups.splice(mergeIndex, 2, { start: current.start, end: next.end });
+      }
+      layoutGroups();
+
+      return sorted.map((level, index) => ({
+        ...level,
+        labelY: Math.min(maxY, Math.max(minY, positions[index]))
+      }));
+    }
+
+    function chartTimeValue(point) {
+      const match = String(point?.date || "").match(/^(\d{4})-(\d{1,2})(?:-(\d{1,2}))?/);
+      if (!match) return null;
+      const year = Number(match[1]);
+      const month = Number(match[2]);
+      const day = match[3] ? Number(match[3]) : 1;
+      if (!Number.isFinite(year) || !Number.isFinite(month) || !Number.isFinite(day)) return null;
+      return Date.UTC(year, month - 1, day);
+    }
+
+    function chartMonthSpan(points) {
+      if (!Array.isArray(points) || points.length < 2) return 0;
+      const first = rawDateParts(points[0].date);
+      const last = rawDateParts(points[points.length - 1].date);
+      if (!first || !last) return 0;
+      return Math.max(0, (last.year - first.year) * 12 + (last.month - first.month));
+    }
+
+    function chartTimeBounds(points) {
+      const times = (points || [])
+        .map(chartTimeValue)
+        .filter((value) => typeof value === "number" && Number.isFinite(value));
+      if (times.length < 2) return null;
+      const min = Math.min(...times);
+      const max = Math.max(...times);
+      return max > min ? { min, max } : null;
+    }
+
+    function chartXScale(points, left, right) {
+      const bounds = chartTimeBounds(points);
+      if (!bounds) {
+        return (point, index) => left + (index / Math.max(points.length - 1, 1)) * (right - left);
+      }
+      return (point, index) => {
+        const time = chartTimeValue(point);
+        if (typeof time !== "number" || !Number.isFinite(time)) {
+          return left + (index / Math.max(points.length - 1, 1)) * (right - left);
+        }
+        const ratio = Math.min(1, Math.max(0, (time - bounds.min) / (bounds.max - bounds.min)));
+        return left + ratio * (right - left);
+      };
+    }
+
+    function detailChartAvailableWidth() {
+      const containerWidth = document.getElementById("industryStack")?.clientWidth
+        || document.querySelector(".content")?.clientWidth
+        || window.innerWidth
+        || 520;
+      const axisWidth = mobileDrawerQuery.matches ? 40 : 42;
+      const minimum = mobileDrawerQuery.matches ? 360 : 520;
+      return Math.max(minimum, Math.floor(containerWidth - axisWidth));
+    }
+
+    function detailChartWidth(points) {
+      const count = Array.isArray(points) ? points.length : 0;
+      const perPointWidth = mobileDrawerQuery.matches ? 18 : 22;
+      const perMonthWidth = mobileDrawerQuery.matches ? 11 : 14;
+      const monthSpan = chartMonthSpan(points);
+      const width = Math.max(
+        detailChartAvailableWidth(),
+        count * perPointWidth,
+        monthSpan > 0 ? (monthSpan + 1) * perMonthWidth : 0
+      );
+      return Math.min(4200, width);
+    }
+
+    function detailChartUnit(metric) {
+      const scale = state.currency === "krw" ? dollarUnitScale(metric || {}) : null;
+      return scale ? scale.unit : localizedUnit(metric || {});
+    }
+
+    function detailPointValueLabel(value, unit) {
+      return formatMetricNumberWithUnit(value, unit);
+    }
+
+    function detailPointChangeLabel(point, previous, unit) {
+      if (!previous || typeof point.value !== "number" || typeof previous.value !== "number") return "n/a";
+      if (!Number.isFinite(point.value) || !Number.isFinite(previous.value)) return "n/a";
+      const absolute = point.value - previous.value;
+      const pct = previous.value === 0 ? null : (absolute / Math.abs(previous.value)) * 100;
+      const absoluteLabel = formatMetricNumberWithUnit(absolute, unit, true, true);
+      const pctLabel = typeof pct === "number" && Number.isFinite(pct) ? `${numberText(pct, true)}%` : "n/a";
+      return `${absoluteLabel} / ${pctLabel}`;
+    }
+
+    function detailChart(history, metric = null) {
+      const displayPoints = displayHistory(history, metric);
+      const svgWidth = detailChartWidth(displayPoints);
+      const chartStyle = ` style="--detail-chart-width: ${svgWidth}px"`;
+      const axisClass = "chart detail-chart-axis";
+      const plotClass = "chart chart-detail";
+      const isMobileChart = mobileDrawerQuery.matches;
+      const chartHeight = isMobileChart ? 158 : 190;
+      const axisWidth = isMobileChart ? 40 : 42;
+      const axisGuideStart = axisWidth - 2;
+      const left = 1;
+      const right = svgWidth - 1;
+      const top = isMobileChart ? 12 : 18;
+      const axisY = chartHeight - 32;
+      const bottom = axisY - 12;
+      const labelBottom = chartHeight - 12;
+      const levelMinY = top - 2;
+      const levelMaxY = bottom + 2;
+      const emptyPlot = `<svg class="${plotClass}"${chartStyle} viewBox="0 0 ${svgWidth} ${chartHeight}" preserveAspectRatio="none" role="img" aria-label="trend unavailable">
+        <line x1="${left}" y1="${(top + bottom) / 2}" x2="${right}" y2="${(top + bottom) / 2}" class="guide"></line>
+      </svg>`;
+      if (!displayPoints || displayPoints.length < 2) {
+        return `<div class="detail-chart">
+          <svg class="${axisClass}" viewBox="0 0 ${axisWidth} ${chartHeight}" preserveAspectRatio="none" aria-hidden="true"></svg>
+          <div class="detail-chart-scroll">${emptyPlot}</div>
+        </div>`;
+      }
+      const values = displayPoints.map((point) => point.value).filter((value) => typeof value === "number" && Number.isFinite(value));
+      if (values.length < 2) {
+        return `<div class="detail-chart">
+          <svg class="${axisClass}" viewBox="0 0 ${axisWidth} ${chartHeight}" preserveAspectRatio="none" aria-hidden="true"></svg>
+          <div class="detail-chart-scroll">${emptyPlot}</div>
+        </div>`;
+      }
+      const band = detailBandStats(metric);
+      const min = Math.min(...values, ...(band ? [band.p20, band.median] : []));
+      const max = Math.max(...values, ...(band ? [band.p80, band.median] : []));
+      const latest = displayPoints[displayPoints.length - 1].value;
+      const first = displayPoints[0].value;
+      const span = max - min || 1;
+      const yFor = (value) => bottom - ((value - min) / span) * (bottom - top);
+      const xFor = chartXScale(displayPoints, left, right);
+      const bandMarkup = band ? `<rect x="${left}" y="${yFor(band.p80).toFixed(1)}" width="${(right - left).toFixed(1)}" height="${Math.max(1, yFor(band.p20) - yFor(band.p80)).toFixed(1)}" class="pct-band"
+          data-band-p20="${band.p20}" data-band-p80="${band.p80}"></rect>
+        <line x1="${left}" y1="${yFor(band.median).toFixed(1)}" x2="${right}" y2="${yFor(band.median).toFixed(1)}" class="pct-band-median"
+          data-band-median="${band.median}"></line>` : "";
+      const bandLegendMarkup = band ? `<div class="detail-chart-legend">
+        <button type="button" class="chart-band-toggle" data-band-toggle aria-pressed="true">
+          <span class="chart-band-toggle-dot" aria-hidden="true"></span>
+          <span class="chart-band-legend-label">${escapeHtml(t("percentileBandLegend"))}</span>
+        </button>
+        <span class="chart-median-legend">
+          <span class="chart-median-legend-line" aria-hidden="true"></span>
+          <span>${escapeHtml(t("percentileMedianLegend"))}</span>
+        </span>
+      </div>` : "";
+      const points = displayPoints.map((point, index) => {
+        const x = xFor(point, index);
+        const y = yFor(point.value);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(" ");
+      const trend = latest >= first ? "up" : "down";
+      const levelEntries = [];
+      [
+        { value: max, type: "max" },
+        { value: latest, type: "current" },
+        { value: min, type: "min" }
+      ].forEach((candidate) => {
+        const existing = levelEntries.find((entry) => Math.abs(entry.value - candidate.value) < 1e-9);
+        if (existing) {
+          existing.types.push(candidate.type);
+        } else {
+          levelEntries.push({ value: candidate.value, types: [candidate.type] });
+        }
+      });
+      const levels = separatedLabelPositions(
+        levelEntries.map((entry) => ({
+          value: entry.value,
+          label: formatAxisValue(entry.value),
+          y: yFor(entry.value),
+          className: entry.types.map((type) => `level-${type}`).join(" ")
+        })),
+        levelMinY,
+        levelMaxY
+      );
+      const yAxis = levels.map((level) => {
+        const labelY = level.labelY;
+        return `<g>
+          <text class="${level.className}" x="${axisGuideStart.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="end" dominant-baseline="middle">${level.label}</text>
+        </g>`;
+      }).join("");
+      const ticks = chartTicks(displayPoints, left, right, true, xFor, metric);
+      const yBackgroundLines = levels.map((level) => `
+        <line x1="${left}" y1="${level.y.toFixed(1)}" x2="${right}" y2="${level.y.toFixed(1)}" class="chart-background-line level-line ${level.className}"></line>
+      `).join("");
+      const xBackgroundLines = ticks.map((tick) => `
+        <line x1="${tick.x.toFixed(1)}" y1="${top}" x2="${tick.x.toFixed(1)}" y2="${axisY}" class="chart-background-line"></line>
+      `).join("");
+      const xGuides = ticks.map((tick) => {
+        const anchor = tick.x <= left + 2 ? "start" : tick.x >= right - 2 ? "end" : "middle";
+        return `<text x="${tick.x.toFixed(1)}" y="${labelBottom}" text-anchor="${anchor}">${tick.label}</text>`;
+      }).join("");
+      const tooltipUnit = detailChartUnit(metric || {});
+      const pointHits = displayPoints.map((point, index) => {
+        const x = xFor(point, index);
+        const y = yFor(point.value);
+        const previous = index > 0 ? displayPoints[index - 1] : null;
+        return `<circle class="detail-point-hit" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="10" fill="transparent" stroke="transparent" tabindex="0"
+          data-point-index="${index}"
+          data-point-x="${x.toFixed(1)}"
+          data-point-y="${y.toFixed(1)}"
+          data-point-value="${point.value}"
+          data-tooltip-title="${escapeHtml(localizedField(metric, "name"))}"
+          data-tooltip-date="${escapeHtml(chartPointDateLabel(point.date, metric))}"
+          data-tooltip-value="${escapeHtml(detailPointValueLabel(point.value, tooltipUnit))}"
+          data-tooltip-change="${escapeHtml(detailPointChangeLabel(point, previous, tooltipUnit))}"></circle>`;
+      }).join("");
+      const latestX = xFor(displayPoints[displayPoints.length - 1], displayPoints.length - 1);
+      const latestY = yFor(latest);
+      return `<div class="detail-chart">
+        <svg class="${axisClass}" viewBox="0 0 ${axisWidth} ${chartHeight}" preserveAspectRatio="none" aria-hidden="true"
+          data-axis-guide-start="${axisGuideStart}"
+          data-axis-y="${axisY}"
+          data-level-min-y="${levelMinY}"
+          data-level-max-y="${levelMaxY}"
+          data-current-value="${latest}"
+          data-current-y="${latestY.toFixed(1)}"
+          data-current-label="${escapeHtml(formatAxisValue(latest))}">
+          ${yAxis}
+          <line x1="${axisGuideStart}" y1="${axisY}" x2="${axisWidth}" y2="${axisY}" class="axis-line"></line>
+        </svg>
+        <div class="detail-chart-scroll">
+          <svg class="${plotClass}"${chartStyle} viewBox="0 0 ${svgWidth} ${chartHeight}" preserveAspectRatio="none" role="img" aria-label="trend"
+            data-chart-left="${left}"
+            data-chart-right="${right}"
+            data-chart-top="${top}"
+            data-chart-bottom="${bottom}"
+            data-chart-axis-y="${axisY}">
+            ${yBackgroundLines}
+            ${xBackgroundLines}
+            <line x1="${left}" y1="${axisY}" x2="${right}" y2="${axisY}" class="axis-line"></line>
+            ${xGuides}
+            ${bandMarkup}
+            <polyline points="${points}" class="trend-line ${trend}"></polyline>
+            <circle cx="${latestX}" cy="${latestY.toFixed(1)}" r="4" class="current-dot ${trend}"></circle>
+            ${pointHits}
+          </svg>
+        </div>
+        ${bandLegendMarkup}
+        <div class="detail-chart-tooltip" role="status" aria-live="polite"></div>
+      </div>`;
+    }
+
+    function miniChart(history, metric = null) {
+      const displayPoints = displayHistory(history, metric);
+      const chartClass = "chart chart-mini";
+      if (!displayPoints || displayPoints.length < 2) {
+        return `<svg class="${chartClass}" viewBox="0 0 160 36" role="img" aria-label="trend unavailable"></svg>`;
+      }
+      const values = displayPoints.map((point) => point.value).filter((value) => typeof value === "number" && Number.isFinite(value));
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+      const latest = displayPoints[displayPoints.length - 1].value;
+      const first = displayPoints[0].value;
+      const span = max - min || 1;
+      const left = 4;
+      const right = 156;
+      const top = 5;
+      const bottom = 31;
+      const yFor = (value) => bottom - ((value - min) / span) * (bottom - top);
+      const points = displayPoints.map((point, index) => {
+        const x = left + (index / Math.max(displayPoints.length - 1, 1)) * (right - left);
+        const y = yFor(point.value);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(" ");
+      const trend = latest >= first ? "up" : "down";
+      return `<svg class="${chartClass}" viewBox="0 0 160 36" role="img" aria-label="trend">
+        <polyline points="${points}" class="trend-line ${trend}"></polyline>
+      </svg>`;
+    }
+
+    function chart(history, extraClass = "", metric = null) {
+      if (extraClass.split(" ").includes("chart-mini")) {
+        return miniChart(history, metric);
+      }
+      const displayPoints = displayHistory(history, metric);
+      const chartClass = `chart${extraClass ? ` ${extraClass}` : ""}`;
+      const isDetailChart = extraClass.split(" ").includes("chart-detail");
+      const svgWidth = isDetailChart ? detailChartWidth(displayPoints) : 360;
+      const chartStyle = isDetailChart ? ` style="--detail-chart-width: ${svgWidth}px"` : "";
+      const left = 62;
+      const right = svgWidth - 16;
+      if (!displayPoints || displayPoints.length < 2) {
+        return `<svg class="${chartClass}"${chartStyle} viewBox="0 0 ${svgWidth} 158" role="img" aria-label="trend unavailable">
+          <line x1="${left}" y1="72" x2="${right}" y2="72" class="guide"></line>
+        </svg>`;
+      }
+      const values = displayPoints.map((point) => point.value).filter((value) => typeof value === "number" && Number.isFinite(value));
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+      const latest = displayPoints[displayPoints.length - 1].value;
+      const first = displayPoints[0].value;
+      const span = max - min || 1;
+      const top = 16;
+      const bottom = 116;
+      const yFor = (value) => bottom - ((value - min) / span) * (bottom - top);
+      const xFor = isDetailChart ? chartXScale(displayPoints, left, right) : null;
+      const points = displayPoints.map((point, index) => {
+        const x = xFor
+          ? xFor(point, index)
+          : left + (index / Math.max(displayPoints.length - 1, 1)) * (right - left);
+        const y = yFor(point.value);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(" ");
+      const trend = latest >= first ? "up" : "down";
+      const levelValues = [];
+      [max, latest, min].forEach((value) => {
+        if (!levelValues.some((existing) => Math.abs(existing - value) < 1e-9)) {
+          levelValues.push(value);
+        }
+      });
+      const levels = separatedLabelPositions(
+        levelValues.map((value) => ({
+          value,
+          label: formatAxisValue(value),
+          y: yFor(value)
+        })),
+        14,
+        118
+      );
+      const yGuides = levels.map((level) => {
+        const y = level.y;
+        const labelY = level.labelY;
+        const connector = Math.abs(labelY - y) > 7
+          ? `<line x1="50" y1="${labelY.toFixed(1)}" x2="${left}" y2="${y.toFixed(1)}" class="guide"></line>`
+          : "";
+        return `<g>
+          <text x="8" y="${labelY.toFixed(1)}" dominant-baseline="middle">${level.label}</text>
+          ${connector}
+          <line x1="${left}" y1="${y.toFixed(1)}" x2="${right}" y2="${y.toFixed(1)}" class="guide"></line>
+        </g>`;
+      }).join("");
+      const xGuides = chartTicks(displayPoints, left, right, isDetailChart, xFor, metric).map((tick) => `
+        <text x="${tick.x.toFixed(1)}" y="146" text-anchor="middle">${tick.label}</text>
+      `).join("");
+      const latestX = xFor
+        ? xFor(displayPoints[displayPoints.length - 1], displayPoints.length - 1)
+        : right;
+      const latestY = yFor(latest);
+      return `<svg class="${chartClass}"${chartStyle} viewBox="0 0 ${svgWidth} 158" role="img" aria-label="trend">
+        ${yGuides}
+        <line x1="${left}" y1="126" x2="${right}" y2="126" class="axis-line"></line>
+        ${xGuides}
+        <polyline points="${points}" class="trend-line ${trend}"></polyline>
+        <circle cx="${latestX}" cy="${latestY.toFixed(1)}" r="4" class="current-dot ${trend}"></circle>
+      </svg>`;
+    }
+
+    function dateText(value, metric = null) {
+      if (!value) return t("irregular");
+      if (String(value).includes("비정기")) return t("irregular");
+      const parts = zonedDateParts(value, metric);
+      if (!parts) return value;
+      if (state.language === "en") {
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const month = monthNames[Math.max(0, Math.min(11, Number(parts.month) - 1))];
+        return parts.day ? `${month} ${Number(parts.day)}, ${parts.year}` : `${month} ${parts.year}`;
+      }
+      const year = String(parts.year).slice(2);
+      const month = String(Number(parts.month));
+      const day = parts.day ? ` ${Number(parts.day)}일` : "";
+      return `${year}년 ${month}월${day}`;
+    }
+
+    function detailStat(label, value, className = "") {
+      return `<div class="detail-stat">
+        <span class="detail-label">${escapeHtml(label)}</span>
+        <strong class="detail-value ${className}">${escapeHtml(value)}</strong>
+      </div>`;
+    }
+
+    function displayPeriodLabel(metric) {
+      const history = Array.isArray(metric?.history) ? metric.history : [];
+      if (history.length) {
+        const start = dateText(history[0].date, metric);
+        const end = dateText(history[history.length - 1].date, metric);
+        return start === end ? start : `${start} - ${end}`;
+      }
+      return dateText(metric?.observed_label || metric?.observed_at || "", metric);
+    }
+
+    function metricStatusMarkup(metric) {
+      let markup = "";
+      if (metric?.daily_status === "new") {
+        markup += `<span class="metric-new-badge">${escapeHtml(t("newBadge"))}</span>`;
+      } else if (metric?.daily_status === "updated") {
+        markup += `<span class="metric-update-dot" aria-label="${escapeHtml(t("updatedBadge"))}" title="${escapeHtml(t("updatedBadge"))}"></span>`;
+      }
+      if (metric?.is_stale) {
+        const staleTitle = `${t("staleBadge")}: ${dateText(metric.observed_label, metric)}`;
+        markup += `<span class="metric-stale-badge" title="${escapeHtml(staleTitle)}">${escapeHtml(t("staleBadge"))}</span>`;
+      }
+      return markup;
+    }
+
+    function metricById(metricId) {
+      return (DASHBOARD_DATA.metrics || []).find((metric) => metric.id === metricId) || null;
+    }
+
+    function savedFavoriteMetricIds() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(favoriteMetricStorageKey) || "[]");
+        if (!Array.isArray(parsed)) return [];
+        const validIds = new Set((DASHBOARD_DATA.metrics || []).map((metric) => metric.id));
+        return parsed.map(String).filter((id) => validIds.has(id));
+      } catch (_error) {
+        return [];
+      }
+    }
+
+    function saveFavoriteMetricIds() {
+      localStorage.setItem(favoriteMetricStorageKey, JSON.stringify([...state.favoriteMetricIds]));
+    }
+
+    function initFavoriteMetrics() {
+      state.favoriteMetricIds = new Set(savedFavoriteMetricIds());
+    }
+
+    function isFavoriteMetric(metricId) {
+      return state.favoriteMetricIds.has(metricId);
+    }
+
+    function favoriteButtonMarkup(metric) {
+      const active = isFavoriteMetric(metric.id);
+      const label = active ? t("removeFavorite") : t("addFavorite");
+      return `<button class="metric-favorite-button${active ? " is-active" : ""}" type="button" data-favorite-toggle="${escapeHtml(metric.id)}" aria-label="${escapeHtml(label)}" title="${escapeHtml(label)}" aria-pressed="${active ? "true" : "false"}">
+        <i class="fa-${active ? "solid" : "regular"} fa-star" aria-hidden="true"></i>
+      </button>`;
+    }
+
+    function toggleFavoriteMetric(metricId) {
+      if (!metricById(metricId)) return;
+      if (state.favoriteMetricIds.has(metricId)) {
+        state.favoriteMetricIds.delete(metricId);
+      } else {
+        state.favoriteMetricIds.add(metricId);
+      }
+      saveFavoriteMetricIds();
+      renderDailyUpdates();
+      renderIndustries();
+    }
+
+    function initFavoriteButtons() {
+      document.querySelectorAll("[data-favorite-toggle]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          toggleFavoriteMetric(button.dataset.favoriteToggle);
+        });
+      });
+    }
+
+    function metricDetail(metric) {
+      return `<div class="metric-detail-panel">
+        <div class="metric-detail-inner">
+          <div class="detail-chart-host" data-chart-host="${escapeHtml(metric.id)}">${detailChart(metric.history, metric)}</div>
+          <div class="detail-range-toggle" data-range-toggle="${escapeHtml(metric.id)}" hidden>
+            <button type="button" class="is-active" data-range="recent">${escapeHtml(t("rangeRecent"))}</button>
+            <button type="button" data-range="full">${escapeHtml(t("rangeFull"))}</button>
+          </div>
+          <div class="detail-stats">
+            ${detailStat(t("currentValue"), displayMetricValue(metric))}
+            ${detailStat(t("previousChange"), displayMetricChange(metric), directionClass(metric.change_abs))}
+            ${detailStat(t("previousChangePct"), metric.change_pct_label, directionClass(metric.change_pct))}
+            ${detailStat(t("yoy"), metric.yoy_pct_label, directionClass(metric.yoy_pct))}
+            ${percentileDetailStats(metric)}
+            ${detailStat(t("visiblePeriod"), displayPeriodLabel(metric))}
+            ${detailStat(t("updateFrequency"), localizedField(metric, "frequency") || t("irregular"))}
+          </div>
+        </div>
+      </div>`;
+    }
+
+    function metricRows(metric) {
+      const detailId = `metric-detail-${metric.id}`;
+      return `<tr class="metric-row" data-metric-row data-metric-id="${escapeHtml(metric.id)}" data-detail-id="${detailId}">
+        <td class="metric-name-cell" data-label="${escapeHtml(t("metric"))}">
+          <button class="metric-toggle" type="button" data-metric-toggle aria-expanded="false" aria-controls="${detailId}">
+            <span class="metric-name-wrap">
+              <span class="metric-name">${escapeHtml(localizedField(metric, "name"))}</span>
+              ${metricStatusMarkup(metric)}
+            </span>
+            <span class="metric-mobile-description">${escapeHtml(localizedField(metric, "meaning"))}</span>
+          </button>
+        </td>
+        <td class="metric-description-cell" data-label="${escapeHtml(t("description"))}">
+          <p class="metric-description">${escapeHtml(localizedField(metric, "meaning"))}</p>
+        </td>
+        <td class="metric-date-cell" data-label="${escapeHtml(t("lastUpdated"))}">
+          <span class="metric-date">${escapeHtml(dateText(metric.observed_label, metric))}</span>
+        </td>
+        <td class="metric-date-cell" data-label="${escapeHtml(t("nextUpdate"))}">
+          <span class="metric-date">${escapeHtml(dateText(metric.next_update_label, metric))}</span>
+        </td>
+        <td class="metric-value-cell" data-label="${escapeHtml(t("currentValue"))}">
+          <span class="metric-value-wrap">
+            <span class="metric-current-value">${escapeHtml(displayMetricValue(metric))}</span>
+            ${metricChangeBadge(metric)}
+            ${percentileBadge(metric)}
+          </span>
+        </td>
+        <td class="metric-chart-cell" data-label="${escapeHtml(t("chart"))}">
+          ${chart(metric.history, "chart-mini", metric)}
+        </td>
+        <td class="metric-favorite-cell" data-label="${escapeHtml(t("favoriteMetrics"))}">
+          ${favoriteButtonMarkup(metric)}
+        </td>
+      </tr>
+      <tr class="metric-detail-row" id="${detailId}" aria-hidden="true">
+        <td colspan="7">${metricDetail(metric)}</td>
+      </tr>`;
+    }
+
+    function changedMetrics() {
+      return (DASHBOARD_DATA.metrics || []).filter((metric) =>
+        metric.daily_status === "updated" || metric.daily_status === "new"
+      );
+    }
+
+    function jumpToMetric(metricId) {
+      const row = document.querySelector(`[data-metric-id="${metricId}"]`);
+      if (!row) return;
+      row.scrollIntoView({ behavior: "smooth", block: "center" });
+      row.classList.add("is-highlighted");
+      window.setTimeout(() => row.classList.remove("is-highlighted"), 1400);
+    }
+
+    function initDailyUpdateLinks() {
+      document.querySelectorAll("[data-daily-update-metric]").forEach((button) => {
+        button.addEventListener("click", () => jumpToMetric(button.dataset.dailyUpdateMetric));
+      });
+      document.querySelectorAll("[data-briefing-metric]").forEach((button) => {
+        button.addEventListener("click", () => jumpToMetric(button.dataset.briefingMetric));
+      });
+      document.querySelectorAll("[data-favorite-card]").forEach((button) => {
+        button.addEventListener("click", () => jumpToMetric(button.dataset.favoriteCard));
+        button.addEventListener("keydown", (event) => {
+          if (event.target.closest("[data-favorite-toggle]")) return;
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          jumpToMetric(button.dataset.favoriteCard);
+        });
+      });
+    }
+
+    function briefingStatusLabel(briefing) {
+      if (briefing?.status === "ok") return t("aiBriefing");
+      return t("fallbackBriefing");
+    }
+
+    function aiSparkleIconMarkup() {
+      return `<svg class="ai-sparkle-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="aiSparkleGradient" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#3b82f6"></stop>
+            <stop offset="0.52" stop-color="#5c6cff"></stop>
+            <stop offset="1" stop-color="#6366f1"></stop>
+          </linearGradient>
+        </defs>
+        <path d="M11.017 2.814C11.213 1.777 12.787 1.777 12.983 2.814L14.034 8.372C14.189 9.189 14.811 9.811 15.628 9.966L21.186 11.017C22.223 11.213 22.223 12.787 21.186 12.983L15.628 14.034C14.811 14.189 14.189 14.811 14.034 15.628L12.983 21.186C12.787 22.223 11.213 22.223 11.017 21.186L9.966 15.628C9.811 14.811 9.189 14.189 8.372 14.034L2.814 12.983C1.777 12.787 1.777 11.213 2.814 11.017L8.372 9.966C9.189 9.811 9.811 9.189 9.966 8.372Z"></path>
+      </svg>`;
+    }
+
+    function briefingBulletMarkup(item) {
+      const metricIds = Array.isArray(item?.metric_ids) ? item.metric_ids.filter(Boolean) : [];
+      const content = `<span class="briefing-bullet-title">${escapeHtml(item?.title || "")}</span>
+        <span class="briefing-bullet-body">${escapeHtml(item?.body || "")}</span>`;
+      if (metricIds.length) {
+        return `<li class="briefing-bullet"><button class="briefing-bullet-button" type="button" data-briefing-metric="${escapeHtml(metricIds[0])}">${content}</button></li>`;
+      }
+      return `<li class="briefing-bullet"><span class="briefing-bullet-static">${content}</span></li>`;
+    }
+
+    function percentileWindowStats(metric) {
+      const stats = metric?.percentiles;
+      if (!stats) return null;
+      const windowStats = stats.y10 || stats.all;
+      if (!windowStats || typeof windowStats.pct !== "number") return null;
+      return windowStats;
+    }
+
+    function percentileBadge(metric) {
+      const windowStats = percentileWindowStats(metric);
+      if (!windowStats) return "";
+      const pct = windowStats.pct;
+      const cls = pct >= 80 ? "pct-high" : pct <= 20 ? "pct-low" : "pct-mid";
+      return `<span class="pct-badge ${cls}" title="${escapeHtml(t("percentile10y"))}">${Math.round(pct)}%</span>`;
+    }
+
+    function percentileDetailStats(metric) {
+      const stats = metric?.percentiles;
+      if (!stats) return "";
+      const windowStats = stats.y10 || stats.all;
+      const allStats = stats.all;
+      let html = "";
+      if (windowStats && typeof windowStats.pct === "number") {
+        html += detailStat(t("percentile10y"), `${Math.round(windowStats.pct)}%`);
+      }
+      if (allStats && typeof allStats.min === "number" && typeof allStats.max === "number") {
+        html += detailStat(t("fullRange"), `${formatAxisValue(allStats.min)} ~ ${formatAxisValue(allStats.max)}`);
+      }
+      if (allStats?.from) {
+        html += detailStat(t("dataSince"), dateText(String(allStats.from).slice(0, 7)));
+      }
+      return html;
+    }
+
+    function detailBandStats(metric) {
+      const stats = metric?.percentiles?.y10 || metric?.percentiles?.all;
+      if (!stats) return null;
+      const scale = state.currency === "krw" ? dollarUnitScale(metric || {}) : null;
+      const factor = scale ? scale.scale : 1;
+      const p20 = Number(stats.p20);
+      const p80 = Number(stats.p80);
+      const median = Number(stats.median);
+      if (![p20, p80, median].every(Number.isFinite)) return null;
+      return { p20: p20 * factor, p80: p80 * factor, median: median * factor };
+    }
+
+    function thermometerClass(score) {
+      if (score >= 80) return "heat-hot";
+      if (score >= 60) return "heat-warm";
+      if (score >= 45) return "heat-neutral";
+      if (score >= 25) return "heat-cool";
+      return "heat-cold";
+    }
+
+    function gaugeComponentMarkup(component) {
+      const inner = `<span class="gauge-component-name">${escapeHtml(component.name)}</span>
+        <span class="gauge-component-value">${escapeHtml(component.value_label || "")}</span>
+        <span class="gauge-component-heat">${escapeHtml(component.basis || "")} ${escapeHtml(String(component.percentile))}% → ${escapeHtml(t("heatLabel"))} ${escapeHtml(String(component.heat))}</span>`;
+      if (component.metric_id) {
+        return `<li><button type="button" data-briefing-metric="${escapeHtml(component.metric_id)}">${inner}</button></li>`;
+      }
+      return `<li><span class="gauge-component-static">${inner}</span></li>`;
+    }
+
+    function signalChipMarkup(signal) {
+      const cls = `signal-chip signal-${escapeHtml(signal.status || "ok")}`;
+      const inner = `<span class="signal-name">${escapeHtml(signal.name)}</span>
+        <span class="signal-value">${escapeHtml(signal.value_label || "")}</span>`;
+      const title = escapeHtml(signal.description || "");
+      if (signal.metric_id) {
+        return `<button type="button" class="${cls}" title="${title}" data-briefing-metric="${escapeHtml(signal.metric_id)}">${inner}</button>`;
+      }
+      return `<span class="${cls}" title="${title}">${inner}</span>`;
+    }
+
+    function renderMarketGauges() {
+      const gauges = DASHBOARD_DATA.market_gauges || {};
+      const thermo = gauges.thermometer;
+      const recession = gauges.recession;
+      if (!thermo && !recession) return "";
+      const thermoHtml = thermo ? `<div class="gauge-card thermometer-card">
+        <div class="gauge-card-head">
+          <h3>${escapeHtml(t("marketThermometer"))}</h3>
+          <span class="thermometer-score ${thermometerClass(thermo.score)}">${escapeHtml(String(thermo.score))} · ${escapeHtml(thermo.label)}</span>
+        </div>
+        <div class="thermometer-track">
+          <div class="thermometer-marker" style="left: ${Math.max(0, Math.min(100, thermo.score))}%"></div>
+        </div>
+        <p class="gauge-comment">${escapeHtml(thermo.comment || "")}</p>
+        <details class="gauge-components">
+          <summary>${escapeHtml(t("thermometerBasis"))}</summary>
+          <ul class="gauge-component-list">${(thermo.components || []).map(gaugeComponentMarkup).join("")}</ul>
+        </details>
+      </div>` : "";
+      const recessionHtml = recession ? `<div class="gauge-card recession-card">
+        <div class="gauge-card-head">
+          <h3>${escapeHtml(t("recessionSignals"))}</h3>
+        </div>
+        <div class="signal-chips">${(recession.signals || []).map(signalChipMarkup).join("")}</div>
+        <p class="gauge-comment">${escapeHtml(recession.summary || "")}</p>
+      </div>` : "";
+      return `<section class="market-gauges">${thermoHtml}${recessionHtml}</section>`;
+    }
+
+    let longHistoryPromise = null;
+    function ensureLongHistory() {
+      if (!longHistoryPromise) {
+        longHistoryPromise = fetch("data/long_history.json")
+          .then((response) => (response.ok ? response.json() : {}))
+          .catch(() => ({}));
+      }
+      return longHistoryPromise;
+    }
+
+    function longHistoryPoints(entry) {
+      return (entry?.points || []).map((point) => ({ date: point[0], value: point[1] }));
+    }
+
+    function initDetailRange(metricId, detail) {
+      const toggle = detail.querySelector("[data-range-toggle]");
+      if (!toggle || toggle.dataset.bound === "true") return;
+      toggle.dataset.bound = "true";
+      ensureLongHistory().then((data) => {
+        const entry = data?.[metricId];
+        if (!entry || !Array.isArray(entry.points) || entry.points.length < 2) return;
+        toggle.hidden = false;
+        toggle.querySelectorAll("button").forEach((button) => {
+          button.addEventListener("click", (event) => {
+            event.stopPropagation();
+            const metric = metricById(metricId);
+            const host = detail.querySelector("[data-chart-host]");
+            if (!metric || !host) return;
+            toggle.querySelectorAll("button").forEach((other) => other.classList.toggle("is-active", other === button));
+            const useFull = button.dataset.range === "full";
+            host.innerHTML = detailChart(useFull ? longHistoryPoints(entry) : metric.history, metric);
+            bindDetailTooltipsWithin(host);
+          });
+        });
+      });
+    }
+
+    function renderMorningBriefing() {
+      const briefing = DASHBOARD_DATA.morning_briefing || {};
+      if (!briefing.headline && !briefing.summary) return "";
+      const bullets = Array.isArray(briefing.bullets) ? briefing.bullets : [];
+      return `<section class="morning-briefing">
+        <div class="morning-briefing-head">
+          <div class="briefing-title">
+            ${aiSparkleIconMarkup()}
+            <h2>${escapeHtml(t("morningBriefing"))}</h2>
+          </div>
+        </div>
+        <p class="briefing-headline">${escapeHtml(briefing.headline || "")}</p>
+        ${briefing.summary ? `<p class="briefing-summary">${escapeHtml(briefing.summary)}</p>` : ""}
+        ${bullets.length ? `<ul class="briefing-bullets">${bullets.map(briefingBulletMarkup).join("")}</ul>` : ""}
+        <p class="briefing-disclaimer">
+          <span class="briefing-disclaimer-icon" aria-hidden="true"><i class="fa-solid fa-info"></i></span>
+          <span>${escapeHtml(t("briefingDisclaimer"))}</span>
+        </p>
+      </section>`;
+    }
+
+    function favoriteMetrics() {
+      return (DASHBOARD_DATA.metrics || []).filter((metric) => state.favoriteMetricIds.has(metric.id));
+    }
+
+    function favoriteMetricCard(metric) {
+      return `<div class="favorite-card" role="button" tabindex="0" data-favorite-card="${escapeHtml(metric.id)}">
+        <button class="favorite-card-star" type="button" data-favorite-toggle="${escapeHtml(metric.id)}" aria-label="${escapeHtml(t("removeFavorite"))}" title="${escapeHtml(t("removeFavorite"))}">
+          <i class="fa-solid fa-star" aria-hidden="true"></i>
+        </button>
+        <span class="favorite-card-top">
+          <span class="favorite-card-meta">${escapeHtml(localizedIndustry(metric.industry))} · ${escapeHtml(localizedGroup(metric.group, [metric]))}</span>
+          <span class="favorite-card-title">${escapeHtml(localizedField(metric, "name"))}</span>
+          <span class="favorite-card-value">${escapeHtml(displayMetricValue(metric))}</span>
+        </span>
+        <span class="favorite-card-chart">${chart(metric.history, "chart-mini", metric)}</span>
+      </div>`;
+    }
+
+    function renderFavoriteMetrics() {
+      const metrics = favoriteMetrics();
+      if (!metrics.length) return "";
+      return `<section class="favorite-metrics">
+        <div class="favorite-metrics-head">
+          <h2>${escapeHtml(t("favoriteMetrics"))}</h2>
+          <span class="favorite-metrics-count">${metrics.length}${state.language === "ko" ? "" : " "}${escapeHtml(t("favoriteCount"))}</span>
+        </div>
+        <div class="favorite-metrics-grid">${metrics.map(favoriteMetricCard).join("")}</div>
+      </section>`;
+    }
+
+    function renderDailyUpdates() {
+      const section = document.getElementById("dailyUpdates");
+      if (!section) return;
+      const summary = DASHBOARD_DATA.daily_changes || {};
+      const changes = changedMetrics();
+      const updatedCount = Number(summary.updated_count || changes.filter((metric) => metric.daily_status === "updated").length);
+      const newCount = Number(summary.new_count || changes.filter((metric) => metric.daily_status === "new").length);
+      const rows = changes.map((metric) => `
+        <button class="daily-update-row" type="button" data-daily-update-metric="${escapeHtml(metric.id)}">
+          <span class="daily-update-main">
+            ${metricStatusMarkup(metric)}
+            <span class="daily-update-title">${escapeHtml(localizedField(metric, "name"))}</span>
+          </span>
+          <span class="daily-update-meta">${escapeHtml(localizedIndustry(metric.industry))} · ${escapeHtml(localizedGroup(metric.group, [metric]))} · ${escapeHtml(dateText(metric.observed_label, metric))}</span>
+          <span class="daily-update-value">${escapeHtml(displayMetricValue(metric))}</span>
+          <span class="daily-update-change ${directionClass(metric.change_pct)}">
+            <i class="fa-solid ${trendIconClass(metric.change_pct)}" aria-hidden="true"></i>
+            <span class="daily-update-change-abs">${escapeHtml(displayMetricChange(metric) || "n/a")}</span>
+            <span class="daily-update-change-pct">${escapeHtml(metric.change_pct_label || "n/a")}</span>
+          </span>
+        </button>
+      `).join("");
+      section.innerHTML = `${renderMorningBriefing()}${renderMarketGauges()}<details class="daily-update-details">
+        <summary class="daily-update-summary">
+          <span>${escapeHtml(t("showDailyChanges"))}</span>
+          <span class="daily-update-summary-icon" aria-hidden="true">›</span>
+        </summary>
+        <div class="daily-update-panel">
+          <div class="daily-update-list">
+            ${rows || `<div class="daily-update-empty">${escapeHtml(t("noDailyChanges"))}</div>`}
+          </div>
+          <div class="daily-update-counts" aria-label="${escapeHtml(t("todayChanges"))}">
+            <span class="daily-update-count">${escapeHtml(t("updatedCount"))} ${updatedCount}</span>
+            <span class="daily-update-count">${escapeHtml(t("newCount"))} ${newCount}</span>
+          </div>
+        </div>
+      </details>${renderFavoriteMetrics()}`;
+      initDailyUpdateLinks();
+    }
+
+    function renderIndustry(industry, metrics) {
+      const icon = DASHBOARD_DATA.industry_icons?.[industry] || "";
+      const renderGroups = (items, hiddenGroup = "") => [...groupMetrics(items, (metric) => metric.group || "핵심 지표").entries()]
+        .sort(([a], [b]) => groupRank(a) - groupRank(b) || String(a).localeCompare(String(b), "ko"))
+        .map(([group, items]) => {
+          const groupTitle = group === hiddenGroup ? "" : `<div class="group-title">${escapeHtml(localizedGroup(group, items))}</div>`;
+          return `
+            <section class="group">
+            ${groupTitle}
+            <div class="metric-table-wrap">
+              <table class="metric-table">
+                <colgroup>
+                  <col class="metric-name-cell">
+                  <col class="metric-description-cell">
+                  <col class="metric-date-cell">
+                  <col class="metric-date-cell">
+                  <col class="metric-value-cell">
+                  <col class="metric-chart-cell">
+                  <col class="metric-favorite-cell">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th scope="col" data-mobile-label="${escapeHtml(t("metricSummary"))}">${escapeHtml(t("metric"))}</th>
+                    <th scope="col">${escapeHtml(t("description"))}</th>
+                    <th scope="col">${escapeHtml(t("lastUpdated"))}</th>
+                    <th scope="col">${escapeHtml(t("nextUpdate"))}</th>
+                    <th scope="col" data-mobile-label="${escapeHtml(t("metricValueShort"))}">${escapeHtml(t("currentValue"))}</th>
+                    <th scope="col" data-mobile-label="${escapeHtml(t("chart"))}">${escapeHtml(t("chart"))}</th>
+                    <th scope="col"><span class="sr-only">${escapeHtml(t("favoriteMetrics"))}</span></th>
+                  </tr>
+                </thead>
+                <tbody>${items.map(metricRows).join("")}</tbody>
+              </table>
+            </div>
+          </section>
+        `;
+        }).join("");
+      const semiconductorGroups = industry === "반도체"
+        ? [...groupMetrics(metrics, (metric) => metric.depth || "전체 업황").entries()]
+            .sort(([a], [b]) => depthRank(a) - depthRank(b) || String(a).localeCompare(String(b), "ko"))
+        : [];
+      const renderDepthSection = ([depth, items]) => `
+        <section class="depth-section" id="${depthId(industry, depth)}" data-depth-section data-depth-name="${escapeHtml(depth)}">
+          <div class="depth-title">${escapeHtml(localizedDepth(depth, items))}</div>
+          ${renderGroups(items, depth)}
+        </section>
+      `;
+      const groupHtml = industry === "반도체"
+        ? [
+            ...semiconductorGroups
+              .filter(([depth]) => depth === "전체 업황")
+              .map(([, items]) => renderGroups(items)),
+            (() => {
+              const depthHtml = semiconductorGroups
+                .filter(([depth]) => depth !== "전체 업황")
+                .map(renderDepthSection)
+                .join("");
+              return depthHtml ? `<div class="depth-tree">${depthHtml}</div>` : "";
+            })()
+          ].join("")
+        : renderGroups(metrics);
+
+      return `<article class="industry" id="${industryId(industry)}" data-industry-section data-industry-name="${escapeHtml(industry)}">
+        <div class="industry-head">
+          <div class="industry-icon-wrap">${icon ? `<img class="industry-icon" src="${escapeHtml(icon)}" alt="">` : ""}</div>
+          <div>
+            <h2>${escapeHtml(localizedIndustry(industry))}</h2>
+          </div>
+        </div>
+        <div class="group-stack">${groupHtml}</div>
+      </article>`;
+    }
+
+    function renderIndustries() {
+      const metrics = DASHBOARD_DATA.metrics;
+      const stack = document.getElementById("industryStack");
+      document.getElementById("empty").style.display = metrics.length ? "none" : "block";
+      const byIndustry = metrics.reduce((map, metric) => {
+        map.set(metric.industry, [...(map.get(metric.industry) || []), metric]);
+        return map;
+      }, new Map());
+      stack.innerHTML = visibleIndustries()
+        .filter((industry) => byIndustry.has(industry))
+        .map((industry) => renderIndustry(industry, byIndustry.get(industry)))
+        .join("");
+      initMetricRows();
+      scheduleBranchLineUpdate();
+      updateActiveFromScroll();
+    }
+
+    function toggleMetricRow(row) {
+      const detail = document.getElementById(row.dataset.detailId);
+      const toggle = row.querySelector("[data-metric-toggle]");
+      if (!detail || !toggle) return;
+      const expanded = !row.classList.contains("is-expanded");
+      row.classList.toggle("is-expanded", expanded);
+      detail.classList.toggle("is-open", expanded);
+      detail.setAttribute("aria-hidden", String(!expanded));
+      toggle.setAttribute("aria-expanded", String(expanded));
+      if (expanded) {
+        initDetailRange(row.dataset.metricId, detail);
+        const scroller = detail.querySelector(".detail-chart-scroll");
+        if (scroller) {
+          requestAnimationFrame(() => {
+            scroller.scrollLeft = Math.max(0, scroller.scrollWidth - scroller.clientWidth);
+            scheduleDynamicDetailAxis(scroller.closest(".detail-chart"));
+          });
+        }
+      }
+      scheduleBranchLineUpdate();
+    }
+
+    function tooltipMarkup(point) {
+      return `<div class="detail-tooltip-title">${escapeHtml(point.dataset.tooltipTitle || "")}</div>
+        <div class="detail-tooltip-row">
+          <span class="detail-tooltip-label">${escapeHtml(t("tooltipPeriod"))}</span>
+          <span class="detail-tooltip-value">${escapeHtml(point.dataset.tooltipDate || "")}</span>
+        </div>
+        <div class="detail-tooltip-row">
+          <span class="detail-tooltip-label">${escapeHtml(t("tooltipValue"))}</span>
+          <span class="detail-tooltip-value">${escapeHtml(point.dataset.tooltipValue || "")}</span>
+        </div>
+        <div class="detail-tooltip-row">
+          <span class="detail-tooltip-label">${escapeHtml(t("tooltipChange"))}</span>
+          <span class="detail-tooltip-value">${escapeHtml(point.dataset.tooltipChange || "")}</span>
+        </div>`;
+    }
+
+    function showDetailTooltip(point, pinned = false) {
+      const chart = point.closest(".detail-chart");
+      const tooltip = chart?.querySelector(".detail-chart-tooltip");
+      if (!chart || !tooltip) return;
+      chart.dataset.tooltipPinned = pinned ? "true" : "false";
+      tooltip.innerHTML = tooltipMarkup(point);
+      tooltip.classList.add("is-visible");
+      const chartRect = chart.getBoundingClientRect();
+      const pointRect = point.getBoundingClientRect();
+      const rawLeft = pointRect.left + pointRect.width / 2 - chartRect.left;
+      const rawTop = pointRect.top - chartRect.top;
+      const tooltipWidth = tooltip.offsetWidth || 180;
+      const tooltipHeight = tooltip.offsetHeight || 80;
+      const left = Math.min(Math.max(rawLeft, tooltipWidth / 2 + 4), chartRect.width - tooltipWidth / 2 - 4);
+      const top = Math.min(Math.max(rawTop + 4, 4), Math.max(4, chartRect.height - tooltipHeight - 16));
+      tooltip.style.left = `${left}px`;
+      tooltip.style.top = `${top}px`;
+    }
+
+    function hideDetailTooltip(chart, force = false) {
+      if (!chart) return;
+      if (!force && chart.dataset.tooltipPinned === "true") return;
+      chart.dataset.tooltipPinned = "false";
+      const tooltip = chart.querySelector(".detail-chart-tooltip");
+      tooltip?.classList.remove("is-visible");
+    }
+
+    function detailChartGeometry(chart) {
+      const axis = chart?.querySelector(".detail-chart-axis");
+      const scroller = chart?.querySelector(".detail-chart-scroll");
+      const plot = chart?.querySelector(".chart-detail");
+      if (!axis || !scroller || !plot) return null;
+      const viewBoxWidth = plot.viewBox?.baseVal?.width || 1;
+      const renderedWidth = plot.getBoundingClientRect().width || plot.clientWidth || viewBoxWidth;
+      const scale = renderedWidth / Math.max(viewBoxWidth, 1);
+      return {
+        axis,
+        scroller,
+        plot,
+        axisGuideStart: Number(axis.dataset.axisGuideStart) || 40,
+        axisY: Number(plot.dataset.chartAxisY) || Number(axis.dataset.axisY) || 126,
+        levelMinY: Number(axis.dataset.levelMinY) || 12,
+        levelMaxY: Number(axis.dataset.levelMaxY) || 116,
+        left: Number(plot.dataset.chartLeft) || 1,
+        right: Number(plot.dataset.chartRight) || viewBoxWidth,
+        top: Number(plot.dataset.chartTop) || 18,
+        bottom: Number(plot.dataset.chartBottom) || 146,
+        visibleLeft: scroller.scrollLeft / Math.max(scale, 0.001),
+        visibleRight: (scroller.scrollLeft + scroller.clientWidth) / Math.max(scale, 0.001)
+      };
+    }
+
+    function detailChartAllPoints(chart) {
+      const plot = chart?.querySelector(".chart-detail");
+      if (!plot) return [];
+      return [...plot.querySelectorAll(".detail-point-hit")]
+        .map((point) => ({
+          element: point,
+          x: Number(point.dataset.pointX),
+          value: Number(point.dataset.pointValue)
+        }))
+        .filter((point) =>
+          Number.isFinite(point.x) &&
+          Number.isFinite(point.value)
+        );
+    }
+
+    function detailChartVisiblePoints(chart) {
+      const geometry = detailChartGeometry(chart);
+      const points = detailChartAllPoints(chart);
+      if (!geometry || !points.length) return [];
+      const visible = points.filter((point) =>
+        point.x >= geometry.visibleLeft - 1 &&
+        point.x <= geometry.visibleRight + 1
+      );
+      return visible.length ? visible : points;
+    }
+
+    function dynamicDetailChartState(chart) {
+      const geometry = detailChartGeometry(chart);
+      const points = detailChartAllPoints(chart);
+      if (!geometry || !points.length) return null;
+      const visiblePoints = detailChartVisiblePoints(chart);
+      if (!visiblePoints.length) return null;
+      const high = visiblePoints.reduce((selected, point) => point.value > selected.value ? point : selected, visiblePoints[0]);
+      const low = visiblePoints.reduce((selected, point) => point.value < selected.value ? point : selected, visiblePoints[0]);
+      let min = low.value;
+      let max = high.value;
+      if (Math.abs(max - min) < 1e-9) {
+        const pad = Math.max(Math.abs(max) * 0.01, 1);
+        min -= pad;
+        max += pad;
+      }
+      const span = max - min || 1;
+      const unclampedYFor = (value) => geometry.bottom - ((value - min) / span) * (geometry.bottom - geometry.top);
+      const yFor = (value) => Math.min(geometry.bottom, Math.max(geometry.top, unclampedYFor(value)));
+      return { ...geometry, points, visiblePoints, high, low, min, max, span, yFor };
+    }
+
+    function dynamicAxisEntries(chart, state = dynamicDetailChartState(chart)) {
+      if (!state) return [];
+      const currentValue = Number(state.axis.dataset.currentValue);
+      const currentAbove = Number.isFinite(currentValue) && currentValue > state.high.value;
+      const currentBelow = Number.isFinite(currentValue) && currentValue < state.low.value;
+      const entries = [];
+      if (!currentAbove) {
+        entries.push({ value: state.high.value, y: state.yFor(state.high.value), type: "max" });
+      }
+      if (!currentBelow) {
+        entries.push({ value: state.low.value, y: state.yFor(state.low.value), type: "min" });
+      }
+      if (Number.isFinite(currentValue)) {
+        entries.push({
+          value: currentValue,
+          y: state.yFor(currentValue),
+          type: currentAbove || currentBelow ? "current edge-current" : "current"
+        });
+      }
+      const merged = [];
+      entries.forEach((entry) => {
+        const existing = merged.find((item) => Math.abs(item.value - entry.value) < 1e-9);
+        if (existing) {
+          existing.type = `${existing.type} ${entry.type}`;
+        } else {
+          merged.push({ ...entry });
+        }
+      });
+      return merged;
+    }
+
+    function updateDynamicDetailPlot(state) {
+      const pointsAttr = state.points
+        .map((point) => `${point.x.toFixed(1)},${state.yFor(point.value).toFixed(1)}`)
+        .join(" ");
+      state.plot.querySelector(".trend-line")?.setAttribute("points", pointsAttr);
+      state.points.forEach((point) => {
+        const y = state.yFor(point.value);
+        point.element.setAttribute("cy", y.toFixed(1));
+        point.element.dataset.pointY = y.toFixed(1);
+      });
+      const currentValue = Number(state.axis.dataset.currentValue);
+      const currentDot = state.plot.querySelector(".current-dot");
+      if (currentDot && Number.isFinite(currentValue)) {
+        currentDot.setAttribute("cy", state.yFor(currentValue).toFixed(1));
+      }
+      const band = state.plot.querySelector(".pct-band");
+      if (band) {
+        const p20 = Number(band.dataset.bandP20);
+        const p80 = Number(band.dataset.bandP80);
+        if (Number.isFinite(p20) && Number.isFinite(p80)) {
+          const y80 = state.yFor(p80);
+          const y20 = state.yFor(p20);
+          band.setAttribute("y", Math.min(y80, y20).toFixed(1));
+          band.setAttribute("height", Math.max(1, Math.abs(y20 - y80)).toFixed(1));
+        }
+      }
+      const median = state.plot.querySelector(".pct-band-median");
+      if (median) {
+        const medianValue = Number(median.dataset.bandMedian);
+        if (Number.isFinite(medianValue)) {
+          const y = state.yFor(medianValue).toFixed(1);
+          median.setAttribute("y1", y);
+          median.setAttribute("y2", y);
+        }
+      }
+    }
+
+    function updateDynamicLevelLines(state, levels) {
+      state.plot.querySelectorAll(".chart-background-line.level-line").forEach((line) => line.remove());
+      const lines = levels.map((level) => `
+        <line x1="${state.left}" y1="${level.y.toFixed(1)}" x2="${state.right}" y2="${level.y.toFixed(1)}" class="chart-background-line level-line ${level.className}"></line>
+      `).join("");
+      const insertTarget = state.plot.querySelector(".chart-background-line") || state.plot.querySelector(".axis-line");
+      if (insertTarget) {
+        insertTarget.insertAdjacentHTML("beforebegin", lines);
+      } else {
+        state.plot.insertAdjacentHTML("afterbegin", lines);
+      }
+    }
+
+    function renderDynamicDetailAxis(chart) {
+      const state = dynamicDetailChartState(chart);
+      if (!state) return;
+      updateDynamicDetailPlot(state);
+      const entries = dynamicAxisEntries(chart, state);
+      if (!entries.length) return;
+      const levels = separatedLabelPositions(
+        entries.map((entry) => ({
+          value: entry.value,
+          label: formatAxisValue(entry.value),
+          y: Math.min(state.levelMaxY, Math.max(state.levelMinY, entry.y)),
+          className: entry.type.split(/\s+/).map((type) => `level-${type}`).join(" ")
+        })),
+        state.levelMinY,
+        state.levelMaxY
+      );
+      updateDynamicLevelLines(state, levels);
+      const labels = levels.map((level) => `
+        <g>
+          <text class="${level.className}" x="${state.axisGuideStart.toFixed(1)}" y="${level.labelY.toFixed(1)}" text-anchor="end" dominant-baseline="middle">${escapeHtml(level.label)}</text>
+        </g>
+      `).join("");
+      state.axis.innerHTML = `${labels}<line x1="${state.axisGuideStart}" y1="${state.axisY}" x2="${state.axis.viewBox.baseVal.width}" y2="${state.axisY}" class="axis-line"></line>`;
+    }
+
+    function scheduleDynamicDetailAxis(chart) {
+      if (!chart || chart.dataset.axisFrame === "true") return;
+      chart.dataset.axisFrame = "true";
+      requestAnimationFrame(() => {
+        chart.dataset.axisFrame = "false";
+        renderDynamicDetailAxis(chart);
+      });
+    }
+
+    function initDynamicDetailAxes(root = document) {
+      root.querySelectorAll(".detail-chart").forEach((chart) => {
+        scheduleDynamicDetailAxis(chart);
+      });
+    }
+
+    function initDetailChartTooltips() {
+      bindDetailTooltipsWithin(document);
+    }
+
+    function bindDetailTooltipsWithin(root) {
+      root.querySelectorAll(".detail-point-hit").forEach((point) => {
+        point.addEventListener("mouseenter", () => showDetailTooltip(point, false));
+        point.addEventListener("focus", () => showDetailTooltip(point, false));
+        point.addEventListener("click", (event) => {
+          event.stopPropagation();
+          showDetailTooltip(point, true);
+        });
+        point.addEventListener("mouseleave", () => hideDetailTooltip(point.closest(".detail-chart")));
+        point.addEventListener("blur", () => hideDetailTooltip(point.closest(".detail-chart")));
+      });
+      root.querySelectorAll(".detail-chart-scroll").forEach((scroller) => {
+        scroller.addEventListener("scroll", () => {
+          const chart = scroller.closest(".detail-chart");
+          hideDetailTooltip(chart, true);
+          scheduleDynamicDetailAxis(chart);
+        }, { passive: true });
+      });
+      root.querySelectorAll("[data-band-toggle]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          const chart = button.closest(".detail-chart");
+          if (!chart) return;
+          const enabled = button.getAttribute("aria-pressed") !== "true";
+          button.setAttribute("aria-pressed", String(enabled));
+          chart.classList.toggle("is-band-hidden", !enabled);
+        });
+      });
+      initDynamicDetailAxes(root);
+    }
+
+    function initMetricRows() {
+      document.querySelectorAll("[data-metric-row]").forEach((row) => {
+        row.addEventListener("click", () => toggleMetricRow(row));
+      });
+      initFavoriteButtons();
+      initDetailChartTooltips();
+    }
+
+    function currentMenuOrder() {
+      return [...document.querySelectorAll("[data-menu-item]")]
+        .map((item) => item.dataset.industryItem)
+        .filter(Boolean);
+    }
+
+    function dragDirection(container) {
+      return getComputedStyle(container).display === "flex" ? "horizontal" : "vertical";
+    }
+
+    function initMenuDrag() {
+      document.querySelectorAll("[data-menu-item]").forEach((item) => {
+        item.draggable = state.isReordering;
+        item.addEventListener("dragstart", (event) => {
+          if (!state.isReordering) {
+            event.preventDefault();
+            return;
+          }
+          state.draggedMenuItem = item;
+          item.classList.add("is-dragging");
+          event.dataTransfer.effectAllowed = "move";
+          event.dataTransfer.setData("text/plain", item.dataset.industryItem || "");
+        });
+        item.addEventListener("dragend", () => {
+          item.classList.remove("is-dragging");
+          state.draggedMenuItem = null;
+          state.draftIndustryOrder = currentMenuOrder();
+        });
+      });
+
+      const menu = document.getElementById("industryFilters");
+      menu.ondragover = (event) => {
+        if (!state.isReordering || !state.draggedMenuItem) return;
+        event.preventDefault();
+        const target = event.target.closest("[data-menu-item]");
+        if (!target || target === state.draggedMenuItem || !menu.contains(target)) return;
+        const rect = target.getBoundingClientRect();
+        const horizontal = dragDirection(menu) === "horizontal";
+        const insertAfter = horizontal
+          ? event.clientX > rect.left + rect.width / 2
+          : event.clientY > rect.top + rect.height / 2;
+        menu.insertBefore(state.draggedMenuItem, insertAfter ? target.nextSibling : target);
+      };
+      menu.ondrop = (event) => {
+        if (!state.isReordering) return;
+        event.preventDefault();
+        state.draftIndustryOrder = currentMenuOrder();
+      };
+    }
+
+    function initMenuScrollDrag() {
+      const menu = document.getElementById("industryFilters");
+      if (!menu || menu.dataset.scrollDragReady === "true") return;
+      menu.dataset.scrollDragReady = "true";
+      let dragState = null;
+
+      menu.addEventListener("pointerdown", (event) => {
+        if (state.isReordering || event.button !== 0 || menu.scrollHeight <= menu.clientHeight) return;
+        dragState = {
+          pointerId: event.pointerId,
+          startX: event.clientX,
+          startY: event.clientY,
+          startScrollTop: menu.scrollTop,
+          moved: false,
+          captured: false
+        };
+      });
+
+      menu.addEventListener("pointermove", (event) => {
+        if (!dragState || dragState.pointerId !== event.pointerId || state.isReordering) return;
+        const deltaX = event.clientX - dragState.startX;
+        const deltaY = event.clientY - dragState.startY;
+        const dragThreshold = event.pointerType === "touch" ? 12 : 7;
+        if (Math.abs(deltaY) > dragThreshold && Math.abs(deltaY) > Math.abs(deltaX)) {
+          const maxScrollTop = Math.max(0, menu.scrollHeight - menu.clientHeight);
+          const nextScrollTop = Math.min(maxScrollTop, Math.max(0, dragState.startScrollTop - deltaY));
+          dragState.moved = true;
+          suppressMenuClick = true;
+          menu.classList.add("is-drag-scrolling");
+          if (!dragState.captured) {
+            menu.setPointerCapture?.(event.pointerId);
+            dragState.captured = true;
+          }
+          menu.scrollTop = nextScrollTop;
+          event.preventDefault();
+        }
+      });
+
+      const stopDrag = (event) => {
+        if (!dragState || dragState.pointerId !== event.pointerId) return;
+        if (dragState.moved) {
+          window.setTimeout(() => {
+            suppressMenuClick = false;
+          }, 80);
+        }
+        menu.classList.remove("is-drag-scrolling");
+        if (dragState.captured) {
+          menu.releasePointerCapture?.(event.pointerId);
+        }
+        dragState = null;
+      };
+
+      menu.addEventListener("pointerup", stopDrag);
+      menu.addEventListener("pointercancel", stopDrag);
+      menu.addEventListener("click", (event) => {
+        if (!suppressMenuClick) return;
+        event.preventDefault();
+        event.stopPropagation();
+        suppressMenuClick = false;
+      }, true);
+    }
+
+    function setSettingsOpen(open) {
+      const toggle = document.getElementById("settingsToggle");
+      const menu = document.getElementById("settingsMenu");
+      toggle.setAttribute("aria-expanded", String(open));
+      menu.hidden = !open;
+    }
+
+    function updateThemeSettingLabel() {
+      const label = document.getElementById("themeSettingLabel");
+      if (!label) return;
+      label.textContent = document.body.classList.contains("theme-dark") ? t("darkModeState") : t("lightMode");
+    }
+
+    function themeToggleLabelText(theme = null) {
+      const selectedTheme = theme || (document.body.classList.contains("theme-dark") ? "dark" : "light");
+      return selectedTheme === "dark" ? t("themeDarkName") : t("themeLightName");
+    }
+
+    function updateThemeToggleLabel() {
+      const label = document.getElementById("themeToggleLabel");
+      if (!label) return;
+      label.textContent = themeToggleLabelText();
+    }
+
+    function updateTimeZoneSettingLabel() {
+      const label = document.getElementById("timeZoneSettingLabel");
+      if (!label) return;
+      label.textContent = selectedTimeZoneLabel();
+    }
+
+    function animateToggleContent(toggle, outgoing, incoming, label, nextLabel, swapState) {
+      if (!toggle) {
+        swapState();
+        return;
+      }
+      toggle.disabled = true;
+      [outgoing, incoming, label].forEach((element) => {
+        element?.classList.remove("is-exiting", "is-entering");
+      });
+      void toggle.offsetWidth;
+      outgoing?.classList.add("is-exiting");
+      label?.classList.add("is-exiting");
+      window.setTimeout(() => {
+        swapState();
+        if (label) {
+          label.textContent = nextLabel;
+          label.classList.remove("is-exiting");
+          label.classList.add("is-entering");
+        }
+        incoming?.classList.add("is-entering");
+      }, 150);
+      window.setTimeout(() => {
+        [outgoing, incoming, label].forEach((element) => {
+          element?.classList.remove("is-exiting", "is-entering");
+        });
+        toggle.disabled = false;
+      }, 470);
+    }
+
+    function updateLanguageText() {
+      document.documentElement.lang = state.language;
+      document.querySelectorAll("[data-i18n]").forEach((element) => {
+        element.textContent = t(element.dataset.i18n);
+      });
+      document.querySelector(".side-menu")?.setAttribute("aria-label", t("menuLabel"));
+      document.getElementById("mobileDrawer")?.setAttribute("aria-label", t("menuLabel"));
+      document.getElementById("mobileMenuToggle")?.setAttribute("aria-label", t("openMenu"));
+      document.getElementById("drawerClose")?.setAttribute("aria-label", t("closeMenu"));
+      document.getElementById("settingsToggle")?.setAttribute("aria-label", t("settings"));
+      document.getElementById("scrollTopButton")?.setAttribute("aria-label", t("scrollTop"));
+      document.getElementById("scrollTopButton")?.setAttribute("title", t("scrollTop"));
+      document.getElementById("themeToggle")?.setAttribute("aria-label", t("toggleTheme"));
+      document.getElementById("themeToggle")?.setAttribute("title", t("toggleTheme"));
+      const languageLabel = document.getElementById("languageSettingLabel");
+      if (languageLabel) languageLabel.textContent = state.language === "ko" ? "KO" : "EN";
+      updateThemeSettingLabel();
+      updateTimeZoneSettingLabel();
+      updateThemeToggleLabel();
+      updateCurrencyButton();
+    }
+
+    function setLanguage(language) {
+      state.language = language === "en" ? "en" : "ko";
+      localStorage.setItem("dashboard-language", state.language);
+      updateLanguageText();
+      renderFilters();
+      renderDailyUpdates();
+      renderIndustries();
+    }
+
+    function initLanguage() {
+      state.language = localStorage.getItem("dashboard-language") === "en" ? "en" : "ko";
+      updateLanguageText();
+    }
+
+    function applyTimeZone(timeZone) {
+      state.timeZone = timeZone === timeZoneOptions.us ? timeZoneOptions.us : timeZoneOptions.korea;
+      localStorage.setItem("dashboard-timezone", state.timeZone);
+      updateTimeZoneSettingLabel();
+    }
+
+    function toggleTimeZone() {
+      applyTimeZone(state.timeZone === timeZoneOptions.korea ? timeZoneOptions.us : timeZoneOptions.korea);
+      renderDailyUpdates();
+      renderIndustries();
+    }
+
+    function initTimeZone() {
+      const saved = localStorage.getItem("dashboard-timezone");
+      applyTimeZone(saved === timeZoneOptions.us ? timeZoneOptions.us : timeZoneOptions.korea);
+    }
+
+    function updateReorderControls() {
+      document.querySelector(".sidebar")?.classList.toggle("is-reordering", state.isReordering);
+      document.getElementById("reorderActions").hidden = !state.isReordering;
+    }
+
+    function startMenuReorder() {
+      state.isReordering = true;
+      state.draftIndustryOrder = visibleIndustries();
+      setSettingsOpen(false);
+      updateReorderControls();
+      renderFilters();
+    }
+
+    function cancelMenuReorder() {
+      state.isReordering = false;
+      state.draftIndustryOrder = null;
+      updateReorderControls();
+      renderFilters();
+    }
+
+    function saveMenuReorder() {
+      const order = currentMenuOrder();
+      localStorage.setItem("dashboard-industry-order", JSON.stringify(order));
+      state.isReordering = false;
+      state.draftIndustryOrder = null;
+      updateReorderControls();
+      renderFilters();
+      renderIndustries();
+    }
+
+    function initSettings() {
+      const settings = document.getElementById("menuSettings");
+      const toggle = document.getElementById("settingsToggle");
+      toggle.addEventListener("click", () => {
+        setSettingsOpen(toggle.getAttribute("aria-expanded") !== "true");
+      });
+      document.addEventListener("click", (event) => {
+        if (!settings.contains(event.target)) setSettingsOpen(false);
+      });
+      document.querySelector('[data-setting-action="theme"]').addEventListener("click", () => {
+        animateThemeToggle(document.body.classList.contains("theme-dark") ? "light" : "dark");
+      });
+      document.querySelector('[data-setting-action="language"]').addEventListener("click", () => {
+        setLanguage(state.language === "ko" ? "en" : "ko");
+      });
+      document.querySelector('[data-setting-action="timezone"]').addEventListener("click", toggleTimeZone);
+      document.querySelector('[data-setting-action="reorder"]').addEventListener("click", startMenuReorder);
+      document.getElementById("reorderCancel").addEventListener("click", cancelMenuReorder);
+      document.getElementById("reorderSave").addEventListener("click", saveMenuReorder);
+      updateReorderControls();
+    }
+
+    function applyTheme(theme, options = {}) {
+      const isDark = theme === "dark";
+      document.body.classList.toggle("theme-dark", isDark);
+      localStorage.setItem("dashboard-theme", isDark ? "dark" : "light");
+      updateThemeSettingLabel();
+      if (options.updateToggleLabel !== false) updateThemeToggleLabel();
+    }
+
+    function animateThemeToggle(nextTheme) {
+      const toggle = document.getElementById("themeToggle");
+      const isDark = document.body.classList.contains("theme-dark");
+      const outgoing = toggle.querySelector(isDark ? ".theme-icon-moon" : ".theme-icon-sun");
+      const incoming = toggle.querySelector(isDark ? ".theme-icon-sun" : ".theme-icon-moon");
+      const label = document.getElementById("themeToggleLabel");
+      animateToggleContent(toggle, outgoing, incoming, label, themeToggleLabelText(nextTheme), () => {
+        applyTheme(nextTheme, { updateToggleLabel: false });
+      });
+    }
+
+    function initTheme() {
+      const saved = localStorage.getItem("dashboard-theme");
+      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      applyTheme(saved || (prefersDark ? "dark" : "light"));
+      requestAnimationFrame(() => document.body.classList.add("theme-ready"));
+      document.getElementById("themeToggle").addEventListener("click", () => {
+        animateThemeToggle(document.body.classList.contains("theme-dark") ? "light" : "dark");
+      });
+    }
+
+    function currencyToggleLabelText(currency = state.currency) {
+      return currency === "krw" ? t("currencyKrwName") : t("currencyUsdName");
+    }
+
+    function updateCurrencyButton(options = {}) {
+      const toggle = document.getElementById("currencyToggle");
+      if (!toggle) return;
+      const isKrw = state.currency === "krw";
+      toggle.setAttribute("aria-label", isKrw ? t("showUsd") : t("showKrw"));
+      toggle.setAttribute("title", isKrw ? t("showUsd") : t("showKrw"));
+      const label = document.getElementById("currencyToggleLabel");
+      if (label && options.updateLabel !== false) label.textContent = currencyToggleLabelText();
+    }
+
+    function applyCurrency(currency, options = {}) {
+      state.currency = currency === "krw" ? "krw" : "usd";
+      document.body.classList.toggle("currency-krw", state.currency === "krw");
+      document.body.classList.toggle("currency-usd", state.currency === "usd");
+      localStorage.setItem("dashboard-currency", state.currency);
+      updateCurrencyButton(options);
+    }
+
+    function animateCurrencyToggle(nextCurrency) {
+      const toggle = document.getElementById("currencyToggle");
+      const isKrw = state.currency === "krw";
+      const outgoing = toggle.querySelector(isKrw ? ".currency-icon-won" : ".currency-icon-dollar");
+      const incoming = toggle.querySelector(isKrw ? ".currency-icon-dollar" : ".currency-icon-won");
+      const label = document.getElementById("currencyToggleLabel");
+      animateToggleContent(toggle, outgoing, incoming, label, currencyToggleLabelText(nextCurrency), () => {
+        applyCurrency(nextCurrency, { updateLabel: false });
+        renderDailyUpdates();
+        renderIndustries();
+      });
+    }
+
+    function initCurrency() {
+      applyCurrency(localStorage.getItem("dashboard-currency") === "krw" ? "krw" : "usd");
+      document.getElementById("currencyToggle").addEventListener("click", () => {
+        animateCurrencyToggle(state.currency === "usd" ? "krw" : "usd");
+      });
+    }
+
+    function initScrollTopButton() {
+      document.getElementById("scrollTopButton")?.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+      updateScrollTopButtonVisibility();
+    }
+
+    function updateScrollTopButtonVisibility() {
+      const revealAt = Math.max(280, window.innerHeight * 0.35);
+      document.body.classList.toggle("show-scroll-top", window.scrollY > revealAt);
+    }
+
+    function setDrawerOpen(open) {
+      const drawer = document.getElementById("mobileDrawer");
+      const toggle = document.getElementById("mobileMenuToggle");
+      const backdrop = document.getElementById("drawerBackdrop");
+      if (!drawer || !toggle || !backdrop) return;
+      const shouldOpen = Boolean(open && mobileDrawerQuery.matches);
+      document.body.classList.toggle("drawer-open", shouldOpen);
+      toggle.setAttribute("aria-expanded", String(shouldOpen));
+      drawer.setAttribute("aria-hidden", String(mobileDrawerQuery.matches && !shouldOpen));
+      backdrop.hidden = !shouldOpen;
+      if (shouldOpen) {
+        document.getElementById("drawerClose")?.focus({ preventScroll: true });
+      }
+    }
+
+    function closeDrawerOnMobile() {
+      if (mobileDrawerQuery.matches) setDrawerOpen(false);
+    }
+
+    function initMobileDrawer() {
+      const toggle = document.getElementById("mobileMenuToggle");
+      const close = document.getElementById("drawerClose");
+      const backdrop = document.getElementById("drawerBackdrop");
+      toggle?.addEventListener("click", () => {
+        setDrawerOpen(!document.body.classList.contains("drawer-open"));
+      });
+      close?.addEventListener("click", () => setDrawerOpen(false));
+      backdrop?.addEventListener("click", () => setDrawerOpen(false));
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") setDrawerOpen(false);
+      });
+      if (mobileDrawerQuery.addEventListener) {
+        mobileDrawerQuery.addEventListener("change", () => setDrawerOpen(false));
+      } else if (mobileDrawerQuery.addListener) {
+        mobileDrawerQuery.addListener(() => setDrawerOpen(false));
+      }
+      setDrawerOpen(false);
+    }
+
+    function updateActiveFromScroll() {
+      const sections = [...document.querySelectorAll("[data-industry-section]")];
+      if (!sections.length) return;
+      const anchor = window.innerHeight * 0.5;
+      let current = sections[0];
+      for (const section of sections) {
+        if (section.getBoundingClientRect().top <= anchor) {
+          current = section;
+        } else {
+          break;
+        }
+      }
+      let currentDepth = "";
+      if (current.dataset.industryName === "반도체") {
+        for (const section of current.querySelectorAll("[data-depth-section]")) {
+          if (section.getBoundingClientRect().top <= anchor) {
+            currentDepth = section.dataset.depthName || "";
+          } else {
+            break;
+          }
+        }
+      }
+      setActiveIndustry(current.dataset.industryName, currentDepth);
+    }
+
+    function onScrollSpy() {
+      if (scrollSpyFrame) return;
+      scrollSpyFrame = requestAnimationFrame(() => {
+        scrollSpyFrame = 0;
+        updateScrollTopButtonVisibility();
+        updateActiveFromScroll();
+      });
+    }
+
+    let resizeRenderFrame = 0;
+    function onDashboardResize() {
+      onScrollSpy();
+      scheduleBranchLineUpdate();
+      if (resizeRenderFrame) return;
+      resizeRenderFrame = requestAnimationFrame(() => {
+        resizeRenderFrame = 0;
+        renderIndustries();
+      });
+    }
+
+    window.addEventListener("scroll", onScrollSpy, { passive: true });
+    window.addEventListener("resize", onDashboardResize);
+    document.addEventListener("click", (event) => {
+      if (event.target.closest(".detail-point-hit")) return;
+      document.querySelectorAll(".detail-chart").forEach((chart) => hideDetailTooltip(chart, true));
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        document.querySelectorAll(".detail-chart").forEach((chart) => hideDetailTooltip(chart, true));
+      }
+    });
+
+    function render() {
+      renderFilters();
+      renderDailyUpdates();
+      renderIndustries();
+    }
+
+    initLanguage();
+    initTimeZone();
+    initSettings();
+    initTheme();
+    initCurrency();
+    initFavoriteMetrics();
+    initScrollTopButton();
+    initMobileDrawer();
+    render();
+  </script>
+</body>
+</html>

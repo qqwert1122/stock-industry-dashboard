@@ -132,6 +132,26 @@ class DashboardTest(unittest.TestCase):
             [(date(2026, 7, 1), 100.0), (date(2026, 7, 2), 101.5)],
         )
 
+    def test_parse_yahoo_chart_points_uses_exchange_timezone(self):
+        timestamp = int(datetime(2026, 7, 1, 15, 0, tzinfo=timezone.utc).timestamp())
+        payload = {
+            "chart": {
+                "result": [
+                    {
+                        "meta": {"currency": "KRW", "exchangeTimezoneName": "Asia/Seoul"},
+                        "timestamp": [timestamp],
+                        "indicators": {"quote": [{"close": [100.0]}]},
+                    }
+                ],
+                "error": None,
+            }
+        }
+
+        points, currency = parse_yahoo_chart_points(payload)
+
+        self.assertEqual(currency, "KRW")
+        self.assertEqual(points, [(date(2026, 7, 2), 100.0)])
+
     def test_render_dashboard_html_embeds_payload(self):
         html = render_dashboard_html(
             {
@@ -148,6 +168,19 @@ class DashboardTest(unittest.TestCase):
         self.assertIn("DASHBOARD_DATA", html)
         self.assertIn("renderFavoriteMetrics", html)
         self.assertIn("metric-favorite-button", html)
+        self.assertIn('data-setting-action="timezone"', html)
+        self.assertIn("dashboard-timezone", html)
+        self.assertIn("America/New_York", html)
+        self.assertIn("detailChartVisiblePoints", html)
+        self.assertIn("data-point-x", html)
+        self.assertIn("data-current-value", html)
+        self.assertIn("data-current-y", html)
+        self.assertIn("data-chart-top", html)
+        self.assertIn("dynamicDetailChartState", html)
+        self.assertIn("updateDynamicDetailPlot", html)
+        self.assertIn("scheduleDynamicDetailAxis", html)
+        self.assertIn("data-band-toggle", html)
+        self.assertIn("percentileBandLegend", html)
 
     def test_annotate_dashboard_updates_detects_updated_and_new_metrics(self):
         payload = {

@@ -2,6 +2,14 @@ timezone: Asia/Seoul
 report:
   title: 아침 매크로 리포트
 
+# 장기 히스토리 축적 설정. data/history 밑 JSON이 repo에 커밋되어
+# 최초 백필 이후에는 증분 요청만으로 전체 기간 시계열이 유지됩니다.
+history:
+  enabled: true
+  dir: data/history
+  display_points: 60        # 카드 소형 차트에 표시할 최근 포인트 수
+  long_history_max_points: 480  # 상세 차트용 다운샘플링 상한
+
 dashboard:
   title: 산업별 핵심 지표 대시보드
   history_points: 48
@@ -302,6 +310,77 @@ dashboard:
       frequency: 월간
       group: 금리
       meaning: 인도네시아 단기금리는 동남아 신흥국의 금리 부담과 달러 자금 흐름을 볼 때 참고합니다.
+    - id: T10Y3M
+      name: 미국 10Y-3M 금리차
+      industry: 매크로
+      unit: "%"
+      frequency: 일간
+      group: 경기침체 시그널
+      meaning: 10년-3개월 금리차는 역사적으로 침체 예측력이 가장 높은 수익률곡선 지표입니다. 마이너스(역전)가 길게 이어지면 1~2년 내 침체 확률이 커집니다.
+    - id: UNRATE
+      name: 미국 실업률
+      industry: 매크로
+      unit: "%"
+      frequency: 월간
+      group: 경기침체 시그널
+      meaning: 실업률은 경기 사이클의 후행 확인 지표입니다. 저점에서 0.5%p 이상 반등하면 침체 신호로 봅니다.
+    - id: SAHMREALTIME
+      name: Sahm Rule 침체 지표
+      industry: 매크로
+      unit: "%p"
+      frequency: 월간
+      group: 경기침체 시그널
+      meaning: 실업률 3개월 평균이 최근 12개월 저점 대비 얼마나 올랐는지 나타냅니다. 0.50 이상이면 침체가 이미 시작됐을 가능성이 높다는 신호입니다.
+    - id: GDPNOW
+      name: 애틀랜타 연준 GDPNow
+      industry: 매크로
+      unit: "%"
+      frequency: 수시
+      group: 경기침체 시그널
+      meaning: 현재 분기 미국 GDP 성장률의 실시간 추정치입니다. 공식 GDP 발표보다 빠르게 성장 둔화를 포착합니다.
+    - id: NFCI
+      name: 시카고 연준 금융여건지수
+      industry: 매크로
+      unit: 지수
+      frequency: 주간
+      group: 유동성
+      meaning: 0보다 높으면 평균보다 긴축적, 낮으면 완화적인 금융여건을 뜻합니다. 위험자산에 우호적인 환경인지 판단할 때 참고합니다.
+    - id: WALCL
+      name: 미국 연준 총자산
+      industry: 매크로
+      unit: "$B"
+      scale: 0.001
+      frequency: 주간
+      group: 유동성
+      meaning: 연준 대차대조표 규모로 양적완화/긴축 방향을 보여줍니다. 글로벌 유동성의 큰 물줄기를 확인하는 지표입니다.
+    - id: M2SL
+      name: 미국 M2 통화량
+      industry: 매크로
+      unit: "$B"
+      frequency: 월간
+      group: 유동성
+      meaning: 광의통화 M2는 시중 유동성 총량입니다. 증가율이 꺾이면 자산시장 유동성 환경이 위축되고 있다는 뜻입니다.
+    - id: CPIAUCSL
+      name: 미국 CPI
+      industry: 매크로
+      unit: 지수
+      frequency: 월간
+      group: 물가
+      meaning: 미국 소비자물가지수입니다. 전년 대비 상승률(YoY)이 연준 정책과 금리 방향을 좌우합니다.
+    - id: PCEPILFE
+      name: 미국 근원 PCE 물가
+      industry: 매크로
+      unit: 지수
+      frequency: 월간
+      group: 물가
+      meaning: 연준이 공식적으로 목표(2%)로 삼는 물가지표입니다. YoY 상승률로 인플레이션의 추세를 봅니다.
+    - id: DFII10
+      name: 미국 10년 실질금리
+      industry: 매크로
+      unit: "%"
+      frequency: 일간
+      group: 물가
+      meaning: 물가연동국채 기준 실질금리입니다. 실질금리가 오르면 성장주와 금 같은 무이자 자산에 부담이 됩니다.
   reference_metrics:
     - industry: 반도체
       name: DRAM/NAND 가격 대체 지표
@@ -941,6 +1020,124 @@ ecos:
       frequency: 일간
       group: 신용 스프레드
       meaning: 한국 회사채 BBB- 3년 금리와 국고채 3년 금리의 차이로 국내 하위등급 신용위험과 위험회피 강도를 확인합니다.
+  series:
+    - name: 한국 소비자심리지수(CCSI)
+      stat_code: 511Y002
+      period: M
+      item_code: FME
+      item_code2: "99988"
+      industry: 매크로
+      unit: 지수
+      frequency: 월간
+      group: 한국 경기
+      meaning: 100보다 높으면 소비자들이 경기를 낙관, 낮으면 비관한다는 뜻입니다. 내수 경기의 방향을 미리 보여주는 심리지표입니다.
+    - name: 한국 경기선행지수 순환변동치
+      stat_code: 901Y067
+      period: M
+      item_code: I16E
+      industry: 매크로
+      unit: 지수
+      frequency: 월간
+      group: 한국 경기
+      meaning: 100을 기준으로 한국 경기의 순환 국면을 보여주는 대표 선행지표입니다. 저점에서 반등하면 경기 회복, 고점에서 꺾이면 둔화 신호입니다.
+    - name: 한국 전산업 업황실적 BSI
+      stat_code: 512Y013
+      period: M
+      item_code: "99988"
+      item_code2: AA
+      industry: 매크로
+      unit: 지수
+      frequency: 월간
+      group: 한국 경기
+      meaning: 기업들이 체감하는 업황입니다. 100보다 낮으면 부정적으로 보는 기업이 더 많다는 뜻으로, 장기 평균 대비 위치가 중요합니다.
+    - name: 한국 가계신용
+      stat_code: 151Y001
+      period: Q
+      item_code: "1000000"
+      industry: 매크로
+      unit: 조원
+      scale: 0.001
+      frequency: 분기
+      group: 한국 경기
+      meaning: 가계부채 총량입니다. 소득 대비 증가 속도가 빨라지면 소비 여력과 금융 안정에 부담이 됩니다.
+    - name: 한국 신용융자 잔고
+      stat_code: 901Y056
+      period: M
+      item_code: S23E
+      industry: 매크로
+      unit: 조원
+      scale: 0.000000000001
+      frequency: 월간
+      group: 수급 과열
+      meaning: 개인투자자가 빚내서 산 주식 규모입니다. 역사적 고점 부근이면 과열, 급감하면 반대매매 국면일 수 있어 장기 매수 타이밍 판단에 씁니다.
+    - name: 한국 투자자예탁금
+      stat_code: 901Y056
+      period: M
+      item_code: S23A
+      industry: 매크로
+      unit: 조원
+      scale: 0.000000000001
+      frequency: 월간
+      group: 수급 과열
+      meaning: 증권계좌에 대기 중인 현금입니다. 늘어나면 증시 대기 자금이 풍부하다는 뜻으로 수급 여력을 보여줍니다.
+
+# 텔레그램 알림 (TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID 시크릿 필요)
+# 임계값을 새로 돌파했을 때 1회 발송하고, 다시 벗어났다 재돌파하면 재발송합니다.
+alerts:
+  enabled: true
+  state_file: data/alerts_state.json
+  weekly_digest: true  # 월요일 실행 시 주간 다이제스트 발송
+  rules:
+    - metric: 하이일드 회사채 OAS
+      above: 5.0
+      message: 신용시장 스트레스 구간입니다. 위험자산 비중을 점검하세요.
+    - metric: Sahm Rule
+      above: 0.5
+      message: 침체 시작 가능성이 높다는 신호입니다.
+    - metric: 10Y-3M 금리차
+      below: 0
+      message: 수익률곡선 역전. 역사적으로 1~2년 내 침체가 잦았습니다.
+    - metric: VIX
+      above: 40
+      message: 공포 구간입니다. 장기투자자에게는 분할 매수 검토 구간이었던 경우가 많습니다.
+    - metric: 코스피 PBR
+      below: 0.9
+      message: 코스피가 역사적 저평가 구간에 들어왔습니다.
+    - metric: 코스피 PBR
+      above: 1.3
+      message: 코스피 밸류에이션이 역사적 고평가 구간입니다.
+    - metric: S&P 500 Shiller CAPE
+      pct_above: 95
+      message: 미국 증시 밸류에이션이 극단 구간입니다.
+    - metric: 원/달러 환율
+      above: 1500
+      message: 환율이 위기 수준입니다. 달러 자산/환헤지 상황을 점검하세요.
+
+# 밸류에이션/수급 지표 (공식 API가 아닌 공개 페이지 기반은 soft-fail)
+valuation:
+  enabled: true
+  multpl:
+    - slug: shiller-pe
+      name: S&P 500 Shiller CAPE
+      unit: 배
+      group: 밸류에이션
+      meaning: 10년 평균 실질이익 기준 S&P 500의 주가배수입니다. 1871년 이후 분포에서 현재 위치가 높을수록 장기 기대수익률이 낮았습니다.
+    - slug: s-p-500-pe-ratio
+      name: S&P 500 PER
+      unit: 배
+      group: 밸류에이션
+      meaning: S&P 500의 후행 12개월 이익 기준 주가수익비율입니다. 미국 증시가 이익 대비 얼마나 비싼지 보여줍니다.
+  finra_margin:
+    enabled: true
+  krx:
+    - name_prefix: 코스피
+      ind_idx: "1"
+      ind_idx2: "001"
+      backfill_start: 2010-01-01
+    - name_prefix: 코스닥
+      ind_idx: "2"
+      ind_idx2: "001"
+      backfill_start: 2010-01-01
 
 fred:
   enabled: true

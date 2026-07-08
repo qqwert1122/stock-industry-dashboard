@@ -19,7 +19,20 @@ import yaml
 from bs4 import BeautifulSoup
 from openpyxl import load_workbook
 
+from .history_store import (
+    HistoryStore,
+    downsample_history,
+    parse_stored_points,
+    percentile_stats,
+)
 from .korea_exports import fetch_itemtrade_records
+from .alerts import process_alerts
+from .market_gauges import build_market_gauges
+from .market_valuation import (
+    fetch_finra_margin_series,
+    fetch_krx_valuation_series,
+    fetch_multpl_series,
+)
 from .utils import add_months, fmt_number, fmt_pct, fmt_signed, month_key, pct_change, to_float
 from .wsts import find_wsts_xlsx_url, parse_wsts_sheet
 
@@ -450,15 +463,261 @@ def build_dashboard_site(config: dict[str, Any], output_dir: str | Path, session
 
     previous_payload = load_previous_dashboard_payload(data_path / "dashboard.json")
     payload = build_dashboard_payload(config, session)
+    long_histories = enrich_metrics_with_history(
+        payload.get("metrics", []), config, previous_payload
+    )
+    payload["market_gauges"] = build_market_gauges(payload.get("metrics", []))
+    payload["collection_issues"] = annotate_metric_freshness(
+        payload.get("metrics", []), datetime.now(ZoneInfo(str(config.get("timezone") or "Asia/Seoul"))).date()
+    )
     annotate_dashboard_updates(payload, previous_payload)
     payload["morning_briefing"] = build_morning_briefing(payload, session)
+    try:
+        process_alerts(config, payload, session)
+    except Exception:  # noqa: BLE001 - 알림 실패가 배포를 막으면 안 됩니다.
+        pass
     json_text = json.dumps(payload, ensure_ascii=False, indent=2)
 
     copy_dashboard_assets(output_path)
     (data_path / "dashboard.json").write_text(json_text + "\n", encoding="utf-8")
+    (data_path / "long_history.json").write_text(
+        json.dumps(long_histories, ensure_ascii=False, separators=(",", ":")) + "\n",
+        encoding="utf-8",
+    )
     (output_path / "index.html").write_text(render_dashboard_html(payload), encoding="utf-8")
     (output_path / ".nojekyll").write_text("", encoding="utf-8")
     return payload
+
+
+def refresh_prices_site(
+    config: dict[str, Any], output_dir: str | Path, session: requests.Session
+) -> dict[str, Any]:
+    """장중 시세만 갱신하는 경량 빌드.
+
+    이전 전체 빌드 결과(dashboard.json)를 기반으로 대표주/시장지수 지표만
+    다시 수집해 교체하고 페이지를 재생성합니다. 이전 결과가 없으면
+    전체 빌드로 폴백합니다.
+    """
+    output_path = Path(output_dir)
+    data_path = output_path / "data"
+    data_path.mkdir(parents=True, exist_ok=True)
+
+    previous_payload = load_previous_dashboard_payload(data_path / "dashboard.json")
+    if not previous_payload or not previous_payload.get("metrics"):
+        return build_dashboard_site(config, output_dir, session)
+
+    timezone_name = str(config.get("timezone") or "Asia/Seoul")
+    now = datetime.now(ZoneInfo(timezone_name))
+    fresh_metrics = collect_equity_price_metrics(config, session, now.date())
+    fresh_long = enrich_metrics_with_history(fresh_metrics, config, previous_payload)
+
+    payload = previous_payload
+    metrics = payload.get("metrics", [])
+    fresh_by_id = {
+        str(metric.get("id")): metric
+        for metric in fresh_metrics
+        if metric.get("status") == "ok"
+    }
+    replaced = 0
+    for index, metric in enumerate(metrics):
+        fresh = fresh_by_id.get(str(metric.get("id")))
+        if fresh is not None:
+            # 일일 변경 배지 상태는 아침 전체 빌드 기준을 유지합니다.
+            for keep_field in ("daily_status", "is_new", "is_updated_today",
+                               "previous_run_observed_at", "previous_run_value",
+                               "previous_run_display_value"):
+                if keep_field in metric:
+                    fresh[keep_field] = metric[keep_field]
+            metrics[index] = fresh
+            replaced += 1
+
+    payload["generated_at"] = now.isoformat(timespec="seconds")
+    payload["generated_label"] = now.strftime("%Y-%m-%d %H:%M %Z")
+    payload["market_gauges"] = build_market_gauges(metrics)
+    payload["collection_issues"] = annotate_metric_freshness(metrics, now.date())
+    payload["prices_refreshed_at"] = now.isoformat(timespec="seconds")
+
+    try:
+        process_alerts(config, payload, session, include_weekly=False)
+    except Exception:  # noqa: BLE001
+        pass
+
+    long_history_path = data_path / "long_history.json"
+    long_histories: dict[str, Any] = {}
+    if long_history_path.exists():
+        try:
+            loaded = json.loads(long_history_path.read_text(encoding="utf-8"))
+            if isinstance(loaded, dict):
+                long_histories = loaded
+        except (OSError, json.JSONDecodeError):
+            pass
+    long_histories.update(fresh_long)
+
+    copy_dashboard_assets(output_path)
+    (data_path / "dashboard.json").write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    long_history_path.write_text(
+        json.dumps(long_histories, ensure_ascii=False, separators=(",", ":")) + "\n",
+        encoding="utf-8",
+    )
+    (output_path / "index.html").write_text(render_dashboard_html(payload), encoding="utf-8")
+    (output_path / ".nojekyll").write_text("", encoding="utf-8")
+    payload["_prices_refreshed_count"] = replaced
+    return payload
+
+
+STALE_THRESHOLD_DAYS = [
+    ("일간", 5),
+    ("주간", 12),
+    ("월간", 45),
+    ("분기", 130),
+    ("연간", 430),
+]
+
+
+def annotate_metric_freshness(metrics: list[dict[str, Any]], today: date) -> list[dict[str, Any]]:
+    """지표 주기 대비 오래된 데이터에 is_stale 표시를 하고 지연 목록을 반환합니다."""
+    stale_items: list[dict[str, Any]] = []
+    for metric in metrics:
+        metric["is_stale"] = False
+        if metric.get("status") != "ok":
+            continue
+        observed = parse_iso_date(metric.get("observed_at"))
+        if observed is None:
+            continue
+        frequency = str(metric.get("frequency") or "")
+        threshold = next(
+            (days for token, days in STALE_THRESHOLD_DAYS if token in frequency), None
+        )
+        if threshold is None:
+            continue
+        age = (today - observed).days
+        if age > threshold:
+            metric["is_stale"] = True
+            metric["stale_days"] = age
+            stale_items.append(
+                {
+                    "id": metric.get("id"),
+                    "name": metric.get("name"),
+                    "observed_at": metric.get("observed_at"),
+                    "days": age,
+                }
+            )
+    return stale_items
+
+
+def attach_history_store(config: dict[str, Any]) -> HistoryStore | None:
+    """config에 히스토리 저장소를 1회 생성해 붙입니다. 수집기와 enrichment가 공유합니다."""
+    history_config = config.get("history", {}) or {}
+    if not history_config.get("enabled", True):
+        return None
+    store = config.get("_history_store")
+    if not isinstance(store, HistoryStore):
+        store = HistoryStore(str(history_config.get("dir") or "data/history"))
+        config["_history_store"] = store
+    return store
+
+
+def cached_history_last_date(config: dict[str, Any], key: str) -> date | None:
+    """캐시된 마지막 관측일. None이면 최초 백필(전체 기간 요청)이 필요합니다."""
+    store = attach_history_store(config)
+    if store is None:
+        return None
+    series = store.series(key)
+    return series[-1][0] if series else None
+
+
+def enrich_metrics_with_history(
+    metrics: list[dict[str, Any]],
+    config: dict[str, Any],
+    previous_payload: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """지표를 장기 히스토리 캐시와 병합하고 백분위 통계와 장기 시리즈를 만듭니다.
+
+    캐시는 repo에 커밋되는 data/history 밑 JSON 파일이므로, 최초 백필 이후에는
+    수집기가 최근 구간만 가져와도 전체 기간 시계열이 유지됩니다.
+    """
+    history_config = config.get("history", {}) or {}
+    display_points = int(history_config.get("display_points") or 60)
+    store = attach_history_store(config)
+    if store is None:
+        # 축적이 꺼져 있으면 페이지 무게 보호를 위해 표시 포인트만 남깁니다.
+        for metric in metrics:
+            history = metric.get("history")
+            if isinstance(history, list) and len(history) > display_points:
+                metric["history"] = history[-display_points:]
+        return {}
+
+    max_long_points = int(history_config.get("long_history_max_points") or 480)
+
+    previous_metrics = (previous_payload or {}).get("metrics", [])
+    previous_history_by_id = {
+        str(item.get("id")): item.get("history")
+        for item in previous_metrics
+        if isinstance(item, dict) and item.get("id")
+    }
+
+    long_histories: dict[str, Any] = {}
+    for metric in metrics:
+        if metric.get("status") != "ok":
+            continue
+        points = parse_stored_points(metric.get("history"))
+        if not points:
+            continue
+
+        key = str(metric.get("history_key") or "") or f"id-{metric.get('id')}"
+        merge_mode = str(metric.get("history_merge") or "full")
+
+        # 이전 배포본의 히스토리를 먼저 병합해 캐시 최초 구축 시 데이터 공백을 줄입니다.
+        previous_points = parse_stored_points(previous_history_by_id.get(str(metric.get("id"))))
+        if previous_points:
+            store.merge(key, previous_points, mode="full")
+
+        full = store.merge(
+            key,
+            points,
+            name=str(metric.get("name") or ""),
+            unit=str(metric.get("unit") or ""),
+            source=str(metric.get("source") or ""),
+            mode=merge_mode,
+        )
+        if not full:
+            continue
+
+        # 스냅샷형 소스는 축적 초기에 캐시가 더 짧을 수 있으므로 긴 쪽을 표시합니다.
+        if len(full) >= len(points):
+            metric["history"] = [
+                {"date": point_date.isoformat(), "value": value}
+                for point_date, value in full[-display_points:]
+            ]
+            metric["period_label"] = period_label(
+                metric["history"], str(metric.get("observed_at") or "")
+            )
+
+        stats = percentile_stats(full, to_float(metric.get("value")))
+        if stats:
+            metric["percentiles"] = stats
+
+        if metric.get("yoy_pct") is None and metric.get("value") is not None:
+            yoy_value = find_yoy_value(full, full[-1][0])
+            yoy_pct = pct_change(to_float(metric.get("value")), yoy_value)
+            if yoy_pct is not None:
+                metric["yoy_pct"] = yoy_pct
+                metric["yoy_pct_label"] = fmt_pct(yoy_pct)
+
+        sampled = downsample_history(full, max_points=max_long_points)
+        if len(sampled) > display_points:
+            long_histories[str(metric["id"])] = {
+                "key": key,
+                "unit": str(metric.get("unit") or ""),
+                "points": [
+                    [point_date.isoformat(), value] for point_date, value in sampled
+                ],
+            }
+
+    store.save_all()
+    return long_histories
 
 
 def load_previous_dashboard_payload(path: Path) -> dict[str, Any] | None:
@@ -1118,6 +1377,7 @@ def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -
         ("WSTS", collect_wsts_metrics),
         ("FRED", collect_fred_metrics),
         ("ECOS 신용스프레드", collect_ecos_credit_spread_metrics),
+        ("ECOS 매크로", collect_ecos_series_metrics),
         ("대표주가/시장지수", collect_equity_price_metrics),
         ("스테이블코인", collect_stablecoin_metrics),
         ("World Bank 원자재", collect_world_bank_commodity_metrics),
@@ -1130,6 +1390,7 @@ def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -
         ("AFDC EV 충전", collect_afdc_metrics),
         ("KOSIS", collect_kosis_metrics),
         ("한국 수출", collect_korea_export_metrics),
+        ("밸류에이션/수급", collect_valuation_metrics),
     ]
     for source_name, collector in collectors:
         before = len(metrics)
@@ -1187,8 +1448,6 @@ def collect_fred_metrics(
 
     series_config = dashboard_config.get("fred_series") or fred_config.get("series", [])
     api_key = os.getenv("FRED_API_KEY", "").strip()
-    history_limit = int(dashboard_config.get("history_points", 48))
-    fetch_limit = max(history_limit, 80)
 
     if not api_key:
         return [
@@ -1221,12 +1480,19 @@ def collect_fred_metrics(
         frequency = str(series.get("frequency") or "FRED")
         source_url = f"https://fred.stlouisfed.org/series/{series_id}"
 
+        history_key = f"fred-{series_id}"
+        cached_last = cached_history_last_date(config, history_key)
+        # 최초 1회만 전체 기간을 백필하고, 이후에는 개정치 반영을 위해 최근 450일만 다시 받습니다.
+        observation_start = (
+            (cached_last - timedelta(days=450)).isoformat() if cached_last else ""
+        )
+
         try:
             points, source_label = fetch_fred_history(
                 session=session,
                 series_id=series_id,
                 api_key=api_key,
-                limit=fetch_limit,
+                observation_start=observation_start,
             )
             if not points:
                 metrics.append(
@@ -1244,6 +1510,9 @@ def collect_fred_metrics(
                 )
                 continue
 
+            scale = to_float(series.get("scale")) or 1.0
+            if scale != 1.0:
+                points = [(point_date, value * scale) for point_date, value in points]
             latest_date, latest_value = points[-1]
             previous_value = points[-2][1] if len(points) > 1 else None
             yoy_value = find_yoy_value(points, latest_date)
@@ -1261,11 +1530,12 @@ def collect_fred_metrics(
                     observed_at=latest_date.isoformat(),
                     previous_value=previous_value,
                     yoy_value=yoy_value,
-                    history=points[-history_limit:],
+                    history=points,
                     note=str(series.get("note") or ""),
                     group=str(series.get("group") or ""),
                     depth=str(series.get("depth") or ""),
                     meaning=str(series.get("meaning") or ""),
+                    history_key=history_key,
                 )
             )
         except Exception as exc:  # noqa: BLE001 - keep each card independent.
@@ -1286,16 +1556,20 @@ def collect_fred_metrics(
 
 
 def fetch_fred_history(
-    session: requests.Session, series_id: str, api_key: str, limit: int
+    session: requests.Session,
+    series_id: str,
+    api_key: str,
+    observation_start: str = "",
 ) -> tuple[list[tuple[date, float]], str]:
     params = {
         "series_id": series_id,
         "api_key": api_key,
         "file_type": "json",
-        "sort_order": "desc",
-        "limit": limit,
+        "sort_order": "asc",
     }
-    response = session.get(FRED_OBSERVATIONS_URL, params=params, timeout=(5, 20))
+    if observation_start:
+        params["observation_start"] = observation_start
+    response = session.get(FRED_OBSERVATIONS_URL, params=params, timeout=(5, 30))
     response.raise_for_status()
     payload = response.json()
     points = []
@@ -1305,7 +1579,7 @@ def fetch_fred_history(
             continue
         points.append((date.fromisoformat(str(item["date"])), value))
     points.sort(key=lambda point: point[0])
-    return points[-limit:], "FRED API"
+    return points, "FRED API"
 
 
 def collect_ecos_credit_spread_metrics(
@@ -1320,13 +1594,13 @@ def collect_ecos_credit_spread_metrics(
         return []
 
     api_key = os.getenv("ECOS_API_KEY", "").strip()
-    history_limit = int(config.get("dashboard", {}).get("history_points", 48))
     fetch_days = int(ecos_config.get("fetch_days", 730))
+    backfill_days = int(ecos_config.get("backfill_days", 9200))
     row_count = int(ecos_config.get("row_count", 1000))
     if api_key == "sample":
         fetch_days = min(fetch_days, 14)
+        backfill_days = min(backfill_days, 14)
         row_count = min(row_count, 10)
-    fetch_start = today - timedelta(days=fetch_days)
     source_url = str(ecos_config.get("source_url") or "https://ecos.bok.or.kr/api/")
 
     if not api_key:
@@ -1353,28 +1627,39 @@ def collect_ecos_credit_spread_metrics(
         frequency = str(item.get("frequency") or "일간")
         group = str(item.get("group") or "신용 스프레드")
         meaning = str(item.get("meaning") or "")
+        stat_code = str(item.get("stat_code") or "817Y002")
+        corporate_code = str(item.get("corporate_item_code") or "")
+        treasury_code = str(item.get("treasury_item_code") or "")
+        history_key = f"ecos-spread-{stat_code}-{corporate_code}-{treasury_code}"
+        # 최초 1회는 ECOS가 제공하는 과거 구간을 넓게 백필하고, 이후엔 최근 구간만 갱신합니다.
+        if cached_history_last_date(config, history_key) is None:
+            item_fetch_start = today - timedelta(days=backfill_days)
+            item_row_count = max(row_count, 20000)
+        else:
+            item_fetch_start = today - timedelta(days=fetch_days)
+            item_row_count = row_count
         try:
             corporate_points = fetch_ecos_points(
                 session=session,
                 base_url=str(ecos_config.get("endpoint") or "https://ecos.bok.or.kr/api"),
                 api_key=api_key,
-                stat_code=str(item.get("stat_code") or "817Y002"),
+                stat_code=stat_code,
                 period=str(item.get("period") or "D"),
-                start=fetch_start,
+                start=item_fetch_start,
                 end=today,
-                item_code=str(item.get("corporate_item_code") or ""),
-                row_count=row_count,
+                item_code=corporate_code,
+                row_count=item_row_count,
             )
             treasury_points = fetch_ecos_points(
                 session=session,
                 base_url=str(ecos_config.get("endpoint") or "https://ecos.bok.or.kr/api"),
                 api_key=api_key,
-                stat_code=str(item.get("stat_code") or "817Y002"),
+                stat_code=stat_code,
                 period=str(item.get("period") or "D"),
-                start=fetch_start,
+                start=item_fetch_start,
                 end=today,
-                item_code=str(item.get("treasury_item_code") or ""),
-                row_count=row_count,
+                item_code=treasury_code,
+                row_count=item_row_count,
             )
             points = compute_spread_points(corporate_points, treasury_points)
             if not points:
@@ -1411,10 +1696,142 @@ def collect_ecos_credit_spread_metrics(
                     observed_at=latest_date.isoformat(),
                     previous_value=previous_value,
                     yoy_value=yoy_value,
-                    history=points[-history_limit:],
+                    history=points,
                     note=str(item.get("note") or ""),
                     group=group,
                     meaning=meaning,
+                    history_key=history_key,
+                )
+            )
+        except Exception as exc:  # noqa: BLE001 - one ECOS item should not break the dashboard.
+            metrics.append(
+                make_metric(
+                    industry=industry,
+                    name=name,
+                    source="한국은행 ECOS API",
+                    source_url=source_url,
+                    frequency=frequency,
+                    automation="무료로 안정적으로 자동화 가능",
+                    status="error",
+                    note=str(exc),
+                    group=group,
+                    meaning=meaning,
+                )
+            )
+    return metrics
+
+
+def collect_ecos_series_metrics(
+    config: dict[str, Any], session: requests.Session, today: date
+) -> list[dict[str, Any]]:
+    """ECOS 단일 통계 시리즈(소비자심리지수, 선행지수 등) 수집기."""
+    ecos_config = config.get("ecos", {})
+    if not ecos_config.get("enabled", True):
+        return []
+
+    items = ecos_config.get("series", [])
+    if not items:
+        return []
+
+    api_key = os.getenv("ECOS_API_KEY", "").strip()
+    source_url = str(ecos_config.get("source_url") or "https://ecos.bok.or.kr/api/")
+    fetch_days = int(ecos_config.get("series_fetch_days", 1100))
+    backfill_days = int(ecos_config.get("backfill_days", 9200))
+
+    if not api_key:
+        return [
+            make_metric(
+                industry=str(item.get("industry") or "매크로"),
+                name=str(item.get("name") or "ECOS 지표"),
+                source="한국은행 ECOS API",
+                source_url=source_url,
+                frequency=str(item.get("frequency") or "월간"),
+                automation="무료로 안정적으로 자동화 가능",
+                status="needs_key",
+                note="GitHub Secrets에 ECOS_API_KEY 등록 필요",
+                group=str(item.get("group") or ""),
+                meaning=str(item.get("meaning") or ""),
+            )
+            for item in items
+        ]
+
+    metrics: list[dict[str, Any]] = []
+    for item in items:
+        name = str(item.get("name") or "ECOS 지표")
+        industry = str(item.get("industry") or "매크로")
+        frequency = str(item.get("frequency") or "월간")
+        group = str(item.get("group") or "")
+        meaning = str(item.get("meaning") or "")
+        stat_code = str(item.get("stat_code") or "")
+        period = str(item.get("period") or "M")
+        item_code = str(item.get("item_code") or "")
+        item_code2 = str(item.get("item_code2") or "")
+        if not stat_code or not item_code:
+            continue
+
+        history_key = f"ecos-{stat_code}-{item_code}{('-' + item_code2) if item_code2 else ''}"
+        if cached_history_last_date(config, history_key) is None:
+            start = today - timedelta(days=backfill_days)
+            row_count = 20000
+        else:
+            start = today - timedelta(days=fetch_days)
+            row_count = 2000
+
+        try:
+            points = fetch_ecos_points(
+                session=session,
+                base_url=str(ecos_config.get("endpoint") or "https://ecos.bok.or.kr/api"),
+                api_key=api_key,
+                stat_code=stat_code,
+                period=period,
+                start=start,
+                end=today,
+                item_code=item_code,
+                item_code2=item_code2,
+                row_count=row_count,
+            )
+            scale = to_float(item.get("scale")) or 1.0
+            if scale != 1.0:
+                points = [(point_date, value * scale) for point_date, value in points]
+            if not points:
+                metrics.append(
+                    make_metric(
+                        industry=industry,
+                        name=name,
+                        source="한국은행 ECOS API",
+                        source_url=source_url,
+                        frequency=frequency,
+                        automation="무료로 안정적으로 자동화 가능",
+                        status="error",
+                        note="관측값 없음",
+                        group=group,
+                        meaning=meaning,
+                    )
+                )
+                continue
+
+            latest_date, latest_value = points[-1]
+            previous_value = points[-2][1] if len(points) > 1 else None
+            yoy_value = find_yoy_value(points, latest_date)
+            metrics.append(
+                make_metric(
+                    industry=industry,
+                    name=name,
+                    source="한국은행 ECOS API",
+                    source_url=source_url,
+                    frequency=frequency,
+                    automation="무료로 안정적으로 자동화 가능",
+                    status="ok",
+                    value=latest_value,
+                    unit=str(item.get("unit") or ""),
+                    observed_at=latest_date.isoformat(),
+                    previous_value=previous_value,
+                    yoy_value=yoy_value,
+                    history=points,
+                    note=str(item.get("note") or ""),
+                    group=group,
+                    meaning=meaning,
+                    history_key=history_key,
                 )
             )
         except Exception as exc:  # noqa: BLE001 - one ECOS item should not break the dashboard.
@@ -1445,16 +1862,27 @@ def fetch_ecos_points(
     start: date,
     end: date,
     item_code: str,
+    item_code2: str = "",
     row_count: int = 1000,
 ) -> list[tuple[date, float]]:
     if not item_code:
         return []
-    start_text = start.strftime("%Y%m%d")
-    end_text = end.strftime("%Y%m%d")
+    period_upper = period.upper()
+    if period_upper == "M":
+        start_text, end_text = start.strftime("%Y%m"), end.strftime("%Y%m")
+    elif period_upper == "Q":
+        start_text = f"{start.year}Q{(start.month - 1) // 3 + 1}"
+        end_text = f"{end.year}Q{(end.month - 1) // 3 + 1}"
+    elif period_upper == "A":
+        start_text, end_text = str(start.year), str(end.year)
+    else:
+        start_text, end_text = start.strftime("%Y%m%d"), end.strftime("%Y%m%d")
     url = (
         f"{base_url.rstrip('/')}/StatisticSearch/{api_key}/json/kr/1/{row_count}/"
         f"{stat_code}/{period}/{start_text}/{end_text}/{item_code}"
     )
+    if item_code2:
+        url = f"{url}/{item_code2}"
     response = session.get(url, timeout=(5, 20))
     response.raise_for_status()
     return parse_ecos_points(response.json(), period)
@@ -1487,6 +1915,9 @@ def parse_ecos_period(value: str, period: str = "D") -> date | None:
             return date(int(value[:4]), int(value[4:6]), int(value[6:8]))
         if compact_period == "M" and len(value) >= 6:
             return date(int(value[:4]), int(value[4:6]), 1)
+        if compact_period == "Q" and "Q" in value.upper():
+            year_text, quarter_text = value.upper().split("Q", 1)
+            return date(int(year_text), (int(quarter_text) - 1) * 3 + 1, 1)
         if len(value) >= 4:
             return date(int(value[:4]), 1, 1)
     except ValueError:
@@ -1525,7 +1956,6 @@ def collect_equity_price_metrics(
         or "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}"
     )
     source_url = str(equities_config.get("source_url") or "https://finance.yahoo.com/")
-    history_limit = int(config.get("dashboard", {}).get("history_points", 48))
     metrics: list[dict[str, Any]] = []
 
     for item in items:
@@ -1536,17 +1966,16 @@ def collect_equity_price_metrics(
         industry = str(item.get("industry") or "매크로")
         url = endpoint_template.format(symbol=symbol)
         quote_url = f"{source_url.rstrip('/')}/quote/{symbol}"
+        history_key = f"equity-{symbol}"
+        # 캐시가 없으면 상장 이후 전체(max)를 1회 백필하고, 이후에는 최근 3개월만 갱신합니다.
+        fetch_range = "max" if cached_history_last_date(config, history_key) is None else str(
+            item.get("range") or "3mo"
+        )
 
         try:
-            response = session.get(
-                url,
-                params={"range": str(item.get("range") or "2y"), "interval": "1d"},
-                headers={"User-Agent": "Mozilla/5.0 stock-industry-dashboard/1.0"},
-                timeout=(5, 20),
+            points, currency = fetch_equity_history_with_fallback(
+                session, url, fetch_range, symbol
             )
-            response.raise_for_status()
-            payload = response.json()
-            points, currency = parse_yahoo_chart_points(payload)
             if not points:
                 metrics.append(
                     make_metric(
@@ -1586,11 +2015,12 @@ def collect_equity_price_metrics(
                     observed_at=latest_date.isoformat(),
                     previous_value=previous_value,
                     yoy_value=yoy_value,
-                    history=points[-history_limit:],
+                    history=points,
                     note=str(item.get("note") or ""),
                     group=str(item.get("group") or "대표주가"),
                     depth=str(item.get("depth") or ""),
                     meaning=str(item.get("meaning") or equity_price_meaning(name)),
+                    history_key=history_key,
                 )
             )
         except Exception as exc:  # noqa: BLE001 - one ticker should not break the dashboard.
@@ -1627,6 +2057,7 @@ def parse_yahoo_chart_points(payload: dict[str, Any]) -> tuple[list[tuple[date, 
     adjclose = adjclose_item.get("adjclose") or []
     meta = result.get("meta") or {}
     currency = str(meta.get("currency") or "")
+    exchange_timezone = yahoo_exchange_timezone(meta)
     by_date: dict[date, float] = {}
     for index, timestamp in enumerate(timestamps):
         value = None
@@ -1636,9 +2067,84 @@ def parse_yahoo_chart_points(payload: dict[str, Any]) -> tuple[list[tuple[date, 
             value = to_float(adjclose[index])
         if value is None:
             continue
-        observed_at = datetime.fromtimestamp(int(timestamp), tz=timezone.utc).date()
+        observed_at = datetime.fromtimestamp(int(timestamp), tz=exchange_timezone).date()
         by_date[observed_at] = value
     return sorted(by_date.items()), currency
+
+
+def yahoo_exchange_timezone(meta: dict[str, Any]) -> timezone | ZoneInfo:
+    timezone_name = str(
+        meta.get("exchangeTimezoneName") or meta.get("timezone") or ""
+    ).strip()
+    if timezone_name:
+        try:
+            return ZoneInfo(timezone_name)
+        except Exception:  # noqa: BLE001 - fall back to UTC when Yahoo returns an alias.
+            pass
+    return timezone.utc
+
+
+def fetch_equity_history_with_fallback(
+    session: requests.Session, url: str, fetch_range: str, symbol: str
+) -> tuple[list[tuple[date, float]], str]:
+    """Yahoo 차트 API를 우선 사용하고, 한국 종목/지수는 실패 시 네이버로 폴백합니다."""
+    try:
+        response = session.get(
+            url,
+            params={"range": fetch_range, "interval": "1d"},
+            headers={"User-Agent": "Mozilla/5.0 stock-industry-dashboard/1.0"},
+            timeout=(5, 30),
+        )
+        response.raise_for_status()
+        points, currency = parse_yahoo_chart_points(response.json())
+        if points:
+            return points, currency
+        raise ValueError("Yahoo 관측값 없음")
+    except Exception:
+        naver_symbol = naver_fallback_symbol(symbol)
+        if not naver_symbol:
+            raise
+        count = 8000 if fetch_range == "max" else 90
+        return fetch_naver_chart_points(session, naver_symbol, count), "KRW"
+
+
+def naver_fallback_symbol(symbol: str) -> str:
+    """네이버 fchart에서 쓸 심볼. 한국 종목/지수만 지원합니다."""
+    if symbol == "^KS11":
+        return "KOSPI"
+    if symbol == "^KQ11":
+        return "KOSDAQ"
+    match = re.match(r"^(\d{6})\.(KS|KQ)$", symbol)
+    if match:
+        return match.group(1)
+    return ""
+
+
+def fetch_naver_chart_points(
+    session: requests.Session, symbol: str, count: int
+) -> list[tuple[date, float]]:
+    response = session.get(
+        "https://fchart.stock.naver.com/sise.nhn",
+        params={
+            "symbol": symbol,
+            "timeframe": "day",
+            "count": count,
+            "requestType": "0",
+        },
+        headers={"User-Agent": "Mozilla/5.0 stock-industry-dashboard/1.0"},
+        timeout=(5, 30),
+    )
+    response.raise_for_status()
+    points: list[tuple[date, float]] = []
+    for match in re.finditer(r'data="(\d{8})\|[^|]*\|[^|]*\|[^|]*\|([0-9.]+)\|', response.text):
+        date_text, close_text = match.group(1), match.group(2)
+        try:
+            observed_at = date(int(date_text[:4]), int(date_text[4:6]), int(date_text[6:8]))
+            points.append((observed_at, float(close_text)))
+        except ValueError:
+            continue
+    points.sort(key=lambda point: point[0])
+    return points
 
 
 def equity_price_meaning(name: str) -> str:
@@ -1720,7 +2226,27 @@ def collect_stablecoin_metrics(
             )
             continue
 
-        history = stablecoin_history_points(values, today)
+        history_key = f"stablecoin-{symbol or asset_id or name}"
+        history: list[tuple[date, float]] = []
+        history_merge = "latest"
+        # 최초 1회는 DefiLlama 히스토리 엔드포인트로 전체 기간(2017~)을 백필합니다.
+        if cached_history_last_date(config, history_key) is None:
+            try:
+                resolved_id = asset_id
+                if not resolved_id and symbol != "TOTAL":
+                    matched = find_stablecoin_asset(assets, symbol=symbol, asset_id="")
+                    resolved_id = str((matched or {}).get("id") or "")
+                history = fetch_stablecoin_chart_history(
+                    session,
+                    str(stablecoin_config.get("charts_endpoint") or "https://stablecoins.llama.fi/stablecoincharts/all"),
+                    resolved_id if symbol != "TOTAL" else "",
+                )
+                if history:
+                    history_merge = "full"
+            except Exception:  # noqa: BLE001 - 백필 실패는 스냅샷 축적으로 대체합니다.
+                history = []
+        if not history:
+            history = stablecoin_history_points(values, today)
         metrics.append(
             make_metric(
                 industry="스테이블코인",
@@ -1739,9 +2265,38 @@ def collect_stablecoin_metrics(
                 note=str(item.get("note") or ""),
                 group=str(item.get("group") or "유통량"),
                 meaning=str(item.get("meaning") or stablecoin_meaning()),
+                history_key=history_key,
+                history_merge=history_merge,
             )
         )
     return metrics
+
+
+def fetch_stablecoin_chart_history(
+    session: requests.Session, charts_endpoint: str, asset_id: str
+) -> list[tuple[date, float]]:
+    """DefiLlama 차트 엔드포인트에서 유통량 전체 히스토리를 $B 단위로 가져옵니다."""
+    params = {"stablecoin": asset_id} if asset_id else None
+    response = session.get(charts_endpoint, params=params, timeout=(5, 30))
+    response.raise_for_status()
+    rows = response.json()
+    points: list[tuple[date, float]] = []
+    if not isinstance(rows, list):
+        return points
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        timestamp = to_float(row.get("date"))
+        circulating = row.get("totalCirculatingUSD") or row.get("totalCirculating") or {}
+        value = None
+        if isinstance(circulating, dict):
+            value = to_float(circulating.get("peggedUSD"))
+        if timestamp is None or value is None:
+            continue
+        observed_at = datetime.fromtimestamp(int(timestamp), tz=timezone.utc).date()
+        points.append((observed_at, value / 1_000_000_000))
+    points.sort(key=lambda point: point[0])
+    return points
 
 
 def find_stablecoin_asset(
@@ -1840,7 +2395,6 @@ def collect_world_bank_commodity_metrics(
         header_row=int(commodity_config.get("header_row", 5)),
         data_start_row=int(commodity_config.get("data_start_row", 7)),
     )
-    history_limit = int(config.get("dashboard", {}).get("history_points", 48))
 
     metrics: list[dict[str, Any]] = []
     for item in items:
@@ -1888,10 +2442,11 @@ def collect_world_bank_commodity_metrics(
                 observed_at=latest_month.isoformat(),
                 previous_value=previous_value,
                 yoy_value=yoy_value,
-                history=scaled_points[-history_limit:],
+                history=scaled_points,
                 note=str(item.get("note") or ""),
                 group=group,
                 meaning=meaning,
+                history_key=f"worldbank-{column}",
             )
         )
     return metrics
@@ -2001,7 +2556,6 @@ def collect_sec_capex_metrics(
         or capex_config.get("user_agent")
         or "stock-industry-dashboard/0.1 contact@example.com"
     )
-    history_limit = int(config.get("dashboard", {}).get("history_points", 48))
     metrics: list[dict[str, Any]] = []
 
     for company in companies:
@@ -2063,9 +2617,10 @@ def collect_sec_capex_metrics(
                     observed_at=latest_date.isoformat(),
                     previous_value=previous_value,
                     yoy_value=yoy_value,
-                    history=billion_points[-history_limit:],
+                    history=billion_points,
                     group="CAPEX",
                     meaning=sec_capex_meaning(name),
+                    history_key=f"sec-capex-{ticker}",
                 )
             )
         except Exception as exc:  # noqa: BLE001 - keep company cards independent.
@@ -2160,11 +2715,16 @@ def collect_usaspending_metrics(
         spending_config.get("endpoint")
         or "https://api.usaspending.gov/api/v2/search/spending_over_time/"
     )
-    history_limit = int(config.get("dashboard", {}).get("history_points", 48))
     metrics: list[dict[str, Any]] = []
 
-    for item in items:
+    for index, item in enumerate(items):
+        history_key = f"usaspending-{item.get('key') or index}"
         months_back = int(item.get("months_back") or spending_config.get("months_back") or 18)
+        # 최초 1회는 과거 구간을 넓게 백필합니다. 한 번의 응답에 전체 기간이 담기므로 추가 호출 부담이 없습니다.
+        if cached_history_last_date(config, history_key) is None:
+            months_back = max(
+                months_back, int(spending_config.get("backfill_months") or 144)
+            )
         current_month = date(today.year, today.month, 1)
         end_month = add_months(current_month, -1)
         end_date = current_month - timedelta(days=1)
@@ -2239,9 +2799,10 @@ def collect_usaspending_metrics(
                     observed_at=latest_month.isoformat(),
                     previous_value=previous_value,
                     yoy_value=yoy_value,
-                    history=billion_points[-history_limit:],
+                    history=billion_points,
                     group=group,
                     meaning=meaning,
+                    history_key=history_key,
                 )
             )
         except Exception as exc:  # noqa: BLE001 - one spending item should not break the page.
@@ -2321,8 +2882,6 @@ def collect_eia_metrics(
             if series.get("series_id")
         ]
 
-    history_limit = int(config.get("dashboard", {}).get("history_points", 48))
-    fetch_limit = max(history_limit, 80)
     metrics: list[dict[str, Any]] = []
     for series in series_config:
         series_id = str(series.get("series_id") or "").strip()
@@ -2335,6 +2894,9 @@ def collect_eia_metrics(
         frequency = str(series.get("frequency") or "")
         value_field = str(series.get("value_field") or "")
         api_url = f"https://api.eia.gov/v2/seriesid/{series_id}"
+        history_key = f"eia-{series_id}"
+        # 최초 백필은 EIA 1회 응답 최대치(5000행), 이후에는 최근 구간만 갱신합니다.
+        fetch_limit = 5000 if cached_history_last_date(config, history_key) is None else 120
 
         try:
             response = session.get(
@@ -2385,9 +2947,10 @@ def collect_eia_metrics(
                     observed_at=latest_date.isoformat(),
                     previous_value=previous_value,
                     yoy_value=yoy_value,
-                    history=scaled_points[-history_limit:],
+                    history=scaled_points,
                     group=str(series.get("group") or ""),
                     meaning=str(series.get("meaning") or ""),
+                    history_key=history_key,
                 )
             )
         except Exception as exc:  # noqa: BLE001 - one EIA series should not break the page.
@@ -2460,19 +3023,27 @@ def collect_openfda_metrics(
     endpoint = str(openfda_config.get("endpoint") or "https://api.fda.gov/drug/drugsfda.json")
     source_url = str(openfda_config.get("source_url") or "https://open.fda.gov/apis/drug/drugsfda/")
     api_key = os.getenv("OPENFDA_API_KEY", "").strip()
-    history_limit = int(config.get("dashboard", {}).get("history_points", 48))
     metrics: list[dict[str, Any]] = []
 
-    for item in items:
+    for index, item in enumerate(items):
         name = str(item.get("name") or "FDA 의약품 승인 활동")
         months_back = int(item.get("months_back") or openfda_config.get("months_back") or 18)
+        history_key = f"openfda-{item.get('key') or index}"
+        fetch_months = months_needing_fetch(
+            config,
+            history_key,
+            today,
+            months_back,
+            backfill_months=int(openfda_config.get("backfill_months") or 240),
+            max_backfill_per_run=int(openfda_config.get("backfill_per_run") or 24),
+        )
         base_search = str(
             item.get("search")
             or "submissions.submission_status:AP"
         )
         points: list[tuple[date, float]] = []
         try:
-            for month in completed_months(today, months_back):
+            for month in fetch_months:
                 start_text, end_text = openfda_month_range(month)
                 search = f"{base_search} AND submissions.submission_status_date:[{start_text} TO {end_text}]"
                 params = {"search": search, "limit": 1}
@@ -2489,7 +3060,7 @@ def collect_openfda_metrics(
             metrics.append(
                 event_count_metric(
                     points=points,
-                    history_limit=history_limit,
+                    history_key=history_key,
                     industry=str(item.get("industry") or "바이오"),
                     name=name,
                     source="openFDA Drugs@FDA API",
@@ -2533,16 +3104,24 @@ def collect_clinical_trials_metrics(
 
     endpoint = str(trials_config.get("endpoint") or "https://clinicaltrials.gov/api/v2/studies")
     source_url = str(trials_config.get("source_url") or "https://clinicaltrials.gov/data-api")
-    history_limit = int(config.get("dashboard", {}).get("history_points", 48))
     metrics: list[dict[str, Any]] = []
 
-    for item in items:
+    for index, item in enumerate(items):
         name = str(item.get("name") or "글로벌 임상 시작 건수")
         months_back = int(item.get("months_back") or trials_config.get("months_back") or 18)
+        history_key = f"clinicaltrials-{item.get('key') or index}"
+        fetch_months = months_needing_fetch(
+            config,
+            history_key,
+            today,
+            months_back,
+            backfill_months=int(trials_config.get("backfill_months") or 240),
+            max_backfill_per_run=int(trials_config.get("backfill_per_run") or 24),
+        )
         extra_query = str(item.get("query") or "")
         points: list[tuple[date, float]] = []
         try:
-            for month in completed_months(today, months_back):
+            for month in fetch_months:
                 start_date, end_date = month_date_range(month)
                 query = (
                     f"AREA[StartDate]RANGE[{start_date.isoformat()},{end_date.isoformat()}]"
@@ -2565,7 +3144,7 @@ def collect_clinical_trials_metrics(
             metrics.append(
                 event_count_metric(
                     points=points,
-                    history_limit=history_limit,
+                    history_key=history_key,
                     industry=str(item.get("industry") or "바이오"),
                     name=name,
                     source="ClinicalTrials.gov API",
@@ -2609,19 +3188,22 @@ def collect_launch_library_metrics(
 
     endpoint = str(launch_config.get("endpoint") or "https://ll.thespacedevs.com/2.3.0/launches/")
     source_url = str(launch_config.get("source_url") or "https://thespacedevs.com/llapi")
-    history_limit = int(config.get("dashboard", {}).get("history_points", 48))
     metrics: list[dict[str, Any]] = []
 
-    for item in items:
+    for index, item in enumerate(items):
         name = str(item.get("name") or "글로벌 우주 발사 건수")
         months_back = int(item.get("months_back") or launch_config.get("months_back") or 18)
+        history_key = f"launchlibrary-{item.get('key') or index}"
+        # Launch Library 무료 티어는 시간당 15회 제한이라 백필 폭을 보수적으로 잡습니다.
+        if cached_history_last_date(config, history_key) is None:
+            months_back = max(months_back, int(launch_config.get("backfill_months") or 48))
         try:
             months = completed_months(today, months_back)
             points = launch_library_monthly_counts(session, endpoint, months)
             metrics.append(
                 event_count_metric(
                     points=points,
-                    history_limit=history_limit,
+                    history_key=history_key,
                     industry=str(item.get("industry") or "우주"),
                     name=name,
                     source="The Space Devs Launch Library 2 API",
@@ -2692,7 +3274,7 @@ def launch_library_monthly_counts(
 
 
 def get_with_rate_limit_retry(
-    session: requests.Session, url: str, *, params: dict[str, Any], attempts: int = 3
+    session: requests.Session, url: str, *, params: dict[str, Any], attempts: int = 1
 ) -> requests.Response:
     response: requests.Response | None = None
     for attempt in range(attempts):
@@ -2798,6 +3380,8 @@ def collect_afdc_metrics(
                 previous_value=None,
                 yoy_value=None,
                 history=[(observed_at, value)],
+                history_key=f"afdc-{key}",
+                history_merge="latest",
                 group=str(item.get("group") or "충전 인프라"),
                 meaning=str(
                     item.get("meaning")
@@ -2856,13 +3440,20 @@ def collect_kosis_metrics(
         if not org_id or not tbl_id or not item_id:
             continue
 
+        history_key = f"kosis-{org_id}-{tbl_id}-{kosis_code_param(item_id).rstrip('+')}"
+        # 최초 백필은 통계표 최대 기간(600기), 이후에는 최근 기간만 갱신합니다.
+        if cached_history_last_date(config, history_key) is None:
+            fetch_periods = int(item.get("backfill_points") or 600)
+        else:
+            fetch_periods = int(item.get("history_points") or history_limit)
+
         params: dict[str, Any] = {
             "method": "getList",
             "apiKey": api_key,
             "format": "json",
             "jsonVD": "Y",
             "prdSe": prd_se,
-            "newEstPrdCnt": int(item.get("history_points") or history_limit),
+            "newEstPrdCnt": fetch_periods,
             "prdInterval": int(item.get("prd_interval") or 1),
             "orgId": org_id,
             "tblId": tbl_id,
@@ -2917,9 +3508,10 @@ def collect_kosis_metrics(
                     observed_at=latest_date.isoformat(),
                     previous_value=previous_value,
                     yoy_value=yoy_value,
-                    history=points[-history_limit:],
+                    history=points,
                     group=str(item.get("group") or "국내 주택"),
                     meaning=str(item.get("meaning") or ""),
+                    history_key=history_key,
                 )
             )
         except Exception as exc:  # noqa: BLE001 - one KOSIS table should not break the page.
@@ -3005,6 +3597,34 @@ def month_date_range(month: date) -> tuple[date, date]:
     return month, add_months(month, 1) - timedelta(days=1)
 
 
+def months_needing_fetch(
+    config: dict[str, Any],
+    history_key: str,
+    today: date,
+    months_back: int,
+    backfill_months: int,
+    max_backfill_per_run: int,
+) -> list[date]:
+    """이벤트 카운트형 소스가 이번 실행에서 조회할 월 목록.
+
+    최근 months_back개월은 항상 다시 세고(소급 반영), 그보다 오래된 구간은
+    캐시에 없는 달만 실행당 max_backfill_per_run개씩 점진적으로 백필해
+    무료 API 호출 한도를 넘지 않게 합니다.
+    """
+    recent = completed_months(today, months_back)
+    store = attach_history_store(config)
+    if store is None or not recent:
+        return recent
+    cached_dates = {point[0] for point in store.series(history_key)}
+    older = [
+        month
+        for month in completed_months(today, max(backfill_months, months_back))
+        if month < recent[0] and month not in cached_dates
+    ]
+    backfill = older[-max_backfill_per_run:] if max_backfill_per_run > 0 else []
+    return sorted(set(backfill + recent))
+
+
 def openfda_month_range(month: date) -> tuple[str, str]:
     start_date, end_date = month_date_range(month)
     return start_date.strftime("%Y%m%d"), end_date.strftime("%Y%m%d")
@@ -3013,7 +3633,6 @@ def openfda_month_range(month: date) -> tuple[str, str]:
 def event_count_metric(
     *,
     points: list[tuple[date, float]],
-    history_limit: int,
     industry: str,
     name: str,
     source: str,
@@ -3021,6 +3640,7 @@ def event_count_metric(
     frequency: str,
     group: str,
     meaning: str,
+    history_key: str = "",
 ) -> dict[str, Any]:
     if not points:
         return make_metric(
@@ -3051,9 +3671,10 @@ def event_count_metric(
         observed_at=latest_month.isoformat(),
         previous_value=previous_value,
         yoy_value=yoy_value,
-        history=points[-history_limit:],
+        history=points,
         group=group,
         meaning=meaning,
+        history_key=history_key,
     )
 
 
@@ -3095,7 +3716,6 @@ def collect_wsts_metrics(
             regions,
             is_3mma=False,
             xlsx_url=str(xlsx_url),
-            history_limit=int(config.get("dashboard", {}).get("history_points", 48)),
         )
     )
     if wsts_config.get("include_3mma", True) and "3MMA" in workbook.sheetnames:
@@ -3105,14 +3725,13 @@ def collect_wsts_metrics(
                 regions,
                 is_3mma=True,
                 xlsx_url=str(xlsx_url),
-                history_limit=int(config.get("dashboard", {}).get("history_points", 48)),
             )
         )
     return metrics
 
 
 def wsts_sheet_metrics(
-    sheet: Any, regions: list[str], is_3mma: bool, xlsx_url: str, history_limit: int
+    sheet: Any, regions: list[str], is_3mma: bool, xlsx_url: str
 ) -> list[dict[str, Any]]:
     parsed = parse_wsts_sheet(sheet)
     metrics: list[dict[str, Any]] = []
@@ -3156,10 +3775,11 @@ def wsts_sheet_metrics(
                 observed_at=latest_date.isoformat(),
                 previous_value=previous_value,
                 yoy_value=yoy_value,
-                history=billion_points[-history_limit:],
+                history=billion_points,
                 group="판매액(WSTS)",
                 depth="전체 업황",
                 meaning=meaning,
+                history_key=f"wsts-{'3mma-' if is_3mma else ''}{region}",
             )
         )
     return metrics
@@ -3180,7 +3800,8 @@ def collect_korea_export_metrics(
     source_url = "https://www.data.go.kr/data/15101609/openapi.do"
     service_key = os.getenv("DATA_GO_KR_SERVICE_KEY", "").strip()
     end_month = add_months(date(today.year, today.month, 1), -int(export_config.get("end_offset_months", 1)))
-    start_month = add_months(end_month, -int(export_config.get("months_back", 15)) + 1)
+    months_back = int(export_config.get("months_back", 15))
+    backfill_months = int(export_config.get("backfill_months", 120))
 
     metrics: list[dict[str, Any]] = []
     for item in items:
@@ -3188,6 +3809,14 @@ def collect_korea_export_metrics(
         hs_code = str(item.get("hs_code", "")).strip()
         industry = str(item.get("industry") or infer_export_industry(hs_code))
         metric_name = f"한국 수출 {name}({hs_code})"
+        history_key = f"korea-export-{hs_code}"
+        # 최초 1회는 backfill_months까지 12개월 창 단위로 백필하고, 이후엔 최근 구간만 갱신합니다.
+        item_months_back = (
+            backfill_months
+            if cached_history_last_date(config, history_key) is None
+            else months_back
+        )
+        start_month = add_months(end_month, -item_months_back + 1)
 
         if not service_key:
             metrics.append(
@@ -3257,6 +3886,7 @@ def collect_korea_export_metrics(
                     group=str(item.get("group") or "수출"),
                     depth=str(item.get("depth") or ""),
                     meaning=str(item.get("meaning") or export_meaning(name)),
+                    history_key=history_key,
                 )
             )
         except Exception as exc:  # noqa: BLE001 - one export item should not break the page.
@@ -3292,6 +3922,181 @@ def monthly_export_values(records: list[dict[str, str]]) -> dict[date, float]:
         if export_value is not None:
             monthly[observed_month] += export_value
     return dict(monthly)
+
+
+def collect_valuation_metrics(
+    config: dict[str, Any], session: requests.Session, today: date
+) -> list[dict[str, Any]]:
+    """밸류에이션(멀티플)과 수급 과열 지표 수집기. 크롤 기반이라 전부 soft-fail합니다."""
+    val_config = config.get("valuation", {})
+    if not val_config.get("enabled", True):
+        return []
+
+    metrics: list[dict[str, Any]] = []
+
+    for item in val_config.get("multpl", []):
+        slug = str(item.get("slug") or "").strip()
+        if not slug:
+            continue
+        name = str(item.get("name") or slug)
+        source_url = f"https://www.multpl.com/{slug}"
+        try:
+            points = fetch_multpl_series(session, slug)
+            latest_date, latest_value = points[-1]
+            previous_value = points[-2][1] if len(points) > 1 else None
+            metrics.append(
+                make_metric(
+                    industry=str(item.get("industry") or "매크로"),
+                    name=name,
+                    source="multpl.com",
+                    source_url=source_url,
+                    frequency="월간",
+                    automation="공개 페이지 자동 수집",
+                    status="ok",
+                    value=latest_value,
+                    unit=str(item.get("unit") or ""),
+                    observed_at=latest_date.isoformat(),
+                    previous_value=previous_value,
+                    yoy_value=find_yoy_value(points, latest_date),
+                    history=points,
+                    group=str(item.get("group") or "밸류에이션"),
+                    meaning=str(item.get("meaning") or ""),
+                    history_key=f"multpl-{slug}",
+                )
+            )
+        except Exception as exc:  # noqa: BLE001 - keep cards independent.
+            metrics.append(
+                make_metric(
+                    industry=str(item.get("industry") or "매크로"),
+                    name=name,
+                    source="multpl.com",
+                    source_url=source_url,
+                    frequency="월간",
+                    automation="공개 페이지 자동 수집",
+                    status="error",
+                    note=str(exc),
+                    group=str(item.get("group") or "밸류에이션"),
+                    meaning=str(item.get("meaning") or ""),
+                )
+            )
+
+    finra_config = val_config.get("finra_margin", {})
+    if finra_config.get("enabled", True):
+        finra_url = "https://www.finra.org/rules-guidance/key-topics/margin-accounts/margin-statistics"
+        finra_name = str(finra_config.get("name") or "미국 신용융자 잔액(margin debt)")
+        finra_meaning = str(
+            finra_config.get("meaning")
+            or "미국 증권사 고객의 신용융자 총액입니다. 급증하면 레버리지 과열, 급감하면 강제 청산 국면일 수 있습니다."
+        )
+        try:
+            points = fetch_finra_margin_series(session)
+            latest_date, latest_value = points[-1]
+            previous_value = points[-2][1] if len(points) > 1 else None
+            metrics.append(
+                make_metric(
+                    industry="매크로",
+                    name=finra_name,
+                    source="FINRA Margin Statistics",
+                    source_url=finra_url,
+                    frequency="월간",
+                    automation="공개 페이지 자동 수집",
+                    status="ok",
+                    value=latest_value,
+                    unit="$B",
+                    observed_at=latest_date.isoformat(),
+                    previous_value=previous_value,
+                    yoy_value=find_yoy_value(points, latest_date),
+                    history=points,
+                    group="수급 과열",
+                    meaning=finra_meaning,
+                    history_key="finra-margin-debt",
+                )
+            )
+        except Exception as exc:  # noqa: BLE001
+            metrics.append(
+                make_metric(
+                    industry="매크로",
+                    name=finra_name,
+                    source="FINRA Margin Statistics",
+                    source_url=finra_url,
+                    frequency="월간",
+                    automation="공개 페이지 자동 수집",
+                    status="error",
+                    note=str(exc),
+                    group="수급 과열",
+                    meaning=finra_meaning,
+                )
+            )
+
+    krx_field_units = {"PER": "배", "PBR": "배", "배당수익률": "%"}
+    for item in val_config.get("krx", []):
+        prefix = str(item.get("name_prefix") or "코스피")
+        ind_idx = str(item.get("ind_idx") or "1")
+        ind_idx2 = str(item.get("ind_idx2") or "001")
+        base_key = f"krx-val-{ind_idx}-{ind_idx2}"
+        source_url = "https://data.krx.co.kr/contents/MDC/MDI/mdiLoader/index.cmd?menuId=MDC0201060201"
+        cached_last = cached_history_last_date(config, f"{base_key}-PER")
+        if cached_last is None:
+            start = parse_iso_date(item.get("backfill_start")) or date(2010, 1, 1)
+        else:
+            start = cached_last - timedelta(days=30)
+        try:
+            series_by_field = fetch_krx_valuation_series(session, ind_idx, ind_idx2, start, today)
+            for field_name, points in series_by_field.items():
+                if not points:
+                    continue
+                latest_date, latest_value = points[-1]
+                previous_value = points[-2][1] if len(points) > 1 else None
+                metrics.append(
+                    make_metric(
+                        industry="매크로",
+                        name=f"{prefix} {field_name}",
+                        source="KRX 정보데이터시스템",
+                        source_url=source_url,
+                        frequency="일간",
+                        automation="공개 페이지 자동 수집",
+                        status="ok",
+                        value=latest_value,
+                        unit=krx_field_units.get(field_name, ""),
+                        observed_at=latest_date.isoformat(),
+                        previous_value=previous_value,
+                        yoy_value=find_yoy_value(points, latest_date),
+                        history=points,
+                        group="밸류에이션",
+                        meaning=str(
+                            item.get(f"meaning_{field_name}")
+                            or krx_valuation_meaning(prefix, field_name)
+                        ),
+                        history_key=f"{base_key}-{field_name}",
+                    )
+                )
+        except Exception as exc:  # noqa: BLE001 - KRX는 비공식 엔드포인트라 차단될 수 있습니다.
+            metrics.append(
+                make_metric(
+                    industry="매크로",
+                    name=f"{prefix} PER/PBR/배당수익률",
+                    source="KRX 정보데이터시스템",
+                    source_url=source_url,
+                    frequency="일간",
+                    automation="공개 페이지 자동 수집",
+                    status="error",
+                    note=f"KRX 응답 실패(차단 가능): {exc}",
+                    group="밸류에이션",
+                )
+            )
+
+    return metrics
+
+
+def krx_valuation_meaning(prefix: str, field_name: str) -> str:
+    if field_name == "PER":
+        return f"{prefix} 전체의 주가수익비율입니다. 과거 분포 대비 낮으면 저평가, 높으면 고평가 구간으로 봅니다."
+    if field_name == "PBR":
+        return (
+            f"{prefix} 전체의 주가순자산비율입니다. 역사적으로 코스피 PBR 0.9 이하는 장기 저평가, "
+            "1.3 이상은 고평가 구간으로 통했습니다."
+        )
+    return f"{prefix} 전체의 배당수익률입니다. 높을수록 배당 대비 주가가 싼 상태라는 뜻입니다."
 
 
 def collect_reference_metrics(config: dict[str, Any]) -> list[dict[str, Any]]:
@@ -3335,6 +4140,8 @@ def make_metric(
     group: str = "",
     depth: str = "",
     meaning: str = "",
+    history_key: str = "",
+    history_merge: str = "full",
 ) -> dict[str, Any]:
     change_abs = value - previous_value if value is not None and previous_value is not None else None
     change_pct = pct_change(value, previous_value) if value is not None else None
@@ -3377,6 +4184,8 @@ def make_metric(
         "history": history_points,
         "period_label": period_label(history_points, observed_at),
         "note": note,
+        "history_key": history_key,
+        "history_merge": history_merge,
     }
 
 
@@ -3399,6 +4208,10 @@ def visible_dashboard_metrics(metrics: list[dict[str, Any]]) -> list[dict[str, A
             visible.append(
                 {
                     "id": metric["id"],
+                    "status": metric["status"],
+                    "history_key": metric.get("history_key", ""),
+                    "history_merge": metric.get("history_merge", "full"),
+                    "source": clean_display_text(metric.get("source") or ""),
                     "industry": clean_display_text(metric["industry"]),
                     "industry_en": english_industry(clean_display_text(metric["industry"])),
                     "depth": clean_display_text(metric.get("depth") or ""),
@@ -3842,5476 +4655,11 @@ def status_to_automation(status: str) -> str:
     return "부분 자동화 가능"
 
 
+def load_dashboard_template() -> str:
+    template_path = Path(__file__).resolve().parent / "templates" / "dashboard.html"
+    return template_path.read_text(encoding="utf-8")
+
+
 def render_dashboard_html(payload: dict[str, Any]) -> str:
     json_text = json.dumps(payload, ensure_ascii=False).replace("</", "<\\/")
-    return MODERN_HTML_TEMPLATE.replace("__DASHBOARD_JSON__", json_text)
-
-
-MODERN_HTML_TEMPLATE = """<!doctype html>
-<html lang="ko">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-  <title>산업별 지표 대시보드</title>
-  <style>
-    :root {
-      color-scheme: light;
-      --bg: #ffffff;
-      --surface: #ffffff;
-      --sidebar: #f7f7f7;
-      --panel: #ffffff;
-      --text: #171717;
-      --muted: #6d6d6d;
-      --line: #e6e6e6;
-      --menu: #f0f0f0;
-      --menu-active: #e6e6e6;
-      --detail-stat-bg: #f8f8f8;
-      --branch-line: #e0e0e0;
-      --ai-card-bg: linear-gradient(135deg, rgba(6, 182, 212, 0.06) 0%, rgba(59, 130, 246, 0.08) 48%, rgba(79, 70, 229, 0.10) 100%);
-      --ai-card-border: rgba(59, 130, 246, 0.12);
-      --ai-inset-bg: rgba(255, 255, 255, 0.46);
-      --ai-inset-border: rgba(59, 130, 246, 0.10);
-      --ai-bullet-text: #7a7a7a;
-      --ai-bullet-body: #9a9a9a;
-      --favorite-star: #f59e0b;
-      --chart-up: #f23645;
-      --chart-down: #1f5eff;
-      --shadow: 0 10px 26px rgba(0, 0, 0, 0.06);
-      --menu-shadow: 0 8px 24px rgba(0, 0, 0, 0.055);
-    }
-
-    body.theme-dark {
-      color-scheme: dark;
-      --bg: #111111;
-      --surface: #151515;
-      --sidebar: #181818;
-      --panel: #1d1d1d;
-      --text: #f2f2f2;
-      --muted: #a7a7a7;
-      --line: #303030;
-      --menu: #242424;
-      --menu-active: #303030;
-      --detail-stat-bg: #1a1a1a;
-      --branch-line: #3c3c3c;
-      --ai-card-bg: linear-gradient(135deg, rgba(6, 182, 212, 0.10) 0%, rgba(59, 130, 246, 0.12) 48%, rgba(79, 70, 229, 0.14) 100%);
-      --ai-card-border: rgba(96, 165, 250, 0.18);
-      --ai-inset-bg: rgba(255, 255, 255, 0.045);
-      --ai-inset-border: rgba(96, 165, 250, 0.12);
-      --ai-bullet-text: #a8a8a8;
-      --ai-bullet-body: #898989;
-      --favorite-star: #fbbf24;
-      --shadow: none;
-      --menu-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-width: 320px;
-      background: var(--bg);
-      color: var(--text);
-      font-family: Inter, Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      letter-spacing: 0;
-    }
-
-    body.theme-ready {
-      transition: background-color 520ms ease, color 520ms ease;
-    }
-
-    body.theme-ready .sidebar,
-    body.theme-ready .side-menu button,
-    body.theme-ready .menu-item,
-    body.theme-ready .mobile-menu-toggle,
-    body.theme-ready .drawer-close,
-    body.theme-ready .drawer-backdrop,
-    body.theme-ready .settings-button,
-    body.theme-ready .settings-menu,
-    body.theme-ready .settings-menu button,
-    body.theme-ready .reorder-actions button,
-    body.theme-ready .currency-toggle,
-    body.theme-ready .theme-toggle,
-    body.theme-ready .scroll-top-button,
-    body.theme-ready .industry,
-    body.theme-ready .industry-head,
-    body.theme-ready .industry-icon-wrap,
-    body.theme-ready .group,
-    body.theme-ready .metric,
-    body.theme-ready .metric-table-wrap,
-    body.theme-ready .metric-table th,
-    body.theme-ready .metric-table td,
-    body.theme-ready .metric-toggle,
-    body.theme-ready .metric-detail-panel,
-    body.theme-ready .detail-stats,
-    body.theme-ready .detail-stat,
-    body.theme-ready .chart,
-    body.theme-ready .empty {
-      transition:
-        background-color 520ms ease,
-        border-color 520ms ease,
-        box-shadow 520ms ease,
-        color 520ms ease;
-    }
-
-    body.theme-ready .chart text,
-    body.theme-ready .axis-line,
-    body.theme-ready .guide,
-    body.theme-ready .trend-line,
-    body.theme-ready .current-dot {
-      transition: fill 520ms ease, stroke 520ms ease;
-    }
-
-    button {
-      font: inherit;
-      color: inherit;
-    }
-
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    .shell {
-      display: grid;
-      grid-template-columns: 232px minmax(0, 1fr);
-      gap: 26px;
-      width: min(1540px, 100%);
-      min-height: 100vh;
-      margin: 0 auto;
-      padding: 22px 24px 42px;
-    }
-
-    .sidebar {
-      position: sticky;
-      top: 22px;
-      align-self: start;
-      min-width: 0;
-      height: calc(100vh - 44px);
-      max-height: calc(100vh - 44px);
-      display: grid;
-      grid-template-rows: minmax(0, 1fr) auto auto;
-      gap: 12px;
-      padding: 14px;
-      border: 0;
-      border-radius: 18px;
-      background: var(--sidebar);
-      box-shadow: var(--menu-shadow);
-      overflow: visible;
-    }
-
-    .side-menu {
-      display: grid;
-      gap: 7px;
-      min-width: 0;
-      max-width: 100%;
-      min-height: 0;
-      align-content: start;
-      overflow-y: auto;
-      padding-right: 2px;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-      cursor: grab;
-      overscroll-behavior: contain;
-      -webkit-overflow-scrolling: touch;
-      user-select: none;
-    }
-
-    .side-menu::-webkit-scrollbar {
-      display: none;
-    }
-
-    .side-menu.is-drag-scrolling {
-      cursor: grabbing;
-    }
-
-    .side-menu.is-drag-scrolling * {
-      cursor: grabbing !important;
-    }
-
-    .menu-item {
-      position: relative;
-      min-width: 0;
-      border-radius: 12px;
-    }
-
-    .side-menu button {
-      width: 100%;
-      min-height: 38px;
-      border: 0;
-      border-radius: 12px;
-      background: transparent;
-      padding: 0 12px;
-      text-align: left;
-      font-size: 14px;
-      font-weight: 720;
-      cursor: pointer;
-    }
-
-    .sidebar.is-reordering .side-menu button {
-      padding-right: 36px;
-      cursor: grab;
-    }
-
-    .side-menu button:hover {
-      background: var(--menu);
-    }
-
-    .side-menu button[aria-pressed="true"] {
-      color: var(--text);
-    }
-
-    .side-menu button[aria-current="true"] {
-      background: var(--menu-active);
-      color: var(--text);
-    }
-
-    .menu-depth-list {
-      display: grid;
-      gap: 3px;
-      margin: 4px 0 6px 6px;
-      padding-left: 4px;
-    }
-
-    .menu-depth-item {
-      min-width: 0;
-    }
-
-    .side-menu .menu-depth-button {
-      min-height: 31px;
-      border-radius: 10px;
-      padding: 0 10px;
-      color: var(--muted);
-      font-size: 12.5px;
-      font-weight: 500;
-    }
-
-    .side-menu .menu-depth-button[aria-current="true"] {
-      color: var(--text);
-      background: var(--menu-active);
-    }
-
-    .sidebar.is-reordering .menu-depth-list {
-      display: none;
-    }
-
-    .drawer-head,
-    .mobile-menu-toggle,
-    .drawer-backdrop {
-      display: none;
-    }
-
-    .drawer-close,
-    .mobile-menu-toggle {
-      width: 42px;
-      height: 42px;
-      border: 0;
-      border-radius: 999px;
-      display: none;
-      place-items: center;
-      background: var(--menu);
-      color: var(--text);
-      cursor: pointer;
-      font-size: 20px;
-      box-shadow: var(--menu-shadow);
-    }
-
-    .drawer-close:hover,
-    .mobile-menu-toggle:hover {
-      background: var(--menu-active);
-    }
-
-    .drawer-close:focus-visible,
-    .mobile-menu-toggle:focus-visible {
-      outline: 2px solid var(--text);
-      outline-offset: 3px;
-    }
-
-    .drag-handle {
-      position: absolute;
-      right: 10px;
-      top: 19px;
-      width: 18px;
-      height: 18px;
-      display: grid;
-      place-items: center;
-      color: var(--muted);
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(-50%);
-      transition: opacity 180ms ease;
-    }
-
-    .sidebar.is-reordering .drag-handle {
-      opacity: 1;
-      pointer-events: auto;
-      cursor: grab;
-    }
-
-    .menu-item.is-dragging {
-      opacity: 0.45;
-    }
-
-    .menu-settings {
-      position: relative;
-      display: grid;
-      gap: 8px;
-    }
-
-    .settings-button,
-    .settings-menu button,
-    .reorder-actions button {
-      min-width: 0;
-      border: 0;
-      cursor: pointer;
-    }
-
-    .settings-button {
-      min-height: 40px;
-      border-radius: 14px;
-      display: grid;
-      grid-template-columns: 20px minmax(0, 1fr) 14px;
-      gap: 8px;
-      align-items: center;
-      padding: 0 12px;
-      background: var(--menu);
-      color: var(--text);
-      font-size: 13px;
-      font-weight: 760;
-      text-align: left;
-    }
-
-    .settings-button:hover,
-    .settings-button[aria-expanded="true"] {
-      background: var(--menu-active);
-    }
-
-    .settings-chevron {
-      color: var(--muted);
-      font-size: 11px;
-      transition: transform 180ms ease;
-    }
-
-    .settings-button[aria-expanded="true"] .settings-chevron {
-      transform: rotate(180deg);
-    }
-
-    .settings-menu {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: calc(100% + 8px);
-      z-index: 20;
-      display: grid;
-      gap: 5px;
-      padding: 7px;
-      border-radius: 14px;
-      background: var(--surface);
-      box-shadow: var(--menu-shadow);
-    }
-
-    .settings-menu[hidden],
-    .reorder-actions[hidden] {
-      display: none;
-    }
-
-    .settings-menu button {
-      min-height: 36px;
-      border-radius: 10px;
-      display: grid;
-      grid-template-columns: 18px minmax(0, 1fr) auto;
-      gap: 8px;
-      align-items: center;
-      padding: 0 9px;
-      background: transparent;
-      color: var(--text);
-      font-size: 12.5px;
-      font-weight: 400;
-      text-align: left;
-    }
-
-    .settings-menu button:hover {
-      background: var(--menu);
-    }
-
-    .settings-meta {
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 400;
-    }
-
-    .reorder-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    .reorder-actions button {
-      min-height: 38px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 780;
-    }
-
-    .reorder-cancel {
-      background: var(--menu);
-      color: var(--text);
-    }
-
-    .reorder-save {
-      background: var(--chart-down);
-      color: #ffffff;
-    }
-
-    .content {
-      min-width: 0;
-      display: grid;
-      gap: 20px;
-      align-content: start;
-    }
-
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-      min-height: 46px;
-    }
-
-    .topbar-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex: 0 0 auto;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(22px, 2.2vw, 30px);
-      line-height: 1.12;
-      font-weight: 810;
-    }
-
-    .currency-toggle,
-    .theme-toggle {
-      min-width: 94px;
-      height: 40px;
-      border: 0;
-      border-radius: 24px;
-      display: inline-grid;
-      grid-template-columns: 20px auto 18px;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      position: relative;
-      background: var(--menu);
-      color: var(--text);
-      cursor: pointer;
-      padding: 0 11px;
-      font-size: 13px;
-      font-weight: 400;
-    }
-
-    .scroll-top-button {
-      position: fixed;
-      right: max(18px, env(safe-area-inset-right));
-      bottom: max(18px, env(safe-area-inset-bottom));
-      z-index: 58;
-      width: 40px;
-      height: 40px;
-      border: 0;
-      border-radius: 999px;
-      display: inline-grid;
-      place-items: center;
-      flex: 0 0 auto;
-      background: var(--menu);
-      color: var(--text);
-      cursor: pointer;
-      font-size: 16px;
-      box-shadow: var(--menu-shadow);
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-      transform: translateY(10px);
-    }
-
-    body.theme-ready .scroll-top-button {
-      transition:
-        background-color 520ms ease,
-        border-color 520ms ease,
-        box-shadow 520ms ease,
-        color 520ms ease,
-        opacity 180ms ease,
-        transform 180ms ease,
-        visibility 180ms ease;
-    }
-
-    body.show-scroll-top .scroll-top-button {
-      opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
-      transform: translateY(0);
-    }
-
-    .currency-toggle:hover,
-    .theme-toggle:hover,
-    .scroll-top-button:hover {
-      background: var(--menu-active);
-    }
-
-    .currency-toggle:focus-visible,
-    .theme-toggle:focus-visible,
-    .scroll-top-button:focus-visible {
-      outline: 2px solid var(--text);
-      outline-offset: 3px;
-    }
-
-    .toggle-label {
-      min-width: 0;
-      white-space: nowrap;
-      line-height: 1;
-      transform: translateY(0);
-    }
-
-    .toggle-chevron {
-      width: 16px;
-      height: 16px;
-      color: var(--muted);
-      stroke-width: 2;
-    }
-
-    .currency-icon-slot,
-    .theme-icon-orbit {
-      position: relative;
-      width: 20px;
-      height: 20px;
-      display: block;
-      overflow: hidden;
-      font-size: 16px;
-    }
-
-    .currency-icon {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      display: grid;
-      place-items: center;
-      opacity: 0;
-      transform: translate(-50%, -50%) translateY(-15px);
-      transition: opacity 220ms ease, transform 220ms ease;
-    }
-
-    body.currency-usd .currency-icon-dollar,
-    body.currency-krw .currency-icon-won {
-      opacity: 1;
-      transform: translate(-50%, -50%) translateY(0);
-    }
-
-    body.currency-usd .currency-icon-won,
-    body.currency-krw .currency-icon-dollar {
-      opacity: 0;
-      transform: translate(-50%, -50%) translateY(-15px);
-    }
-
-    .theme-toggle:disabled {
-      cursor: default;
-    }
-
-    .theme-icon {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 1em;
-      height: 1em;
-      display: grid;
-      place-items: center;
-      color: currentColor;
-      opacity: 0;
-      transform: translate(-50%, -50%) translateY(-15px);
-      transform-origin: center;
-      pointer-events: none;
-    }
-
-    body:not(.theme-dark) .theme-icon-sun,
-    body.theme-dark .theme-icon-moon {
-      opacity: 1;
-      transform: translate(-50%, -50%) translateY(0);
-    }
-
-    body:not(.theme-dark) .theme-icon-moon,
-    body.theme-dark .theme-icon-sun {
-      opacity: 0;
-      transform: translate(-50%, -50%) translateY(-15px);
-    }
-
-    .toggle-label.is-exiting {
-      animation: toggleLabelExit 240ms ease forwards;
-    }
-
-    .toggle-label.is-entering {
-      animation: toggleLabelEnter 300ms ease forwards;
-    }
-
-    .currency-icon.is-exiting,
-    .theme-icon.is-exiting {
-      animation: toggleIconExit 240ms ease forwards;
-    }
-
-    .currency-icon.is-entering,
-    .theme-icon.is-entering {
-      animation: toggleIconEnter 300ms ease forwards;
-    }
-
-    @keyframes toggleLabelExit {
-      0% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      100% {
-        opacity: 0;
-        transform: translateY(14px);
-      }
-    }
-
-    @keyframes toggleLabelEnter {
-      0% {
-        opacity: 0;
-        transform: translateY(-14px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes toggleIconExit {
-      0% {
-        opacity: 1;
-        transform: translate(-50%, -50%) translateY(0);
-      }
-      100% {
-        opacity: 0;
-        transform: translate(-50%, -50%) translateY(15px);
-      }
-    }
-
-    @keyframes toggleIconEnter {
-      0% {
-        opacity: 0;
-        transform: translate(-50%, -50%) translateY(-15px);
-      }
-      100% {
-        opacity: 1;
-        transform: translate(-50%, -50%) translateY(0);
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      body.theme-ready,
-      body.theme-ready .sidebar,
-      body.theme-ready .side-menu button,
-      body.theme-ready .menu-item,
-      body.theme-ready .mobile-menu-toggle,
-      body.theme-ready .drawer-close,
-      body.theme-ready .drawer-backdrop,
-      body.theme-ready .settings-button,
-      body.theme-ready .settings-menu,
-      body.theme-ready .settings-menu button,
-      body.theme-ready .reorder-actions button,
-      body.theme-ready .currency-toggle,
-      body.theme-ready .theme-toggle,
-      body.theme-ready .scroll-top-button,
-      body.theme-ready .industry,
-      body.theme-ready .industry-head,
-      body.theme-ready .industry-icon-wrap,
-      body.theme-ready .group,
-      body.theme-ready .metric,
-      body.theme-ready .metric-table-wrap,
-      body.theme-ready .metric-table th,
-      body.theme-ready .metric-table td,
-      body.theme-ready .metric-toggle,
-      body.theme-ready .metric-detail-panel,
-      body.theme-ready .detail-stats,
-      body.theme-ready .detail-stat,
-      body.theme-ready .chart,
-      body.theme-ready .empty,
-      body.theme-ready .chart text,
-      body.theme-ready .axis-line,
-      body.theme-ready .guide,
-      body.theme-ready .trend-line,
-      body.theme-ready .current-dot {
-        transition-duration: 1ms;
-      }
-
-      .toggle-label.is-exiting,
-      .toggle-label.is-entering,
-      .currency-icon.is-exiting,
-      .currency-icon.is-entering,
-      .theme-icon.is-exiting,
-      .theme-icon.is-entering {
-        animation-duration: 1ms;
-      }
-    }
-
-    .industry-stack {
-      display: grid;
-      gap: 4px;
-      min-width: 0;
-    }
-
-    .daily-updates {
-      min-width: 0;
-      margin: 4px 0 18px;
-    }
-
-    .morning-briefing {
-      position: relative;
-      min-width: 0;
-      display: grid;
-      gap: 16px;
-      margin: 0 0 18px;
-      padding: 16px;
-      border: 1px solid var(--ai-card-border);
-      border-radius: 24px;
-      background: var(--ai-card-bg);
-      overflow: hidden;
-    }
-
-    .morning-briefing-head {
-      min-width: 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .morning-briefing h2,
-    .morning-briefing h3 {
-      margin: 0;
-    }
-
-    .morning-briefing h2 {
-      font-size: 17px;
-      line-height: 1.2;
-      font-weight: 760;
-    }
-
-    .briefing-title {
-      min-width: 0;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .ai-sparkle-icon {
-      width: 22px;
-      height: 22px;
-      flex: 0 0 auto;
-      overflow: visible;
-      filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.18));
-      animation: aiSparklePulse 1800ms ease-in-out infinite;
-    }
-
-    .ai-sparkle-icon path {
-      fill: url(#aiSparkleGradient);
-    }
-
-    @keyframes aiSparklePulse {
-      0%, 100% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.07);
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .ai-sparkle-icon {
-        animation: none;
-      }
-    }
-
-    .briefing-meta {
-      flex: 0 0 auto;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 7px;
-      border-radius: 999px;
-      background: var(--ai-inset-bg);
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1;
-      white-space: nowrap;
-      border: 1px solid var(--ai-inset-border);
-    }
-
-    .briefing-headline {
-      margin: 0;
-      font-size: 17px;
-      line-height: 1.32;
-      font-weight: 760;
-    }
-
-    .briefing-summary {
-      margin: -2px 0 0;
-      color: var(--text);
-      font-size: 13px;
-      line-height: 1.55;
-      overflow-wrap: anywhere;
-    }
-
-    .briefing-bullets {
-      min-width: 0;
-      display: grid;
-      gap: 8px;
-      margin: 0;
-      padding: 0 0 0 18px;
-    }
-
-    .briefing-bullet {
-      min-width: 0;
-      padding-left: 2px;
-      color: var(--ai-bullet-text);
-    }
-
-    .briefing-bullet::marker {
-      color: var(--ai-bullet-text);
-      font-size: 0.9em;
-    }
-
-    .briefing-bullet-button,
-    .briefing-bullet-static {
-      display: block;
-      width: 100%;
-      min-width: 0;
-      border: 0;
-      background: transparent;
-      color: var(--ai-bullet-text);
-      padding: 0;
-      text-align: left;
-    }
-
-    .briefing-bullet-button {
-      cursor: pointer;
-    }
-
-    .briefing-bullet-button:hover .briefing-bullet-title {
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-
-    .briefing-bullet-title {
-      display: inline;
-      margin-right: 5px;
-      font-size: 12px;
-      line-height: 1.2;
-      font-weight: 500;
-    }
-
-    .briefing-bullet-body {
-      display: inline;
-      color: var(--ai-bullet-body);
-      font-size: 12px;
-      line-height: 1.4;
-      overflow-wrap: anywhere;
-    }
-
-    .briefing-disclaimer {
-      margin: -2px 0 0;
-      padding-top: 10px;
-      border-top: 1px solid var(--ai-inset-border);
-      display: grid;
-      grid-template-columns: 16px minmax(0, 1fr);
-      gap: 7px;
-      align-items: center;
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.45;
-      overflow-wrap: anywhere;
-    }
-
-    .briefing-disclaimer-icon {
-      width: 16px;
-      height: 16px;
-      border-radius: 999px;
-      display: inline-grid;
-      place-items: center;
-      background: var(--menu);
-      color: var(--muted);
-      font-size: 9px;
-      line-height: 1;
-    }
-
-    .favorite-metrics {
-      min-width: 0;
-      display: grid;
-      gap: 16px;
-      margin: 46px 0 30px;
-      padding-bottom: 12px;
-    }
-
-    .favorite-metrics-head {
-      display: flex;
-      align-items: baseline;
-      justify-content: flex-start;
-      gap: 7px;
-      padding: 0 4px;
-    }
-
-    .favorite-metrics .favorite-metrics-head h2 {
-      margin: 0;
-      color: var(--text);
-      font-size: 20px;
-      line-height: 1.12;
-      font-weight: 900;
-    }
-
-    .favorite-metrics-count {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.1;
-      font-weight: 500;
-      white-space: nowrap;
-    }
-
-    .favorite-metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 220px));
-      gap: 10px;
-      justify-content: start;
-      min-width: 0;
-    }
-
-    .favorite-card {
-      position: relative;
-      min-width: 0;
-      min-height: 132px;
-      display: grid;
-      grid-template-rows: auto minmax(38px, 1fr);
-      gap: 9px;
-      border: 0;
-      border-radius: 24px;
-      background: var(--menu);
-      color: var(--text);
-      padding: 16px;
-      text-align: left;
-      cursor: pointer;
-    }
-
-    .favorite-card-star {
-      position: absolute;
-      right: 10px;
-      top: 10px;
-      width: 32px;
-      height: 32px;
-      border: 0;
-      border-radius: 999px;
-      display: grid;
-      place-items: center;
-      background: rgba(255, 255, 255, 0.42);
-      color: var(--favorite-star);
-      cursor: pointer;
-      font-size: 13px;
-    }
-
-    body.theme-dark .favorite-card-star {
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    .favorite-card-star:hover {
-      background: var(--menu-active);
-    }
-
-    .favorite-card:hover {
-      background: var(--menu-active);
-    }
-
-    .favorite-card:focus-visible,
-    .favorite-card-star:focus-visible {
-      outline: 2px solid var(--text);
-      outline-offset: 3px;
-    }
-
-    .favorite-card-top {
-      min-width: 0;
-      display: grid;
-      gap: 5px;
-      padding-right: 34px;
-    }
-
-    .favorite-card-title {
-      min-width: 0;
-      color: var(--text);
-      font-size: 10.5px;
-      line-height: 1.24;
-      font-weight: 400;
-      overflow-wrap: anywhere;
-    }
-
-    .favorite-card-value {
-      color: var(--text);
-      font-size: 18px;
-      line-height: 1.08;
-      font-weight: 560;
-      overflow-wrap: anywhere;
-    }
-
-    .favorite-card-meta {
-      color: var(--muted);
-      font-size: 10.5px;
-      line-height: 1.2;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .favorite-card-chart {
-      min-width: 0;
-      align-self: end;
-    }
-
-    .favorite-card-chart .chart-mini {
-      width: 100%;
-      height: 42px;
-      max-height: 42px;
-    }
-
-    .daily-update-details {
-      min-width: 0;
-      margin: -4px 0 0;
-    }
-
-    .daily-update-summary {
-      width: max-content;
-      max-width: 100%;
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
-      list-style: none;
-      margin-left: 10px;
-      padding: 0 4px;
-      border: 0;
-      background: transparent;
-      color: var(--muted);
-      font-size: 11.5px;
-      line-height: 1.45;
-      font-weight: 400;
-      cursor: pointer;
-      opacity: 0.72;
-      user-select: none;
-    }
-
-    .daily-update-summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .daily-update-summary:hover {
-      opacity: 1;
-      color: var(--text);
-    }
-
-    .daily-update-summary-icon {
-      display: inline-block;
-      transform: translateY(-0.5px);
-      transition: transform 180ms ease;
-    }
-
-    .daily-update-details[open] .daily-update-summary-icon {
-      transform: translateY(-0.5px) rotate(90deg);
-    }
-
-    .daily-update-panel {
-      margin-top: 8px;
-    }
-
-    .daily-updates-head {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 12px;
-      margin: 0 0 8px;
-      padding: 0 4px;
-    }
-
-    .daily-updates h2 {
-      margin: 0;
-      font-size: 13px;
-      line-height: 1.2;
-      font-weight: 500;
-      color: var(--muted);
-    }
-
-    .daily-update-counts {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      justify-content: flex-start;
-      gap: 6px;
-      margin-top: 8px;
-      padding: 0 4px;
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1;
-      white-space: nowrap;
-    }
-
-    .daily-update-count {
-      padding: 6px 8px;
-      border-radius: 999px;
-      background: var(--menu);
-    }
-
-    .daily-update-list {
-      max-height: 238px;
-      overflow: auto;
-      border-radius: 6px;
-      background: var(--line);
-      display: grid;
-      gap: 1px;
-    }
-
-    .daily-update-row,
-    .daily-update-empty {
-      min-width: 0;
-      border: 0;
-      background: var(--surface);
-      color: var(--text);
-    }
-
-    .daily-update-row {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 120px 104px 148px;
-      align-items: center;
-      gap: 10px;
-      width: 100%;
-      padding: 9px 10px;
-      text-align: left;
-      cursor: pointer;
-    }
-
-    .daily-update-row:hover {
-      background: var(--menu);
-    }
-
-    .daily-update-empty {
-      padding: 14px 12px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .daily-update-main {
-      min-width: 0;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-
-    .daily-update-title {
-      min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      font-size: 12.5px;
-      line-height: 1.2;
-      font-weight: 400;
-    }
-
-    .daily-update-meta,
-    .daily-update-value,
-    .daily-update-change {
-      min-width: 0;
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.2;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .daily-update-value {
-      color: var(--text);
-      text-align: right;
-    }
-
-    .daily-update-change {
-      display: inline-flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 4px;
-      color: var(--muted);
-      text-align: right;
-    }
-
-    .daily-update-change i {
-      flex: 0 0 auto;
-      font-size: 10px;
-    }
-
-    .daily-update-change-abs,
-    .daily-update-change-pct {
-      min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .daily-update-change-pct {
-      opacity: 0.9;
-    }
-
-    .industry {
-      min-width: 0;
-      scroll-margin-top: 22px;
-      padding-bottom: 28px;
-      background: transparent;
-      box-shadow: none;
-      overflow: visible;
-    }
-
-    .industry:last-child {
-      padding-bottom: 0;
-    }
-
-    .industry-head {
-      display: grid;
-      grid-template-columns: 96px minmax(0, 1fr);
-      gap: 18px;
-      align-items: center;
-      padding: 24px 0 18px;
-      border-bottom: 0;
-      background: transparent;
-    }
-
-    .industry-icon-wrap {
-      width: 96px;
-      height: 96px;
-      border-radius: 999px;
-      display: grid;
-      place-items: center;
-      background: var(--menu);
-    }
-
-    .industry-icon {
-      width: 88px;
-      height: 88px;
-      object-fit: contain;
-      display: block;
-    }
-
-    .industry h2 {
-      margin: 0;
-      font-size: 20px;
-      line-height: 1.12;
-      font-weight: 900;
-    }
-
-    .group {
-      padding: 0 0 22px;
-    }
-
-    .depth-tree {
-      --depth-content-left: 48px;
-      --depth-line-left: 10px;
-      --depth-corner-gap: 16px;
-      --depth-corner-left: calc(var(--depth-line-left) - var(--depth-content-left));
-      --depth-corner-width: calc(var(--depth-content-left) - var(--depth-line-left) - var(--depth-corner-gap));
-      --depth-corner-height: 17px;
-      position: relative;
-      margin-left: 0;
-      padding-left: var(--depth-content-left);
-    }
-
-    .depth-tree::before {
-      content: "";
-      position: absolute;
-      left: var(--depth-line-left);
-      top: var(--depth-branch-top, 14px);
-      width: 1px;
-      height: var(--depth-branch-height, 0px);
-      background: var(--branch-line);
-      border-radius: 999px;
-    }
-
-    .depth-section {
-      position: relative;
-      margin-left: 0;
-      padding: 0 0 28px;
-      border-bottom: 0;
-    }
-
-    .depth-section:last-child {
-      border-bottom: 0;
-      padding-bottom: 0;
-    }
-
-    .depth-title {
-      position: relative;
-      margin: 20px 0 10px;
-      color: var(--text);
-      font-size: 16px;
-      line-height: 1.2;
-      font-weight: 500;
-    }
-
-    .depth-title::before {
-      content: "";
-      position: absolute;
-      box-sizing: border-box;
-      left: var(--depth-corner-left);
-      top: 50%;
-      width: var(--depth-corner-width);
-      height: var(--depth-corner-height);
-      border-left: 1px solid var(--branch-line);
-      border-bottom: 1px solid var(--branch-line);
-      border-bottom-left-radius: 18px;
-      transform: translateY(-100%);
-    }
-
-    .depth-section .group-title {
-      margin: 10px 0 12px;
-      color: var(--muted);
-      font-size: 16px;
-      font-weight: 500;
-    }
-
-    .group-title {
-      margin: 14px 0 12px 10px;
-      color: var(--text);
-      font-size: 16px;
-      font-weight: 500;
-    }
-
-    .metric-table-wrap {
-      border-top: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-      border-radius: 0;
-      background: var(--panel);
-      overflow: hidden;
-    }
-
-    .metric-table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-    }
-
-    .metric-table th {
-      height: 34px;
-      padding: 0 12px;
-      background: var(--menu);
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 820;
-      text-align: left;
-      white-space: nowrap;
-    }
-
-    .metric-table td {
-      padding: 7px 12px;
-      border-top: 1px solid var(--line);
-      color: var(--text);
-      vertical-align: middle;
-    }
-
-    .metric-table tbody,
-    .metric-table tbody button,
-    .metric-table tbody strong,
-    .metric-table tbody .metric-name,
-    .metric-table tbody .metric-date,
-    .metric-table tbody .metric-current-value,
-    .metric-table tbody .metric-change-badge,
-    .metric-table tbody .metric-mobile-description,
-    .metric-table tbody .detail-label,
-    .metric-table tbody .detail-value {
-      font-weight: 400;
-    }
-
-    .metric-row {
-      cursor: pointer;
-    }
-
-    .metric-row:hover td {
-      background: var(--menu);
-    }
-
-    .metric-row.is-highlighted td {
-      background: var(--menu-active);
-    }
-
-    .metric-row.is-expanded td {
-      background: var(--menu-active);
-    }
-
-    .metric-name-cell { width: 22%; }
-    .metric-description-cell { width: 28%; }
-    .metric-date-cell { width: 10%; }
-    .metric-value-cell { width: 12%; }
-    .metric-chart-cell { width: 13%; }
-    .metric-favorite-cell { width: 5%; }
-
-    .metric-toggle {
-      width: 100%;
-      min-width: 0;
-      display: block;
-      align-items: center;
-      padding: 0;
-      border: 0;
-      background: transparent;
-      color: var(--text);
-      text-align: left;
-      cursor: pointer;
-    }
-
-    .metric-toggle:focus-visible {
-      outline: 2px solid var(--text);
-      outline-offset: 3px;
-      border-radius: 6px;
-    }
-
-    .metric-name {
-      min-width: 0;
-      font-size: 13px;
-      line-height: 1.26;
-      font-weight: 780;
-      overflow-wrap: anywhere;
-    }
-
-    .metric-name-wrap {
-      min-width: 0;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      max-width: 100%;
-      vertical-align: top;
-    }
-
-    .metric-name-wrap .metric-name {
-      min-width: 0;
-    }
-
-    .metric-update-dot {
-      flex: 0 0 auto;
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: var(--chart-up);
-      box-shadow: 0 0 0 3px rgba(242, 54, 69, 0.12);
-      transform-origin: center;
-      animation: updateDotBreath 1700ms ease-in-out infinite;
-    }
-
-    @keyframes updateDotBreath {
-      0%, 100% {
-        opacity: 0.86;
-        transform: scale(1);
-        box-shadow: 0 0 0 3px rgba(242, 54, 69, 0.12);
-      }
-      50% {
-        opacity: 1;
-        transform: scale(1.28);
-        box-shadow: 0 0 0 6px rgba(242, 54, 69, 0.045);
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .metric-update-dot {
-        animation: none;
-      }
-    }
-
-    .metric-new-badge {
-      flex: 0 0 auto;
-      display: inline-flex;
-      align-items: center;
-      height: 17px;
-      padding: 0 6px;
-      border-radius: 999px;
-      background: var(--chart-up);
-      color: #fff;
-      font-size: 9.5px;
-      line-height: 1;
-      font-weight: 650;
-      letter-spacing: 0;
-    }
-
-    .metric-description {
-      margin: 0;
-      color: var(--muted);
-      font-size: 12.5px;
-      line-height: 1.35;
-      overflow-wrap: anywhere;
-    }
-
-    .metric-mobile-description {
-      display: none;
-    }
-
-    .metric-date {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 680;
-      white-space: nowrap;
-    }
-
-    .metric-current-value {
-      display: block;
-      color: var(--text);
-      font-size: 12.5px;
-      line-height: 1.25;
-      font-weight: 820;
-      overflow-wrap: anywhere;
-    }
-
-    .metric-value-wrap {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      min-width: 0;
-    }
-
-    .metric-change-badge {
-      flex: 0 0 auto;
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1;
-      font-weight: 760;
-      white-space: nowrap;
-    }
-
-    .metric-change-badge i {
-      font-size: 10px;
-    }
-
-    .metric-favorite-cell {
-      text-align: right;
-    }
-
-    .metric-favorite-button {
-      width: 34px;
-      height: 34px;
-      border: 0;
-      border-radius: 999px;
-      display: inline-grid;
-      place-items: center;
-      background: var(--menu);
-      color: var(--muted);
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .metric-favorite-button:hover {
-      background: var(--menu-active);
-      color: var(--text);
-    }
-
-    .metric-favorite-button.is-active {
-      background: var(--menu-active);
-      color: var(--favorite-star);
-    }
-
-    .chart-mini {
-      height: 34px;
-      max-height: 34px;
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-    }
-
-    .metric-detail-row td {
-      padding: 0 14px;
-      border-top: 0;
-      background: var(--surface);
-    }
-
-    .metric-detail-panel {
-      max-height: 0;
-      overflow: hidden;
-      opacity: 0;
-      transform: translateY(-4px);
-      transition:
-        max-height 380ms ease,
-        opacity 260ms ease,
-        transform 260ms ease;
-    }
-
-    .metric-detail-row.is-open .metric-detail-panel {
-      max-height: 680px;
-      opacity: 1;
-      transform: translateY(0);
-      border-top: 1px solid var(--line);
-    }
-
-    .metric-detail-inner {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: 12px;
-      padding: 16px 0 18px;
-    }
-
-    .detail-stats {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px 12px;
-      align-content: start;
-      padding: 0;
-      border-radius: 0;
-      background: transparent;
-    }
-
-    .detail-stat {
-      min-width: 0;
-      padding: 10px 12px;
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      background: var(--detail-stat-bg);
-    }
-
-    .detail-label {
-      display: block;
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.2;
-      font-weight: 780;
-    }
-
-    .detail-value {
-      display: block;
-      margin-top: 6px;
-      color: var(--text);
-      font-size: 16px;
-      line-height: 1.15;
-      font-weight: 820;
-      overflow-wrap: anywhere;
-    }
-
-    .detail-chart {
-      position: relative;
-      width: 100%;
-      max-width: 100%;
-      display: grid;
-      grid-template-columns: 42px minmax(0, 1fr);
-      align-items: stretch;
-      overflow: hidden;
-      padding: 2px 0 10px;
-    }
-
-    .detail-chart-axis {
-      width: 42px;
-      min-width: 42px;
-      height: 190px;
-      border-right: 0;
-      border-radius: 8px 0 0 8px;
-      display: block;
-    }
-
-    .detail-chart-scroll {
-      min-width: 0;
-      overflow-x: auto;
-      overflow-y: hidden;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .detail-chart-scroll .chart {
-      width: max(100%, var(--detail-chart-width, 520px));
-      min-width: max(100%, var(--detail-chart-width, 520px));
-      height: 190px;
-      display: block;
-    }
-
-    .detail-chart-scroll .chart-detail {
-      border-left: 0;
-      border-radius: 0 8px 8px 0;
-    }
-
-    .detail-chart-tooltip {
-      position: absolute;
-      z-index: 5;
-      left: 0;
-      top: 0;
-      width: min(220px, calc(100vw - 44px));
-      padding: 9px 10px;
-      border-radius: 12px;
-      background: var(--text);
-      color: var(--surface);
-      box-shadow: var(--menu-shadow);
-      opacity: 0;
-      pointer-events: none;
-      transform: translate(-50%, 12px);
-      transition: opacity 140ms ease, transform 140ms ease;
-    }
-
-    .detail-chart-tooltip.is-visible {
-      opacity: 1;
-      transform: translate(-50%, 8px);
-    }
-
-    .detail-tooltip-title {
-      margin-bottom: 6px;
-      color: inherit;
-      font-size: 11px;
-      line-height: 1.25;
-      font-weight: 650;
-      overflow-wrap: anywhere;
-    }
-
-    .detail-tooltip-row {
-      display: grid;
-      grid-template-columns: 42px minmax(0, 1fr);
-      gap: 8px;
-      align-items: baseline;
-      font-size: 11px;
-      line-height: 1.35;
-    }
-
-    .detail-tooltip-label {
-      color: color-mix(in srgb, currentColor 62%, transparent);
-    }
-
-    .detail-tooltip-value {
-      min-width: 0;
-      text-align: right;
-      overflow-wrap: anywhere;
-    }
-
-    .metric-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .metric {
-      min-height: 348px;
-      display: grid;
-      grid-template-rows: auto auto 158px;
-      gap: 13px;
-      padding: 15px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--panel);
-      overflow: hidden;
-    }
-
-    .metric h3 {
-      margin: 0;
-      font-size: 16px;
-      line-height: 1.32;
-      font-weight: 790;
-      overflow-wrap: anywhere;
-    }
-
-    .meaning {
-      margin: 7px 0 0;
-      min-height: 38px;
-      color: var(--muted);
-      font-size: 12.5px;
-      line-height: 1.45;
-      overflow-wrap: anywhere;
-    }
-
-    .metric-main {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 12px;
-      align-items: end;
-    }
-
-    .value {
-      font-size: 31px;
-      line-height: 1;
-      font-weight: 820;
-      overflow-wrap: anywhere;
-    }
-
-    .deltas {
-      display: grid;
-      gap: 5px;
-      min-width: 92px;
-      color: var(--muted);
-      font-size: 12px;
-      text-align: right;
-    }
-
-    .deltas strong {
-      display: inline-block;
-      min-width: 54px;
-      color: var(--text);
-      font-size: 13px;
-    }
-
-    .positive { color: var(--chart-up) !important; }
-    .negative { color: var(--chart-down) !important; }
-
-    .chart {
-      width: 100%;
-      height: 158px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--surface);
-      overflow: visible;
-    }
-
-    .chart.chart-mini,
-    .chart.detail-chart-axis,
-    .detail-chart-scroll .chart.chart-detail {
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-    }
-
-    .chart text {
-      fill: var(--muted);
-      font-size: 10.5px;
-      font-weight: 400;
-    }
-
-    .chart text.level-max {
-      fill: var(--chart-down);
-    }
-
-    .chart text.level-min {
-      fill: var(--chart-up);
-    }
-
-    .chart text.level-current {
-      fill: var(--text);
-    }
-
-    .axis-line {
-      stroke: var(--line);
-      stroke-width: 1;
-    }
-
-    .guide {
-      stroke: var(--line);
-      stroke-width: 0.7;
-      stroke-dasharray: 4 4;
-    }
-
-    .chart-background-line {
-      stroke: var(--line);
-      stroke-width: 0.55;
-      stroke-dasharray: 3 5;
-      opacity: 0.44;
-    }
-
-    .chart-background-line.level-line {
-      opacity: 0.92;
-      stroke-width: 0.7;
-      stroke-dasharray: 4 5;
-    }
-
-    .chart-background-line.level-max {
-      stroke: var(--chart-down);
-    }
-
-    .chart-background-line.level-min {
-      stroke: var(--chart-up);
-    }
-
-    .chart-background-line.level-current {
-      stroke: var(--text);
-      stroke-width: 1.5;
-    }
-
-    .trend-line {
-      fill: none;
-      stroke-width: 3;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .trend-line.up { stroke: var(--chart-up); }
-    .trend-line.down { stroke: var(--chart-down); }
-
-    .current-dot.up { fill: var(--chart-up); }
-    .current-dot.down { fill: var(--chart-down); }
-
-    .detail-point-hit {
-      cursor: crosshair;
-      pointer-events: all;
-    }
-
-    .empty {
-      display: none;
-      margin: 28px 0;
-      padding: 26px;
-      border: 1px dashed var(--line);
-      border-radius: 8px;
-      color: var(--muted);
-      text-align: center;
-    }
-
-    @media (max-width: 1180px) {
-      .shell {
-        grid-template-columns: 190px minmax(0, 1fr);
-        gap: 18px;
-        padding-inline: 18px;
-      }
-
-      .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-
-    @media (max-width: 760px) {
-      .shell {
-        grid-template-columns: 1fr;
-        gap: 14px;
-        padding: 14px 10px 30px;
-      }
-
-      body.drawer-open {
-        overflow: hidden;
-      }
-
-      .sidebar {
-        position: fixed;
-        inset: 0 auto 0 0;
-        z-index: 70;
-        width: min(320px, calc(100vw - 54px));
-        max-width: calc(100vw - 54px);
-        height: 100dvh;
-        max-height: 100dvh;
-        grid-template-rows: auto minmax(0, 1fr) auto auto;
-        padding: 14px;
-        border-radius: 0 20px 20px 0;
-        overflow: visible;
-        transform: translateX(calc(-100% - 24px));
-        transition: transform 260ms ease;
-      }
-
-      body.drawer-open .sidebar {
-        transform: translateX(0);
-      }
-
-      .drawer-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        min-width: 0;
-        padding: 2px 0 4px;
-        font-size: 15px;
-        font-weight: 820;
-      }
-
-      .drawer-close,
-      .mobile-menu-toggle {
-        display: grid;
-        flex: 0 0 auto;
-      }
-
-      .drawer-backdrop {
-        position: fixed;
-        inset: 0;
-        z-index: 60;
-        display: block;
-        background: rgba(18, 18, 18, 0.28);
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 220ms ease;
-      }
-
-      .drawer-backdrop[hidden] {
-        display: none;
-      }
-
-      body.drawer-open .drawer-backdrop {
-        opacity: 1;
-        pointer-events: auto;
-      }
-
-      .side-menu {
-        display: grid;
-        gap: 7px;
-        max-width: 100%;
-        overflow-x: hidden;
-        overflow-y: auto;
-        padding: 0 2px 0 0;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-      }
-
-      .side-menu button {
-        width: 100%;
-        white-space: normal;
-      }
-
-      .sidebar.is-reordering .side-menu button {
-        padding-right: 34px;
-      }
-
-      .settings-menu {
-        position: static;
-        order: -1;
-      }
-
-      .reorder-actions {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .topbar {
-        position: relative;
-        z-index: 1;
-        display: block;
-        min-height: 84px;
-        margin: 0;
-        padding: 52px 0 0;
-        background: transparent;
-        box-shadow: none;
-        backdrop-filter: none;
-      }
-
-      .mobile-menu-toggle {
-        position: fixed;
-        left: max(10px, env(safe-area-inset-left));
-        top: max(10px, env(safe-area-inset-top));
-        z-index: 58;
-        width: 40px;
-        height: 40px;
-      }
-
-      .topbar-actions {
-        position: fixed;
-        right: max(10px, env(safe-area-inset-right));
-        top: max(10px, env(safe-area-inset-top));
-        z-index: 58;
-        gap: 6px;
-      }
-
-      .currency-toggle,
-      .theme-toggle {
-        min-width: 76px;
-        width: auto;
-        height: 40px;
-        grid-template-columns: 18px auto 14px;
-        gap: 5px;
-        padding: 0 9px;
-        border-radius: 24px;
-        font-size: 12px;
-      }
-
-      .scroll-top-button {
-        right: max(14px, env(safe-area-inset-right));
-        bottom: max(18px, env(safe-area-inset-bottom));
-        width: 40px;
-        height: 40px;
-        font-size: 15px;
-      }
-
-      .currency-toggle .toggle-label,
-      .theme-toggle .toggle-label {
-        display: inline;
-      }
-
-      .currency-icon-slot,
-      .theme-icon-orbit {
-        width: 18px;
-        height: 18px;
-        font-size: 15px;
-      }
-
-      .toggle-chevron {
-        width: 14px;
-        height: 14px;
-      }
-
-      h1 {
-        min-width: 0;
-        font-size: clamp(18px, 5vw, 22px);
-      }
-
-      .daily-updates {
-        margin: 0 0 14px;
-      }
-
-      .morning-briefing {
-        gap: 13px;
-        margin-bottom: 12px;
-        padding: 13px;
-      }
-
-      .morning-briefing-head {
-        align-items: center;
-        gap: 8px;
-      }
-
-      .morning-briefing h2 {
-        font-size: 16px;
-      }
-
-      .briefing-meta {
-        font-size: 10px;
-      }
-
-      .briefing-headline {
-        font-size: 15px;
-      }
-
-      .briefing-summary,
-      .briefing-bullet-body {
-        font-size: 11.5px;
-      }
-
-      .favorite-metrics {
-        gap: 14px;
-        margin: 38px 0 24px;
-        padding-bottom: 10px;
-      }
-
-      .favorite-metrics .favorite-metrics-head h2 {
-        font-size: 18px;
-      }
-
-      .favorite-metrics-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
-      }
-
-      .favorite-card {
-        min-height: 116px;
-        padding: 14px;
-      }
-
-      .favorite-card-star {
-        right: 8px;
-        top: 8px;
-        width: 28px;
-        height: 28px;
-        font-size: 12px;
-      }
-
-      .favorite-card-value {
-        font-size: 15px;
-      }
-
-      .daily-updates-head {
-        align-items: start;
-        padding: 0 2px;
-      }
-
-      .daily-updates h2 {
-        font-size: 12px;
-      }
-
-      .daily-update-summary {
-        font-size: 11px;
-        margin-left: 8px;
-        padding: 0 2px;
-      }
-
-      .daily-update-counts {
-        gap: 4px;
-        font-size: 10.5px;
-      }
-
-      .daily-update-count {
-        padding: 5px 7px;
-      }
-
-      .daily-update-list {
-        max-height: 210px;
-      }
-
-      .daily-update-row {
-        grid-template-columns: minmax(0, 1fr) auto;
-        gap: 5px 8px;
-        padding: 8px 7px;
-      }
-
-      .daily-update-main {
-        grid-column: 1;
-        grid-row: 1;
-      }
-
-      .daily-update-value {
-        grid-column: 2;
-        grid-row: 1;
-      }
-
-      .daily-update-meta {
-        grid-column: 1;
-        grid-row: 2;
-        font-size: 10.5px;
-      }
-
-      .daily-update-title {
-        font-size: 12px;
-      }
-
-      .daily-update-value,
-      .daily-update-change {
-        font-size: 10.5px;
-      }
-
-      .daily-update-change {
-        grid-column: 2;
-        grid-row: 2;
-        align-self: center;
-        gap: 3px;
-      }
-
-      .industry-head {
-        grid-template-columns: 80px minmax(0, 1fr);
-        gap: 12px;
-        padding: 18px 0 12px;
-      }
-
-      .industry-icon-wrap {
-        width: 80px;
-        height: 80px;
-      }
-
-      .industry-icon {
-        width: 74px;
-        height: 74px;
-      }
-
-      .industry h2 {
-        font-size: 18px;
-      }
-
-      .group { padding: 0 0 18px; }
-
-      .depth-section .group-title,
-      .group-title {
-        margin: 12px 0 10px 8px;
-        font-size: 15px;
-      }
-
-      .depth-title {
-        margin: 18px 0 8px;
-        font-size: 15px;
-      }
-
-      .depth-tree {
-        --depth-content-left: 42px;
-        --depth-line-left: 8px;
-        --depth-corner-gap: 14px;
-        --depth-corner-height: 15px;
-      }
-
-      .depth-tree::before {
-        left: var(--depth-line-left);
-      }
-
-      .depth-section {
-        margin-left: 0;
-        padding-left: 0;
-      }
-
-      .depth-title::before {
-        border-bottom-left-radius: 16px;
-      }
-
-      .metric-table-wrap {
-        overflow-x: visible;
-        overflow-y: visible;
-        -webkit-overflow-scrolling: touch;
-      }
-
-      .metric-table {
-        display: table;
-        width: 100%;
-        min-width: 0;
-        table-layout: fixed;
-      }
-
-      .metric-table thead {
-        display: table-header-group;
-      }
-
-      .metric-table tbody {
-        display: table-row-group;
-      }
-
-      .metric-table tr {
-        display: table-row;
-      }
-
-      .metric-table td {
-        display: table-cell;
-      }
-
-      .metric-table col.metric-description-cell,
-      .metric-table col.metric-date-cell,
-      .metric-table th:nth-child(2),
-      .metric-table th:nth-child(3),
-      .metric-table th:nth-child(4),
-      .metric-table td.metric-description-cell,
-      .metric-table td.metric-date-cell {
-        display: none;
-      }
-
-      .metric-table th[data-mobile-label] {
-        font-size: 0;
-      }
-
-      .metric-table th[data-mobile-label]::after {
-        content: attr(data-mobile-label);
-        font-size: 10.5px;
-      }
-
-      .metric-row {
-        padding: 0;
-        border-top: 0;
-      }
-
-      .metric-row:first-child {
-        border-top: 0;
-      }
-
-      .metric-row td {
-        padding: 7px 6px;
-        border-top: 1px solid var(--line);
-      }
-
-      .metric-row td:not(.metric-name-cell)::before {
-        content: none;
-      }
-
-      .metric-name-cell { width: 46%; }
-      .metric-value-cell { width: 20%; }
-      .metric-chart-cell { width: 26%; }
-      .metric-favorite-cell { width: 8%; }
-
-      .metric-name {
-        font-size: 12.5px;
-        line-height: 1.22;
-      }
-
-      .metric-mobile-description {
-        display: -webkit-box;
-        margin-top: 4px;
-        color: var(--muted);
-        font-size: 10.5px;
-        line-height: 1.28;
-        font-weight: 580;
-        overflow: hidden;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
-      }
-
-      .metric-current-value {
-        font-size: 11.5px;
-        line-height: 1.2;
-      }
-
-      .metric-value-wrap {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
-      }
-
-      .metric-change-badge {
-        font-size: 10.5px;
-      }
-
-      .metric-chart-cell .chart-mini {
-        height: 30px;
-        max-height: 30px;
-      }
-
-      .metric-favorite-button {
-        width: 30px;
-        height: 30px;
-        font-size: 12.5px;
-      }
-
-      .metric-detail-row td {
-        padding: 0 6px;
-      }
-
-      .metric-detail-inner {
-        gap: 8px;
-        padding: 10px 0 12px;
-      }
-
-      .detail-chart {
-        grid-template-columns: 40px minmax(0, 1fr);
-        overflow: hidden;
-        padding: 0 0 6px;
-      }
-
-      .detail-chart-axis {
-        width: 40px;
-        min-width: 40px;
-        height: 158px;
-      }
-
-      .detail-chart-scroll .chart {
-        width: max(100%, var(--detail-chart-width, 520px));
-        min-width: max(100%, var(--detail-chart-width, 520px));
-        height: 158px;
-      }
-
-      .detail-stats {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 5px 7px;
-        padding: 0;
-      }
-
-      .detail-stat {
-        padding: 7px 6px;
-        border-radius: 6px;
-      }
-
-      .detail-label {
-        font-size: 9.5px;
-        line-height: 1.12;
-      }
-
-      .detail-value {
-        margin-top: 3px;
-        font-size: 12px;
-        line-height: 1.12;
-      }
-
-      .metric-grid { grid-template-columns: 1fr; }
-      .metric-main { grid-template-columns: 1fr; }
-      .deltas {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        text-align: left;
-      }
-    }
-  </style>
-</head>
-<body>
-  <main class="shell">
-    <aside class="sidebar" id="mobileDrawer" aria-label="업종 메뉴">
-      <div class="drawer-head">
-        <span data-i18n="drawerTitle">메뉴</span>
-        <button class="drawer-close" id="drawerClose" type="button" aria-label="메뉴 닫기">
-          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-        </button>
-      </div>
-      <nav class="side-menu" id="industryFilters" aria-label="업종 메뉴"></nav>
-      <div class="menu-settings" id="menuSettings">
-        <div class="settings-menu" id="settingsMenu" role="menu" hidden>
-          <button type="button" role="menuitem" data-setting-action="theme">
-            <i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i>
-            <span data-i18n="darkMode">다크모드</span>
-            <span class="settings-meta" id="themeSettingLabel"></span>
-          </button>
-          <button type="button" role="menuitem" data-setting-action="language">
-            <i class="fa-solid fa-language" aria-hidden="true"></i>
-            <span data-i18n="language">언어변경</span>
-            <span class="settings-meta" id="languageSettingLabel">KO</span>
-          </button>
-          <button type="button" role="menuitem" data-setting-action="reorder">
-            <i class="fa-solid fa-arrow-up-wide-short" aria-hidden="true"></i>
-            <span data-i18n="reorderMenu">메뉴 순서변경</span>
-            <span></span>
-          </button>
-        </div>
-        <button class="settings-button" id="settingsToggle" type="button" aria-label="설정" aria-expanded="false" aria-controls="settingsMenu">
-          <i class="fa-solid fa-gear" aria-hidden="true"></i>
-          <span data-i18n="settings">설정</span>
-          <i class="fa-solid fa-chevron-up settings-chevron" aria-hidden="true"></i>
-        </button>
-      </div>
-      <div class="reorder-actions" id="reorderActions" hidden>
-        <button class="reorder-cancel" id="reorderCancel" type="button" data-i18n="cancel">취소</button>
-        <button class="reorder-save" id="reorderSave" type="button" data-i18n="save">저장</button>
-      </div>
-    </aside>
-    <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
-    <section class="content">
-      <header class="topbar">
-        <button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobileDrawer">
-          <i class="fa-solid fa-bars" aria-hidden="true"></i>
-        </button>
-        <h1 data-i18n="title">산업별 지표 대시보드</h1>
-        <div class="topbar-actions">
-          <button class="scroll-top-button" id="scrollTopButton" type="button" aria-label="최상단 이동" title="최상단 이동">
-            <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
-          </button>
-          <button class="currency-toggle" id="currencyToggle" type="button" aria-label="원화 표시" title="원화 표시">
-            <span class="currency-icon-slot" aria-hidden="true">
-              <i class="fa-solid fa-dollar-sign currency-icon currency-icon-dollar"></i>
-              <i class="fa-solid fa-won-sign currency-icon currency-icon-won"></i>
-            </span>
-            <span class="toggle-label" id="currencyToggleLabel">달러</span>
-            <svg xmlns="http://www.w3.org/2000/svg" class="toggle-chevron lucide lucide-chevrons-up-down-icon lucide-chevrons-up-down" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
-          </button>
-          <button class="theme-toggle" id="themeToggle" type="button" aria-label="다크모드 전환" title="다크모드 전환">
-            <span class="theme-icon-orbit" aria-hidden="true">
-              <i class="fa-solid fa-sun theme-icon theme-icon-sun"></i>
-              <i class="fa-solid fa-moon theme-icon theme-icon-moon"></i>
-            </span>
-            <span class="toggle-label" id="themeToggleLabel">라이트</span>
-            <svg xmlns="http://www.w3.org/2000/svg" class="toggle-chevron lucide lucide-chevrons-up-down-icon lucide-chevrons-up-down" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
-          </button>
-        </div>
-      </header>
-      <section class="daily-updates" id="dailyUpdates"></section>
-      <section class="industry-stack" id="industryStack"></section>
-      <div class="empty" id="empty" data-i18n="empty">표시할 지표가 없습니다.</div>
-    </section>
-  </main>
-
-  <script>
-    const DASHBOARD_DATA = __DASHBOARD_JSON__;
-    const state = {
-      activeIndustry: "",
-      activeDepth: "",
-      isReordering: false,
-      draftIndustryOrder: null,
-      draggedMenuItem: null,
-      language: "ko",
-      currency: "usd",
-      favoriteMetricIds: new Set()
-    };
-    const favoriteMetricStorageKey = "dashboard-favorite-metrics";
-    const mobileDrawerQuery = window.matchMedia ? window.matchMedia("(max-width: 760px)") : { matches: false };
-    let scrollSpyFrame = 0;
-    let suppressMenuClick = false;
-    const groupOrder = [
-      "판매액(WSTS)", "판매액", "시장 매출", "가격/수요", "투자/장비", "수출",
-      "판매/수요", "판매량", "배터리 원재료",
-      "운임/해운", "선가/발주",
-      "원자재 가격", "중국 경기",
-      "에너지 가격", "원유/원료", "화학 스프레드", "스프레드/마진",
-      "금리", "신용 스프레드", "스프레드", "금리/스프레드", "은행 건전성", "대출/건전성",
-      "주택 경기", "건설 선행", "금융비용", "주택 시장",
-      "시장지수", "환율", "리스크", "시장 분위기", "핵심 지표", "대표주가"
-    ];
-    const translations = {
-      ko: {
-        title: "산업별 지표 대시보드",
-        settings: "설정",
-        darkMode: "다크모드",
-        lightMode: "라이트",
-        darkModeState: "다크",
-        language: "언어변경",
-        reorderMenu: "메뉴 순서변경",
-        cancel: "취소",
-        save: "저장",
-        empty: "표시할 지표가 없습니다.",
-        metric: "지표",
-        description: "설명",
-        lastUpdated: "마지막 업데이트일",
-        nextUpdate: "다음 예정일",
-        chart: "차트",
-        metricSummary: "지표명/설명",
-        metricValueShort: "지표",
-        currentValue: "현재값",
-        previousChange: "전기 변화",
-        previousChangePct: "전기 변화율",
-        yoy: "YoY",
-        visiblePeriod: "표시 기간",
-        updateFrequency: "업데이트 주기",
-        irregular: "비정기",
-        menuLabel: "업종 메뉴",
-        drawerTitle: "메뉴",
-        openMenu: "메뉴 열기",
-        closeMenu: "메뉴 닫기",
-        scrollTop: "최상단 이동",
-        toggleTheme: "다크모드 전환",
-        showKrw: "원화 표시",
-        showUsd: "달러 표시",
-        currencyKrwName: "원화",
-        currencyUsdName: "달러",
-        themeLightName: "라이트",
-        themeDarkName: "다크",
-        tooltipPeriod: "연도",
-        tooltipValue: "지표",
-        tooltipChange: "증감",
-        todayChanges: "오늘 변경",
-        showDailyChanges: "오늘 변경된 내용 확인하기",
-        morningBriefing: "AI 요약",
-        aiBriefing: "AI 요약",
-        fallbackBriefing: "룰 기반 요약",
-        favoriteMetrics: "별표한 지표",
-        favoriteCount: "개",
-        addFavorite: "별표 추가",
-        removeFavorite: "별표 해제",
-        briefingDisclaimer: "이 브리핑은 AI가 공개 지표를 바탕으로 자동 생성한 참고 자료입니다. 실제 투자 판단 전에는 원자료와 리스크를 함께 확인하세요.",
-        updatedCount: "업데이트",
-        newCount: "신규",
-        noDailyChanges: "오늘 변경된 지표 없음",
-        updatedBadge: "업데이트",
-        newBadge: "New"
-      },
-      en: {
-        title: "Industry Metrics Dashboard",
-        settings: "Settings",
-        darkMode: "Dark mode",
-        lightMode: "Light",
-        darkModeState: "Dark",
-        language: "Language",
-        reorderMenu: "Reorder menu",
-        cancel: "Cancel",
-        save: "Save",
-        empty: "No metrics to display.",
-        metric: "Metric",
-        description: "Description",
-        lastUpdated: "Last updated",
-        nextUpdate: "Next update",
-        chart: "Chart",
-        metricSummary: "Metric/description",
-        metricValueShort: "Value",
-        currentValue: "Current",
-        previousChange: "Previous change",
-        previousChangePct: "Previous %",
-        yoy: "YoY",
-        visiblePeriod: "Period",
-        updateFrequency: "Frequency",
-        irregular: "Irregular",
-        menuLabel: "Industry menu",
-        drawerTitle: "Menu",
-        openMenu: "Open menu",
-        closeMenu: "Close menu",
-        scrollTop: "Back to top",
-        toggleTheme: "Toggle dark mode",
-        showKrw: "Show KRW",
-        showUsd: "Show USD",
-        currencyKrwName: "KRW",
-        currencyUsdName: "USD",
-        themeLightName: "Light",
-        themeDarkName: "Dark",
-        tooltipPeriod: "Period",
-        tooltipValue: "Value",
-        tooltipChange: "Change",
-        todayChanges: "Today",
-        showDailyChanges: "View today's changes",
-        morningBriefing: "AI Summary",
-        aiBriefing: "AI summary",
-        fallbackBriefing: "Rule summary",
-        favoriteMetrics: "Starred Metrics",
-        favoriteCount: "items",
-        addFavorite: "Add star",
-        removeFavorite: "Remove star",
-        briefingDisclaimer: "This summary is for quick reference from public indicators and is not investment advice or a buy/sell recommendation.",
-        updatedCount: "Updated",
-        newCount: "New",
-        noDailyChanges: "No changed metrics today",
-        updatedBadge: "Updated",
-        newBadge: "New"
-      }
-    };
-
-    function t(key) {
-      return translations[state.language]?.[key] || translations.ko[key] || key;
-    }
-
-    function localizedIndustry(industry) {
-      if (state.language !== "en") return industry || "";
-      return DASHBOARD_DATA.industry_labels_en?.[industry] || industry || "";
-    }
-
-    function localizedField(item, field) {
-      if (!item) return "";
-      if (state.language === "en") {
-        return item[`${field}_en`] || item[field] || "";
-      }
-      return item[field] || "";
-    }
-
-    function localizedGroup(group, items = []) {
-      if (state.language !== "en") return group || "";
-      const first = items.find((item) => item.group === group && item.group_en);
-      return first?.group_en || group || "";
-    }
-
-    function localizedDepth(depth, items = []) {
-      if (state.language !== "en") return depth || "";
-      const first = items.find((item) => item.depth === depth && item.depth_en);
-      return first?.depth_en || depth || "";
-    }
-
-    function localizedUnit(metric) {
-      if (!metric) return "";
-      return state.language === "en" ? (metric.unit_en || metric.unit || "") : (metric.unit || "");
-    }
-
-    function formatMetricNumberWithUnit(value, unit, signed = false, isChange = false) {
-      if (typeof value !== "number" || !Number.isFinite(value)) return "n/a";
-      const text = numberText(value, signed);
-      if (unit === "$B") {
-        const prefix = signed ? (value > 0 ? "+" : value < 0 ? "-" : "") : "";
-        return `${prefix}$${numberText(Math.abs(value))}B`;
-      }
-      if (unit === "%") return `${text}${isChange ? "%p" : "%"}`;
-      if (!unit) return text;
-      return `${text} ${unit}`;
-    }
-
-    function numberText(value, signed = false) {
-      if (typeof value !== "number" || !Number.isFinite(value)) return "n/a";
-      const abs = Math.abs(value);
-      const digits = abs >= 100 ? 1 : 2;
-      const formatted = abs.toLocaleString(state.language === "en" ? "en-US" : "ko-KR", {
-        minimumFractionDigits: digits,
-        maximumFractionDigits: digits
-      });
-      if (!signed || value === 0) return formatted;
-      return `${value > 0 ? "+" : "-"}${formatted}`;
-    }
-
-    function dollarUnitScale(metric) {
-      const unit = String(metric.unit || "");
-      const rate = usdKrwRate();
-      const english = state.language === "en";
-      if (unit === "$B") return { scale: rate / 1000, unit: english ? "tn KRW" : "조원" };
-      if (unit.includes("백만달러")) {
-        return english ? { scale: rate / 1000, unit: "bn KRW" } : { scale: rate / 100, unit: "억원" };
-      }
-      if (unit === "$" || unit.includes("달러") || unit.toUpperCase().includes("USD")) {
-        return { scale: rate, unit: english ? "KRW" : "원" };
-      }
-      return null;
-    }
-
-    function isDollarMetric(metric) {
-      return Boolean(dollarUnitScale(metric));
-    }
-
-    function usdKrwRate() {
-      const match = DASHBOARD_DATA.metrics.find((metric) => {
-        const name = String(metric.name || "").toUpperCase();
-        return typeof metric.value === "number" &&
-          Number.isFinite(metric.value) &&
-          String(metric.unit || "") === "원" &&
-          (name.includes("환율") || name.includes("원/달러") || name.includes("USD/KRW"));
-      });
-      return match?.value || 1350;
-    }
-
-    function displayMetricValue(metric) {
-      const scale = state.currency === "krw" ? dollarUnitScale(metric) : null;
-      if (scale && typeof metric.value === "number" && Number.isFinite(metric.value)) {
-        const separator = state.language === "en" ? " " : "";
-        return `${numberText(metric.value * scale.scale)}${separator}${scale.unit}`;
-      }
-      if (state.language === "en" && typeof metric.value === "number" && Number.isFinite(metric.value)) {
-        return formatMetricNumberWithUnit(metric.value, localizedUnit(metric));
-      }
-      if (!scale || typeof metric.value !== "number" || !Number.isFinite(metric.value)) {
-        return metric.display_value;
-      }
-      return `${numberText(metric.value * scale.scale)}${scale.unit}`;
-    }
-
-    function displayMetricChange(metric) {
-      const scale = state.currency === "krw" ? dollarUnitScale(metric) : null;
-      if (scale && typeof metric.change_abs === "number" && Number.isFinite(metric.change_abs)) {
-        const separator = state.language === "en" ? " " : "";
-        return `${numberText(metric.change_abs * scale.scale, true)}${separator}${scale.unit}`;
-      }
-      if (state.language === "en" && typeof metric.change_abs === "number" && Number.isFinite(metric.change_abs)) {
-        return formatMetricNumberWithUnit(metric.change_abs, localizedUnit(metric), true, true);
-      }
-      if (!scale || typeof metric.change_abs !== "number" || !Number.isFinite(metric.change_abs)) {
-        return metric.change_abs_label;
-      }
-      return `${numberText(metric.change_abs * scale.scale, true)}${scale.unit}`;
-    }
-
-    function displayHistory(history, metric) {
-      const scale = state.currency === "krw" ? dollarUnitScale(metric || {}) : null;
-      if (!scale) return history;
-      return (history || []).map((point) => ({
-        ...point,
-        value: point.value * scale.scale
-      }));
-    }
-
-    function escapeHtml(value) {
-      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-      }[char]));
-    }
-
-    function directionClass(value) {
-      if (typeof value !== "number" || !Number.isFinite(value) || value === 0) return "";
-      return value > 0 ? "positive" : "negative";
-    }
-
-    function trendIconClass(value) {
-      if (typeof value !== "number" || !Number.isFinite(value) || value === 0) return "fa-minus";
-      return value > 0 ? "fa-arrow-trend-up" : "fa-arrow-trend-down";
-    }
-
-    function metricChangeBadge(metric) {
-      const className = directionClass(metric.change_pct);
-      const label = metric.change_pct_label || "n/a";
-      return `<span class="metric-change-badge ${className}">
-        <i class="fa-solid ${trendIconClass(metric.change_pct)}" aria-hidden="true"></i>
-        <span>${escapeHtml(label)}</span>
-      </span>`;
-    }
-
-    function groupRank(group) {
-      if (group === "대표주가") return 10000;
-      const index = groupOrder.indexOf(group);
-      return index === -1 ? 999 : index;
-    }
-
-    const depthOrder = ["전체 업황", "메모리 반도체", "AI/GPU", "CPU/프로세서", "파운드리", "장비", "패키징/후공정", "소자/부품"];
-
-    function depthRank(depth) {
-      const index = depthOrder.indexOf(depth);
-      return index === -1 ? 999 : index;
-    }
-
-    function groupMetrics(items, keyFn) {
-      if (Map.groupBy) return Map.groupBy(items, keyFn);
-      return items.reduce((map, item) => {
-        const key = keyFn(item);
-        map.set(key, [...(map.get(key) || []), item]);
-        return map;
-      }, new Map());
-    }
-
-    function baseVisibleIndustries() {
-      return DASHBOARD_DATA.industries.filter((industry) =>
-        DASHBOARD_DATA.metrics.some((metric) => metric.industry === industry)
-      );
-    }
-
-    function storedIndustryOrder() {
-      try {
-        const parsed = JSON.parse(localStorage.getItem("dashboard-industry-order") || "[]");
-        return Array.isArray(parsed) ? parsed.filter((item) => typeof item === "string") : [];
-      } catch {
-        return [];
-      }
-    }
-
-    function orderedIndustries(industries, order = null) {
-      const selectedOrder = order || state.draftIndustryOrder || storedIndustryOrder();
-      const rank = new Map(selectedOrder.map((industry, index) => [industry, index]));
-      return [...industries].sort((a, b) => {
-        const aRank = rank.has(a) ? rank.get(a) : Number.MAX_SAFE_INTEGER;
-        const bRank = rank.has(b) ? rank.get(b) : Number.MAX_SAFE_INTEGER;
-        if (aRank !== bRank) return aRank - bRank;
-        return industries.indexOf(a) - industries.indexOf(b);
-      });
-    }
-
-    function visibleIndustries() {
-      return orderedIndustries(baseVisibleIndustries());
-    }
-
-    function idSegment(value) {
-      return Array.from(String(value || "")).map((char) => char.charCodeAt(0).toString(36)).join("-");
-    }
-
-    function industryId(industry) {
-      return `industry-${idSegment(industry)}`;
-    }
-
-    function depthId(industry, depth) {
-      return `${industryId(industry)}-depth-${idSegment(depth)}`;
-    }
-
-    function semiconductorDepthEntries() {
-      const semiconductorMetrics = DASHBOARD_DATA.metrics.filter((metric) => metric.industry === "반도체");
-      return [...groupMetrics(semiconductorMetrics, (metric) => metric.depth || "전체 업황").entries()]
-        .sort(([a], [b]) => depthRank(a) - depthRank(b) || String(a).localeCompare(String(b), "ko"))
-        .filter(([depth, items]) => depth !== "전체 업황" && items.length);
-    }
-
-    function setActiveIndustry(industry, depth = "") {
-      if (!industry) return;
-      state.activeIndustry = industry;
-      state.activeDepth = depth || "";
-      document.querySelectorAll("[data-industry]").forEach((button) => {
-        const active = button.dataset.industry === industry;
-        button.setAttribute("aria-pressed", String(active));
-        button.setAttribute("aria-current", String(active && !state.activeDepth));
-      });
-      document.querySelectorAll("[data-menu-depth]").forEach((button) => {
-        const active = button.dataset.depthIndustry === industry && button.dataset.depthName === state.activeDepth;
-        button.setAttribute("aria-pressed", String(active));
-        button.setAttribute("aria-current", String(active));
-      });
-    }
-
-    function renderMenuDepths(industry) {
-      if (industry !== "반도체") return "";
-      const depthItems = semiconductorDepthEntries().map(([depth, items]) => `
-        <div class="menu-depth-item">
-          <button type="button" class="menu-depth-button" data-menu-depth data-depth-industry="${escapeHtml(industry)}" data-depth-name="${escapeHtml(depth)}" data-target="${depthId(industry, depth)}" aria-pressed="${state.activeIndustry === industry && state.activeDepth === depth}" aria-current="${state.activeIndustry === industry && state.activeDepth === depth}" ${state.isReordering ? 'tabindex="-1"' : ""}>
-            ${escapeHtml(localizedDepth(depth, items))}
-          </button>
-        </div>
-      `).join("");
-      return depthItems ? `<div class="menu-depth-list">${depthItems}</div>` : "";
-    }
-
-    function setBranchLine(container, markerSelector, topProperty, heightProperty, branchHeight, endInset = 0, startOvershoot = 0) {
-      const markers = [...container.querySelectorAll(markerSelector)];
-      if (!markers.length) return;
-      const containerBox = container.getBoundingClientRect();
-      const firstBox = markers[0].getBoundingClientRect();
-      const lastBox = markers[markers.length - 1].getBoundingClientRect();
-      const top = firstBox.top - containerBox.top + firstBox.height / 2 - branchHeight - startOvershoot;
-      const end = lastBox.top - containerBox.top + lastBox.height / 2 - endInset;
-      const topPx = Math.max(0, Math.round(top));
-      const endPx = Math.max(topPx, Math.round(end));
-      container.style.setProperty(topProperty, `${topPx}px`);
-      container.style.setProperty(heightProperty, `${endPx - topPx}px`);
-    }
-
-    function updateBranchLines() {
-      document.querySelectorAll(".depth-tree").forEach((tree) => {
-        const cornerHeight = Number.parseFloat(getComputedStyle(tree).getPropertyValue("--depth-corner-height")) || 17;
-        setBranchLine(tree, ".depth-title", "--depth-branch-top", "--depth-branch-height", cornerHeight, cornerHeight);
-      });
-    }
-
-    function scheduleBranchLineUpdate() {
-      requestAnimationFrame(updateBranchLines);
-    }
-
-    function renderFilters() {
-      const industries = visibleIndustries();
-      if (!state.activeIndustry && industries.length) {
-        state.activeIndustry = industries[0];
-      }
-      document.getElementById("industryFilters").innerHTML = industries.map((industry) => `
-        <div class="menu-item" data-menu-item data-industry-item="${escapeHtml(industry)}" draggable="${state.isReordering}">
-          <button type="button" data-industry="${escapeHtml(industry)}" data-target="${industryId(industry)}" aria-pressed="${state.activeIndustry === industry}" aria-current="${state.activeIndustry === industry && !state.activeDepth}" ${state.isReordering ? 'tabindex="-1"' : ""}>
-            ${escapeHtml(localizedIndustry(industry))}
-          </button>
-          ${renderMenuDepths(industry)}
-          <span class="drag-handle" aria-hidden="true"><i class="fa-solid fa-grip-lines"></i></span>
-        </div>
-      `).join("");
-      document.querySelectorAll("[data-industry]").forEach((button) => {
-        button.addEventListener("click", () => {
-          if (state.isReordering) return;
-          const industry = button.dataset.industry;
-          const target = document.getElementById(button.dataset.target);
-          if (!industry || !target) return;
-          setActiveIndustry(industry);
-          target.scrollIntoView({ behavior: "smooth", block: "start" });
-          closeDrawerOnMobile();
-        });
-      });
-      document.querySelectorAll("[data-menu-depth]").forEach((button) => {
-        button.addEventListener("click", () => {
-          if (state.isReordering) return;
-          const industry = button.dataset.depthIndustry;
-          const depth = button.dataset.depthName;
-          const target = document.getElementById(button.dataset.target);
-          if (!industry || !depth || !target) return;
-          setActiveIndustry(industry, depth);
-          target.scrollIntoView({ behavior: "smooth", block: "start" });
-          closeDrawerOnMobile();
-        });
-      });
-      initMenuDrag();
-      initMenuScrollDrag();
-      scheduleBranchLineUpdate();
-    }
-
-    function formatAxisValue(value) {
-      const abs = Math.abs(value);
-      if (abs >= 1000) return `${(value / 1000).toFixed(1)}k`;
-      if (abs >= 100) return value.toFixed(0);
-      if (abs >= 10) return value.toFixed(1);
-      return value.toFixed(2);
-    }
-
-    function yearLabel(dateText) {
-      const year = Number(String(dateText).slice(2, 4));
-      if (!Number.isFinite(year)) return "";
-      const shortYear = String(year).padStart(2, "0");
-      return state.language === "en" ? shortYear : `${shortYear}년`;
-    }
-
-    function monthLabel(month) {
-      const monthNumber = Number(month);
-      if (!Number.isFinite(monthNumber)) return "";
-      if (state.language === "en") {
-        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        return monthNames[Math.max(0, Math.min(11, monthNumber - 1))] || String(monthNumber);
-      }
-      return `${monthNumber}월`;
-    }
-
-    function chartDateParts(dateText) {
-      const match = String(dateText || "").match(/^(\\d{4})-(\\d{1,2})/);
-      if (!match) return null;
-      const year = Number(match[1]);
-      const month = Number(match[2]);
-      if (!Number.isFinite(year) || !Number.isFinite(month)) return null;
-      return { year, month };
-    }
-
-    function chartPointDateLabel(dateText) {
-      const date = chartDateParts(dateText);
-      if (!date) return dateText || "";
-      if (state.language === "en") {
-        return `${monthLabel(date.month)} ${date.year}`;
-      }
-      return `${String(date.year).slice(2)}년 ${date.month}월`;
-    }
-
-    function detailTickLabel(point, seenYears) {
-      const date = chartDateParts(point.date);
-      if (!date) return "";
-      if (!seenYears.has(date.year)) {
-        seenYears.add(date.year);
-        return yearLabel(point.date);
-      }
-      if ([3, 6, 9].includes(date.month)) {
-        return monthLabel(date.month);
-      }
-      return "";
-    }
-
-    function chartTicks(history, left, right, includeQuarterMonths = false, xForPoint = null) {
-      const seen = new Set();
-      const seenYears = new Set();
-      const ticks = [];
-      history.forEach((point, index) => {
-        const yearText = yearLabel(point.date);
-        const label = includeQuarterMonths
-          ? detailTickLabel(point, seenYears)
-          : yearText;
-        if (!label) return;
-        const key = includeQuarterMonths ? `${point.date}-${label}` : String(point.date).slice(0, 4);
-        if (seen.has(key)) return;
-        seen.add(key);
-        const x = xForPoint
-          ? xForPoint(point, index)
-          : left + (index / Math.max(history.length - 1, 1)) * (right - left);
-        ticks.push({ label, x, priority: label === yearText ? 2 : 1 });
-      });
-      if (ticks.length === 1 && history.length > 1) {
-        ticks.push({ label: yearLabel(history[history.length - 1].date), x: right, priority: 2 });
-      }
-      return compactChartTicks(
-        ticks.filter((tick, index) => index === 0 || tick.label !== ticks[index - 1].label),
-        includeQuarterMonths ? 46 : 54
-      );
-    }
-
-    function compactChartTicks(ticks, minGap) {
-      const kept = [];
-      ticks.forEach((tick) => {
-        const previous = kept[kept.length - 1];
-        if (!previous || tick.x - previous.x >= minGap) {
-          kept.push(tick);
-          return;
-        }
-        if ((tick.priority || 0) > (previous.priority || 0)) {
-          kept[kept.length - 1] = tick;
-        }
-      });
-      return kept;
-    }
-
-    function separatedLabelPositions(levels, minY, maxY, minGap = 11) {
-      const sorted = [...levels]
-        .sort((a, b) => a.y - b.y)
-        .map((level) => ({ ...level, preferredY: Math.min(maxY, Math.max(minY, level.y)) }));
-      if (sorted.length <= 1) {
-        return sorted.map((level) => ({ ...level, labelY: level.preferredY }));
-      }
-
-      const availableGap = (maxY - minY) / Math.max(sorted.length - 1, 1);
-      const gap = Math.min(minGap, availableGap);
-      const groups = sorted.map((_, index) => ({ start: index, end: index }));
-      const positions = new Array(sorted.length);
-
-      const layoutGroups = () => {
-        groups.forEach((group) => {
-          const count = group.end - group.start + 1;
-          let startSum = 0;
-          for (let index = group.start; index <= group.end; index += 1) {
-            startSum += sorted[index].preferredY - (index - group.start) * gap;
-          }
-          const rawStart = startSum / count;
-          const minStart = minY;
-          const maxStart = maxY - (count - 1) * gap;
-          const start = Math.min(maxStart, Math.max(minStart, rawStart));
-          for (let index = group.start; index <= group.end; index += 1) {
-            positions[index] = start + (index - group.start) * gap;
-          }
-        });
-      };
-
-      for (let pass = 0; pass < sorted.length; pass += 1) {
-        layoutGroups();
-        const mergeIndex = groups.findIndex((group, index) => {
-          const next = groups[index + 1];
-          return next && positions[next.start] - positions[group.end] < gap - 0.01;
-        });
-        if (mergeIndex === -1) break;
-        const current = groups[mergeIndex];
-        const next = groups[mergeIndex + 1];
-        groups.splice(mergeIndex, 2, { start: current.start, end: next.end });
-      }
-      layoutGroups();
-
-      return sorted.map((level, index) => ({
-        ...level,
-        labelY: Math.min(maxY, Math.max(minY, positions[index]))
-      }));
-    }
-
-    function chartTimeValue(point) {
-      const match = String(point?.date || "").match(/^(\\d{4})-(\\d{1,2})(?:-(\\d{1,2}))?/);
-      if (!match) return null;
-      const year = Number(match[1]);
-      const month = Number(match[2]);
-      const day = match[3] ? Number(match[3]) : 1;
-      if (!Number.isFinite(year) || !Number.isFinite(month) || !Number.isFinite(day)) return null;
-      return Date.UTC(year, month - 1, day);
-    }
-
-    function chartMonthSpan(points) {
-      if (!Array.isArray(points) || points.length < 2) return 0;
-      const first = chartDateParts(points[0].date);
-      const last = chartDateParts(points[points.length - 1].date);
-      if (!first || !last) return 0;
-      return Math.max(0, (last.year - first.year) * 12 + (last.month - first.month));
-    }
-
-    function chartTimeBounds(points) {
-      const times = (points || [])
-        .map(chartTimeValue)
-        .filter((value) => typeof value === "number" && Number.isFinite(value));
-      if (times.length < 2) return null;
-      const min = Math.min(...times);
-      const max = Math.max(...times);
-      return max > min ? { min, max } : null;
-    }
-
-    function chartXScale(points, left, right) {
-      const bounds = chartTimeBounds(points);
-      if (!bounds) {
-        return (point, index) => left + (index / Math.max(points.length - 1, 1)) * (right - left);
-      }
-      return (point, index) => {
-        const time = chartTimeValue(point);
-        if (typeof time !== "number" || !Number.isFinite(time)) {
-          return left + (index / Math.max(points.length - 1, 1)) * (right - left);
-        }
-        const ratio = Math.min(1, Math.max(0, (time - bounds.min) / (bounds.max - bounds.min)));
-        return left + ratio * (right - left);
-      };
-    }
-
-    function detailChartAvailableWidth() {
-      const containerWidth = document.getElementById("industryStack")?.clientWidth
-        || document.querySelector(".content")?.clientWidth
-        || window.innerWidth
-        || 520;
-      const axisWidth = mobileDrawerQuery.matches ? 40 : 42;
-      const minimum = mobileDrawerQuery.matches ? 360 : 520;
-      return Math.max(minimum, Math.floor(containerWidth - axisWidth));
-    }
-
-    function detailChartWidth(points) {
-      const count = Array.isArray(points) ? points.length : 0;
-      const perPointWidth = mobileDrawerQuery.matches ? 18 : 22;
-      const perMonthWidth = mobileDrawerQuery.matches ? 11 : 14;
-      const monthSpan = chartMonthSpan(points);
-      const width = Math.max(
-        detailChartAvailableWidth(),
-        count * perPointWidth,
-        monthSpan > 0 ? (monthSpan + 1) * perMonthWidth : 0
-      );
-      return Math.min(4200, width);
-    }
-
-    function detailChartUnit(metric) {
-      const scale = state.currency === "krw" ? dollarUnitScale(metric || {}) : null;
-      return scale ? scale.unit : localizedUnit(metric || {});
-    }
-
-    function detailPointValueLabel(value, unit) {
-      return formatMetricNumberWithUnit(value, unit);
-    }
-
-    function detailPointChangeLabel(point, previous, unit) {
-      if (!previous || typeof point.value !== "number" || typeof previous.value !== "number") return "n/a";
-      if (!Number.isFinite(point.value) || !Number.isFinite(previous.value)) return "n/a";
-      const absolute = point.value - previous.value;
-      const pct = previous.value === 0 ? null : (absolute / Math.abs(previous.value)) * 100;
-      const absoluteLabel = formatMetricNumberWithUnit(absolute, unit, true, true);
-      const pctLabel = typeof pct === "number" && Number.isFinite(pct) ? `${numberText(pct, true)}%` : "n/a";
-      return `${absoluteLabel} / ${pctLabel}`;
-    }
-
-    function detailChart(history, metric = null) {
-      const displayPoints = displayHistory(history, metric);
-      const svgWidth = detailChartWidth(displayPoints);
-      const chartStyle = ` style="--detail-chart-width: ${svgWidth}px"`;
-      const axisClass = "chart detail-chart-axis";
-      const plotClass = "chart chart-detail";
-      const isMobileChart = mobileDrawerQuery.matches;
-      const chartHeight = isMobileChart ? 158 : 190;
-      const axisWidth = isMobileChart ? 40 : 42;
-      const axisGuideStart = axisWidth - 2;
-      const left = 1;
-      const right = svgWidth - 1;
-      const top = isMobileChart ? 12 : 18;
-      const axisY = chartHeight - 32;
-      const bottom = axisY - 12;
-      const labelBottom = chartHeight - 12;
-      const levelMinY = top - 2;
-      const levelMaxY = bottom + 2;
-      const emptyPlot = `<svg class="${plotClass}"${chartStyle} viewBox="0 0 ${svgWidth} ${chartHeight}" preserveAspectRatio="none" role="img" aria-label="trend unavailable">
-        <line x1="${left}" y1="${(top + bottom) / 2}" x2="${right}" y2="${(top + bottom) / 2}" class="guide"></line>
-      </svg>`;
-      if (!displayPoints || displayPoints.length < 2) {
-        return `<div class="detail-chart">
-          <svg class="${axisClass}" viewBox="0 0 ${axisWidth} ${chartHeight}" preserveAspectRatio="none" aria-hidden="true"></svg>
-          <div class="detail-chart-scroll">${emptyPlot}</div>
-        </div>`;
-      }
-      const values = displayPoints.map((point) => point.value).filter((value) => typeof value === "number" && Number.isFinite(value));
-      if (values.length < 2) {
-        return `<div class="detail-chart">
-          <svg class="${axisClass}" viewBox="0 0 ${axisWidth} ${chartHeight}" preserveAspectRatio="none" aria-hidden="true"></svg>
-          <div class="detail-chart-scroll">${emptyPlot}</div>
-        </div>`;
-      }
-      const min = Math.min(...values);
-      const max = Math.max(...values);
-      const latest = displayPoints[displayPoints.length - 1].value;
-      const first = displayPoints[0].value;
-      const span = max - min || 1;
-      const yFor = (value) => bottom - ((value - min) / span) * (bottom - top);
-      const xFor = chartXScale(displayPoints, left, right);
-      const points = displayPoints.map((point, index) => {
-        const x = xFor(point, index);
-        const y = yFor(point.value);
-        return `${x.toFixed(1)},${y.toFixed(1)}`;
-      }).join(" ");
-      const trend = latest >= first ? "up" : "down";
-      const levelEntries = [];
-      [
-        { value: max, type: "max" },
-        { value: latest, type: "current" },
-        { value: min, type: "min" }
-      ].forEach((candidate) => {
-        const existing = levelEntries.find((entry) => Math.abs(entry.value - candidate.value) < 1e-9);
-        if (existing) {
-          existing.types.push(candidate.type);
-        } else {
-          levelEntries.push({ value: candidate.value, types: [candidate.type] });
-        }
-      });
-      const levels = separatedLabelPositions(
-        levelEntries.map((entry) => ({
-          value: entry.value,
-          label: formatAxisValue(entry.value),
-          y: yFor(entry.value),
-          className: entry.types.map((type) => `level-${type}`).join(" ")
-        })),
-        levelMinY,
-        levelMaxY
-      );
-      const yAxis = levels.map((level) => {
-        const labelY = level.labelY;
-        return `<g>
-          <text class="${level.className}" x="${axisGuideStart.toFixed(1)}" y="${labelY.toFixed(1)}" text-anchor="end" dominant-baseline="middle">${level.label}</text>
-        </g>`;
-      }).join("");
-      const ticks = chartTicks(displayPoints, left, right, true, xFor);
-      const yBackgroundLines = levels.map((level) => `
-        <line x1="${left}" y1="${level.y.toFixed(1)}" x2="${right}" y2="${level.y.toFixed(1)}" class="chart-background-line level-line ${level.className}"></line>
-      `).join("");
-      const xBackgroundLines = ticks.map((tick) => `
-        <line x1="${tick.x.toFixed(1)}" y1="${top}" x2="${tick.x.toFixed(1)}" y2="${axisY}" class="chart-background-line"></line>
-      `).join("");
-      const xGuides = ticks.map((tick) => {
-        const anchor = tick.x <= left + 2 ? "start" : tick.x >= right - 2 ? "end" : "middle";
-        return `<text x="${tick.x.toFixed(1)}" y="${labelBottom}" text-anchor="${anchor}">${tick.label}</text>`;
-      }).join("");
-      const tooltipUnit = detailChartUnit(metric || {});
-      const pointHits = displayPoints.map((point, index) => {
-        const x = xFor(point, index);
-        const y = yFor(point.value);
-        const previous = index > 0 ? displayPoints[index - 1] : null;
-        return `<circle class="detail-point-hit" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="10" fill="transparent" stroke="transparent" tabindex="0"
-          data-tooltip-title="${escapeHtml(localizedField(metric, "name"))}"
-          data-tooltip-date="${escapeHtml(chartPointDateLabel(point.date))}"
-          data-tooltip-value="${escapeHtml(detailPointValueLabel(point.value, tooltipUnit))}"
-          data-tooltip-change="${escapeHtml(detailPointChangeLabel(point, previous, tooltipUnit))}"></circle>`;
-      }).join("");
-      const latestX = xFor(displayPoints[displayPoints.length - 1], displayPoints.length - 1);
-      const latestY = yFor(latest);
-      return `<div class="detail-chart">
-        <svg class="${axisClass}" viewBox="0 0 ${axisWidth} ${chartHeight}" preserveAspectRatio="none" aria-hidden="true">
-          ${yAxis}
-          <line x1="${axisGuideStart}" y1="${axisY}" x2="${axisWidth}" y2="${axisY}" class="axis-line"></line>
-        </svg>
-        <div class="detail-chart-scroll">
-          <svg class="${plotClass}"${chartStyle} viewBox="0 0 ${svgWidth} ${chartHeight}" preserveAspectRatio="none" role="img" aria-label="trend">
-            ${yBackgroundLines}
-            ${xBackgroundLines}
-            <line x1="${left}" y1="${axisY}" x2="${right}" y2="${axisY}" class="axis-line"></line>
-            ${xGuides}
-            <polyline points="${points}" class="trend-line ${trend}"></polyline>
-            <circle cx="${latestX}" cy="${latestY.toFixed(1)}" r="4" class="current-dot ${trend}"></circle>
-            ${pointHits}
-          </svg>
-        </div>
-        <div class="detail-chart-tooltip" role="status" aria-live="polite"></div>
-      </div>`;
-    }
-
-    function miniChart(history, metric = null) {
-      const displayPoints = displayHistory(history, metric);
-      const chartClass = "chart chart-mini";
-      if (!displayPoints || displayPoints.length < 2) {
-        return `<svg class="${chartClass}" viewBox="0 0 160 36" role="img" aria-label="trend unavailable"></svg>`;
-      }
-      const values = displayPoints.map((point) => point.value).filter((value) => typeof value === "number" && Number.isFinite(value));
-      const min = Math.min(...values);
-      const max = Math.max(...values);
-      const latest = displayPoints[displayPoints.length - 1].value;
-      const first = displayPoints[0].value;
-      const span = max - min || 1;
-      const left = 4;
-      const right = 156;
-      const top = 5;
-      const bottom = 31;
-      const yFor = (value) => bottom - ((value - min) / span) * (bottom - top);
-      const points = displayPoints.map((point, index) => {
-        const x = left + (index / Math.max(displayPoints.length - 1, 1)) * (right - left);
-        const y = yFor(point.value);
-        return `${x.toFixed(1)},${y.toFixed(1)}`;
-      }).join(" ");
-      const trend = latest >= first ? "up" : "down";
-      return `<svg class="${chartClass}" viewBox="0 0 160 36" role="img" aria-label="trend">
-        <polyline points="${points}" class="trend-line ${trend}"></polyline>
-      </svg>`;
-    }
-
-    function chart(history, extraClass = "", metric = null) {
-      if (extraClass.split(" ").includes("chart-mini")) {
-        return miniChart(history, metric);
-      }
-      const displayPoints = displayHistory(history, metric);
-      const chartClass = `chart${extraClass ? ` ${extraClass}` : ""}`;
-      const isDetailChart = extraClass.split(" ").includes("chart-detail");
-      const svgWidth = isDetailChart ? detailChartWidth(displayPoints) : 360;
-      const chartStyle = isDetailChart ? ` style="--detail-chart-width: ${svgWidth}px"` : "";
-      const left = 62;
-      const right = svgWidth - 16;
-      if (!displayPoints || displayPoints.length < 2) {
-        return `<svg class="${chartClass}"${chartStyle} viewBox="0 0 ${svgWidth} 158" role="img" aria-label="trend unavailable">
-          <line x1="${left}" y1="72" x2="${right}" y2="72" class="guide"></line>
-        </svg>`;
-      }
-      const values = displayPoints.map((point) => point.value).filter((value) => typeof value === "number" && Number.isFinite(value));
-      const min = Math.min(...values);
-      const max = Math.max(...values);
-      const latest = displayPoints[displayPoints.length - 1].value;
-      const first = displayPoints[0].value;
-      const span = max - min || 1;
-      const top = 16;
-      const bottom = 116;
-      const yFor = (value) => bottom - ((value - min) / span) * (bottom - top);
-      const xFor = isDetailChart ? chartXScale(displayPoints, left, right) : null;
-      const points = displayPoints.map((point, index) => {
-        const x = xFor
-          ? xFor(point, index)
-          : left + (index / Math.max(displayPoints.length - 1, 1)) * (right - left);
-        const y = yFor(point.value);
-        return `${x.toFixed(1)},${y.toFixed(1)}`;
-      }).join(" ");
-      const trend = latest >= first ? "up" : "down";
-      const levelValues = [];
-      [max, latest, min].forEach((value) => {
-        if (!levelValues.some((existing) => Math.abs(existing - value) < 1e-9)) {
-          levelValues.push(value);
-        }
-      });
-      const levels = separatedLabelPositions(
-        levelValues.map((value) => ({
-          value,
-          label: formatAxisValue(value),
-          y: yFor(value)
-        })),
-        14,
-        118
-      );
-      const yGuides = levels.map((level) => {
-        const y = level.y;
-        const labelY = level.labelY;
-        const connector = Math.abs(labelY - y) > 7
-          ? `<line x1="50" y1="${labelY.toFixed(1)}" x2="${left}" y2="${y.toFixed(1)}" class="guide"></line>`
-          : "";
-        return `<g>
-          <text x="8" y="${labelY.toFixed(1)}" dominant-baseline="middle">${level.label}</text>
-          ${connector}
-          <line x1="${left}" y1="${y.toFixed(1)}" x2="${right}" y2="${y.toFixed(1)}" class="guide"></line>
-        </g>`;
-      }).join("");
-      const xGuides = chartTicks(displayPoints, left, right, isDetailChart, xFor).map((tick) => `
-        <text x="${tick.x.toFixed(1)}" y="146" text-anchor="middle">${tick.label}</text>
-      `).join("");
-      const latestX = xFor
-        ? xFor(displayPoints[displayPoints.length - 1], displayPoints.length - 1)
-        : right;
-      const latestY = yFor(latest);
-      return `<svg class="${chartClass}"${chartStyle} viewBox="0 0 ${svgWidth} 158" role="img" aria-label="trend">
-        ${yGuides}
-        <line x1="${left}" y1="126" x2="${right}" y2="126" class="axis-line"></line>
-        ${xGuides}
-        <polyline points="${points}" class="trend-line ${trend}"></polyline>
-        <circle cx="${latestX}" cy="${latestY.toFixed(1)}" r="4" class="current-dot ${trend}"></circle>
-      </svg>`;
-    }
-
-    function dateText(value) {
-      if (!value) return t("irregular");
-      if (String(value).includes("비정기")) return t("irregular");
-      const match = String(value).match(/^(\\d{4})[.-](\\d{1,2})(?:[.-](\\d{1,2}))?/);
-      if (!match) return value;
-      if (state.language === "en") {
-        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        const year = match[1];
-        const month = monthNames[Math.max(0, Math.min(11, Number(match[2]) - 1))];
-        return match[3] ? `${month} ${Number(match[3])}, ${year}` : `${month} ${year}`;
-      }
-      const year = match[1].slice(2);
-      const month = String(Number(match[2]));
-      const day = match[3] ? ` ${Number(match[3])}일` : "";
-      return `${year}년 ${month}월${day}`;
-    }
-
-    function detailStat(label, value, className = "") {
-      return `<div class="detail-stat">
-        <span class="detail-label">${escapeHtml(label)}</span>
-        <strong class="detail-value ${className}">${escapeHtml(value)}</strong>
-      </div>`;
-    }
-
-    function metricStatusMarkup(metric) {
-      if (metric?.daily_status === "new") {
-        return `<span class="metric-new-badge">${escapeHtml(t("newBadge"))}</span>`;
-      }
-      if (metric?.daily_status === "updated") {
-        return `<span class="metric-update-dot" aria-label="${escapeHtml(t("updatedBadge"))}" title="${escapeHtml(t("updatedBadge"))}"></span>`;
-      }
-      return "";
-    }
-
-    function metricById(metricId) {
-      return (DASHBOARD_DATA.metrics || []).find((metric) => metric.id === metricId) || null;
-    }
-
-    function savedFavoriteMetricIds() {
-      try {
-        const parsed = JSON.parse(localStorage.getItem(favoriteMetricStorageKey) || "[]");
-        if (!Array.isArray(parsed)) return [];
-        const validIds = new Set((DASHBOARD_DATA.metrics || []).map((metric) => metric.id));
-        return parsed.map(String).filter((id) => validIds.has(id));
-      } catch (_error) {
-        return [];
-      }
-    }
-
-    function saveFavoriteMetricIds() {
-      localStorage.setItem(favoriteMetricStorageKey, JSON.stringify([...state.favoriteMetricIds]));
-    }
-
-    function initFavoriteMetrics() {
-      state.favoriteMetricIds = new Set(savedFavoriteMetricIds());
-    }
-
-    function isFavoriteMetric(metricId) {
-      return state.favoriteMetricIds.has(metricId);
-    }
-
-    function favoriteButtonMarkup(metric) {
-      const active = isFavoriteMetric(metric.id);
-      const label = active ? t("removeFavorite") : t("addFavorite");
-      return `<button class="metric-favorite-button${active ? " is-active" : ""}" type="button" data-favorite-toggle="${escapeHtml(metric.id)}" aria-label="${escapeHtml(label)}" title="${escapeHtml(label)}" aria-pressed="${active ? "true" : "false"}">
-        <i class="fa-${active ? "solid" : "regular"} fa-star" aria-hidden="true"></i>
-      </button>`;
-    }
-
-    function toggleFavoriteMetric(metricId) {
-      if (!metricById(metricId)) return;
-      if (state.favoriteMetricIds.has(metricId)) {
-        state.favoriteMetricIds.delete(metricId);
-      } else {
-        state.favoriteMetricIds.add(metricId);
-      }
-      saveFavoriteMetricIds();
-      renderDailyUpdates();
-      renderIndustries();
-    }
-
-    function initFavoriteButtons() {
-      document.querySelectorAll("[data-favorite-toggle]").forEach((button) => {
-        button.addEventListener("click", (event) => {
-          event.stopPropagation();
-          toggleFavoriteMetric(button.dataset.favoriteToggle);
-        });
-      });
-    }
-
-    function metricDetail(metric) {
-      return `<div class="metric-detail-panel">
-        <div class="metric-detail-inner">
-          ${detailChart(metric.history, metric)}
-          <div class="detail-stats">
-            ${detailStat(t("currentValue"), displayMetricValue(metric))}
-            ${detailStat(t("previousChange"), displayMetricChange(metric), directionClass(metric.change_abs))}
-            ${detailStat(t("previousChangePct"), metric.change_pct_label, directionClass(metric.change_pct))}
-            ${detailStat(t("yoy"), metric.yoy_pct_label, directionClass(metric.yoy_pct))}
-            ${detailStat(t("visiblePeriod"), metric.period_label || metric.observed_label || "")}
-            ${detailStat(t("updateFrequency"), localizedField(metric, "frequency") || t("irregular"))}
-          </div>
-        </div>
-      </div>`;
-    }
-
-    function metricRows(metric) {
-      const detailId = `metric-detail-${metric.id}`;
-      return `<tr class="metric-row" data-metric-row data-metric-id="${escapeHtml(metric.id)}" data-detail-id="${detailId}">
-        <td class="metric-name-cell" data-label="${escapeHtml(t("metric"))}">
-          <button class="metric-toggle" type="button" data-metric-toggle aria-expanded="false" aria-controls="${detailId}">
-            <span class="metric-name-wrap">
-              <span class="metric-name">${escapeHtml(localizedField(metric, "name"))}</span>
-              ${metricStatusMarkup(metric)}
-            </span>
-            <span class="metric-mobile-description">${escapeHtml(localizedField(metric, "meaning"))}</span>
-          </button>
-        </td>
-        <td class="metric-description-cell" data-label="${escapeHtml(t("description"))}">
-          <p class="metric-description">${escapeHtml(localizedField(metric, "meaning"))}</p>
-        </td>
-        <td class="metric-date-cell" data-label="${escapeHtml(t("lastUpdated"))}">
-          <span class="metric-date">${escapeHtml(dateText(metric.observed_label))}</span>
-        </td>
-        <td class="metric-date-cell" data-label="${escapeHtml(t("nextUpdate"))}">
-          <span class="metric-date">${escapeHtml(dateText(metric.next_update_label))}</span>
-        </td>
-        <td class="metric-value-cell" data-label="${escapeHtml(t("currentValue"))}">
-          <span class="metric-value-wrap">
-            <span class="metric-current-value">${escapeHtml(displayMetricValue(metric))}</span>
-            ${metricChangeBadge(metric)}
-          </span>
-        </td>
-        <td class="metric-chart-cell" data-label="${escapeHtml(t("chart"))}">
-          ${chart(metric.history, "chart-mini", metric)}
-        </td>
-        <td class="metric-favorite-cell" data-label="${escapeHtml(t("favoriteMetrics"))}">
-          ${favoriteButtonMarkup(metric)}
-        </td>
-      </tr>
-      <tr class="metric-detail-row" id="${detailId}" aria-hidden="true">
-        <td colspan="7">${metricDetail(metric)}</td>
-      </tr>`;
-    }
-
-    function changedMetrics() {
-      return (DASHBOARD_DATA.metrics || []).filter((metric) =>
-        metric.daily_status === "updated" || metric.daily_status === "new"
-      );
-    }
-
-    function jumpToMetric(metricId) {
-      const row = document.querySelector(`[data-metric-id="${metricId}"]`);
-      if (!row) return;
-      row.scrollIntoView({ behavior: "smooth", block: "center" });
-      row.classList.add("is-highlighted");
-      window.setTimeout(() => row.classList.remove("is-highlighted"), 1400);
-    }
-
-    function initDailyUpdateLinks() {
-      document.querySelectorAll("[data-daily-update-metric]").forEach((button) => {
-        button.addEventListener("click", () => jumpToMetric(button.dataset.dailyUpdateMetric));
-      });
-      document.querySelectorAll("[data-briefing-metric]").forEach((button) => {
-        button.addEventListener("click", () => jumpToMetric(button.dataset.briefingMetric));
-      });
-      document.querySelectorAll("[data-favorite-card]").forEach((button) => {
-        button.addEventListener("click", () => jumpToMetric(button.dataset.favoriteCard));
-        button.addEventListener("keydown", (event) => {
-          if (event.target.closest("[data-favorite-toggle]")) return;
-          if (event.key !== "Enter" && event.key !== " ") return;
-          event.preventDefault();
-          jumpToMetric(button.dataset.favoriteCard);
-        });
-      });
-    }
-
-    function briefingStatusLabel(briefing) {
-      if (briefing?.status === "ok") return t("aiBriefing");
-      return t("fallbackBriefing");
-    }
-
-    function aiSparkleIconMarkup() {
-      return `<svg class="ai-sparkle-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <defs>
-          <linearGradient id="aiSparkleGradient" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#3b82f6"></stop>
-            <stop offset="0.52" stop-color="#5c6cff"></stop>
-            <stop offset="1" stop-color="#6366f1"></stop>
-          </linearGradient>
-        </defs>
-        <path d="M11.017 2.814C11.213 1.777 12.787 1.777 12.983 2.814L14.034 8.372C14.189 9.189 14.811 9.811 15.628 9.966L21.186 11.017C22.223 11.213 22.223 12.787 21.186 12.983L15.628 14.034C14.811 14.189 14.189 14.811 14.034 15.628L12.983 21.186C12.787 22.223 11.213 22.223 11.017 21.186L9.966 15.628C9.811 14.811 9.189 14.189 8.372 14.034L2.814 12.983C1.777 12.787 1.777 11.213 2.814 11.017L8.372 9.966C9.189 9.811 9.811 9.189 9.966 8.372Z"></path>
-      </svg>`;
-    }
-
-    function briefingBulletMarkup(item) {
-      const metricIds = Array.isArray(item?.metric_ids) ? item.metric_ids.filter(Boolean) : [];
-      const content = `<span class="briefing-bullet-title">${escapeHtml(item?.title || "")}</span>
-        <span class="briefing-bullet-body">${escapeHtml(item?.body || "")}</span>`;
-      if (metricIds.length) {
-        return `<li class="briefing-bullet"><button class="briefing-bullet-button" type="button" data-briefing-metric="${escapeHtml(metricIds[0])}">${content}</button></li>`;
-      }
-      return `<li class="briefing-bullet"><span class="briefing-bullet-static">${content}</span></li>`;
-    }
-
-    function renderMorningBriefing() {
-      const briefing = DASHBOARD_DATA.morning_briefing || {};
-      if (!briefing.headline && !briefing.summary) return "";
-      const bullets = Array.isArray(briefing.bullets) ? briefing.bullets : [];
-      return `<section class="morning-briefing">
-        <div class="morning-briefing-head">
-          <div class="briefing-title">
-            ${aiSparkleIconMarkup()}
-            <h2>${escapeHtml(t("morningBriefing"))}</h2>
-          </div>
-        </div>
-        <p class="briefing-headline">${escapeHtml(briefing.headline || "")}</p>
-        ${briefing.summary ? `<p class="briefing-summary">${escapeHtml(briefing.summary)}</p>` : ""}
-        ${bullets.length ? `<ul class="briefing-bullets">${bullets.map(briefingBulletMarkup).join("")}</ul>` : ""}
-        <p class="briefing-disclaimer">
-          <span class="briefing-disclaimer-icon" aria-hidden="true"><i class="fa-solid fa-info"></i></span>
-          <span>${escapeHtml(t("briefingDisclaimer"))}</span>
-        </p>
-      </section>`;
-    }
-
-    function favoriteMetrics() {
-      return (DASHBOARD_DATA.metrics || []).filter((metric) => state.favoriteMetricIds.has(metric.id));
-    }
-
-    function favoriteMetricCard(metric) {
-      return `<div class="favorite-card" role="button" tabindex="0" data-favorite-card="${escapeHtml(metric.id)}">
-        <button class="favorite-card-star" type="button" data-favorite-toggle="${escapeHtml(metric.id)}" aria-label="${escapeHtml(t("removeFavorite"))}" title="${escapeHtml(t("removeFavorite"))}">
-          <i class="fa-solid fa-star" aria-hidden="true"></i>
-        </button>
-        <span class="favorite-card-top">
-          <span class="favorite-card-meta">${escapeHtml(localizedIndustry(metric.industry))} · ${escapeHtml(localizedGroup(metric.group, [metric]))}</span>
-          <span class="favorite-card-title">${escapeHtml(localizedField(metric, "name"))}</span>
-          <span class="favorite-card-value">${escapeHtml(displayMetricValue(metric))}</span>
-        </span>
-        <span class="favorite-card-chart">${chart(metric.history, "chart-mini", metric)}</span>
-      </div>`;
-    }
-
-    function renderFavoriteMetrics() {
-      const metrics = favoriteMetrics();
-      if (!metrics.length) return "";
-      return `<section class="favorite-metrics">
-        <div class="favorite-metrics-head">
-          <h2>${escapeHtml(t("favoriteMetrics"))}</h2>
-          <span class="favorite-metrics-count">${metrics.length}${state.language === "ko" ? "" : " "}${escapeHtml(t("favoriteCount"))}</span>
-        </div>
-        <div class="favorite-metrics-grid">${metrics.map(favoriteMetricCard).join("")}</div>
-      </section>`;
-    }
-
-    function renderDailyUpdates() {
-      const section = document.getElementById("dailyUpdates");
-      if (!section) return;
-      const summary = DASHBOARD_DATA.daily_changes || {};
-      const changes = changedMetrics();
-      const updatedCount = Number(summary.updated_count || changes.filter((metric) => metric.daily_status === "updated").length);
-      const newCount = Number(summary.new_count || changes.filter((metric) => metric.daily_status === "new").length);
-      const rows = changes.map((metric) => `
-        <button class="daily-update-row" type="button" data-daily-update-metric="${escapeHtml(metric.id)}">
-          <span class="daily-update-main">
-            ${metricStatusMarkup(metric)}
-            <span class="daily-update-title">${escapeHtml(localizedField(metric, "name"))}</span>
-          </span>
-          <span class="daily-update-meta">${escapeHtml(localizedIndustry(metric.industry))} · ${escapeHtml(localizedGroup(metric.group, [metric]))} · ${escapeHtml(dateText(metric.observed_label))}</span>
-          <span class="daily-update-value">${escapeHtml(displayMetricValue(metric))}</span>
-          <span class="daily-update-change ${directionClass(metric.change_pct)}">
-            <i class="fa-solid ${trendIconClass(metric.change_pct)}" aria-hidden="true"></i>
-            <span class="daily-update-change-abs">${escapeHtml(displayMetricChange(metric) || "n/a")}</span>
-            <span class="daily-update-change-pct">${escapeHtml(metric.change_pct_label || "n/a")}</span>
-          </span>
-        </button>
-      `).join("");
-      section.innerHTML = `${renderMorningBriefing()}<details class="daily-update-details">
-        <summary class="daily-update-summary">
-          <span>${escapeHtml(t("showDailyChanges"))}</span>
-          <span class="daily-update-summary-icon" aria-hidden="true">›</span>
-        </summary>
-        <div class="daily-update-panel">
-          <div class="daily-update-list">
-            ${rows || `<div class="daily-update-empty">${escapeHtml(t("noDailyChanges"))}</div>`}
-          </div>
-          <div class="daily-update-counts" aria-label="${escapeHtml(t("todayChanges"))}">
-            <span class="daily-update-count">${escapeHtml(t("updatedCount"))} ${updatedCount}</span>
-            <span class="daily-update-count">${escapeHtml(t("newCount"))} ${newCount}</span>
-          </div>
-        </div>
-      </details>${renderFavoriteMetrics()}`;
-      initDailyUpdateLinks();
-    }
-
-    function renderIndustry(industry, metrics) {
-      const icon = DASHBOARD_DATA.industry_icons?.[industry] || "";
-      const renderGroups = (items, hiddenGroup = "") => [...groupMetrics(items, (metric) => metric.group || "핵심 지표").entries()]
-        .sort(([a], [b]) => groupRank(a) - groupRank(b) || String(a).localeCompare(String(b), "ko"))
-        .map(([group, items]) => {
-          const groupTitle = group === hiddenGroup ? "" : `<div class="group-title">${escapeHtml(localizedGroup(group, items))}</div>`;
-          return `
-            <section class="group">
-            ${groupTitle}
-            <div class="metric-table-wrap">
-              <table class="metric-table">
-                <colgroup>
-                  <col class="metric-name-cell">
-                  <col class="metric-description-cell">
-                  <col class="metric-date-cell">
-                  <col class="metric-date-cell">
-                  <col class="metric-value-cell">
-                  <col class="metric-chart-cell">
-                  <col class="metric-favorite-cell">
-                </colgroup>
-                <thead>
-                  <tr>
-                    <th scope="col" data-mobile-label="${escapeHtml(t("metricSummary"))}">${escapeHtml(t("metric"))}</th>
-                    <th scope="col">${escapeHtml(t("description"))}</th>
-                    <th scope="col">${escapeHtml(t("lastUpdated"))}</th>
-                    <th scope="col">${escapeHtml(t("nextUpdate"))}</th>
-                    <th scope="col" data-mobile-label="${escapeHtml(t("metricValueShort"))}">${escapeHtml(t("currentValue"))}</th>
-                    <th scope="col" data-mobile-label="${escapeHtml(t("chart"))}">${escapeHtml(t("chart"))}</th>
-                    <th scope="col"><span class="sr-only">${escapeHtml(t("favoriteMetrics"))}</span></th>
-                  </tr>
-                </thead>
-                <tbody>${items.map(metricRows).join("")}</tbody>
-              </table>
-            </div>
-          </section>
-        `;
-        }).join("");
-      const semiconductorGroups = industry === "반도체"
-        ? [...groupMetrics(metrics, (metric) => metric.depth || "전체 업황").entries()]
-            .sort(([a], [b]) => depthRank(a) - depthRank(b) || String(a).localeCompare(String(b), "ko"))
-        : [];
-      const renderDepthSection = ([depth, items]) => `
-        <section class="depth-section" id="${depthId(industry, depth)}" data-depth-section data-depth-name="${escapeHtml(depth)}">
-          <div class="depth-title">${escapeHtml(localizedDepth(depth, items))}</div>
-          ${renderGroups(items, depth)}
-        </section>
-      `;
-      const groupHtml = industry === "반도체"
-        ? [
-            ...semiconductorGroups
-              .filter(([depth]) => depth === "전체 업황")
-              .map(([, items]) => renderGroups(items)),
-            (() => {
-              const depthHtml = semiconductorGroups
-                .filter(([depth]) => depth !== "전체 업황")
-                .map(renderDepthSection)
-                .join("");
-              return depthHtml ? `<div class="depth-tree">${depthHtml}</div>` : "";
-            })()
-          ].join("")
-        : renderGroups(metrics);
-
-      return `<article class="industry" id="${industryId(industry)}" data-industry-section data-industry-name="${escapeHtml(industry)}">
-        <div class="industry-head">
-          <div class="industry-icon-wrap">${icon ? `<img class="industry-icon" src="${escapeHtml(icon)}" alt="">` : ""}</div>
-          <div>
-            <h2>${escapeHtml(localizedIndustry(industry))}</h2>
-          </div>
-        </div>
-        <div class="group-stack">${groupHtml}</div>
-      </article>`;
-    }
-
-    function renderIndustries() {
-      const metrics = DASHBOARD_DATA.metrics;
-      const stack = document.getElementById("industryStack");
-      document.getElementById("empty").style.display = metrics.length ? "none" : "block";
-      const byIndustry = metrics.reduce((map, metric) => {
-        map.set(metric.industry, [...(map.get(metric.industry) || []), metric]);
-        return map;
-      }, new Map());
-      stack.innerHTML = visibleIndustries()
-        .filter((industry) => byIndustry.has(industry))
-        .map((industry) => renderIndustry(industry, byIndustry.get(industry)))
-        .join("");
-      initMetricRows();
-      scheduleBranchLineUpdate();
-      updateActiveFromScroll();
-    }
-
-    function toggleMetricRow(row) {
-      const detail = document.getElementById(row.dataset.detailId);
-      const toggle = row.querySelector("[data-metric-toggle]");
-      if (!detail || !toggle) return;
-      const expanded = !row.classList.contains("is-expanded");
-      row.classList.toggle("is-expanded", expanded);
-      detail.classList.toggle("is-open", expanded);
-      detail.setAttribute("aria-hidden", String(!expanded));
-      toggle.setAttribute("aria-expanded", String(expanded));
-      if (expanded) {
-        const scroller = detail.querySelector(".detail-chart-scroll");
-        if (scroller) {
-          requestAnimationFrame(() => {
-            scroller.scrollLeft = Math.max(0, scroller.scrollWidth - scroller.clientWidth);
-          });
-        }
-      }
-      scheduleBranchLineUpdate();
-    }
-
-    function tooltipMarkup(point) {
-      return `<div class="detail-tooltip-title">${escapeHtml(point.dataset.tooltipTitle || "")}</div>
-        <div class="detail-tooltip-row">
-          <span class="detail-tooltip-label">${escapeHtml(t("tooltipPeriod"))}</span>
-          <span class="detail-tooltip-value">${escapeHtml(point.dataset.tooltipDate || "")}</span>
-        </div>
-        <div class="detail-tooltip-row">
-          <span class="detail-tooltip-label">${escapeHtml(t("tooltipValue"))}</span>
-          <span class="detail-tooltip-value">${escapeHtml(point.dataset.tooltipValue || "")}</span>
-        </div>
-        <div class="detail-tooltip-row">
-          <span class="detail-tooltip-label">${escapeHtml(t("tooltipChange"))}</span>
-          <span class="detail-tooltip-value">${escapeHtml(point.dataset.tooltipChange || "")}</span>
-        </div>`;
-    }
-
-    function showDetailTooltip(point, pinned = false) {
-      const chart = point.closest(".detail-chart");
-      const tooltip = chart?.querySelector(".detail-chart-tooltip");
-      if (!chart || !tooltip) return;
-      chart.dataset.tooltipPinned = pinned ? "true" : "false";
-      tooltip.innerHTML = tooltipMarkup(point);
-      tooltip.classList.add("is-visible");
-      const chartRect = chart.getBoundingClientRect();
-      const pointRect = point.getBoundingClientRect();
-      const rawLeft = pointRect.left + pointRect.width / 2 - chartRect.left;
-      const rawTop = pointRect.top - chartRect.top;
-      const tooltipWidth = tooltip.offsetWidth || 180;
-      const tooltipHeight = tooltip.offsetHeight || 80;
-      const left = Math.min(Math.max(rawLeft, tooltipWidth / 2 + 4), chartRect.width - tooltipWidth / 2 - 4);
-      const top = Math.min(Math.max(rawTop + 4, 4), Math.max(4, chartRect.height - tooltipHeight - 16));
-      tooltip.style.left = `${left}px`;
-      tooltip.style.top = `${top}px`;
-    }
-
-    function hideDetailTooltip(chart, force = false) {
-      if (!chart) return;
-      if (!force && chart.dataset.tooltipPinned === "true") return;
-      chart.dataset.tooltipPinned = "false";
-      const tooltip = chart.querySelector(".detail-chart-tooltip");
-      tooltip?.classList.remove("is-visible");
-    }
-
-    function initDetailChartTooltips() {
-      document.querySelectorAll(".detail-point-hit").forEach((point) => {
-        point.addEventListener("mouseenter", () => showDetailTooltip(point, false));
-        point.addEventListener("focus", () => showDetailTooltip(point, false));
-        point.addEventListener("click", (event) => {
-          event.stopPropagation();
-          showDetailTooltip(point, true);
-        });
-        point.addEventListener("mouseleave", () => hideDetailTooltip(point.closest(".detail-chart")));
-        point.addEventListener("blur", () => hideDetailTooltip(point.closest(".detail-chart")));
-      });
-      document.querySelectorAll(".detail-chart-scroll").forEach((scroller) => {
-        scroller.addEventListener("scroll", () => hideDetailTooltip(scroller.closest(".detail-chart"), true), { passive: true });
-      });
-    }
-
-    function initMetricRows() {
-      document.querySelectorAll("[data-metric-row]").forEach((row) => {
-        row.addEventListener("click", () => toggleMetricRow(row));
-      });
-      initFavoriteButtons();
-      initDetailChartTooltips();
-    }
-
-    function currentMenuOrder() {
-      return [...document.querySelectorAll("[data-menu-item]")]
-        .map((item) => item.dataset.industryItem)
-        .filter(Boolean);
-    }
-
-    function dragDirection(container) {
-      return getComputedStyle(container).display === "flex" ? "horizontal" : "vertical";
-    }
-
-    function initMenuDrag() {
-      document.querySelectorAll("[data-menu-item]").forEach((item) => {
-        item.draggable = state.isReordering;
-        item.addEventListener("dragstart", (event) => {
-          if (!state.isReordering) {
-            event.preventDefault();
-            return;
-          }
-          state.draggedMenuItem = item;
-          item.classList.add("is-dragging");
-          event.dataTransfer.effectAllowed = "move";
-          event.dataTransfer.setData("text/plain", item.dataset.industryItem || "");
-        });
-        item.addEventListener("dragend", () => {
-          item.classList.remove("is-dragging");
-          state.draggedMenuItem = null;
-          state.draftIndustryOrder = currentMenuOrder();
-        });
-      });
-
-      const menu = document.getElementById("industryFilters");
-      menu.ondragover = (event) => {
-        if (!state.isReordering || !state.draggedMenuItem) return;
-        event.preventDefault();
-        const target = event.target.closest("[data-menu-item]");
-        if (!target || target === state.draggedMenuItem || !menu.contains(target)) return;
-        const rect = target.getBoundingClientRect();
-        const horizontal = dragDirection(menu) === "horizontal";
-        const insertAfter = horizontal
-          ? event.clientX > rect.left + rect.width / 2
-          : event.clientY > rect.top + rect.height / 2;
-        menu.insertBefore(state.draggedMenuItem, insertAfter ? target.nextSibling : target);
-      };
-      menu.ondrop = (event) => {
-        if (!state.isReordering) return;
-        event.preventDefault();
-        state.draftIndustryOrder = currentMenuOrder();
-      };
-    }
-
-    function initMenuScrollDrag() {
-      const menu = document.getElementById("industryFilters");
-      if (!menu || menu.dataset.scrollDragReady === "true") return;
-      menu.dataset.scrollDragReady = "true";
-      let dragState = null;
-
-      menu.addEventListener("pointerdown", (event) => {
-        if (state.isReordering || event.button !== 0 || menu.scrollHeight <= menu.clientHeight) return;
-        dragState = {
-          pointerId: event.pointerId,
-          startX: event.clientX,
-          startY: event.clientY,
-          startScrollTop: menu.scrollTop,
-          moved: false,
-          captured: false
-        };
-      });
-
-      menu.addEventListener("pointermove", (event) => {
-        if (!dragState || dragState.pointerId !== event.pointerId || state.isReordering) return;
-        const deltaX = event.clientX - dragState.startX;
-        const deltaY = event.clientY - dragState.startY;
-        const dragThreshold = event.pointerType === "touch" ? 12 : 7;
-        if (Math.abs(deltaY) > dragThreshold && Math.abs(deltaY) > Math.abs(deltaX)) {
-          const maxScrollTop = Math.max(0, menu.scrollHeight - menu.clientHeight);
-          const nextScrollTop = Math.min(maxScrollTop, Math.max(0, dragState.startScrollTop - deltaY));
-          dragState.moved = true;
-          suppressMenuClick = true;
-          menu.classList.add("is-drag-scrolling");
-          if (!dragState.captured) {
-            menu.setPointerCapture?.(event.pointerId);
-            dragState.captured = true;
-          }
-          menu.scrollTop = nextScrollTop;
-          event.preventDefault();
-        }
-      });
-
-      const stopDrag = (event) => {
-        if (!dragState || dragState.pointerId !== event.pointerId) return;
-        if (dragState.moved) {
-          window.setTimeout(() => {
-            suppressMenuClick = false;
-          }, 80);
-        }
-        menu.classList.remove("is-drag-scrolling");
-        if (dragState.captured) {
-          menu.releasePointerCapture?.(event.pointerId);
-        }
-        dragState = null;
-      };
-
-      menu.addEventListener("pointerup", stopDrag);
-      menu.addEventListener("pointercancel", stopDrag);
-      menu.addEventListener("click", (event) => {
-        if (!suppressMenuClick) return;
-        event.preventDefault();
-        event.stopPropagation();
-        suppressMenuClick = false;
-      }, true);
-    }
-
-    function setSettingsOpen(open) {
-      const toggle = document.getElementById("settingsToggle");
-      const menu = document.getElementById("settingsMenu");
-      toggle.setAttribute("aria-expanded", String(open));
-      menu.hidden = !open;
-    }
-
-    function updateThemeSettingLabel() {
-      const label = document.getElementById("themeSettingLabel");
-      if (!label) return;
-      label.textContent = document.body.classList.contains("theme-dark") ? t("darkModeState") : t("lightMode");
-    }
-
-    function themeToggleLabelText(theme = null) {
-      const selectedTheme = theme || (document.body.classList.contains("theme-dark") ? "dark" : "light");
-      return selectedTheme === "dark" ? t("themeDarkName") : t("themeLightName");
-    }
-
-    function updateThemeToggleLabel() {
-      const label = document.getElementById("themeToggleLabel");
-      if (!label) return;
-      label.textContent = themeToggleLabelText();
-    }
-
-    function animateToggleContent(toggle, outgoing, incoming, label, nextLabel, swapState) {
-      if (!toggle) {
-        swapState();
-        return;
-      }
-      toggle.disabled = true;
-      [outgoing, incoming, label].forEach((element) => {
-        element?.classList.remove("is-exiting", "is-entering");
-      });
-      void toggle.offsetWidth;
-      outgoing?.classList.add("is-exiting");
-      label?.classList.add("is-exiting");
-      window.setTimeout(() => {
-        swapState();
-        if (label) {
-          label.textContent = nextLabel;
-          label.classList.remove("is-exiting");
-          label.classList.add("is-entering");
-        }
-        incoming?.classList.add("is-entering");
-      }, 150);
-      window.setTimeout(() => {
-        [outgoing, incoming, label].forEach((element) => {
-          element?.classList.remove("is-exiting", "is-entering");
-        });
-        toggle.disabled = false;
-      }, 470);
-    }
-
-    function updateLanguageText() {
-      document.documentElement.lang = state.language;
-      document.querySelectorAll("[data-i18n]").forEach((element) => {
-        element.textContent = t(element.dataset.i18n);
-      });
-      document.querySelector(".side-menu")?.setAttribute("aria-label", t("menuLabel"));
-      document.getElementById("mobileDrawer")?.setAttribute("aria-label", t("menuLabel"));
-      document.getElementById("mobileMenuToggle")?.setAttribute("aria-label", t("openMenu"));
-      document.getElementById("drawerClose")?.setAttribute("aria-label", t("closeMenu"));
-      document.getElementById("settingsToggle")?.setAttribute("aria-label", t("settings"));
-      document.getElementById("scrollTopButton")?.setAttribute("aria-label", t("scrollTop"));
-      document.getElementById("scrollTopButton")?.setAttribute("title", t("scrollTop"));
-      document.getElementById("themeToggle")?.setAttribute("aria-label", t("toggleTheme"));
-      document.getElementById("themeToggle")?.setAttribute("title", t("toggleTheme"));
-      const languageLabel = document.getElementById("languageSettingLabel");
-      if (languageLabel) languageLabel.textContent = state.language === "ko" ? "KO" : "EN";
-      updateThemeSettingLabel();
-      updateThemeToggleLabel();
-      updateCurrencyButton();
-    }
-
-    function setLanguage(language) {
-      state.language = language === "en" ? "en" : "ko";
-      localStorage.setItem("dashboard-language", state.language);
-      updateLanguageText();
-      renderFilters();
-      renderDailyUpdates();
-      renderIndustries();
-    }
-
-    function initLanguage() {
-      state.language = localStorage.getItem("dashboard-language") === "en" ? "en" : "ko";
-      updateLanguageText();
-    }
-
-    function updateReorderControls() {
-      document.querySelector(".sidebar")?.classList.toggle("is-reordering", state.isReordering);
-      document.getElementById("reorderActions").hidden = !state.isReordering;
-    }
-
-    function startMenuReorder() {
-      state.isReordering = true;
-      state.draftIndustryOrder = visibleIndustries();
-      setSettingsOpen(false);
-      updateReorderControls();
-      renderFilters();
-    }
-
-    function cancelMenuReorder() {
-      state.isReordering = false;
-      state.draftIndustryOrder = null;
-      updateReorderControls();
-      renderFilters();
-    }
-
-    function saveMenuReorder() {
-      const order = currentMenuOrder();
-      localStorage.setItem("dashboard-industry-order", JSON.stringify(order));
-      state.isReordering = false;
-      state.draftIndustryOrder = null;
-      updateReorderControls();
-      renderFilters();
-      renderIndustries();
-    }
-
-    function initSettings() {
-      const settings = document.getElementById("menuSettings");
-      const toggle = document.getElementById("settingsToggle");
-      toggle.addEventListener("click", () => {
-        setSettingsOpen(toggle.getAttribute("aria-expanded") !== "true");
-      });
-      document.addEventListener("click", (event) => {
-        if (!settings.contains(event.target)) setSettingsOpen(false);
-      });
-      document.querySelector('[data-setting-action="theme"]').addEventListener("click", () => {
-        animateThemeToggle(document.body.classList.contains("theme-dark") ? "light" : "dark");
-      });
-      document.querySelector('[data-setting-action="language"]').addEventListener("click", () => {
-        setLanguage(state.language === "ko" ? "en" : "ko");
-      });
-      document.querySelector('[data-setting-action="reorder"]').addEventListener("click", startMenuReorder);
-      document.getElementById("reorderCancel").addEventListener("click", cancelMenuReorder);
-      document.getElementById("reorderSave").addEventListener("click", saveMenuReorder);
-      updateReorderControls();
-    }
-
-    function applyTheme(theme, options = {}) {
-      const isDark = theme === "dark";
-      document.body.classList.toggle("theme-dark", isDark);
-      localStorage.setItem("dashboard-theme", isDark ? "dark" : "light");
-      updateThemeSettingLabel();
-      if (options.updateToggleLabel !== false) updateThemeToggleLabel();
-    }
-
-    function animateThemeToggle(nextTheme) {
-      const toggle = document.getElementById("themeToggle");
-      const isDark = document.body.classList.contains("theme-dark");
-      const outgoing = toggle.querySelector(isDark ? ".theme-icon-moon" : ".theme-icon-sun");
-      const incoming = toggle.querySelector(isDark ? ".theme-icon-sun" : ".theme-icon-moon");
-      const label = document.getElementById("themeToggleLabel");
-      animateToggleContent(toggle, outgoing, incoming, label, themeToggleLabelText(nextTheme), () => {
-        applyTheme(nextTheme, { updateToggleLabel: false });
-      });
-    }
-
-    function initTheme() {
-      const saved = localStorage.getItem("dashboard-theme");
-      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-      applyTheme(saved || (prefersDark ? "dark" : "light"));
-      requestAnimationFrame(() => document.body.classList.add("theme-ready"));
-      document.getElementById("themeToggle").addEventListener("click", () => {
-        animateThemeToggle(document.body.classList.contains("theme-dark") ? "light" : "dark");
-      });
-    }
-
-    function currencyToggleLabelText(currency = state.currency) {
-      return currency === "krw" ? t("currencyKrwName") : t("currencyUsdName");
-    }
-
-    function updateCurrencyButton(options = {}) {
-      const toggle = document.getElementById("currencyToggle");
-      if (!toggle) return;
-      const isKrw = state.currency === "krw";
-      toggle.setAttribute("aria-label", isKrw ? t("showUsd") : t("showKrw"));
-      toggle.setAttribute("title", isKrw ? t("showUsd") : t("showKrw"));
-      const label = document.getElementById("currencyToggleLabel");
-      if (label && options.updateLabel !== false) label.textContent = currencyToggleLabelText();
-    }
-
-    function applyCurrency(currency, options = {}) {
-      state.currency = currency === "krw" ? "krw" : "usd";
-      document.body.classList.toggle("currency-krw", state.currency === "krw");
-      document.body.classList.toggle("currency-usd", state.currency === "usd");
-      localStorage.setItem("dashboard-currency", state.currency);
-      updateCurrencyButton(options);
-    }
-
-    function animateCurrencyToggle(nextCurrency) {
-      const toggle = document.getElementById("currencyToggle");
-      const isKrw = state.currency === "krw";
-      const outgoing = toggle.querySelector(isKrw ? ".currency-icon-won" : ".currency-icon-dollar");
-      const incoming = toggle.querySelector(isKrw ? ".currency-icon-dollar" : ".currency-icon-won");
-      const label = document.getElementById("currencyToggleLabel");
-      animateToggleContent(toggle, outgoing, incoming, label, currencyToggleLabelText(nextCurrency), () => {
-        applyCurrency(nextCurrency, { updateLabel: false });
-        renderDailyUpdates();
-        renderIndustries();
-      });
-    }
-
-    function initCurrency() {
-      applyCurrency(localStorage.getItem("dashboard-currency") === "krw" ? "krw" : "usd");
-      document.getElementById("currencyToggle").addEventListener("click", () => {
-        animateCurrencyToggle(state.currency === "usd" ? "krw" : "usd");
-      });
-    }
-
-    function initScrollTopButton() {
-      document.getElementById("scrollTopButton")?.addEventListener("click", () => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      });
-      updateScrollTopButtonVisibility();
-    }
-
-    function updateScrollTopButtonVisibility() {
-      const revealAt = Math.max(280, window.innerHeight * 0.35);
-      document.body.classList.toggle("show-scroll-top", window.scrollY > revealAt);
-    }
-
-    function setDrawerOpen(open) {
-      const drawer = document.getElementById("mobileDrawer");
-      const toggle = document.getElementById("mobileMenuToggle");
-      const backdrop = document.getElementById("drawerBackdrop");
-      if (!drawer || !toggle || !backdrop) return;
-      const shouldOpen = Boolean(open && mobileDrawerQuery.matches);
-      document.body.classList.toggle("drawer-open", shouldOpen);
-      toggle.setAttribute("aria-expanded", String(shouldOpen));
-      drawer.setAttribute("aria-hidden", String(mobileDrawerQuery.matches && !shouldOpen));
-      backdrop.hidden = !shouldOpen;
-      if (shouldOpen) {
-        document.getElementById("drawerClose")?.focus({ preventScroll: true });
-      }
-    }
-
-    function closeDrawerOnMobile() {
-      if (mobileDrawerQuery.matches) setDrawerOpen(false);
-    }
-
-    function initMobileDrawer() {
-      const toggle = document.getElementById("mobileMenuToggle");
-      const close = document.getElementById("drawerClose");
-      const backdrop = document.getElementById("drawerBackdrop");
-      toggle?.addEventListener("click", () => {
-        setDrawerOpen(!document.body.classList.contains("drawer-open"));
-      });
-      close?.addEventListener("click", () => setDrawerOpen(false));
-      backdrop?.addEventListener("click", () => setDrawerOpen(false));
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") setDrawerOpen(false);
-      });
-      if (mobileDrawerQuery.addEventListener) {
-        mobileDrawerQuery.addEventListener("change", () => setDrawerOpen(false));
-      } else if (mobileDrawerQuery.addListener) {
-        mobileDrawerQuery.addListener(() => setDrawerOpen(false));
-      }
-      setDrawerOpen(false);
-    }
-
-    function updateActiveFromScroll() {
-      const sections = [...document.querySelectorAll("[data-industry-section]")];
-      if (!sections.length) return;
-      const anchor = window.innerHeight * 0.5;
-      let current = sections[0];
-      for (const section of sections) {
-        if (section.getBoundingClientRect().top <= anchor) {
-          current = section;
-        } else {
-          break;
-        }
-      }
-      let currentDepth = "";
-      if (current.dataset.industryName === "반도체") {
-        for (const section of current.querySelectorAll("[data-depth-section]")) {
-          if (section.getBoundingClientRect().top <= anchor) {
-            currentDepth = section.dataset.depthName || "";
-          } else {
-            break;
-          }
-        }
-      }
-      setActiveIndustry(current.dataset.industryName, currentDepth);
-    }
-
-    function onScrollSpy() {
-      if (scrollSpyFrame) return;
-      scrollSpyFrame = requestAnimationFrame(() => {
-        scrollSpyFrame = 0;
-        updateScrollTopButtonVisibility();
-        updateActiveFromScroll();
-      });
-    }
-
-    let resizeRenderFrame = 0;
-    function onDashboardResize() {
-      onScrollSpy();
-      scheduleBranchLineUpdate();
-      if (resizeRenderFrame) return;
-      resizeRenderFrame = requestAnimationFrame(() => {
-        resizeRenderFrame = 0;
-        renderIndustries();
-      });
-    }
-
-    window.addEventListener("scroll", onScrollSpy, { passive: true });
-    window.addEventListener("resize", onDashboardResize);
-    document.addEventListener("click", (event) => {
-      if (event.target.closest(".detail-point-hit")) return;
-      document.querySelectorAll(".detail-chart").forEach((chart) => hideDetailTooltip(chart, true));
-    });
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") {
-        document.querySelectorAll(".detail-chart").forEach((chart) => hideDetailTooltip(chart, true));
-      }
-    });
-
-    function render() {
-      renderFilters();
-      renderDailyUpdates();
-      renderIndustries();
-    }
-
-    initLanguage();
-    initSettings();
-    initTheme();
-    initCurrency();
-    initFavoriteMetrics();
-    initScrollTopButton();
-    initMobileDrawer();
-    render();
-  </script>
-</body>
-</html>
-"""
-
-
-GROUPED_HTML_TEMPLATE = """<!doctype html>
-<html lang="ko">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" href="data:,">
-  <title>산업별 핵심 지표 대시보드</title>
-  <style>
-    :root {
-      color-scheme: light;
-      --bg: #f5f3ee;
-      --paper: #fffdfa;
-      --panel: #ffffff;
-      --text: #202124;
-      --muted: #6c6a63;
-      --soft: #f0eee7;
-      --line: #dedbd1;
-      --accent: #2f6f73;
-      --accent-soft: #e5f0ee;
-      --good: #07805e;
-      --bad: #c24135;
-      --gold: #b48627;
-      --shadow: 0 14px 30px rgba(39, 38, 34, 0.07);
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-width: 320px;
-      background: var(--bg);
-      color: var(--text);
-      font-family: Inter, Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      letter-spacing: 0;
-    }
-
-    .shell {
-      width: min(1480px, calc(100% - 32px));
-      margin: 0 auto;
-      padding: 26px 0 42px;
-    }
-
-    header {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 18px;
-      align-items: end;
-      padding-bottom: 18px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(25px, 3vw, 38px);
-      line-height: 1.08;
-      font-weight: 790;
-    }
-
-    .subtitle {
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .updated {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-      text-align: right;
-      white-space: nowrap;
-    }
-
-    .toolbar {
-      position: sticky;
-      top: 0;
-      z-index: 5;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      padding: 16px 0;
-      background: rgba(245, 243, 238, 0.92);
-      backdrop-filter: blur(12px);
-    }
-
-    button {
-      min-height: 38px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--paper);
-      color: var(--text);
-      padding: 0 13px;
-      font: inherit;
-      font-size: 13px;
-      font-weight: 720;
-      cursor: pointer;
-    }
-
-    button[aria-pressed="true"] {
-      border-color: var(--accent);
-      background: var(--accent-soft);
-      color: #174b50;
-    }
-
-    .industry-stack {
-      display: grid;
-      gap: 18px;
-    }
-
-    .industry {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--paper);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    .industry-head {
-      display: grid;
-      grid-template-columns: 92px minmax(0, 1fr);
-      gap: 18px;
-      align-items: center;
-      padding: 18px 20px;
-      border-bottom: 1px solid var(--line);
-      background: linear-gradient(180deg, #fffefa, #f9f7f0);
-    }
-
-    .industry-icon-wrap {
-      width: 92px;
-      height: 92px;
-      border-radius: 8px;
-      display: grid;
-      place-items: center;
-      background: #f4f1e8;
-    }
-
-    .industry-icon {
-      width: 76px;
-      height: 76px;
-      object-fit: contain;
-      display: block;
-    }
-
-    .industry h2 {
-      margin: 0;
-      font-size: 25px;
-      line-height: 1.15;
-      font-weight: 790;
-    }
-
-    .industry-summary {
-      margin: 7px 0 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .group-stack {
-      display: grid;
-      gap: 0;
-    }
-
-    .group {
-      padding: 18px 20px 20px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .group:last-child { border-bottom: 0; }
-
-    .group-title {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      margin-bottom: 12px;
-      font-size: 14px;
-      font-weight: 800;
-      color: #3c3b36;
-    }
-
-    .group-title::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--gold);
-      flex: 0 0 auto;
-    }
-
-    .metric-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .metric {
-      min-height: 268px;
-      display: grid;
-      grid-template-rows: auto auto 70px auto;
-      gap: 12px;
-      padding: 15px;
-      border: 1px solid #ebe7dc;
-      border-radius: 8px;
-      background: var(--panel);
-    }
-
-    .metric h3 {
-      margin: 0;
-      font-size: 16px;
-      line-height: 1.32;
-      font-weight: 790;
-      overflow-wrap: anywhere;
-    }
-
-    .meaning {
-      margin: 7px 0 0;
-      min-height: 38px;
-      color: var(--muted);
-      font-size: 12.5px;
-      line-height: 1.45;
-      overflow-wrap: anywhere;
-    }
-
-    .metric-main {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 12px;
-      align-items: end;
-    }
-
-    .value {
-      font-size: 31px;
-      line-height: 1;
-      font-weight: 820;
-      overflow-wrap: anywhere;
-    }
-
-    .deltas {
-      display: grid;
-      gap: 5px;
-      min-width: 92px;
-      color: var(--muted);
-      font-size: 12px;
-      text-align: right;
-    }
-
-    .deltas strong {
-      display: inline-block;
-      min-width: 54px;
-      color: var(--text);
-      font-size: 13px;
-    }
-
-    .positive { color: var(--good) !important; }
-    .negative { color: var(--bad) !important; }
-
-    .spark {
-      width: 100%;
-      height: 70px;
-      border: 1px solid #efebe1;
-      border-radius: 8px;
-      background: linear-gradient(180deg, #fffdfa, #f9f7f1);
-    }
-
-    .period {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: center;
-      padding-top: 9px;
-      border-top: 1px solid #efebe1;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .period strong {
-      color: #3f403b;
-      font-weight: 760;
-      white-space: nowrap;
-    }
-
-    .empty {
-      display: none;
-      margin: 28px 0;
-      padding: 26px;
-      border: 1px dashed var(--line);
-      border-radius: 8px;
-      color: var(--muted);
-      text-align: center;
-    }
-
-    @media (max-width: 1120px) {
-      .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-
-    @media (max-width: 720px) {
-      .shell {
-        width: min(100% - 20px, 680px);
-        padding-top: 16px;
-      }
-
-      header {
-        grid-template-columns: 1fr;
-        align-items: start;
-      }
-
-      .updated { text-align: left; white-space: normal; }
-      .toolbar { position: static; }
-      button { flex: 1 1 auto; }
-      .industry-head {
-        grid-template-columns: 70px minmax(0, 1fr);
-        gap: 12px;
-        padding: 15px;
-      }
-      .industry-icon-wrap {
-        width: 70px;
-        height: 70px;
-      }
-      .industry-icon {
-        width: 60px;
-        height: 60px;
-      }
-      .industry h2 { font-size: 21px; }
-      .group { padding: 15px; }
-      .metric-grid { grid-template-columns: 1fr; }
-      .metric-main { grid-template-columns: 1fr; }
-      .deltas {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        text-align: left;
-      }
-      .value { font-size: 29px; }
-    }
-  </style>
-</head>
-<body>
-  <main class="shell">
-    <header>
-      <div>
-        <h1 id="title">산업별 핵심 지표 대시보드</h1>
-        <div class="subtitle">비슷한 지표를 그룹으로 묶어 업황 변화를 빠르게 봅니다.</div>
-      </div>
-      <div class="updated" id="updated"></div>
-    </header>
-    <nav class="toolbar" id="industryFilters" aria-label="산업 필터"></nav>
-    <section class="industry-stack" id="industryStack"></section>
-    <div class="empty" id="empty">표시할 지표가 없습니다.</div>
-  </main>
-
-  <script>
-    const DASHBOARD_DATA = __DASHBOARD_JSON__;
-    const state = { industry: "전체" };
-    const groupOrder = [
-      "판매액(WSTS)", "판매액", "시장 매출", "가격/수요", "투자/장비", "수출",
-      "판매/수요", "판매량", "배터리 원재료",
-      "운임/해운", "선가/발주",
-      "원자재 가격", "중국 경기",
-      "에너지 가격", "원유/원료", "화학 스프레드", "스프레드/마진",
-      "금리", "스프레드", "금리/스프레드", "은행 건전성", "대출/건전성",
-      "주택 경기", "건설 선행", "금융비용", "주택 시장",
-      "시장지수", "환율", "리스크", "시장 분위기", "핵심 지표"
-    ];
-
-    function escapeHtml(value) {
-      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-      }[char]));
-    }
-
-    function directionClass(value) {
-      if (typeof value !== "number" || !Number.isFinite(value) || value === 0) return "";
-      return value > 0 ? "positive" : "negative";
-    }
-
-    function groupRank(group) {
-      const index = groupOrder.indexOf(group);
-      return index === -1 ? 999 : index;
-    }
-
-    function filteredMetrics() {
-      return DASHBOARD_DATA.metrics
-        .filter((metric) => state.industry === "전체" || metric.industry === state.industry);
-    }
-
-    function renderFilters() {
-      const industries = ["전체", ...DASHBOARD_DATA.industries.filter((industry) =>
-        DASHBOARD_DATA.metrics.some((metric) => metric.industry === industry)
-      )];
-      document.getElementById("industryFilters").innerHTML = industries.map((industry) => `
-        <button type="button" data-industry="${escapeHtml(industry)}" aria-pressed="${state.industry === industry}">
-          ${escapeHtml(industry)}
-        </button>
-      `).join("");
-      document.querySelectorAll("[data-industry]").forEach((button) => {
-        button.addEventListener("click", () => {
-          state.industry = button.dataset.industry;
-          render();
-        });
-      });
-    }
-
-    function sparkline(history) {
-      if (!history || history.length < 2) {
-        return `<svg class="spark" viewBox="0 0 300 70" role="img" aria-label="trend unavailable">
-          <line x1="16" y1="36" x2="284" y2="36" stroke="#ddd8cc" stroke-width="2" stroke-dasharray="5 5"></line>
-        </svg>`;
-      }
-      const values = history.map((point) => point.value).filter((value) => typeof value === "number" && Number.isFinite(value));
-      const min = Math.min(...values);
-      const max = Math.max(...values);
-      const span = max - min || 1;
-      const width = 300;
-      const height = 70;
-      const padX = 12;
-      const padY = 10;
-      const points = history.map((point, index) => {
-        const x = padX + (index / Math.max(history.length - 1, 1)) * (width - padX * 2);
-        const y = height - padY - ((point.value - min) / span) * (height - padY * 2);
-        return `${x.toFixed(1)},${y.toFixed(1)}`;
-      }).join(" ");
-      return `<svg class="spark" viewBox="0 0 300 70" role="img" aria-label="trend">
-        <line x1="12" y1="60" x2="288" y2="60" stroke="#ebe5d8" stroke-width="1"></line>
-        <polyline points="${points}" fill="none" stroke="#2f6f73" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
-      </svg>`;
-    }
-
-    function metricCard(metric) {
-      return `<article class="metric">
-        <div>
-          <h3>${escapeHtml(metric.name)}</h3>
-          <p class="meaning">${escapeHtml(metric.meaning)}</p>
-        </div>
-        <div class="metric-main">
-          <div class="value">${escapeHtml(metric.display_value)}</div>
-          <div class="deltas">
-            <span>전기 <strong class="${directionClass(metric.change_abs)}">${escapeHtml(metric.change_abs_label)}</strong></span>
-            <span>전기% <strong class="${directionClass(metric.change_pct)}">${escapeHtml(metric.change_pct_label)}</strong></span>
-            <span>YoY <strong class="${directionClass(metric.yoy_pct)}">${escapeHtml(metric.yoy_pct_label)}</strong></span>
-          </div>
-        </div>
-        ${sparkline(metric.history)}
-        <div class="period"><span>기간</span><strong>${escapeHtml(metric.period_label || metric.observed_label || "")}</strong></div>
-      </article>`;
-    }
-
-    function renderIndustry(industry, metrics) {
-      const groups = Map.groupBy
-        ? Map.groupBy(metrics, (metric) => metric.group || "핵심 지표")
-        : metrics.reduce((map, metric) => {
-            const key = metric.group || "핵심 지표";
-            map.set(key, [...(map.get(key) || []), metric]);
-            return map;
-          }, new Map());
-      const icon = DASHBOARD_DATA.industry_icons?.[industry] || "";
-      const summary = DASHBOARD_DATA.industry_summaries?.[industry] || "";
-      const groupHtml = [...groups.entries()]
-        .sort(([a], [b]) => groupRank(a) - groupRank(b) || String(a).localeCompare(String(b), "ko"))
-        .map(([group, items]) => `
-          <section class="group">
-            <div class="group-title">${escapeHtml(group)}</div>
-            <div class="metric-grid">${items.map(metricCard).join("")}</div>
-          </section>
-        `).join("");
-
-      return `<article class="industry">
-        <div class="industry-head">
-          <div class="industry-icon-wrap">${icon ? `<img class="industry-icon" src="${escapeHtml(icon)}" alt="">` : ""}</div>
-          <div>
-            <h2>${escapeHtml(industry)}</h2>
-            <p class="industry-summary">${escapeHtml(summary)}</p>
-          </div>
-        </div>
-        <div class="group-stack">${groupHtml}</div>
-      </article>`;
-    }
-
-    function renderIndustries() {
-      const metrics = filteredMetrics();
-      const stack = document.getElementById("industryStack");
-      document.getElementById("empty").style.display = metrics.length ? "none" : "block";
-      const byIndustry = metrics.reduce((map, metric) => {
-        map.set(metric.industry, [...(map.get(metric.industry) || []), metric]);
-        return map;
-      }, new Map());
-      stack.innerHTML = DASHBOARD_DATA.industries
-        .filter((industry) => byIndustry.has(industry))
-        .map((industry) => renderIndustry(industry, byIndustry.get(industry)))
-        .join("");
-    }
-
-    function render() {
-      document.getElementById("title").textContent = DASHBOARD_DATA.title;
-      document.getElementById("updated").innerHTML = `업데이트 ${escapeHtml(DASHBOARD_DATA.generated_label)}<br>${escapeHtml(DASHBOARD_DATA.timezone)}`;
-      renderFilters();
-      renderIndustries();
-    }
-
-    render();
-  </script>
-</body>
-</html>
-"""
-
-
-HTML_TEMPLATE = """<!doctype html>
-<html lang="ko">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" href="data:,">
-  <title>산업별 핵심 지표 대시보드</title>
-  <style>
-    :root {
-      color-scheme: light;
-      --bg: #f6f6f2;
-      --panel: #ffffff;
-      --panel-soft: #fbfbf8;
-      --text: #202124;
-      --muted: #63645f;
-      --line: #d8d8cf;
-      --accent: #28666e;
-      --accent-2: #8a5a44;
-      --good: #087f5b;
-      --bad: #c24135;
-      --warn: #a66a00;
-      --manual: #6f5cc2;
-      --shadow: 0 10px 22px rgba(32, 33, 36, 0.06);
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-width: 320px;
-      background: var(--bg);
-      color: var(--text);
-      font-family: Inter, Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      letter-spacing: 0;
-    }
-
-    a { color: inherit; }
-
-    .shell {
-      width: min(1440px, calc(100% - 32px));
-      margin: 0 auto;
-      padding: 24px 0 36px;
-    }
-
-    header {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 18px;
-      align-items: end;
-      padding: 8px 0 18px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(24px, 3vw, 38px);
-      line-height: 1.08;
-      font-weight: 760;
-    }
-
-    .sub {
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .timestamp {
-      min-width: 210px;
-      text-align: right;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .summary {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
-      margin: 18px 0;
-    }
-
-    .summary-item,
-    .source-item,
-    .metric {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--panel);
-      box-shadow: var(--shadow);
-    }
-
-    .summary-item {
-      padding: 14px 16px;
-      min-height: 82px;
-    }
-
-    .summary-label {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 680;
-      text-transform: uppercase;
-    }
-
-    .summary-value {
-      margin-top: 8px;
-      font-size: 27px;
-      line-height: 1;
-      font-weight: 760;
-    }
-
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-      margin: 18px 0;
-    }
-
-    button,
-    select {
-      min-height: 36px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--panel);
-      color: var(--text);
-      font: inherit;
-      font-size: 13px;
-    }
-
-    button {
-      padding: 0 12px;
-      cursor: pointer;
-      font-weight: 650;
-    }
-
-    button[aria-pressed="true"] {
-      border-color: var(--accent);
-      background: #e8f1ef;
-      color: #16464c;
-    }
-
-    select {
-      padding: 0 32px 0 12px;
-      margin-left: auto;
-    }
-
-    .sources {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-
-    .sources:empty { display: none; }
-
-    .source-item {
-      padding: 12px 14px;
-      min-height: 72px;
-    }
-
-    .source-name {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      font-size: 14px;
-      font-weight: 720;
-    }
-
-    .source-message {
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .grid {
-      display: grid;
-      gap: 18px;
-    }
-
-    .industry-section {
-      display: grid;
-      gap: 14px;
-    }
-
-    .industry-head {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 12px;
-      padding-top: 4px;
-    }
-
-    .industry-head h2 {
-      margin: 0;
-      font-size: 22px;
-      line-height: 1.15;
-      font-weight: 780;
-    }
-
-    .industry-count {
-      color: var(--muted);
-      font-size: 13px;
-      white-space: nowrap;
-    }
-
-    .group-section {
-      display: grid;
-      gap: 10px;
-    }
-
-    .group-title {
-      margin: 0;
-      color: #444641;
-      font-size: 14px;
-      font-weight: 760;
-    }
-
-    .group-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .metric {
-      min-height: 270px;
-      display: grid;
-      grid-template-rows: auto auto auto 74px auto;
-      gap: 12px;
-      padding: 15px;
-      overflow: hidden;
-    }
-
-    .metric-head {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .metric h3 {
-      margin: 0;
-      font-size: 16px;
-      line-height: 1.35;
-      font-weight: 760;
-      overflow-wrap: anywhere;
-    }
-
-    .meaning {
-      min-height: 38px;
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.45;
-      overflow-wrap: anywhere;
-    }
-
-    .pill,
-    .status {
-      display: inline-flex;
-      align-items: center;
-      min-height: 24px;
-      border-radius: 999px;
-      padding: 0 9px;
-      white-space: nowrap;
-      font-size: 12px;
-      font-weight: 720;
-    }
-
-    .pill {
-      background: #eef0e8;
-      color: #4b4d47;
-    }
-
-    .status { background: #ecefed; color: #3e514d; }
-    .status.ok { background: #e4f3ed; color: var(--good); }
-    .status.needs_key { background: #fff0d7; color: var(--warn); }
-    .status.partial { background: #eeeef8; color: #4e4a9b; }
-    .status.manual { background: #f0eaff; color: var(--manual); }
-    .status.error { background: #fde8e4; color: var(--bad); }
-
-    .metric-main {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 10px;
-      align-items: end;
-    }
-
-    .value {
-      font-size: 32px;
-      line-height: 1;
-      font-weight: 780;
-      overflow-wrap: anywhere;
-    }
-
-    .observed {
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .delta {
-      display: grid;
-      gap: 4px;
-      min-width: 95px;
-      text-align: right;
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .delta strong {
-      color: var(--text);
-      font-size: 14px;
-    }
-
-    .positive { color: var(--good) !important; }
-    .negative { color: var(--bad) !important; }
-
-    .spark {
-      width: 100%;
-      height: 74px;
-      border: 1px solid #ecece4;
-      border-radius: 8px;
-      background: linear-gradient(180deg, var(--panel-soft), #ffffff);
-    }
-
-    .meta {
-      display: grid;
-      gap: 7px;
-      align-content: start;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.45;
-    }
-
-    .meta-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      border-top: 1px solid #eeeeea;
-      padding-top: 7px;
-    }
-
-    .meta-row span:first-child { color: #82837e; }
-
-    .note {
-      color: #4f514c;
-      overflow-wrap: anywhere;
-    }
-
-    .period {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      border-top: 1px solid #eeeeea;
-      padding-top: 8px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.4;
-    }
-
-    .empty {
-      display: none;
-      margin: 28px 0;
-      padding: 26px;
-      border: 1px dashed var(--line);
-      border-radius: 8px;
-      color: var(--muted);
-      text-align: center;
-    }
-
-    footer {
-      margin-top: 24px;
-      padding-top: 16px;
-      border-top: 1px solid var(--line);
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    footer:empty { display: none; }
-
-    @media (max-width: 1100px) {
-      .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .sources { grid-template-columns: 1fr; }
-      .group-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-
-    @media (max-width: 720px) {
-      .shell {
-        width: min(100% - 20px, 680px);
-        padding-top: 14px;
-      }
-      header {
-        grid-template-columns: 1fr;
-        align-items: start;
-      }
-      .timestamp { text-align: left; }
-      .summary { grid-template-columns: 1fr; }
-      .toolbar { align-items: stretch; }
-      button { flex: 1 1 auto; }
-      select { width: 100%; margin-left: 0; }
-      .group-grid { grid-template-columns: 1fr; }
-      .metric-main { grid-template-columns: 1fr; align-items: start; }
-      .delta { text-align: left; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .value { font-size: 29px; }
-    }
-  </style>
-</head>
-<body>
-  <main class="shell">
-    <header>
-      <div>
-        <h1 id="title">산업별 핵심 지표 대시보드</h1>
-        <div class="sub" id="subtitle"></div>
-      </div>
-      <div class="timestamp" id="timestamp"></div>
-    </header>
-
-    <section class="summary" id="summary"></section>
-    <nav class="toolbar" id="industryFilters" aria-label="산업 필터"></nav>
-    <section class="sources" id="sources"></section>
-    <section class="grid" id="metrics"></section>
-    <div class="empty" id="empty">표시할 지표가 없습니다.</div>
-    <footer id="footer"></footer>
-  </main>
-
-  <script>
-    const DASHBOARD_DATA = __DASHBOARD_JSON__;
-    const state = { industry: "전체" };
-
-    function cls(status) {
-      return String(status || "").replace(/[^a-zA-Z0-9_-]/g, "_");
-    }
-
-    function directionClass(value) {
-      if (typeof value !== "number" || !Number.isFinite(value) || value === 0) return "";
-      return value > 0 ? "positive" : "negative";
-    }
-
-    function escapeHtml(value) {
-      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-      }[char]));
-    }
-
-    function displayMetrics() {
-      return DASHBOARD_DATA.metrics.filter((metric) =>
-        typeof metric.value === "number" &&
-        Number.isFinite(metric.value)
-      );
-    }
-
-    function renderSummary() {
-      const metrics = displayMetrics();
-      const industries = new Set(metrics.map((metric) => metric.industry)).size;
-      const groups = new Set(metrics.map((metric) => `${metric.industry}::${metric.group}`)).size;
-      const items = [
-        ["지표", metrics.length],
-        ["산업", industries],
-        ["그룹", groups],
-        ["업데이트", DASHBOARD_DATA.generated_label.split(" ")[0]]
-      ];
-      document.getElementById("summary").innerHTML = items.map(([label, value]) => `
-        <article class="summary-item">
-          <div class="summary-label">${label}</div>
-          <div class="summary-value">${value}</div>
-        </article>
-      `).join("");
-    }
-
-    function renderFilters() {
-      const industries = ["전체", ...DASHBOARD_DATA.industries];
-      const buttons = industries.map((industry) => `
-        <button type="button" data-industry="${escapeHtml(industry)}" aria-pressed="${state.industry === industry}">
-          ${escapeHtml(industry)}
-        </button>
-      `).join("");
-      document.getElementById("industryFilters").innerHTML = buttons;
-      document.querySelectorAll("[data-industry]").forEach((button) => {
-        button.addEventListener("click", () => {
-          state.industry = button.dataset.industry;
-          render();
-        });
-      });
-    }
-
-    function renderSources() {
-      document.getElementById("sources").innerHTML = "";
-    }
-
-    function sparkline(history, status) {
-      if (!history || history.length < 2) {
-        return `<svg class="spark" viewBox="0 0 300 74" role="img" aria-label="history unavailable">
-          <line x1="18" y1="38" x2="282" y2="38" stroke="#d8d8cf" stroke-width="2" stroke-dasharray="5 5"></line>
-        </svg>`;
-      }
-      const values = history.map((point) => point.value).filter((value) => typeof value === "number" && Number.isFinite(value));
-      const min = Math.min(...values);
-      const max = Math.max(...values);
-      const span = max - min || 1;
-      const width = 300;
-      const height = 74;
-      const padX = 12;
-      const padY = 10;
-      const path = history.map((point, index) => {
-        const x = padX + (index / Math.max(history.length - 1, 1)) * (width - padX * 2);
-        const y = height - padY - ((point.value - min) / span) * (height - padY * 2);
-        return `${x.toFixed(1)},${y.toFixed(1)}`;
-      }).join(" ");
-      const stroke = status === "error" ? "#c24135" : "#28666e";
-      return `<svg class="spark" viewBox="0 0 300 74" role="img" aria-label="trend">
-        <line x1="12" y1="64" x2="288" y2="64" stroke="#ecece4" stroke-width="1"></line>
-        <polyline points="${path}" fill="none" stroke="${stroke}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
-      </svg>`;
-    }
-
-    function filteredMetrics() {
-      return displayMetrics()
-        .filter((metric) => state.industry === "전체" || metric.industry === state.industry)
-        .sort((a, b) => {
-          const industryDelta = DASHBOARD_DATA.industries.indexOf(a.industry) - DASHBOARD_DATA.industries.indexOf(b.industry);
-          if (industryDelta !== 0) return industryDelta;
-          const groupDelta = String(a.group).localeCompare(String(b.group), "ko");
-          if (groupDelta !== 0) return groupDelta;
-          return String(a.name).localeCompare(String(b.name), "ko");
-        });
-    }
-
-    function groupedMetrics(metrics) {
-      const industries = [];
-      for (const industry of DASHBOARD_DATA.industries) {
-        const industryMetrics = metrics.filter((metric) => metric.industry === industry);
-        if (!industryMetrics.length) continue;
-        const groups = [];
-        for (const metric of industryMetrics) {
-          let group = groups.find((item) => item.name === metric.group);
-          if (!group) {
-            group = { name: metric.group || "핵심 지표", metrics: [] };
-            groups.push(group);
-          }
-          group.metrics.push(metric);
-        }
-        industries.push({ name: industry, metrics: industryMetrics, groups });
-      }
-      return industries;
-    }
-
-    function renderMetrics() {
-      const metrics = filteredMetrics();
-      document.getElementById("empty").style.display = metrics.length ? "none" : "block";
-      document.getElementById("metrics").innerHTML = groupedMetrics(metrics).map((industry) => `
-        <section class="industry-section">
-          <div class="industry-head">
-            <h2>${escapeHtml(industry.name)}</h2>
-            <span class="industry-count">${industry.metrics.length}개 지표</span>
-          </div>
-          ${industry.groups.map((group) => `
-            <section class="group-section">
-              <h3 class="group-title">${escapeHtml(group.name)}</h3>
-              <div class="group-grid">
-                ${group.metrics.map((metric) => `
-                  <article class="metric">
-                    <div class="metric-head">
-                      <div>
-                        <span class="pill">${escapeHtml(metric.observed_label || metric.frequency || "")}</span>
-                        <h3>${escapeHtml(metric.name)}</h3>
-                      </div>
-                    </div>
-                    <p class="meaning">${escapeHtml(metric.meaning)}</p>
-                    <div class="metric-main">
-                      <div class="value">${escapeHtml(metric.display_value)}</div>
-                      <div class="delta">
-                        <span>전기 <strong class="${directionClass(metric.change_abs)}">${escapeHtml(metric.change_abs_label)}</strong></span>
-                        <span>전기% <strong class="${directionClass(metric.change_pct)}">${escapeHtml(metric.change_pct_label)}</strong></span>
-                        <span>YoY <strong class="${directionClass(metric.yoy_pct)}">${escapeHtml(metric.yoy_pct_label)}</strong></span>
-                      </div>
-                    </div>
-                    ${sparkline(metric.history, "ok")}
-                    <div class="period">
-                      <span>기간</span>
-                      <strong>${escapeHtml(metric.period_label || metric.observed_label || "")}</strong>
-                    </div>
-                  </article>
-                `).join("")}
-              </div>
-            </section>
-          `).join("")}
-        </section>
-      `).join("");
-    }
-
-    function render() {
-      document.getElementById("title").textContent = DASHBOARD_DATA.title;
-      document.getElementById("subtitle").textContent = "산업별 지표를 성격이 비슷한 그룹으로 정리했습니다.";
-      document.getElementById("timestamp").innerHTML = `업데이트 ${escapeHtml(DASHBOARD_DATA.generated_label)}`;
-      document.getElementById("footer").textContent = "";
-      renderSummary();
-      renderFilters();
-      renderSources();
-      renderMetrics();
-    }
-
-    render();
-  </script>
-</body>
-</html>
-"""
+    return load_dashboard_template().replace("__DASHBOARD_JSON__", json_text)

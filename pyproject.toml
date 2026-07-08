@@ -21,3 +21,6 @@ industry-dashboard = "macro_telegram_report.dashboard_cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+macro_telegram_report = ["templates/*.html"]
