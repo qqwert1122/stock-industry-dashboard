@@ -117,6 +117,10 @@ def fetch_krx_openapi_rows(
     )
     response.raise_for_status()
     payload = response.json()
+    resp_code = str(payload.get("respCode") or "").strip()
+    if resp_code and resp_code not in {"0000", "0", "200"}:
+        resp_msg = str(payload.get("respMsg") or "KRX Open API error")
+        raise ValueError(f"{api_id} {resp_code}: {resp_msg}")
     rows = payload.get("OutBlock_1") or []
     if not isinstance(rows, list):
         return []

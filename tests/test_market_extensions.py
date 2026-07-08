@@ -16,6 +16,7 @@ from macro_telegram_report.http_client import parse_retry_after
 from macro_telegram_report.market_gauges import build_market_gauges
 from macro_telegram_report.market_sentiment import (
     build_korea_fear_greed_score,
+    fetch_krx_openapi_rows,
     high_low_counts,
     high_low_score,
     parse_cnn_fear_greed_payload,
@@ -24,6 +25,31 @@ from macro_telegram_report.market_valuation import (
     parse_finra_margin_table,
     parse_multpl_table,
 )
+
+
+class FakeResponse:
+    def __init__(self, payload):
+        self.payload = payload
+
+    def raise_for_status(self):
+        return None
+
+    def json(self):
+        return self.payload
+
+
+class FakeKrxSession:
+    def __init__(self, payload):
+        self.payload = payload
+        self.headers = {}
+        self.params = {}
+        self.url = ""
+
+    def get(self, url, **kwargs):
+        self.url = url
+        self.headers = kwargs.get("headers", {})
+        self.params = kwargs.get("params", {})
+        return FakeResponse(self.payload)
 
 
 class MarketExtensionsTest(unittest.TestCase):
@@ -266,6 +292,22 @@ class MarketExtensionsTest(unittest.TestCase):
 
         self.assertEqual(points[-1], (date(2026, 7, 7), 43.0))
         self.assertEqual(len(points), 2)
+
+    def test_krx_openapi_error_response_is_not_treated_as_empty_market_day(self):
+        session = FakeKrxSession({"respMsg": "Unauthorized API Call", "respCode": "401"})
+
+        with self.assertRaisesRegex(ValueError, "Unauthorized API Call"):
+            fetch_krx_openapi_rows(
+                session,
+                base_url="https://data-dbg.krx.co.kr/svc/apis",
+                category="idx",
+                api_id="kospi_dd_trd",
+                auth_key="dummy",
+                target_date=date(2026, 7, 7),
+            )
+
+        self.assertEqual(session.params["basDd"], "20260707")
+        self.assertEqual(session.headers["AUTH_KEY"], "dummy")
 
     def test_korea_fear_greed_score_uses_breadth_high_low_and_volatility(self):
         start = date(2026, 1, 1)
