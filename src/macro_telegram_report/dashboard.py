@@ -1548,11 +1548,15 @@ def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -
         source_metrics = collect_market_sentiment_metrics(config, session, now.date(), metrics)
         metrics.extend(source_metrics)
         ok_count = sum(1 for item in source_metrics if item.get("status") == "ok")
+        message = f"{ok_count}/{len(source_metrics)}개 지표 자동 수집"
+        issue_summary = metric_issue_summary(source_metrics)
+        if issue_summary:
+            message = f"{message} ({issue_summary})"
         source_status.append(
             {
                 "name": "시장 심리",
-                "status": "ok" if ok_count else "partial",
-                "message": f"{ok_count}/{len(source_metrics)}개 지표 자동 수집",
+                "status": "ok" if source_metrics and ok_count == len(source_metrics) else "partial",
+                "message": message,
             }
         )
     except Exception as exc:  # noqa: BLE001 - sentiment failure should not block the dashboard.
@@ -1587,6 +1591,23 @@ def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -
         "source_status": source_status,
         "metrics": metrics,
     }
+
+
+def metric_issue_summary(metrics: list[dict[str, Any]], limit: int = 3) -> str:
+    issues: list[str] = []
+    for metric in metrics:
+        if metric.get("status") == "ok":
+            continue
+        name = str(metric.get("name") or "지표")
+        note = str(metric.get("note") or metric.get("status_label") or metric.get("status") or "").strip()
+        compact = f"{name}: {note}" if note else name
+        if compact not in issues:
+            issues.append(compact)
+    if not issues:
+        return ""
+    shown = issues[:limit]
+    suffix = f" 외 {len(issues) - limit}개" if len(issues) > limit else ""
+    return " / ".join(shown) + suffix
 
 
 def collect_fred_metrics(

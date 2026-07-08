@@ -4131,19 +4131,25 @@
         scroller.dataset.dragScrollBound = "true";
         let activePointerId = null;
         let didDrag = false;
+        let hasPointerCapture = false;
+        let suppressClick = false;
         let startX = 0;
         let startScrollLeft = 0;
         const threshold = 6;
 
         const endDrag = () => {
           if (activePointerId === null) return;
+          if (hasPointerCapture) {
+            scroller.releasePointerCapture?.(activePointerId);
+          }
           activePointerId = null;
+          hasPointerCapture = false;
           scroller.classList.remove("is-dragging");
           if (didDrag) {
-            scroller.dataset.dragged = "true";
+            suppressClick = true;
             window.setTimeout(() => {
-              delete scroller.dataset.dragged;
-            }, 0);
+              suppressClick = false;
+            }, 120);
           }
         };
 
@@ -4153,10 +4159,6 @@
           didDrag = false;
           startX = event.clientX;
           startScrollLeft = scroller.scrollLeft;
-          scroller.classList.add("is-dragging");
-          if (scroller.setPointerCapture) {
-            scroller.setPointerCapture(event.pointerId);
-          }
         });
 
         scroller.addEventListener("pointermove", (event) => {
@@ -4164,6 +4166,11 @@
           const deltaX = event.clientX - startX;
           if (Math.abs(deltaX) > threshold) {
             didDrag = true;
+            scroller.classList.add("is-dragging");
+            if (!hasPointerCapture) {
+              scroller.setPointerCapture?.(event.pointerId);
+              hasPointerCapture = true;
+            }
             event.preventDefault();
           }
           if (didDrag) {
@@ -4176,7 +4183,7 @@
         scroller.addEventListener("lostpointercapture", endDrag);
 
         scroller.addEventListener("click", (event) => {
-          if (scroller.dataset.dragged !== "true") return;
+          if (!suppressClick) return;
           event.preventDefault();
           event.stopPropagation();
         }, true);
