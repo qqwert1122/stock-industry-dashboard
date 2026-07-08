@@ -39,6 +39,8 @@ from .wsts import find_wsts_xlsx_url, parse_wsts_sheet
 FRED_OBSERVATIONS_URL = "https://api.stlouisfed.org/fred/series/observations"
 GEMINI_DEFAULT_MODEL = "gemini-3.1-flash-lite"
 GEMINI_GENERATE_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+MARKET_GAUGE_HISTORY_FILENAME = "market_gauges_history.json"
+MARKET_GAUGE_HISTORY_VERSION = 1
 DEFAULT_INDUSTRIES = [
     "반도체",
     "데이터인프라",
@@ -467,6 +469,11 @@ def build_dashboard_site(config: dict[str, Any], output_dir: str | Path, session
         payload.get("metrics", []), config, previous_payload
     )
     payload["market_gauges"] = build_market_gauges(payload.get("metrics", []))
+    market_gauge_history = update_market_gauge_history(
+        load_previous_dashboard_payload(data_path / MARKET_GAUGE_HISTORY_FILENAME),
+        payload,
+        str(config.get("timezone") or "Asia/Seoul"),
+    )
     payload["collection_issues"] = annotate_metric_freshness(
         payload.get("metrics", []), datetime.now(ZoneInfo(str(config.get("timezone") or "Asia/Seoul"))).date()
     )
@@ -482,6 +489,10 @@ def build_dashboard_site(config: dict[str, Any], output_dir: str | Path, session
     (data_path / "dashboard.json").write_text(json_text + "\n", encoding="utf-8")
     (data_path / "long_history.json").write_text(
         json.dumps(long_histories, ensure_ascii=False, separators=(",", ":")) + "\n",
+        encoding="utf-8",
+    )
+    (data_path / MARKET_GAUGE_HISTORY_FILENAME).write_text(
+        json.dumps(market_gauge_history, ensure_ascii=False, separators=(",", ":")) + "\n",
         encoding="utf-8",
     )
     (output_path / "index.html").write_text(render_dashboard_html(payload), encoding="utf-8")
@@ -728,6 +739,107 @@ def load_previous_dashboard_payload(path: Path) -> dict[str, Any] | None:
     except (OSError, json.JSONDecodeError):
         return None
     return payload if isinstance(payload, dict) else None
+
+
+def market_gauge_snapshot_date(payload: dict[str, Any], timezone_name: str) -> str:
+    generated_at = str(payload.get("generated_at") or "")
+    try:
+        instant = datetime.fromisoformat(generated_at.replace("Z", "+00:00"))
+        if instant.tzinfo is None:
+            instant = instant.replace(tzinfo=ZoneInfo(timezone_name))
+        return instant.astimezone(ZoneInfo(timezone_name)).date().isoformat()
+    except (TypeError, ValueError):
+        return datetime.now(ZoneInfo(timezone_name)).date().isoformat()
+
+
+def compact_gauge_items(items: Any, fields: tuple[str, ...]) -> list[dict[str, Any]]:
+    if not isinstance(items, list):
+        return []
+    compacted: list[dict[str, Any]] = []
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        compacted_item = {
+            field: item[field]
+            for field in fields
+            if field in item and item[field] is not None and item[field] != ""
+        }
+        if compacted_item:
+            compacted.append(compacted_item)
+    return compacted
+
+
+def market_gauge_history_snapshot(
+    payload: dict[str, Any], timezone_name: str
+) -> dict[str, Any] | None:
+    gauges = payload.get("market_gauges")
+    if not isinstance(gauges, dict) or not gauges:
+        return None
+
+    snapshot: dict[str, Any] = {
+        "date": market_gauge_snapshot_date(payload, timezone_name),
+        "generated_at": str(payload.get("generated_at") or ""),
+    }
+    thermometer = gauges.get("thermometer")
+    if isinstance(thermometer, dict):
+        snapshot["thermometer"] = {
+            field: thermometer[field]
+            for field in ("score", "label", "comment")
+            if field in thermometer and thermometer[field] is not None and thermometer[field] != ""
+        }
+        snapshot["thermometer"]["components"] = compact_gauge_items(
+            thermometer.get("components"),
+            ("name", "metric_id", "metric_name", "value_label", "percentile", "heat", "basis"),
+        )
+
+    recession = gauges.get("recession")
+    if isinstance(recession, dict):
+        snapshot["recession"] = {
+            field: recession[field]
+            for field in ("alert_count", "warn_count", "summary")
+            if field in recession and recession[field] is not None and recession[field] != ""
+        }
+        snapshot["recession"]["signals"] = compact_gauge_items(
+            recession.get("signals"),
+            ("name", "metric_id", "value_label", "status", "description"),
+        )
+
+    if "thermometer" not in snapshot and "recession" not in snapshot:
+        return None
+    return snapshot
+
+
+def update_market_gauge_history(
+    previous_history: dict[str, Any] | None,
+    payload: dict[str, Any],
+    timezone_name: str,
+) -> dict[str, Any]:
+    existing = previous_history if isinstance(previous_history, dict) else {}
+    raw_snapshots = existing.get("snapshots")
+    if not isinstance(raw_snapshots, list):
+        raw_snapshots = []
+    snapshots = [
+        snapshot
+        for snapshot in raw_snapshots
+        if isinstance(snapshot, dict) and snapshot.get("date")
+    ]
+    current = market_gauge_history_snapshot(payload, timezone_name)
+    if current:
+        current_date = str(current["date"])
+        snapshots = [snapshot for snapshot in snapshots if str(snapshot.get("date")) != current_date]
+        snapshots.append(current)
+    snapshots.sort(key=lambda snapshot: str(snapshot.get("date") or ""))
+
+    document: dict[str, Any] = {
+        "version": MARKET_GAUGE_HISTORY_VERSION,
+        "updated_at": str((current or {}).get("generated_at") or existing.get("updated_at") or ""),
+        "count": len(snapshots),
+        "snapshots": snapshots,
+    }
+    if snapshots:
+        document["first_date"] = str(snapshots[0].get("date") or "")
+        document["last_date"] = str(snapshots[-1].get("date") or "")
+    return document
 
 
 def annotate_dashboard_updates(payload: dict[str, Any], previous_payload: dict[str, Any] | None) -> None:

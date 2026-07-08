@@ -6,7 +6,11 @@ from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 from macro_telegram_report.alerts import process_alerts
-from macro_telegram_report.dashboard import make_metric, visible_dashboard_metrics
+from macro_telegram_report.dashboard import (
+    make_metric,
+    update_market_gauge_history,
+    visible_dashboard_metrics,
+)
 from macro_telegram_report.history_store import HistoryStore, percentile_stats
 from macro_telegram_report.http_client import parse_retry_after
 from macro_telegram_report.market_gauges import build_market_gauges
@@ -103,6 +107,79 @@ class MarketExtensionsTest(unittest.TestCase):
         self.assertIn("recession", gauges)
         self.assertGreaterEqual(len(gauges["thermometer"]["components"]), 3)
         self.assertEqual(gauges["recession"]["alert_count"], 2)
+
+    def test_market_gauge_history_upserts_daily_snapshot(self):
+        previous = {
+            "version": 1,
+            "snapshots": [
+                {
+                    "date": "2026-07-07",
+                    "generated_at": "2026-07-07T08:00:00+09:00",
+                    "thermometer": {"score": 40},
+                },
+                {
+                    "date": "2026-07-08",
+                    "generated_at": "2026-07-08T08:00:00+09:00",
+                    "thermometer": {"score": 55},
+                },
+            ],
+        }
+        payload = {
+            "generated_at": "2026-07-08T11:30:00+09:00",
+            "market_gauges": {
+                "thermometer": {
+                    "score": 72.5,
+                    "label": "주의",
+                    "components": [
+                        {
+                            "name": "VIX",
+                            "metric_id": "vix",
+                            "value_label": "20.1",
+                            "percentile": 80.0,
+                            "heat": 80.0,
+                            "basis": "최근 10년 백분위",
+                        }
+                    ],
+                },
+                "recession": {
+                    "alert_count": 1,
+                    "warn_count": 0,
+                    "summary": "주의 신호가 있습니다.",
+                    "signals": [
+                        {
+                            "name": "Sahm Rule",
+                            "metric_id": "sahm",
+                            "value_label": "0.6%p",
+                            "status": "alert",
+                            "description": "고용 둔화",
+                        }
+                    ],
+                },
+            },
+        }
+
+        history = update_market_gauge_history(previous, payload, "Asia/Seoul")
+
+        self.assertEqual(history["count"], 2)
+        self.assertEqual(history["first_date"], "2026-07-07")
+        self.assertEqual(history["last_date"], "2026-07-08")
+        self.assertEqual(history["snapshots"][-1]["thermometer"]["score"], 72.5)
+        self.assertEqual(history["snapshots"][-1]["recession"]["signals"][0]["status"], "alert")
+
+    def test_market_gauge_history_keeps_existing_when_current_gauges_empty(self):
+        previous = {
+            "version": 1,
+            "snapshots": [{"date": "2026-07-07", "thermometer": {"score": 40}}],
+        }
+
+        history = update_market_gauge_history(
+            previous,
+            {"generated_at": "2026-07-08T08:00:00+09:00", "market_gauges": {}},
+            "Asia/Seoul",
+        )
+
+        self.assertEqual(history["count"], 1)
+        self.assertEqual(history["snapshots"][0]["date"], "2026-07-07")
 
     def test_alerts_send_only_on_new_threshold_crossing(self):
         config = {

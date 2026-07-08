@@ -43,6 +43,12 @@ jobs:
             curl -fsSL https://qqwert1122.github.io/stock-industry-dashboard/data/dashboard.json \
               -o site/data/dashboard.json || true
           fi
+          if [ -f data/market_gauges_history.json ]; then
+            cp data/market_gauges_history.json site/data/market_gauges_history.json
+          else
+            curl -fsSL https://qqwert1122.github.io/stock-industry-dashboard/data/market_gauges_history.json \
+              -o site/data/market_gauges_history.json || true
+          fi
 
       - name: Refresh price metrics
         env:
@@ -54,6 +60,9 @@ jobs:
         run: |
           mkdir -p data
           cp site/data/dashboard.json data/last_dashboard.json
+          if [ -f site/data/market_gauges_history.json ]; then
+            cp site/data/market_gauges_history.json data/market_gauges_history.json
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data
