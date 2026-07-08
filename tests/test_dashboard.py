@@ -181,9 +181,11 @@ class DashboardTest(unittest.TestCase):
         self.assertIn("scheduleDynamicDetailAxis", html)
         self.assertIn("data-band-toggle", html)
         self.assertIn("lastUpdatedInline", html)
-        self.assertIn("gauge-summary-icon", html)
-        self.assertIn("percentileBandLabel", html)
+        self.assertIn("gauge-basis-title", html)
+        self.assertIn("recession-signal-list", html)
+        self.assertIn("chart-band-switch", html)
         self.assertIn("percentileBandLegend", html)
+        self.assertIn("한국 (KST, UTC+9)", html)
         self.assertIn('colspan="6"', html)
 
     def test_annotate_dashboard_updates_detects_updated_and_new_metrics(self):

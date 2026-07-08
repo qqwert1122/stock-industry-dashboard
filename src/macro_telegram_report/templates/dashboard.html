@@ -1708,11 +1708,9 @@
       grid-column: 2;
       display: flex;
       align-items: center;
-      gap: 8px;
       min-width: 0;
       margin-top: 6px;
       padding-left: 2px;
-      color: var(--muted);
       font-size: 11px;
       line-height: 1.2;
     }
@@ -1720,53 +1718,67 @@
     .chart-band-toggle {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
+      gap: 8px;
       min-width: 0;
-      padding: 0;
-      border: 0;
-      background: transparent;
-      color: inherit;
-      font: inherit;
-      cursor: pointer;
-    }
-
-    .chart-band-toggle-dot {
-      position: relative;
-      width: 16px;
-      height: 16px;
-      flex: 0 0 16px;
-      border: 1px solid rgba(59, 130, 246, 0.7);
+      max-width: 100%;
+      padding: 5px 7px 5px 10px;
+      border: 1px solid rgba(59, 130, 246, 0.18);
       border-radius: 999px;
-      background: rgba(59, 130, 246, 0.11);
+      background: rgba(59, 130, 246, 0.1);
+      color: #2563eb;
+      font: inherit;
+      font-weight: 650;
+      cursor: pointer;
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
     }
 
-    .chart-band-toggle-dot::after {
+    body.theme-dark .chart-band-toggle {
+      border-color: rgba(147, 197, 253, 0.24);
+      background: rgba(96, 165, 250, 0.12);
+      color: #93c5fd;
+    }
+
+    .chart-band-switch {
+      position: relative;
+      width: 34px;
+      height: 20px;
+      flex: 0 0 34px;
+      border-radius: 999px;
+      background: #2563eb;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+      transition: background 160ms ease;
+    }
+
+    .chart-band-switch::after {
       content: "";
       position: absolute;
-      left: 4.5px;
-      top: 2.5px;
-      width: 4px;
-      height: 7px;
-      border: solid #2563eb;
-      border-width: 0 1.6px 1.6px 0;
-      transform: rotate(45deg);
+      left: 2px;
+      top: 2px;
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.22);
+      transform: translateX(14px);
+      transition: transform 160ms ease;
     }
 
-    .chart-band-toggle[aria-pressed="false"] .chart-band-toggle-dot {
+    .chart-band-toggle[aria-pressed="false"] {
       border-color: var(--line);
-      background: transparent;
+      background: var(--menu);
+      color: var(--muted);
     }
 
-    .chart-band-toggle[aria-pressed="false"] .chart-band-toggle-dot::after {
-      opacity: 0;
+    .chart-band-toggle[aria-pressed="false"] .chart-band-switch {
+      background: #cbd5e1;
     }
 
-    .chart-band-legend-label {
-      color: #2563eb;
-      font-weight: 650;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    body.theme-dark .chart-band-toggle[aria-pressed="false"] .chart-band-switch {
+      background: #475569;
+    }
+
+    .chart-band-toggle[aria-pressed="false"] .chart-band-switch::after {
+      transform: translateX(0);
     }
 
     .chart-band-legend-text {
@@ -2598,37 +2610,20 @@
       transform: translateX(-2px);
       box-shadow: 0 0 0 2px var(--panel);
     }
+    .gauge-main-area { min-height: 72px; }
     .gauge-comment { margin: 12px 0 0; font-size: 13px; color: var(--muted); line-height: 1.55; }
-    .gauge-components { margin-top: 12px; font-size: 12px; }
-    .gauge-components summary {
-      width: max-content;
-      max-width: 100%;
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      list-style: none;
-      padding: 7px 10px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: var(--menu);
+    .gauge-basis { margin-top: 12px; font-size: 12px; }
+    .gauge-basis-title {
+      display: block;
+      margin: 0 0 7px;
       color: var(--muted);
-      cursor: pointer;
-      user-select: none;
-    }
-    .gauge-components summary::-webkit-details-marker { display: none; }
-    .gauge-components summary:hover { background: var(--menu-active); color: var(--text); }
-    .gauge-summary-icon {
-      display: inline-block;
-      transform: translateY(-0.5px);
-      transition: transform 180ms ease;
-    }
-    .gauge-components[open] .gauge-summary-icon {
-      transform: translateY(-0.5px) rotate(90deg);
+      font-size: 11px;
+      font-weight: 650;
     }
     .gauge-component-list {
       position: relative;
       list-style: none;
-      margin: 10px 0 0;
+      margin: 0;
       padding: 0;
       display: flex;
       gap: 8px;
@@ -2646,7 +2641,8 @@
       flex: 0 0 168px;
     }
     .gauge-component-list button,
-    .gauge-component-static {
+    .gauge-component-static,
+    .signal-chip {
       width: 100%;
       min-height: 88px;
       display: grid;
@@ -2662,7 +2658,8 @@
       font-size: 12px;
       text-align: left;
     }
-    .gauge-component-static { cursor: default; }
+    .gauge-component-static,
+    .signal-chip-static { cursor: default; }
     .gauge-component-name {
       min-width: 0;
       font-weight: 500;
@@ -2678,21 +2675,7 @@
       overflow-wrap: anywhere;
     }
     .gauge-component-heat { color: var(--muted); font-size: 10.5px; line-height: 1.25; width: 100%; }
-    .signal-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-    .signal-chip {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 2px;
-      border-radius: 24px;
-      padding: 12px;
-      border: 0;
-      background: var(--menu);
-      cursor: pointer;
-      color: var(--text);
-      font-size: 12px;
-    }
-    .signal-chip .signal-value { font-weight: 700; font-size: 13px; }
+    .signal-chip .signal-value { font-weight: 560; font-size: 15px; }
     .signal-chip.signal-ok .signal-value { color: #16a34a; }
     .signal-chip.signal-warn .signal-value { color: #d97706; }
     .signal-chip.signal-alert .signal-value { color: #dc2626; }
@@ -2855,8 +2838,8 @@
         darkModeState: "다크",
         language: "언어변경",
         timeZone: "시간대 변경",
-        timeZoneKorea: "한국",
-        timeZoneUs: "미국 동부",
+        timeZoneKorea: "한국 (KST, UTC+9)",
+        timeZoneUs: "미국 동부 (ET, UTC-5/UTC-4)",
         reorderMenu: "메뉴 순서변경",
         cancel: "취소",
         save: "저장",
@@ -2873,14 +2856,13 @@
         previousChangePct: "전기 변화율",
         marketThermometer: "시장 온도계",
         recessionSignals: "경기침체 시그널",
-        thermometerBasis: "계산 근거 보기",
+        thermometerBasis: "근거 지표",
         percentile10y: "10년 백분위",
         fullRange: "전체 기간 범위",
         dataSince: "데이터 시작",
         rangeRecent: "최근",
         rangeFull: "전체 기간",
         lastUpdatedInline: "최근 업데이트 일시",
-        percentileBandLabel: "백분위 밴드",
         percentileBandLegend: "과거 20~80% 구간(중앙값)",
         heatLabel: "열기",
         staleBadge: "갱신 지연",
@@ -2927,8 +2909,8 @@
         darkModeState: "Dark",
         language: "Language",
         timeZone: "Time zone",
-        timeZoneKorea: "Korea",
-        timeZoneUs: "US Eastern",
+        timeZoneKorea: "Korea (KST, UTC+9)",
+        timeZoneUs: "US Eastern (ET, UTC-5/UTC-4)",
         reorderMenu: "Reorder menu",
         cancel: "Cancel",
         save: "Save",
@@ -2964,14 +2946,13 @@
         tooltipChange: "Change",
         marketThermometer: "Market Thermometer",
         recessionSignals: "Recession Signals",
-        thermometerBasis: "How it's calculated",
+        thermometerBasis: "Basis indicators",
         percentile10y: "10y percentile",
         fullRange: "All-time range",
         dataSince: "Data since",
         rangeRecent: "Recent",
         rangeFull: "Full history",
         lastUpdatedInline: "Last updated",
-        percentileBandLabel: "Percentile band",
         percentileBandLegend: "Historical 20-80% range (median)",
         heatLabel: "heat",
         staleBadge: "Stale",
@@ -3387,10 +3368,9 @@
     function yearLabel(dateText, metric = null) {
       const parts = zonedDateParts(dateText, metric);
       if (!parts) return "";
-      const year = Number(String(parts.year).slice(2, 4));
+      const year = Number(parts.year);
       if (!Number.isFinite(year)) return "";
-      const shortYear = String(year).padStart(2, "0");
-      return state.language === "en" ? shortYear : `${shortYear}년`;
+      return state.language === "en" ? String(year) : `${year}년`;
     }
 
     function monthLabel(month) {
@@ -3416,7 +3396,7 @@
       if (state.language === "en") {
         return day ? `${monthLabel(date.month)} ${day}, ${date.year}` : `${monthLabel(date.month)} ${date.year}`;
       }
-      return day ? `${String(date.year).slice(2)}년 ${date.month}월 ${day}일` : `${String(date.year).slice(2)}년 ${date.month}월`;
+      return day ? `${date.year}년 ${date.month}월 ${day}일` : `${date.year}년 ${date.month}월`;
     }
 
     function detailTickLabel(point, seenYears, metric = null) {
@@ -3656,9 +3636,8 @@
           data-band-median="${band.median}"></line>` : "";
       const bandLegendMarkup = band ? `<div class="detail-chart-legend">
         <button type="button" class="chart-band-toggle" data-band-toggle aria-pressed="true">
-          <span class="chart-band-legend-label">${escapeHtml(t("percentileBandLabel"))}</span>
           <span class="chart-band-legend-text">${escapeHtml(t("percentileBandLegend"))}</span>
-          <span class="chart-band-toggle-dot" aria-hidden="true"></span>
+          <span class="chart-band-switch" aria-hidden="true"></span>
         </button>
       </div>` : "";
       const points = displayPoints.map((point, index) => {
@@ -3873,10 +3852,9 @@
         const month = monthNames[Math.max(0, Math.min(11, Number(parts.month) - 1))];
         return parts.day ? `${month} ${Number(parts.day)}, ${parts.year}` : `${month} ${parts.year}`;
       }
-      const year = String(parts.year).slice(2);
       const month = String(Number(parts.month));
       const day = parts.day ? ` ${Number(parts.day)}일` : "";
-      return `${year}년 ${month}월${day}`;
+      return `${parts.year}년 ${month}월${day}`;
     }
 
     function fullDateText(value, metric = null) {
@@ -4191,9 +4169,13 @@
     }
 
     function gaugeComponentMarkup(component) {
+      const basis = component.basis || "";
+      const percentile = component.percentile === null || component.percentile === undefined ? "" : `${String(component.percentile)}%`;
+      const heat = component.heat === null || component.heat === undefined ? "" : `${escapeHtml(t("heatLabel"))} ${String(component.heat)}`;
+      const meta = [basis, percentile, heat].filter(Boolean).join(" · ");
       const inner = `<span class="gauge-component-name">${escapeHtml(component.name)}</span>
         <span class="gauge-component-value">${escapeHtml(component.value_label || "")}</span>
-        <span class="gauge-component-heat">${escapeHtml(component.basis || "")} ${escapeHtml(String(component.percentile))}% → ${escapeHtml(t("heatLabel"))} ${escapeHtml(String(component.heat))}</span>`;
+        ${meta ? `<span class="gauge-component-heat">${escapeHtml(meta)}</span>` : ""}`;
       if (component.metric_id) {
         return `<li><button type="button" data-briefing-metric="${escapeHtml(component.metric_id)}">${inner}</button></li>`;
       }
@@ -4202,13 +4184,24 @@
 
     function signalChipMarkup(signal) {
       const cls = `signal-chip signal-${escapeHtml(signal.status || "ok")}`;
-      const inner = `<span class="signal-name">${escapeHtml(signal.name)}</span>
-        <span class="signal-value">${escapeHtml(signal.value_label || "")}</span>`;
+      const description = signal.description || "";
+      const inner = `<span class="gauge-component-name">${escapeHtml(signal.name)}</span>
+        <span class="gauge-component-value signal-value">${escapeHtml(signal.value_label || "")}</span>
+        ${description ? `<span class="gauge-component-heat">${escapeHtml(description)}</span>` : ""}`;
       const title = escapeHtml(signal.description || "");
       if (signal.metric_id) {
-        return `<button type="button" class="${cls}" title="${title}" data-briefing-metric="${escapeHtml(signal.metric_id)}">${inner}</button>`;
+        return `<li><button type="button" class="${cls}" title="${title}" data-briefing-metric="${escapeHtml(signal.metric_id)}">${inner}</button></li>`;
       }
-      return `<span class="${cls}" title="${title}">${inner}</span>`;
+      return `<li><span class="${cls} signal-chip-static" title="${title}">${inner}</span></li>`;
+    }
+
+    function gaugeBasisMarkup(items, mapper, className = "") {
+      if (!items || !items.length) return "";
+      const listClass = className ? `gauge-component-list ${className}` : "gauge-component-list";
+      return `<div class="gauge-basis">
+        <span class="gauge-basis-title">${escapeHtml(t("thermometerBasis"))}</span>
+        <ul class="${listClass}">${items.map(mapper).join("")}</ul>
+      </div>`;
     }
 
     function renderMarketGauges() {
@@ -4221,24 +4214,22 @@
           <h3>${escapeHtml(t("marketThermometer"))}</h3>
           <span class="thermometer-score ${thermometerClass(thermo.score)}">${escapeHtml(String(thermo.score))} · ${escapeHtml(thermo.label)}</span>
         </div>
-        <div class="thermometer-track">
-          <div class="thermometer-marker" style="left: ${Math.max(0, Math.min(100, thermo.score))}%"></div>
+        <div class="gauge-main-area">
+          <div class="thermometer-track">
+            <div class="thermometer-marker" style="left: ${Math.max(0, Math.min(100, thermo.score))}%"></div>
+          </div>
+          <p class="gauge-comment">${escapeHtml(thermo.comment || "")}</p>
         </div>
-        <p class="gauge-comment">${escapeHtml(thermo.comment || "")}</p>
-        <details class="gauge-components">
-          <summary>
-            <span>${escapeHtml(t("thermometerBasis"))}</span>
-            <span class="gauge-summary-icon" aria-hidden="true">›</span>
-          </summary>
-          <ul class="gauge-component-list">${(thermo.components || []).map(gaugeComponentMarkup).join("")}</ul>
-        </details>
+        ${gaugeBasisMarkup(thermo.components || [], gaugeComponentMarkup)}
       </div>` : "";
       const recessionHtml = recession ? `<div class="gauge-card recession-card">
         <div class="gauge-card-head">
           <h3>${escapeHtml(t("recessionSignals"))}</h3>
         </div>
-        <div class="signal-chips">${(recession.signals || []).map(signalChipMarkup).join("")}</div>
-        <p class="gauge-comment">${escapeHtml(recession.summary || "")}</p>
+        <div class="gauge-main-area recession-main-area">
+          <p class="gauge-comment">${escapeHtml(recession.summary || "")}</p>
+        </div>
+        ${gaugeBasisMarkup(recession.signals || [], signalChipMarkup, "recession-signal-list")}
       </div>` : "";
       return `<section class="market-gauges">${thermoHtml}${recessionHtml}</section>`;
     }
