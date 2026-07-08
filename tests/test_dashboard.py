@@ -183,6 +183,8 @@ class DashboardTest(unittest.TestCase):
         self.assertIn("lastUpdatedInline", html)
         self.assertIn("gauge-basis-title", html)
         self.assertIn("recession-signal-list", html)
+        self.assertIn("gauge-component-change", html)
+        self.assertIn("initGaugeCardScrollDrag", html)
         self.assertIn("chart-band-swatch", html)
         self.assertIn("chart-band-switch", html)
         self.assertIn("percentileBandLegend", html)

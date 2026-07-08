@@ -1740,7 +1740,7 @@
       width: 18px;
       height: 18px;
       flex: 0 0 18px;
-      border-radius: 8px;
+      border-radius: 4px;
       background: rgba(59, 130, 246, 0.2);
       border: 1px solid rgba(59, 130, 246, 0.32);
     }
@@ -2645,8 +2645,16 @@
       overflow-y: hidden;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
+      cursor: grab;
       -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%);
       mask-image: linear-gradient(90deg, transparent 0, #000 18px, #000 calc(100% - 18px), transparent 100%);
+    }
+    .gauge-component-list.is-dragging {
+      cursor: grabbing;
+      user-select: none;
+    }
+    .gauge-component-list.is-dragging button {
+      cursor: grabbing;
     }
     .gauge-component-list::-webkit-scrollbar {
       display: none;
@@ -2682,17 +2690,33 @@
       white-space: nowrap;
     }
     .gauge-component-value {
-      color: var(--text);
+      color: #111827;
       font-size: 15px;
       line-height: 1.1;
       font-weight: 560;
       overflow-wrap: anywhere;
     }
+    body.theme-dark .gauge-component-value { color: var(--text); }
+    .gauge-component-change {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.2;
+      font-weight: 420;
+      width: 100%;
+    }
+    .gauge-trend-icon {
+      width: 12px;
+      height: 12px;
+      flex: 0 0 12px;
+      stroke: currentColor;
+    }
+    .gauge-component-change.positive { color: var(--chart-up) !important; }
+    .gauge-component-change.negative { color: var(--chart-down) !important; }
     .gauge-component-heat { color: var(--muted); font-size: 10.5px; line-height: 1.25; width: 100%; }
     .signal-chip .signal-value { font-weight: 560; font-size: 15px; }
-    .signal-chip.signal-ok .signal-value { color: #16a34a; }
-    .signal-chip.signal-warn .signal-value { color: #d97706; }
-    .signal-chip.signal-alert .signal-value { color: #dc2626; }
     .pct-badge {
       display: inline-block;
       margin-left: 6px;
@@ -4101,6 +4125,64 @@
       });
     }
 
+    function initGaugeCardScrollDrag(root = document) {
+      root.querySelectorAll(".gauge-component-list").forEach((scroller) => {
+        if (scroller.dataset.dragScrollBound === "true") return;
+        scroller.dataset.dragScrollBound = "true";
+        let activePointerId = null;
+        let didDrag = false;
+        let startX = 0;
+        let startScrollLeft = 0;
+        const threshold = 6;
+
+        const endDrag = () => {
+          if (activePointerId === null) return;
+          activePointerId = null;
+          scroller.classList.remove("is-dragging");
+          if (didDrag) {
+            scroller.dataset.dragged = "true";
+            window.setTimeout(() => {
+              delete scroller.dataset.dragged;
+            }, 0);
+          }
+        };
+
+        scroller.addEventListener("pointerdown", (event) => {
+          if (event.pointerType !== "mouse" || event.button !== 0) return;
+          activePointerId = event.pointerId;
+          didDrag = false;
+          startX = event.clientX;
+          startScrollLeft = scroller.scrollLeft;
+          scroller.classList.add("is-dragging");
+          if (scroller.setPointerCapture) {
+            scroller.setPointerCapture(event.pointerId);
+          }
+        });
+
+        scroller.addEventListener("pointermove", (event) => {
+          if (event.pointerId !== activePointerId) return;
+          const deltaX = event.clientX - startX;
+          if (Math.abs(deltaX) > threshold) {
+            didDrag = true;
+            event.preventDefault();
+          }
+          if (didDrag) {
+            scroller.scrollLeft = startScrollLeft - deltaX;
+          }
+        });
+
+        scroller.addEventListener("pointerup", endDrag);
+        scroller.addEventListener("pointercancel", endDrag);
+        scroller.addEventListener("lostpointercapture", endDrag);
+
+        scroller.addEventListener("click", (event) => {
+          if (scroller.dataset.dragged !== "true") return;
+          event.preventDefault();
+          event.stopPropagation();
+        }, true);
+      });
+    }
+
     function briefingStatusLabel(briefing) {
       if (briefing?.status === "ok") return t("aiBriefing");
       return t("fallbackBriefing");
@@ -4183,14 +4265,39 @@
       return "heat-cold";
     }
 
+    function gaugeTrendIconMarkup(value) {
+      if (typeof value !== "number" || !Number.isFinite(value) || value === 0) {
+        return `<svg class="gauge-trend-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+          <path d="M5 12h14" stroke-width="2" stroke-linecap="round"></path>
+        </svg>`;
+      }
+      if (value > 0) {
+        return `<svg class="gauge-trend-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+          <path d="m22 7-8.5 8.5-5-5L2 17" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M16 7h6v6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>`;
+      }
+      return `<svg class="gauge-trend-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+        <path d="m22 17-8.5-8.5-5 5L2 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M16 17h6v-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>`;
+    }
+
+    function gaugeMetricChangeMarkup(metricId) {
+      const metric = metricById(metricId);
+      const value = metric?.change_pct;
+      const label = metric?.change_pct_label || (typeof value === "number" && Number.isFinite(value) ? `${numberText(value, true)}%` : "n/a");
+      const direction = directionClass(value);
+      return `<span class="gauge-component-change ${direction}">
+        ${gaugeTrendIconMarkup(value)}
+        <span>${escapeHtml(label)}</span>
+      </span>`;
+    }
+
     function gaugeComponentMarkup(component) {
-      const basis = component.basis || "";
-      const percentile = component.percentile === null || component.percentile === undefined ? "" : `${String(component.percentile)}%`;
-      const heat = component.heat === null || component.heat === undefined ? "" : `${escapeHtml(t("heatLabel"))} ${String(component.heat)}`;
-      const meta = [basis, percentile, heat].filter(Boolean).join(" · ");
       const inner = `<span class="gauge-component-name">${escapeHtml(component.name)}</span>
         <span class="gauge-component-value">${escapeHtml(component.value_label || "")}</span>
-        ${meta ? `<span class="gauge-component-heat">${escapeHtml(meta)}</span>` : ""}`;
+        ${gaugeMetricChangeMarkup(component.metric_id)}`;
       if (component.metric_id) {
         return `<li><button type="button" data-briefing-metric="${escapeHtml(component.metric_id)}">${inner}</button></li>`;
       }
@@ -4199,10 +4306,9 @@
 
     function signalChipMarkup(signal) {
       const cls = `signal-chip signal-${escapeHtml(signal.status || "ok")}`;
-      const description = signal.description || "";
       const inner = `<span class="gauge-component-name">${escapeHtml(signal.name)}</span>
         <span class="gauge-component-value signal-value">${escapeHtml(signal.value_label || "")}</span>
-        ${description ? `<span class="gauge-component-heat">${escapeHtml(description)}</span>` : ""}`;
+        ${gaugeMetricChangeMarkup(signal.metric_id)}`;
       const title = escapeHtml(signal.description || "");
       if (signal.metric_id) {
         return `<li><button type="button" class="${cls}" title="${title}" data-briefing-metric="${escapeHtml(signal.metric_id)}">${inner}</button></li>`;
@@ -4375,6 +4481,7 @@
         </div>
       </details>${renderFavoriteMetrics()}`;
       initDailyUpdateLinks();
+      initGaugeCardScrollDrag(section);
     }
 
     function renderIndustry(industry, metrics) {
