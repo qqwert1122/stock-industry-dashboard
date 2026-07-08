@@ -814,7 +814,19 @@ def market_gauge_history_snapshot(
             ("name", "metric_id", "value_label", "status", "description"),
         )
 
-    if "thermometer" not in snapshot and "recession" not in snapshot:
+    fear_greed = gauges.get("fear_greed")
+    if isinstance(fear_greed, dict):
+        snapshot["fear_greed"] = {
+            field: fear_greed[field]
+            for field in ("comment",)
+            if field in fear_greed and fear_greed[field] is not None and fear_greed[field] != ""
+        }
+        snapshot["fear_greed"]["items"] = compact_gauge_items(
+            fear_greed.get("items"),
+            ("name", "metric_id", "metric_name", "score", "label", "value_label"),
+        )
+
+    if "thermometer" not in snapshot and "recession" not in snapshot and "fear_greed" not in snapshot:
         return None
     return snapshot
 

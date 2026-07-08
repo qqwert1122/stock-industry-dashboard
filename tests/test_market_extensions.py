@@ -131,14 +131,19 @@ class MarketExtensionsTest(unittest.TestCase):
             metric("S&P 500 Shiller CAPE", 35.0, 95.0),
             metric("미국 10Y-3M 금리차", -0.2, 10.0),
             metric("Sahm Rule 침체 지표", 0.55, 90.0),
+            metric("미국 CNN 공포탐욕지수", 62.0, 75.0),
+            metric("코스피 공포탐욕지수", 38.0, 35.0),
         ]
 
         gauges = build_market_gauges(metrics)
 
         self.assertIn("thermometer", gauges)
         self.assertIn("recession", gauges)
+        self.assertIn("fear_greed", gauges)
         self.assertGreaterEqual(len(gauges["thermometer"]["components"]), 3)
         self.assertEqual(gauges["recession"]["alert_count"], 2)
+        self.assertEqual(gauges["fear_greed"]["items"][0]["label"], "탐욕")
+        self.assertEqual(gauges["fear_greed"]["items"][1]["label"], "공포")
 
     def test_market_gauge_history_upserts_daily_snapshot(self):
         previous = {
@@ -187,6 +192,19 @@ class MarketExtensionsTest(unittest.TestCase):
                         }
                     ],
                 },
+                "fear_greed": {
+                    "comment": "0에 가까울수록 공포입니다.",
+                    "items": [
+                        {
+                            "name": "미국 CNN",
+                            "metric_id": "fg-us",
+                            "metric_name": "미국 CNN 공포탐욕지수",
+                            "score": 62.0,
+                            "label": "탐욕",
+                            "value_label": "62점",
+                        }
+                    ],
+                },
             },
         }
 
@@ -197,6 +215,7 @@ class MarketExtensionsTest(unittest.TestCase):
         self.assertEqual(history["last_date"], "2026-07-08")
         self.assertEqual(history["snapshots"][-1]["thermometer"]["score"], 72.5)
         self.assertEqual(history["snapshots"][-1]["recession"]["signals"][0]["status"], "alert")
+        self.assertEqual(history["snapshots"][-1]["fear_greed"]["items"][0]["label"], "탐욕")
 
     def test_market_gauge_history_keeps_existing_when_current_gauges_empty(self):
         previous = {

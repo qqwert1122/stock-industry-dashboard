@@ -21,6 +21,11 @@ THERMOMETER_COMPONENTS = [
     ("margin debt", 1, "미국 신용융자(YoY)"),
 ]
 YOY_HEAT_NAMES = ("신용융자", "margin debt")
+FEAR_GREED_METRICS = [
+    ("미국 CNN 공포탐욕지수", "미국 CNN"),
+    ("코스피 공포탐욕지수", "코스피"),
+    ("코스닥 공포탐욕지수", "코스닥"),
+]
 
 
 def find_metric(metrics: list[dict[str, Any]], name_fragment: str) -> dict[str, Any] | None:
@@ -87,6 +92,18 @@ def thermometer_label(score: float) -> tuple[str, str]:
     return "공포", "역사적으로 공포 구간은 장기투자자에게 유리한 매수 기회였던 경우가 많습니다."
 
 
+def fear_greed_label(score: float) -> str:
+    if score >= 76:
+        return "극단적 탐욕"
+    if score >= 56:
+        return "탐욕"
+    if score >= 45:
+        return "중립"
+    if score >= 25:
+        return "공포"
+    return "극단적 공포"
+
+
 def build_thermometer(metrics: list[dict[str, Any]]) -> dict[str, Any] | None:
     components: list[dict[str, Any]] = []
     for fragment, direction, display_name in THERMOMETER_COMPONENTS:
@@ -118,6 +135,34 @@ def build_thermometer(metrics: list[dict[str, Any]]) -> dict[str, Any] | None:
         "label": label,
         "comment": comment,
         "components": components,
+    }
+
+
+def build_fear_greed_gauges(metrics: list[dict[str, Any]]) -> dict[str, Any] | None:
+    items: list[dict[str, Any]] = []
+    for metric_name, display_name in FEAR_GREED_METRICS:
+        metric = find_metric(metrics, metric_name)
+        if metric is None:
+            continue
+        score = to_float(metric.get("value"))
+        if score is None:
+            continue
+        bounded_score = max(0.0, min(100.0, score))
+        items.append(
+            {
+                "name": display_name,
+                "metric_id": metric.get("id"),
+                "metric_name": metric.get("name"),
+                "score": round(bounded_score, 1),
+                "label": fear_greed_label(bounded_score),
+                "value_label": metric.get("display_value"),
+            }
+        )
+    if not items:
+        return None
+    return {
+        "comment": "0에 가까울수록 공포, 100에 가까울수록 탐욕이 강한 구간입니다.",
+        "items": items,
     }
 
 
@@ -239,4 +284,7 @@ def build_market_gauges(metrics: list[dict[str, Any]]) -> dict[str, Any]:
     recession = build_recession_signals(metrics)
     if recession:
         gauges["recession"] = recession
+    fear_greed = build_fear_greed_gauges(metrics)
+    if fear_greed:
+        gauges["fear_greed"] = fear_greed
     return gauges

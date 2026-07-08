@@ -2587,6 +2587,9 @@
       background: var(--panel);
       box-shadow: var(--shadow);
     }
+    .fear-greed-card {
+      grid-column: 1 / -1;
+    }
     .gauge-card-head {
       display: flex;
       justify-content: space-between;
@@ -2626,6 +2629,57 @@
     }
     .gauge-main-area { min-height: 72px; }
     .gauge-comment { margin: 12px 0 0; font-size: 13px; color: var(--muted); line-height: 1.55; }
+    .fear-greed-gauge-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 13px;
+    }
+    .fear-greed-gauge-item {
+      width: 100%;
+      display: grid;
+      gap: 7px;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+    }
+    .fear-greed-gauge-static { cursor: default; }
+    .fear-greed-gauge-item:focus-visible {
+      outline: 2px solid var(--text);
+      outline-offset: 4px;
+      border-radius: 10px;
+    }
+    .fear-greed-row-head,
+    .fear-greed-row-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-width: 0;
+    }
+    .fear-greed-name {
+      min-width: 0;
+      font-size: 13px;
+      font-weight: 650;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .fear-greed-gauge-item .thermometer-track {
+      height: 8px;
+    }
+    .fear-greed-gauge-item .thermometer-marker {
+      top: -4px;
+      height: 16px;
+    }
+    .fear-greed-row-foot .gauge-component-change {
+      width: auto;
+    }
     .gauge-basis { margin-top: 12px; font-size: 12px; }
     .gauge-basis-title {
       display: block;
@@ -2894,6 +2948,7 @@
         previousChangePct: "전기 변화율",
         marketThermometer: "시장 온도계",
         recessionSignals: "경기침체 시그널",
+        fearGreedIndex: "공포탐욕지수",
         thermometerBasis: "근거 지표",
         percentile10y: "10년 백분위",
         fullRange: "전체 기간 범위",
@@ -2984,6 +3039,7 @@
         tooltipChange: "Change",
         marketThermometer: "Market Thermometer",
         recessionSignals: "Recession Signals",
+        fearGreedIndex: "Fear & Greed",
         thermometerBasis: "Basis indicators",
         percentile10y: "10y percentile",
         fullRange: "All-time range",
@@ -4323,6 +4379,32 @@
       return `<li><span class="${cls} signal-chip-static" title="${title}">${inner}</span></li>`;
     }
 
+    function clampGaugeScore(value) {
+      const score = Number(value);
+      if (!Number.isFinite(score)) return 0;
+      return Math.max(0, Math.min(100, score));
+    }
+
+    function fearGreedGaugeMarkup(item) {
+      const score = clampGaugeScore(item.score);
+      const label = `${score.toFixed(score % 1 === 0 ? 0 : 1)} · ${item.label || ""}`;
+      const inner = `<span class="fear-greed-row-head">
+          <span class="fear-greed-name">${escapeHtml(item.name || "")}</span>
+          <span class="thermometer-score ${thermometerClass(score)}">${escapeHtml(label)}</span>
+        </span>
+        <span class="thermometer-track" aria-hidden="true">
+          <span class="thermometer-marker" style="left: ${score}%"></span>
+        </span>
+        <span class="fear-greed-row-foot">
+          <span class="gauge-component-value">${escapeHtml(item.value_label || "")}</span>
+          ${gaugeMetricChangeMarkup(item.metric_id)}
+        </span>`;
+      if (item.metric_id) {
+        return `<li><button type="button" class="fear-greed-gauge-item" data-briefing-metric="${escapeHtml(item.metric_id)}">${inner}</button></li>`;
+      }
+      return `<li><span class="fear-greed-gauge-item fear-greed-gauge-static">${inner}</span></li>`;
+    }
+
     function gaugeBasisMarkup(items, mapper, className = "") {
       if (!items || !items.length) return "";
       const listClass = className ? `gauge-component-list ${className}` : "gauge-component-list";
@@ -4336,7 +4418,8 @@
       const gauges = DASHBOARD_DATA.market_gauges || {};
       const thermo = gauges.thermometer;
       const recession = gauges.recession;
-      if (!thermo && !recession) return "";
+      const fearGreed = gauges.fear_greed;
+      if (!thermo && !recession && !fearGreed) return "";
       const thermoHtml = thermo ? `<div class="gauge-card thermometer-card">
         <div class="gauge-card-head">
           <h3>${escapeHtml(t("marketThermometer"))}</h3>
@@ -4359,7 +4442,16 @@
         </div>
         ${gaugeBasisMarkup(recession.signals || [], signalChipMarkup, "recession-signal-list")}
       </div>` : "";
-      return `<section class="market-gauges">${thermoHtml}${recessionHtml}</section>`;
+      const fearGreedHtml = fearGreed?.items?.length ? `<div class="gauge-card fear-greed-card">
+        <div class="gauge-card-head">
+          <h3>${escapeHtml(t("fearGreedIndex"))}</h3>
+        </div>
+        <div class="gauge-main-area fear-greed-main-area">
+          <ul class="fear-greed-gauge-list">${fearGreed.items.map(fearGreedGaugeMarkup).join("")}</ul>
+          <p class="gauge-comment">${escapeHtml(fearGreed.comment || "")}</p>
+        </div>
+      </div>` : "";
+      return `<section class="market-gauges">${thermoHtml}${recessionHtml}${fearGreedHtml}</section>`;
     }
 
     let longHistoryPromise = null;
