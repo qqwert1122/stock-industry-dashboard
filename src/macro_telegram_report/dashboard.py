@@ -33,6 +33,16 @@ from .market_valuation import (
     fetch_krx_valuation_series,
     fetch_multpl_series,
 )
+from .market_sentiment import (
+    KRX_API_BASE,
+    KRX_SOURCE_URL,
+    build_korea_fear_greed_score,
+    collect_market_snapshot,
+    fetch_cnn_fear_greed,
+    fetch_vkospi_points,
+    merge_existing_and_incoming,
+    metric_full_points,
+)
 from .utils import add_months, fmt_number, fmt_pct, fmt_signed, month_key, pct_change, to_float
 from .wsts import find_wsts_xlsx_url, parse_wsts_sheet
 
@@ -1532,6 +1542,35 @@ def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -
                         note=str(exc),
                     )
                 )
+
+    before = len(metrics)
+    try:
+        source_metrics = collect_market_sentiment_metrics(config, session, now.date(), metrics)
+        metrics.extend(source_metrics)
+        ok_count = sum(1 for item in source_metrics if item.get("status") == "ok")
+        source_status.append(
+            {
+                "name": "시장 심리",
+                "status": "ok" if ok_count else "partial",
+                "message": f"{ok_count}/{len(source_metrics)}개 지표 자동 수집",
+            }
+        )
+    except Exception as exc:  # noqa: BLE001 - sentiment failure should not block the dashboard.
+        source_status.append({"name": "시장 심리", "status": "error", "message": str(exc)})
+        if len(metrics) == before:
+            metrics.append(
+                make_metric(
+                    industry="매크로",
+                    name="시장 심리 수집 상태",
+                    source="시장 심리",
+                    source_url="",
+                    frequency="",
+                    automation="부분 자동화 가능",
+                    status="error",
+                    note=str(exc),
+                    group="공포탐욕",
+                )
+            )
 
     metrics.extend(collect_reference_metrics(config))
     metrics = visible_dashboard_metrics(metrics)
@@ -4209,6 +4248,289 @@ def krx_valuation_meaning(prefix: str, field_name: str) -> str:
             "1.3 이상은 고평가 구간으로 통했습니다."
         )
     return f"{prefix} 전체의 배당수익률입니다. 높을수록 배당 대비 주가가 싼 상태라는 뜻입니다."
+
+
+def collect_market_sentiment_metrics(
+    config: dict[str, Any],
+    session: requests.Session,
+    today: date,
+    current_metrics: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    sentiment_config = config.get("market_sentiment", {})
+    if not sentiment_config.get("enabled", True):
+        return []
+
+    metrics: list[dict[str, Any]] = []
+    store = attach_history_store(config)
+    metrics.extend(collect_cnn_fear_greed_metric(config, session, today))
+    try:
+        metrics.extend(collect_korea_fear_greed_metrics(config, session, today, current_metrics, store))
+    except Exception as exc:  # noqa: BLE001 - keep CNN sentiment visible if KRX has a temporary issue.
+        for name, meaning in [
+            ("코스피 공포탐욕지수", korea_fear_greed_meaning("코스피")),
+            ("코스닥 공포탐욕지수", korea_fear_greed_meaning("코스닥")),
+            ("VKOSPI", vkospi_meaning()),
+        ]:
+            metrics.append(
+                make_metric(
+                    industry="매크로",
+                    name=name,
+                    source="KRX Open API",
+                    source_url=KRX_SOURCE_URL,
+                    frequency="일간",
+                    automation="무료 공식 API 자동 수집",
+                    status="error",
+                    note=str(exc),
+                    group="공포탐욕",
+                    meaning=meaning,
+                )
+            )
+    return metrics
+
+
+def collect_cnn_fear_greed_metric(
+    config: dict[str, Any],
+    session: requests.Session,
+    today: date,
+) -> list[dict[str, Any]]:
+    sentiment_config = config.get("market_sentiment", {})
+    cnn_config = sentiment_config.get("cnn", {})
+    if not cnn_config.get("enabled", True):
+        return []
+
+    history_key = "cnn-fear-greed"
+    cached_last = cached_history_last_date(config, history_key)
+    if cached_last is None:
+        start = parse_iso_date(cnn_config.get("backfill_start")) or date(2021, 2, 1)
+    else:
+        start = max(date(2021, 2, 1), cached_last - timedelta(days=45))
+    source_url = str(cnn_config.get("source_url") or "https://www.cnn.com/markets/fear-and-greed")
+    try:
+        points, _payload = fetch_cnn_fear_greed(session, start_date=start)
+        if not points:
+            raise ValueError("CNN 공포탐욕 관측값 없음")
+        latest_date, latest_value = points[-1]
+        previous_value = points[-2][1] if len(points) > 1 else None
+        return [
+            make_metric(
+                industry="매크로",
+                name="미국 CNN 공포탐욕지수",
+                source="CNN Fear & Greed Index",
+                source_url=source_url,
+                frequency="일간",
+                automation="공개 JSON 자동 수집",
+                status="ok",
+                value=latest_value,
+                unit="점",
+                observed_at=latest_date.isoformat(),
+                previous_value=previous_value,
+                yoy_value=find_yoy_value(points, latest_date),
+                history=points,
+                group="공포탐욕",
+                meaning=(
+                    "CNN이 미국 주식시장의 여러 심리 지표를 합산해 발표하는 공포탐욕지수입니다. "
+                    "0에 가까우면 공포, 100에 가까우면 탐욕이 강한 구간입니다."
+                ),
+                history_key=history_key,
+            )
+        ]
+    except Exception as exc:  # noqa: BLE001
+        return [
+            make_metric(
+                industry="매크로",
+                name="미국 CNN 공포탐욕지수",
+                source="CNN Fear & Greed Index",
+                source_url=source_url,
+                frequency="일간",
+                automation="공개 JSON 자동 수집",
+                status="error",
+                note=str(exc),
+                group="공포탐욕",
+                meaning=(
+                    "CNN이 미국 주식시장의 여러 심리 지표를 합산해 발표하는 공포탐욕지수입니다. "
+                    "0에 가까우면 공포, 100에 가까우면 탐욕이 강한 구간입니다."
+                ),
+            )
+        ]
+
+
+def collect_korea_fear_greed_metrics(
+    config: dict[str, Any],
+    session: requests.Session,
+    today: date,
+    current_metrics: list[dict[str, Any]],
+    store: HistoryStore | None,
+) -> list[dict[str, Any]]:
+    sentiment_config = config.get("market_sentiment", {})
+    korea_config = sentiment_config.get("korea", {})
+    if not korea_config.get("enabled", True):
+        return []
+
+    source_url = str(korea_config.get("source_url") or KRX_SOURCE_URL)
+    auth_key = os.getenv("KRX_OPEN_API_KEY", "").strip() or os.getenv("KRX_API_KEY", "").strip()
+    if not auth_key:
+        return [
+            make_metric(
+                industry="매크로",
+                name=name,
+                source="KRX Open API",
+                source_url=source_url,
+                frequency="일간",
+                automation="무료 공식 API 자동 수집",
+                status="needs_key",
+                note="GitHub Secrets에 KRX_OPEN_API_KEY 등록 필요",
+                group="공포탐욕",
+                meaning=meaning,
+            )
+            for name, meaning in [
+                ("코스피 공포탐욕지수", korea_fear_greed_meaning("코스피")),
+                ("코스닥 공포탐욕지수", korea_fear_greed_meaning("코스닥")),
+                ("VKOSPI", vkospi_meaning()),
+            ]
+        ]
+
+    history_config = config.get("history", {}) or {}
+    history_dir = str(history_config.get("dir") or "data/history")
+    base_url = str(korea_config.get("krx_api_base") or KRX_API_BASE)
+    lookback_days = int(korea_config.get("lookback_calendar_days") or 430)
+    keep_days = int(korea_config.get("keep_calendar_days") or 430)
+    max_fetch = int(korea_config.get("max_backfill_days_per_run") or 8)
+    high_low_window_days = int(korea_config.get("high_low_window_days") or 370)
+    min_high_low_points = int(korea_config.get("min_high_low_points") or 120)
+
+    metrics: list[dict[str, Any]] = []
+    snapshots: dict[str, dict[str, Any]] = {}
+    for market in ("KOSPI", "KOSDAQ"):
+        snapshots[market] = collect_market_snapshot(
+            session,
+            auth_key=auth_key,
+            base_url=base_url,
+            history_dir=history_dir,
+            market=market,
+            today=today,
+            lookback_calendar_days=lookback_days,
+            max_fetch_days=max_fetch,
+            keep_calendar_days=keep_days,
+        )
+
+    vkospi_key = "krx-vkospi"
+    vkospi_incoming = fetch_vkospi_points(
+        session,
+        auth_key=auth_key,
+        base_url=base_url,
+        store=store,
+        today=today,
+        history_key=vkospi_key,
+        lookback_calendar_days=lookback_days,
+        max_fetch_days=max_fetch,
+    )
+    vkospi_points = merge_existing_and_incoming(store, vkospi_key, vkospi_incoming)
+    if vkospi_points:
+        latest_date, latest_value = vkospi_points[-1]
+        previous_value = vkospi_points[-2][1] if len(vkospi_points) > 1 else None
+        metrics.append(
+            make_metric(
+                industry="매크로",
+                name="VKOSPI",
+                source="KRX Open API",
+                source_url=source_url,
+                frequency="일간",
+                automation="무료 공식 API 자동 수집",
+                status="ok",
+                value=latest_value,
+                unit="",
+                observed_at=latest_date.isoformat(),
+                previous_value=previous_value,
+                yoy_value=find_yoy_value(vkospi_points, latest_date),
+                history=vkospi_points,
+                group="공포탐욕",
+                meaning=vkospi_meaning(),
+                history_key=vkospi_key,
+            )
+        )
+
+    metrics_by_history_key = {
+        str(metric.get("history_key") or ""): metric
+        for metric in current_metrics
+        if isinstance(metric, dict) and metric.get("history_key")
+    }
+    index_points = {
+        "KOSPI": metric_full_points(store, metrics_by_history_key.get("equity-^KS11"), "equity-^KS11"),
+        "KOSDAQ": metric_full_points(store, metrics_by_history_key.get("equity-^KQ11"), "equity-^KQ11"),
+    }
+
+    for market, label in (("KOSPI", "코스피"), ("KOSDAQ", "코스닥")):
+        score_data = build_korea_fear_greed_score(
+            market_label=label,
+            index_points=index_points[market],
+            snapshot_document=snapshots[market],
+            vkospi_points=vkospi_points if market == "KOSPI" else None,
+            high_low_window_days=high_low_window_days,
+            min_high_low_points=min_high_low_points,
+        )
+        if score_data is None:
+            metrics.append(
+                make_metric(
+                    industry="매크로",
+                    name=f"{label} 공포탐욕지수",
+                    source="KRX Open API/Yahoo Finance",
+                    source_url=source_url,
+                    frequency="일간",
+                    automation="무료 공식 API 자동 수집",
+                    status="error",
+                    note="계산에 필요한 시장 심리 구성요소가 아직 부족합니다",
+                    group="공포탐욕",
+                    meaning=korea_fear_greed_meaning(label),
+                )
+            )
+            continue
+
+        score_key = f"korea-fear-greed-{market.lower()}"
+        score_points = merge_existing_and_incoming(
+            store,
+            score_key,
+            [(score_data["observed_at"], score_data["score"])],
+        )
+        latest_date, latest_value = score_points[-1]
+        previous_value = score_points[-2][1] if len(score_points) > 1 else None
+        metrics.append(
+            make_metric(
+                industry="매크로",
+                name=f"{label} 공포탐욕지수",
+                source="KRX Open API/Yahoo Finance",
+                source_url=source_url,
+                frequency="일간",
+                automation="무료 공식 API 자동 수집",
+                status="ok",
+                value=latest_value,
+                unit="점",
+                observed_at=latest_date.isoformat(),
+                previous_value=previous_value,
+                yoy_value=find_yoy_value(score_points, latest_date),
+                history=score_points,
+                group="공포탐욕",
+                meaning=korea_fear_greed_meaning(label),
+                history_key=score_key,
+                history_merge="latest",
+            )
+        )
+
+    return metrics
+
+
+def korea_fear_greed_meaning(label: str) -> str:
+    return (
+        f"{label} 시장의 가격 추세, 상승·하락 종목 수, 52주 신고가·신저가, 변동성을 합쳐 "
+        "투자심리가 공포 쪽인지 탐욕 쪽인지 보여줍니다. 0에 가까우면 공포, "
+        "100에 가까우면 탐욕이 강한 구간입니다."
+    )
+
+
+def vkospi_meaning() -> str:
+    return (
+        "VKOSPI는 코스피200 옵션 가격에 반영된 예상 변동성입니다. 숫자가 높아질수록 "
+        "국내 주식시장이 앞으로 크게 흔들릴 수 있다고 보는 투자자가 많다는 뜻입니다."
+    )
 
 
 def collect_reference_metrics(config: dict[str, Any]) -> list[dict[str, Any]]:

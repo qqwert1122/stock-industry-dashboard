@@ -20,7 +20,7 @@
 - 우주: 방산/우주 장비 산업생산, 항공우주 부품 PPI, 글로벌 우주 발사 건수, 한국 항공기/우주선 수출, 쎄트렉아이/Rocket Lab 주가
 - 바이오: 생물학적 제제/체외진단 PPI, FDA 승인 활동, Phase 3 임상 시작, 한국 바이오 의약품 수출, 삼성바이오로직스/Eli Lilly 주가
 - 배터리: 저장 배터리 제조 PPI, 니켈 가격, 한국 축전지 수출, 삼성SDI/Albemarle 주가
-- 매크로: 원/달러 환율, VIX, 미국/유럽/일본/한국/중국/동남아 금리, 코스피/코스닥/나스닥/S&P 500/다우 지수
+- 매크로: 원/달러 환율, VIX/VKOSPI, 미국/유럽/일본/한국/중국/동남아 금리, 코스피/코스닥/나스닥/S&P 500/다우 지수, 미국 CNN 공포탐욕지수, 코스피/코스닥 공포탐욕지수
 
 무료로 안정적인 공식 API가 없는 지표는 대시보드에서 `부분 자동화` 또는 `수작업` 상태로 표시합니다.
 개별 회사채 스프레드는 무료 공식 API로 안정 수집하기 어려워, 현재 MVP는 FRED의 등급별 미국 회사채 OAS로 신용위험 변화를 봅니다.
@@ -78,6 +78,7 @@ industry-dashboard --config config.yaml --out site
 - `NREL_API_KEY`: NLR/NREL Alternative Fuel Stations 무료 API 키
 - `OPENFDA_API_KEY`: openFDA 선택 API 키. 없어도 실행되지만 rate limit이 낮습니다.
 - `KOSIS_API_KEY`: KOSIS OpenAPI 무료 API 키
+- `KRX_OPEN_API_KEY`: KRX Data Marketplace Open API 무료 인증키. VKOSPI, 코스피/코스닥 등락 종목, 52주 신고·신저 계산에 사용합니다.
 - `GEMINI_API_KEY`: 매일 아침 AI 브리핑 생성용 Gemini API 키. GitHub Actions에서만 사용하고 공개 사이트에는 요약문만 배포합니다.
 - `USER_PAGES_DEPLOY_KEY`: 공개 Pages 저장소에 배포하기 위한 SSH deploy key
 
@@ -105,6 +106,7 @@ AI 브리핑은 `docs/industry_narratives.yaml`의 산업별 짧은 내러티브
 - `launch_library.items`: Launch Library 우주 발사 이벤트 지표
 - `afdc.items`: NLR/NREL EV 충전 인프라 지표
 - `kosis.items`: KOSIS 한국 주택/건설 통계 지표
+- `market_sentiment`: CNN 공포탐욕지수와 코스피/코스닥 자체 공포탐욕지수 수집 설정
 - `dashboard.reference_metrics`: 아직 완전 자동화하지 않은 무료/공식 데이터 후보
 
 ## 데이터 저장 구조
@@ -130,6 +132,7 @@ site/
 - DefiLlama Stablecoins: https://defillama.com/stablecoins
 - World Bank Commodity Markets: https://www.worldbank.org/en/research/commodity-markets
 - KOSIS OpenAPI: https://kosis.kr/openapi/
+- KRX Open API: https://openapi.krx.co.kr/
 - SEC EDGAR APIs: https://www.sec.gov/search-filings/edgar-application-programming-interfaces
 - USAspending API: https://api.usaspending.gov/
 - EIA Open Data: https://www.eia.gov/opendata/

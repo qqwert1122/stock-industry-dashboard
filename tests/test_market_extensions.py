@@ -1,6 +1,6 @@
 import json
 import unittest
-from datetime import date, datetime
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
@@ -14,6 +14,12 @@ from macro_telegram_report.dashboard import (
 from macro_telegram_report.history_store import HistoryStore, percentile_stats
 from macro_telegram_report.http_client import parse_retry_after
 from macro_telegram_report.market_gauges import build_market_gauges
+from macro_telegram_report.market_sentiment import (
+    build_korea_fear_greed_score,
+    high_low_counts,
+    high_low_score,
+    parse_cnn_fear_greed_payload,
+)
 from macro_telegram_report.market_valuation import (
     parse_finra_margin_table,
     parse_multpl_table,
@@ -239,6 +245,83 @@ class MarketExtensionsTest(unittest.TestCase):
             parse_finra_margin_table(finra_html),
             [(date(2026, 4, 1), 840.0), (date(2026, 5, 1), 850.123)],
         )
+
+    def test_cnn_fear_greed_payload_parser_includes_current_score(self):
+        first_timestamp = datetime(2026, 7, 6, tzinfo=timezone.utc).timestamp() * 1000
+        current_timestamp = datetime(2026, 7, 7, tzinfo=timezone.utc).timestamp() * 1000
+        payload = {
+            "fear_and_greed": {
+                "score": 43,
+                "timestamp": "2026-07-07T23:59:45+00:00",
+            },
+            "fear_and_greed_historical": {
+                "data": [
+                    {"x": first_timestamp, "y": 40.2},
+                    {"x": current_timestamp, "y": 42.7},
+                ]
+            },
+        }
+
+        points = parse_cnn_fear_greed_payload(payload)
+
+        self.assertEqual(points[-1], (date(2026, 7, 7), 43.0))
+        self.assertEqual(len(points), 2)
+
+    def test_korea_fear_greed_score_uses_breadth_high_low_and_volatility(self):
+        start = date(2026, 1, 1)
+        index_points = [
+            (start + timedelta(days=index), 1000.0 + index)
+            for index in range(150)
+            if (start + timedelta(days=index)).weekday() < 5
+        ]
+        cursor = index_points[-1][0]
+        while len(index_points) < 150:
+            cursor += timedelta(days=1)
+            if cursor.weekday() < 5:
+                index_points.append((cursor, index_points[-1][1] + 1.0))
+
+        snapshot_dates = [index_points[-3][0], index_points[-2][0], index_points[-1][0]]
+        document = {
+            "dates": {
+                snapshot_dates[0].isoformat(): {"A": 10.0, "B": 10.0, "C": 10.0},
+                snapshot_dates[1].isoformat(): {"A": 11.0, "B": 9.0, "C": 10.0},
+                snapshot_dates[2].isoformat(): {"A": 12.0, "B": 8.0, "C": 10.5},
+            },
+            "breadth": {
+                snapshot_dates[2].isoformat(): {
+                    "advancers": 2,
+                    "decliners": 1,
+                    "unchanged": 0,
+                    "total": 3,
+                }
+            },
+        }
+        vkospi_points = [
+            (index_points[-30 + index][0], 30.0 - index * 0.2)
+            for index in range(30)
+        ]
+
+        counts = high_low_counts(
+            document,
+            snapshot_dates[-1],
+            window_days=10,
+            min_points=3,
+        )
+        score = build_korea_fear_greed_score(
+            market_label="코스피",
+            index_points=index_points,
+            snapshot_document=document,
+            vkospi_points=vkospi_points,
+            high_low_window_days=10,
+            min_high_low_points=3,
+        )
+
+        self.assertEqual(counts["new_highs"], 2)
+        self.assertEqual(counts["new_lows"], 1)
+        self.assertAlmostEqual(high_low_score(counts), 66.7)
+        self.assertIsNotNone(score)
+        self.assertGreaterEqual(score["score"], 0)
+        self.assertLessEqual(score["score"], 100)
 
 
 if __name__ == "__main__":

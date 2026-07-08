@@ -16,6 +16,7 @@ HOST_MIN_INTERVALS = {
     "api.stlouisfed.org": 0.6,  # FRED: 120 req/min 제한 대비 절반 수준으로 유지
     "ecos.bok.or.kr": 0.5,
     "data.krx.co.kr": 2.0,  # KRX는 공식 API가 아니므로 보수적으로
+    "data-dbg.krx.co.kr": 0.75,
     "freesis.kofia.or.kr": 2.0,
     "www.multpl.com": 1.0,
     "query1.finance.yahoo.com": 0.5,

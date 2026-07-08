@@ -10,6 +10,22 @@ history:
   display_points: 60        # 카드 소형 차트에 표시할 최근 포인트 수
   long_history_max_points: 480  # 상세 차트용 다운샘플링 상한
 
+market_sentiment:
+  enabled: true
+  cnn:
+    enabled: true
+    backfill_start: 2021-02-01
+    source_url: https://www.cnn.com/markets/fear-and-greed
+  korea:
+    enabled: true
+    source_url: https://openapi.krx.co.kr/
+    krx_api_base: https://data-dbg.krx.co.kr/svc/apis
+    lookback_calendar_days: 430
+    keep_calendar_days: 430
+    max_backfill_days_per_run: 8
+    high_low_window_days: 370
+    min_high_low_points: 120
+
 dashboard:
   title: 산업별 핵심 지표 대시보드
   history_points: 48
