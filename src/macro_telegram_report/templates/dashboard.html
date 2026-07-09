@@ -3475,6 +3475,24 @@
     .detail-reference-dot.max { background: var(--chart-down); }
     .detail-reference-dot.current { background: var(--text); }
     .detail-reference-dot.min { background: var(--chart-up); }
+    .detail-reference-dot.band {
+      position: relative;
+      background: rgba(59, 130, 246, 0.16);
+      border: 1px solid rgba(59, 130, 246, 0.32);
+    }
+    .detail-reference-dot.band::after {
+      content: "";
+      position: absolute;
+      left: 3px;
+      right: 3px;
+      top: 50%;
+      border-top: 2px dashed rgba(59, 130, 246, 0.72);
+      transform: translateY(-50%);
+    }
+    body.theme-dark .detail-reference-dot.band {
+      background: rgba(96, 165, 250, 0.2);
+      border-color: rgba(147, 197, 253, 0.36);
+    }
 
     .detail-meta-strip {
       display: flex;
@@ -8528,13 +8546,6 @@
           data-band-p20="${band.p20}" data-band-p80="${band.p80}"></rect>
         <line x1="${left}" y1="${yFor(band.median).toFixed(1)}" x2="${right}" y2="${yFor(band.median).toFixed(1)}" class="pct-band-median"
           data-band-median="${band.median}"></line>` : "";
-      const bandLegendMarkup = band ? `<div class="detail-chart-legend">
-        <button type="button" class="chart-band-toggle" data-band-toggle aria-pressed="true">
-          <span class="chart-band-swatch" aria-hidden="true"></span>
-          <span class="chart-band-legend-text">${escapeHtml(t("percentileBandLegend"))}</span>
-          <span class="chart-band-switch" aria-hidden="true"></span>
-        </button>
-      </div>` : "";
       const points = displayPoints.map((point, index) => {
         const x = xFor(point, index);
         const y = yFor(point.value);
@@ -8629,7 +8640,6 @@
             ${pointHits}
           </svg>
         </div>
-        ${bandLegendMarkup}
         <div class="detail-chart-tooltip" role="status" aria-live="polite"></div>
       </div>`;
     }
@@ -8888,11 +8898,15 @@
       </span>`;
     }
 
-    function detailReferenceLegend() {
+    function detailReferenceLegend(metric = null) {
+      const bandItem = detailBandStats(metric)
+        ? `<span class="detail-reference-item"><span class="detail-reference-dot band" aria-hidden="true"></span>${escapeHtml(t("percentileBandLegend"))}</span>`
+        : "";
       return `<div class="detail-reference-legend" aria-label="${escapeHtml(t("chart"))}">
         <span class="detail-reference-item"><span class="detail-reference-dot max" aria-hidden="true"></span>${escapeHtml(t("detailReferenceMax"))}</span>
         <span class="detail-reference-item"><span class="detail-reference-dot current" aria-hidden="true"></span>${escapeHtml(t("detailReferenceCurrent"))}</span>
         <span class="detail-reference-item"><span class="detail-reference-dot min" aria-hidden="true"></span>${escapeHtml(t("detailReferenceMin"))}</span>
+        ${bandItem}
       </div>`;
     }
 
@@ -8907,7 +8921,7 @@
             ${detailDelta(t("yoy"), metric.yoy_pct_label, metric.yoy_pct)}
           </div>
         </div>
-        ${detailReferenceLegend()}
+        ${detailReferenceLegend(metric)}
       </div>`;
     }
 
@@ -9521,7 +9535,7 @@
           <div class="detail-chart-section">
             <div class="detail-chart-host" data-chart-host="${escapeHtml(metric.id)}">${detailChartForMetric(metric)}</div>
             <div class="detail-period-row">
-              ${detailReferenceLegend()}
+              ${detailReferenceLegend(metric)}
               <div class="detail-range-toggle" data-range-toggle="${escapeHtml(metric.id)}" hidden>
                 <button type="button" class="is-active" data-range="recent">${escapeHtml(t("rangeRecent"))}</button>
                 <button type="button" data-range="full">${escapeHtml(t("rangeFull"))}</button>
