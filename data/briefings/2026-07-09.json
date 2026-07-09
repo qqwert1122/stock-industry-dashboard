@@ -18963,6 +18963,2743 @@
         "yen_carry_risk": false,
         "summary": ""
       }
+    },
+    {
+      "status": "ok",
+      "status_message": "Gemini 요약",
+      "model": "gemini-3.1-flash-lite",
+      "generated_label": "2026-07-09 23:53 KST",
+      "headline": "미국 반도체 반등과 한국 옵션만기일의 긴장감",
+      "summary": "미국 증시에서 반도체 대표주들이 강한 반등을 보였으나, 한국 시장은 옵션만기일을 맞아 투자심리가 극도로 위축된 상태입니다. 오늘 발표된 지표들은 반도체 업황에 대한 기대가 여전함을 보여주지만, 국내 수급은 관망세가 짙어 변동성에 주의해야 합니다.",
+      "bullets": [
+        {
+          "title": "반도체 반등",
+          "body": "반도체 대표주가(주식 가격)인 Micron(MU), AMD(AMD), Applied Materials(AMAT)가 6%대 상승하며 AI 관련 기대감이 다시 살아나고 있습니다.",
+          "metric_ids": [
+            "df08e35f00ed",
+            "75ff1ab8f86f",
+            "64a572db5684"
+          ]
+        },
+        {
+          "title": "극심한 투자 공포",
+          "body": "매크로 산업의 코스피 공포탐욕지수가 전일 대비 51% 급락하며 시장 참여자들의 심리가 매우 얼어붙어 있음을 나타냅니다.",
+          "metric_ids": [
+            "8be8a0fac107"
+          ]
+        },
+        {
+          "title": "수급 관망세",
+          "body": "매크로 산업의 한국 투자자예탁금이 전월 대비 7.6% 감소하며 증시 대기 자금이 줄어들어, 오늘 예정된 한국 옵션만기일의 변동성 확대 가능성을 시사합니다.",
+          "metric_ids": [
+            "3d068a9d3ea3"
+          ]
+        },
+        {
+          "title": "내일 한국장 함의",
+          "body": "미국 반도체주의 강세가 국내 반도체주에 긍정적인 영향을 줄 수 있으나, 옵션만기일 수급 불확실성이 상존하므로 장중 변동성에 대비해야 합니다.",
+          "metric_ids": [
+            "df08e35f00ed",
+            "3d068a9d3ea3"
+          ]
+        }
+      ],
+      "top_movers": [
+        {
+          "id": "8be8a0fac107",
+          "industry": "매크로",
+          "group": "공포탐욕",
+          "kind": "공포탐욕",
+          "name": "코스피 공포탐욕지수",
+          "value": "27.80 점",
+          "observed_label": "2026.07.08",
+          "change_pct": -50.970017636684304,
+          "change_pct_label": "-51.0%",
+          "yoy_pct": null,
+          "yoy_pct_label": "n/a",
+          "meaning": "코스피 시장의 가격 추세, 상승·하락 종목 수, 52주 신고가·신저가, 변동성을 합쳐 투자심리가 공포 쪽인지 탐욕 쪽인지 보여줍니다. 0에 가까우면 공포, 100에 가까우면 탐욕이 강한 구간입니다."
+        },
+        {
+          "id": "3d068a9d3ea3",
+          "industry": "매크로",
+          "group": "수급 과열",
+          "kind": "수급 과열",
+          "name": "한국 투자자예탁금",
+          "value": "121.6 조원",
+          "observed_label": "2026.06",
+          "change_pct": -7.562866124109291,
+          "change_pct_label": "-7.6%",
+          "yoy_pct": 76.35162801237729,
+          "yoy_pct_label": "+76.4%",
+          "meaning": "증권계좌에 대기 중인 현금입니다. 늘어나면 증시 대기 자금이 풍부하다는 뜻으로 수급 여력을 보여줍니다."
+        },
+        {
+          "id": "75ff1ab8f86f",
+          "industry": "반도체",
+          "group": "대표주가",
+          "kind": "대표주가(주식 가격)",
+          "name": "AMD(AMD)",
+          "value": "$552.8",
+          "observed_label": "2026.07.09",
+          "change_pct": 6.849501223569687,
+          "change_pct_label": "+6.8%",
+          "yoy_pct": 239.94340465297822,
+          "yoy_pct_label": "+239.9%",
+          "meaning": "AMD 주가는 AI GPU와 CPU 시장에서 경쟁력이 얼마나 커질지에 대한 시장 기대를 보여줍니다."
+        },
+        {
+          "id": "64a572db5684",
+          "industry": "반도체",
+          "group": "대표주가",
+          "kind": "대표주가(주식 가격)",
+          "name": "Applied Materials(AMAT)",
+          "value": "$609.0",
+          "observed_label": "2026.07.09",
+          "change_pct": 6.750220817813313,
+          "change_pct_label": "+6.8%",
+          "yoy_pct": 278.83181797429603,
+          "yoy_pct_label": "+278.8%",
+          "meaning": "Applied Materials 주가는 반도체 공정 장비 투자 흐름에 대한 시장 기대를 보여줍니다."
+        },
+        {
+          "id": "df08e35f00ed",
+          "industry": "반도체",
+          "group": "대표주가",
+          "kind": "대표주가(주식 가격)",
+          "name": "Micron(MU)",
+          "value": "$1,011.2",
+          "observed_label": "2026.07.09",
+          "change_pct": 6.573566180398904,
+          "change_pct_label": "+6.6%",
+          "yoy_pct": 749.6512601963257,
+          "yoy_pct_label": "+749.7%",
+          "meaning": "Micron 주가는 글로벌 메모리 반도체 가격과 수요 회복 기대를 보여줍니다."
+        }
+      ],
+      "improving_industries": [
+        {
+          "industry": "데이터인프라",
+          "score": 111.73,
+          "drivers": [
+            {
+              "id": "07d2875ecb6d",
+              "industry": "데이터인프라",
+              "group": "CAPEX",
+              "kind": "설비투자(CAPEX)",
+              "name": "CoreWeave",
+              "value": "$7.70B",
+              "observed_label": "2026.03.31",
+              "change_pct": 446.90831556503196,
+              "change_pct_label": "+446.9%",
+              "yoy_pct": 446.90831556503196,
+              "yoy_pct_label": "+446.9%",
+              "meaning": "CoreWeave의 CAPEX는 데이터센터, 서버, AI 인프라 같은 장기 설비투자 규모를 보여줍니다. 투자가 커질수록 클라우드와 AI 인프라 수요가 강하다는 신호로 볼 수 있습니다."
+            },
+            {
+              "id": "6eeb89e9064b",
+              "industry": "데이터인프라",
+              "group": "CAPEX",
+              "kind": "설비투자(CAPEX)",
+              "name": "Oracle",
+              "value": "$8.50B",
+              "observed_label": "2025.08.31",
+              "change_pct": 269.1706469821972,
+              "change_pct_label": "+269.2%",
+              "yoy_pct": 269.1706469821972,
+              "yoy_pct_label": "+269.2%",
+              "meaning": "Oracle의 CAPEX는 데이터센터, 서버, AI 인프라 같은 장기 설비투자 규모를 보여줍니다. 투자가 커질수록 클라우드와 AI 인프라 수요가 강하다는 신호로 볼 수 있습니다."
+            }
+          ]
+        },
+        {
+          "industry": "방산",
+          "score": 60.96,
+          "drivers": [
+            {
+              "id": "a18e2f273c59",
+              "industry": "방산",
+              "group": "수출",
+              "kind": "수출 지표",
+              "name": "한국 수출 무기류/탄약(9306)",
+              "value": "$0.10B",
+              "observed_label": "2026.05",
+              "change_pct": 447.62120260448563,
+              "change_pct_label": "+447.6%",
+              "yoy_pct": -41.123424869418116,
+              "yoy_pct_label": "-41.1%",
+              "meaning": "무기류/탄약 수출은 해당 품목의 대외 수요와 가격/물량 사이클을 확인하는 지표입니다."
+            },
+            {
+              "id": "29989cc3085a",
+              "industry": "방산",
+              "group": "국방 계약",
+              "kind": "산업 활동 지표",
+              "name": "미국 국방부 계약 의무액",
+              "value": "$0.02B",
+              "observed_label": "2026.06",
+              "change_pct": -45.52971385582344,
+              "change_pct_label": "-45.5%",
+              "yoy_pct": -99.95673053525233,
+              "yoy_pct_label": "-100.0%",
+              "meaning": "미국 국방부가 실제로 계약에 배정한 금액입니다. 방산 예산이 어느 분야로 흘러가는지 볼 때 중요합니다."
+            }
+          ]
+        },
+        {
+          "industry": "바이오",
+          "score": 14.64,
+          "drivers": [
+            {
+              "id": "338fa22c1a4c",
+              "industry": "바이오",
+              "group": "승인 이벤트",
+              "kind": "산업 활동 지표",
+              "name": "FDA 의약품 승인 활동",
+              "value": "613.0 건",
+              "observed_label": "2026.06",
+              "change_pct": 133.96946564885494,
+              "change_pct_label": "+134.0%",
+              "yoy_pct": 59.22077922077922,
+              "yoy_pct_label": "+59.2%",
+              "meaning": "FDA 의약품 승인 관련 기록 수로 바이오 규제 이벤트와 신약 모멘텀을 확인합니다."
+            },
+            {
+              "id": "186525551670",
+              "industry": "바이오",
+              "group": "수출",
+              "kind": "수출 지표",
+              "name": "한국 수출 백신/면역제품(3002)",
+              "value": "$0.71B",
+              "observed_label": "2026.05",
+              "change_pct": -13.864483533632988,
+              "change_pct_label": "-13.9%",
+              "yoy_pct": 10.215202783460375,
+              "yoy_pct_label": "+10.2%",
+              "meaning": "백신/면역제품 수출은 해당 품목의 대외 수요와 가격/물량 사이클을 확인하는 지표입니다."
+            }
+          ]
+        }
+      ],
+      "slowing_industries": [
+        {
+          "industry": "방산",
+          "score": -29.77,
+          "drivers": [
+            {
+              "id": "29989cc3085a",
+              "industry": "방산",
+              "group": "국방 계약",
+              "kind": "산업 활동 지표",
+              "name": "미국 국방부 계약 의무액",
+              "value": "$0.02B",
+              "observed_label": "2026.06",
+              "change_pct": -45.52971385582344,
+              "change_pct_label": "-45.5%",
+              "yoy_pct": -99.95673053525233,
+              "yoy_pct_label": "-100.0%",
+              "meaning": "미국 국방부가 실제로 계약에 배정한 금액입니다. 방산 예산이 어느 분야로 흘러가는지 볼 때 중요합니다."
+            },
+            {
+              "id": "6c07660204fb",
+              "industry": "방산",
+              "group": "국방 계약",
+              "kind": "산업 활동 지표",
+              "name": "미국 방산 제조 계약 의무액",
+              "value": "$0.67B",
+              "observed_label": "2026.06",
+              "change_pct": 36.66998166695292,
+              "change_pct_label": "+36.7%",
+              "yoy_pct": -89.96767922389613,
+              "yoy_pct_label": "-90.0%",
+              "meaning": "미국 연방 방산/항공우주 제조업 계약 의무액으로 방산 제조 밸류체인의 수주 모멘텀을 확인합니다."
+            }
+          ]
+        },
+        {
+          "industry": "스테이블코인",
+          "score": -14.38,
+          "drivers": [
+            {
+              "id": "f1f724a230f7",
+              "industry": "스테이블코인",
+              "group": "대표주가",
+              "kind": "대표주가(주식 가격)",
+              "name": "Circle(CRCL)",
+              "value": "$62.15",
+              "observed_label": "2026.07.09",
+              "change_pct": -3.0045251228806413,
+              "change_pct_label": "-3.0%",
+              "yoy_pct": -66.13720629305305,
+              "yoy_pct_label": "-66.1%",
+              "meaning": "Circle 주가는 USDC 유통량과 스테이블코인 결제 시장 성장 기대를 보여줍니다."
+            },
+            {
+              "id": "3054b46e95f2",
+              "industry": "스테이블코인",
+              "group": "대표주가",
+              "kind": "대표주가(주식 가격)",
+              "name": "Coinbase(COIN)",
+              "value": "$158.3",
+              "observed_label": "2026.07.09",
+              "change_pct": -0.6714403364210586,
+              "change_pct_label": "-0.7%",
+              "yoy_pct": -49.69970699478906,
+              "yoy_pct_label": "-49.7%",
+              "meaning": "Coinbase 주가는 암호자산 거래와 스테이블코인 관련 수익 기대를 보여줍니다."
+            }
+          ]
+        },
+        {
+          "industry": "은행/금융",
+          "score": -5.28,
+          "drivers": [
+            {
+              "id": "98de535a0a23",
+              "industry": "은행/금융",
+              "group": "대표주가",
+              "kind": "대표주가(주식 가격)",
+              "name": "KB금융(105560.KS)",
+              "value": "171,400원",
+              "observed_label": "2026.07.09",
+              "change_pct": 0.23391812865496409,
+              "change_pct_label": "+0.2%",
+              "yoy_pct": 54.55365193868349,
+              "yoy_pct_label": "+54.6%",
+              "meaning": "KB금융 주가는 국내 금리, 대출 성장, 은행 건전성에 대한 시장 평가를 보여줍니다."
+            },
+            {
+              "id": "e571cc471e26",
+              "industry": "은행/금융",
+              "group": "신용 스프레드",
+              "kind": "금융여건 지표",
+              "name": "한국 회사채 AA- 3Y-국고채 3Y 스프레드",
+              "value": "0.70%",
+              "observed_label": "2026.07.09",
+              "change_pct": 0.2865329512893977,
+              "change_pct_label": "+0.3%",
+              "yoy_pct": 42.276422764227625,
+              "yoy_pct_label": "+42.3%",
+              "meaning": "한국 회사채 AA- 3년 금리와 국고채 3년 금리의 차이로 국내 우량 기업 신용위험과 자금조달 여건을 확인합니다."
+            }
+          ]
+        }
+      ],
+      "equity_leads": [
+        {
+          "industry": "데이터인프라",
+          "equity_score": -2.88,
+          "fundamental_score": 149.94,
+          "gap": -152.82,
+          "drivers": [
+            {
+              "id": "978b7b09e6c6",
+              "industry": "데이터인프라",
+              "group": "대표주가",
+              "kind": "대표주가(주식 가격)",
+              "name": "NAVER(035420.KS)",
+              "value": "184,400원",
+              "observed_label": "2026.07.09",
+              "change_pct": -4.307213284898803,
+              "change_pct_label": "-4.3%",
+              "yoy_pct": -21.53191489361702,
+              "yoy_pct_label": "-21.5%",
+              "meaning": "NAVER 주가는 국내 클라우드, AI, 인터넷 서비스 성장에 대한 시장 기대를 보여줍니다."
+            },
+            {
+              "id": "07d2875ecb6d",
+              "industry": "데이터인프라",
+              "group": "CAPEX",
+              "kind": "설비투자(CAPEX)",
+              "name": "CoreWeave",
+              "value": "$7.70B",
+              "observed_label": "2026.03.31",
+              "change_pct": 446.90831556503196,
+              "change_pct_label": "+446.9%",
+              "yoy_pct": 446.90831556503196,
+              "yoy_pct_label": "+446.9%",
+              "meaning": "CoreWeave의 CAPEX는 데이터센터, 서버, AI 인프라 같은 장기 설비투자 규모를 보여줍니다. 투자가 커질수록 클라우드와 AI 인프라 수요가 강하다는 신호로 볼 수 있습니다."
+            }
+          ]
+        },
+        {
+          "industry": "방산",
+          "equity_score": -5.04,
+          "fundamental_score": 87.37,
+          "gap": -92.41,
+          "drivers": [
+            {
+              "id": "f1309b1d96bf",
+              "industry": "방산",
+              "group": "대표주가",
+              "kind": "대표주가(주식 가격)",
+              "name": "한화에어로스페이스(012450.KS)",
+              "value": "953,000원",
+              "observed_label": "2026.07.09",
+              "change_pct": -8.453410182516807,
+              "change_pct_label": "-8.5%",
+              "yoy_pct": -4.3172690763052195,
+              "yoy_pct_label": "-4.3%",
+              "meaning": "한화에어로스페이스 주가는 방산 수주와 항공우주 성장 기대를 보여줍니다."
+            },
+            {
+              "id": "a18e2f273c59",
+              "industry": "방산",
+              "group": "수출",
+              "kind": "수출 지표",
+              "name": "한국 수출 무기류/탄약(9306)",
+              "value": "$0.10B",
+              "observed_label": "2026.05",
+              "change_pct": 447.62120260448563,
+              "change_pct_label": "+447.6%",
+              "yoy_pct": -41.123424869418116,
+              "yoy_pct_label": "-41.1%",
+              "meaning": "무기류/탄약 수출은 해당 품목의 대외 수요와 가격/물량 사이클을 확인하는 지표입니다."
+            }
+          ]
+        },
+        {
+          "industry": "바이오",
+          "equity_score": -1.44,
+          "fundamental_score": 20.0,
+          "gap": -21.44,
+          "drivers": [
+            {
+              "id": "95cabb4c530d",
+              "industry": "바이오",
+              "group": "대표주가",
+              "kind": "대표주가(주식 가격)",
+              "name": "삼성바이오로직스(207940.KS)",
+              "value": "1,325,000원",
+              "observed_label": "2026.07.09",
+              "change_pct": -2.7879677182685247,
+              "change_pct_label": "-2.8%",
+              "yoy_pct": -19.23444617345378,
+              "yoy_pct_label": "-19.2%",
+              "meaning": "삼성바이오로직스 주가는 바이오의약품 위탁생산 수요와 증설 기대를 보여줍니다."
+            },
+            {
+              "id": "338fa22c1a4c",
+              "industry": "바이오",
+              "group": "승인 이벤트",
+              "kind": "산업 활동 지표",
+              "name": "FDA 의약품 승인 활동",
+              "value": "613.0 건",
+              "observed_label": "2026.06",
+              "change_pct": 133.96946564885494,
+              "change_pct_label": "+134.0%",
+              "yoy_pct": 59.22077922077922,
+              "yoy_pct_label": "+59.2%",
+              "meaning": "FDA 의약품 승인 관련 기록 수로 바이오 규제 이벤트와 신약 모멘텀을 확인합니다."
+            }
+          ]
+        }
+      ],
+      "source_issues": [],
+      "gemini_call_attempted": true,
+      "id": "2026-07-09-morning-01e704ff63",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-07-09T23:53:58+09:00",
+      "low_signal": false,
+      "session_context": {
+        "key": "us",
+        "label": "미국장",
+        "benchmark_names": [
+          "S&P 500",
+          "S&P500 선물",
+          "나스닥",
+          "나스닥100 선물"
+        ],
+        "prompt_focus": "미국 지수, 환율, 미국 대표주 흐름을 중심으로 쓰고, 내일 한국장에 줄 함의로 마무리한다."
+      },
+      "gate_reason": "일일 전체 빌드",
+      "metric_snapshot": {
+        "5ed091c07283": {
+          "id": "5ed091c07283",
+          "name": "Worldwide",
+          "industry": "반도체",
+          "group": "판매액(WSTS)",
+          "value": 113.676716,
+          "display_value": "$113.7B",
+          "observed_at": "2026-04-01",
+          "change_pct": -2.17957988443932
+        },
+        "b50f066a3a3d": {
+          "id": "b50f066a3a3d",
+          "name": "Asia Pacific",
+          "industry": "반도체",
+          "group": "판매액(WSTS)",
+          "value": 60.958983,
+          "display_value": "$60.96B",
+          "observed_at": "2026-04-01",
+          "change_pct": -5.658873571681545
+        },
+        "d6eb2451b967": {
+          "id": "d6eb2451b967",
+          "name": "Americas",
+          "industry": "반도체",
+          "group": "판매액(WSTS)",
+          "value": 41.534424,
+          "display_value": "$41.53B",
+          "observed_at": "2026-04-01",
+          "change_pct": 2.3119848642671803
+        },
+        "0ef16ba522cb": {
+          "id": "0ef16ba522cb",
+          "name": "3MMA - Worldwide",
+          "industry": "반도체",
+          "group": "판매액(WSTS)",
+          "value": 110.480507,
+          "display_value": "$110.5B",
+          "observed_at": "2026-04-01",
+          "change_pct": 11.018713882908182
+        },
+        "773c1f9eb68f": {
+          "id": "773c1f9eb68f",
+          "name": "3MMA - Asia Pacific",
+          "industry": "반도체",
+          "group": "판매액(WSTS)",
+          "value": 60.11243366666666,
+          "display_value": "$60.11B",
+          "observed_at": "2026-04-01",
+          "change_pct": 8.390718795508988
+        },
+        "23b5571ae960": {
+          "id": "23b5571ae960",
+          "name": "3MMA - Americas",
+          "industry": "반도체",
+          "group": "판매액(WSTS)",
+          "value": 39.443344333333336,
+          "display_value": "$39.44B",
+          "observed_at": "2026-04-01",
+          "change_pct": 16.672513272936705
+        },
+        "250a6e71e3ed": {
+          "id": "250a6e71e3ed",
+          "name": "미국 10년 국채금리",
+          "industry": "은행/금융",
+          "group": "금리",
+          "value": 4.55,
+          "display_value": "4.55%",
+          "observed_at": "2026-07-07",
+          "change_pct": 1.5624999999999778
+        },
+        "f976f325a4e0": {
+          "id": "f976f325a4e0",
+          "name": "미국 2년 국채금리",
+          "industry": "은행/금융",
+          "group": "금리",
+          "value": 4.19,
+          "display_value": "4.19%",
+          "observed_at": "2026-07-07",
+          "change_pct": 1.4527845036319764
+        },
+        "2a0fcee01076": {
+          "id": "2a0fcee01076",
+          "name": "미국 10Y-2Y 금리차",
+          "industry": "은행/금융",
+          "group": "스프레드",
+          "value": 0.35,
+          "display_value": "0.35%",
+          "observed_at": "2026-07-08",
+          "change_pct": -2.777777777777779
+        },
+        "2fa967d70ff4": {
+          "id": "2fa967d70ff4",
+          "name": "미국 BAA 회사채-10년 국채 스프레드",
+          "industry": "은행/금융",
+          "group": "신용 스프레드",
+          "value": 1.55,
+          "display_value": "1.55%",
+          "observed_at": "2026-07-07",
+          "change_pct": -0.6410256410256387
+        },
+        "fae76f273ad7": {
+          "id": "fae76f273ad7",
+          "name": "미국 투자등급 회사채 OAS",
+          "industry": "은행/금융",
+          "group": "신용 스프레드",
+          "value": 0.76,
+          "display_value": "0.76%",
+          "observed_at": "2026-07-07",
+          "change_pct": 1.333333333333342
+        },
+        "83ab2e6b48bb": {
+          "id": "83ab2e6b48bb",
+          "name": "미국 BBB 회사채 OAS",
+          "industry": "은행/금융",
+          "group": "신용 스프레드",
+          "value": 0.94,
+          "display_value": "0.94%",
+          "observed_at": "2026-07-07",
+          "change_pct": 0.0
+        },
+        "1dbb497f2b22": {
+          "id": "1dbb497f2b22",
+          "name": "미국 하이일드 회사채 OAS",
+          "industry": "은행/금융",
+          "group": "신용 스프레드",
+          "value": 2.67,
+          "display_value": "2.67%",
+          "observed_at": "2026-07-07",
+          "change_pct": -1.8382352941176516
+        },
+        "690a1db7dd1e": {
+          "id": "690a1db7dd1e",
+          "name": "미국 은행 대출 연체율",
+          "industry": "은행/금융",
+          "group": "은행 건전성",
+          "value": 1.48,
+          "display_value": "1.48%",
+          "observed_at": "2026-01-01",
+          "change_pct": 0.0
+        },
+        "efdf71100d05": {
+          "id": "efdf71100d05",
+          "name": "미국 상업은행 총대출",
+          "industry": "은행/금융",
+          "group": "은행 건전성",
+          "value": 13861.2232,
+          "display_value": "$13,861.2B",
+          "observed_at": "2026-06-24",
+          "change_pct": 0.05923185921266061
+        },
+        "62ba65680a26": {
+          "id": "62ba65680a26",
+          "name": "미국 주택착공",
+          "industry": "건설/부동산",
+          "group": "주택 경기",
+          "value": 1177.0,
+          "display_value": "1,177.0 천건",
+          "observed_at": "2026-05-01",
+          "change_pct": -15.445402298850574
+        },
+        "5ec96607dc33": {
+          "id": "5ec96607dc33",
+          "name": "미국 건축허가",
+          "industry": "건설/부동산",
+          "group": "주택 경기",
+          "value": 1410.0,
+          "display_value": "1,410.0 천건",
+          "observed_at": "2026-05-01",
+          "change_pct": -0.9135628952916419
+        },
+        "8baefc78452a": {
+          "id": "8baefc78452a",
+          "name": "미국 30년 모기지 금리",
+          "industry": "건설/부동산",
+          "group": "금융비용",
+          "value": 6.43,
+          "display_value": "6.43%",
+          "observed_at": "2026-07-02",
+          "change_pct": -0.924499229583986
+        },
+        "4e8001e92aba": {
+          "id": "4e8001e92aba",
+          "name": "미국 주택가격지수",
+          "industry": "건설/부동산",
+          "group": "주택 경기",
+          "value": 330.873,
+          "display_value": "330.9 지수",
+          "observed_at": "2026-04-01",
+          "change_pct": -0.14666871882157428
+        },
+        "e3fc217f3632": {
+          "id": "e3fc217f3632",
+          "name": "WTI 유가",
+          "industry": "화학/정유",
+          "group": "에너지 가격",
+          "value": 69.6,
+          "display_value": "$69.60",
+          "observed_at": "2026-07-06",
+          "change_pct": -0.18643338591711744
+        },
+        "7ad4d4fab79d": {
+          "id": "7ad4d4fab79d",
+          "name": "Brent 유가",
+          "industry": "화학/정유",
+          "group": "에너지 가격",
+          "value": 69.56,
+          "display_value": "$69.56",
+          "observed_at": "2026-07-06",
+          "change_pct": 1.2813046010483387
+        },
+        "8ef88207cff8": {
+          "id": "8ef88207cff8",
+          "name": "미국 산업용 화학 PPI",
+          "industry": "화학/정유",
+          "group": "화학 스프레드",
+          "value": 344.336,
+          "display_value": "344.3 지수",
+          "observed_at": "2026-05-01",
+          "change_pct": 7.695194725582666
+        },
+        "50fefd07820e": {
+          "id": "50fefd07820e",
+          "name": "철광석",
+          "industry": "철강/소재",
+          "group": "원자재 가격",
+          "value": 111.6461538461538,
+          "display_value": "$111.6",
+          "observed_at": "2026-05-01",
+          "change_pct": 2.0658792692866967
+        },
+        "4ba6b0573d65": {
+          "id": "4ba6b0573d65",
+          "name": "구리",
+          "industry": "철강/소재",
+          "group": "원자재 가격",
+          "value": 13483.75153846154,
+          "display_value": "$13,483.8",
+          "observed_at": "2026-05-01",
+          "change_pct": 4.600715056762006
+        },
+        "1a18f2e68863": {
+          "id": "1a18f2e68863",
+          "name": "알루미늄",
+          "industry": "철강/소재",
+          "group": "원자재 가격",
+          "value": 3654.015384615385,
+          "display_value": "$3,654.0",
+          "observed_at": "2026-05-01",
+          "change_pct": 1.6591542571880113
+        },
+        "7a4fc692a152": {
+          "id": "7a4fc692a152",
+          "name": "미국 자동차 판매",
+          "industry": "자동차",
+          "group": "판매/수요",
+          "value": 16.949,
+          "display_value": "16.95 백만대",
+          "observed_at": "2026-06-01",
+          "change_pct": 2.6838725312007927
+        },
+        "6ef6271f3cbd": {
+          "id": "6ef6271f3cbd",
+          "name": "미국 반도체 PPI",
+          "industry": "반도체",
+          "group": "가격/수요",
+          "value": 73.083,
+          "display_value": "73.08 지수",
+          "observed_at": "2026-05-01",
+          "change_pct": -0.49830494628926303
+        },
+        "6b60c9b119bc": {
+          "id": "6b60c9b119bc",
+          "name": "미국 반도체 제조 PPI",
+          "industry": "반도체",
+          "group": "가격/수요",
+          "value": 30.104,
+          "display_value": "30.10 지수",
+          "observed_at": "2026-05-01",
+          "change_pct": -1.6851730894840045
+        },
+        "662c9cc1f646": {
+          "id": "662c9cc1f646",
+          "name": "미국 반도체 장비 PPI",
+          "industry": "반도체",
+          "group": "투자/장비",
+          "value": 107.043,
+          "display_value": "107.0 지수",
+          "observed_at": "2026-05-01",
+          "change_pct": 0.0
+        },
+        "79eb884a3cdd": {
+          "id": "79eb884a3cdd",
+          "name": "미국 반도체 장비/부품 PPI",
+          "industry": "반도체",
+          "group": "투자/장비",
+          "value": 135.421,
+          "display_value": "135.4 지수",
+          "observed_at": "2026-05-01",
+          "change_pct": 0.0
+        },
+        "7ce5793dc33a": {
+          "id": "7ce5793dc33a",
+          "name": "미국 반도체 패키징 PPI",
+          "industry": "반도체",
+          "group": "가격/수요",
+          "value": 20.915,
+          "display_value": "20.91 지수",
+          "observed_at": "2026-05-01",
+          "change_pct": -0.16229891641607042
+        },
+        "32c8808003a6": {
+          "id": "32c8808003a6",
+          "name": "미국 방산 자본재 신규주문",
+          "industry": "방산",
+          "group": "신규주문",
+          "value": 22118.0,
+          "display_value": "22,118.0 백만달러",
+          "observed_at": "2026-05-01",
+          "change_pct": -3.528590744537008
+        },
+        "cc492548abf5": {
+          "id": "cc492548abf5",
+          "name": "미국 방산 자본재 수주잔고",
+          "industry": "방산",
+          "group": "수주잔고",
+          "value": 221132.0,
+          "display_value": "221,132.0 백만달러",
+          "observed_at": "2026-05-01",
+          "change_pct": 1.601216648977477
+        },
+        "ad7cb981578a": {
+          "id": "ad7cb981578a",
+          "name": "미국 전력 생산 PPI",
+          "industry": "전력",
+          "group": "전력 가격",
+          "value": 143.86,
+          "display_value": "143.9 지수",
+          "observed_at": "2026-05-01",
+          "change_pct": 3.080373456768015
+        },
+        "a76ae066abdd": {
+          "id": "a76ae066abdd",
+          "name": "미국 전기/가스 유틸리티 산업생산",
+          "industry": "전력",
+          "group": "전력 수요/생산",
+          "value": 98.1778,
+          "display_value": "98.18 지수",
+          "observed_at": "2026-05-01",
+          "change_pct": 2.4127729886256555
+        },
+        "f00b71f9b251": {
+          "id": "f00b71f9b251",
+          "name": "미국 산업용 기계 신규주문",
+          "industry": "로봇",
+          "group": "설비투자",
+          "value": 4551.0,
+          "display_value": "4,551.0 백만달러",
+          "observed_at": "2026-05-01",
+          "change_pct": -3.4373010821133088
+        },
+        "3604ed31e67f": {
+          "id": "3604ed31e67f",
+          "name": "미국 산업 제어장치 PPI",
+          "industry": "로봇",
+          "group": "산업 장비 가격",
+          "value": 358.434,
+          "display_value": "358.4 지수",
+          "observed_at": "2026-05-01",
+          "change_pct": 0.0
+        },
+        "a76eaf26315f": {
+          "id": "a76eaf26315f",
+          "name": "미국 방산/우주 장비 산업생산",
+          "industry": "우주",
+          "group": "우주/방산 생산",
+          "value": 116.984,
+          "display_value": "117.0 지수",
+          "observed_at": "2026-05-01",
+          "change_pct": 0.8841071139059631
+        },
+        "e33be196bfe0": {
+          "id": "e33be196bfe0",
+          "name": "미국 항공우주 부품 PPI",
+          "industry": "우주",
+          "group": "항공우주 가격",
+          "value": 290.074,
+          "display_value": "290.1 지수",
+          "observed_at": "2026-05-01",
+          "change_pct": 0.2630369184931203
+        },
+        "dd0aab8636de": {
+          "id": "dd0aab8636de",
+          "name": "미국 생물학적 제제 PPI",
+          "industry": "바이오",
+          "group": "바이오 가격",
+          "value": 266.33,
+          "display_value": "266.3 지수",
+          "observed_at": "2026-05-01",
+          "change_pct": 0.0
+        },
+        "66b4ee084828": {
+          "id": "66b4ee084828",
+          "name": "미국 체외진단 물질 PPI",
+          "industry": "바이오",
+          "group": "진단 가격",
+          "value": 303.953,
+          "display_value": "304.0 지수",
+          "observed_at": "2026-05-01",
+          "change_pct": 0.042788070685895185
+        },
+        "705f9cdd8fa7": {
+          "id": "705f9cdd8fa7",
+          "name": "미국 저장 배터리 제조 PPI",
+          "industry": "배터리",
+          "group": "배터리 가격",
+          "value": 207.16,
+          "display_value": "207.2 지수",
+          "observed_at": "2026-05-01",
+          "change_pct": -0.0699452497527897
+        },
+        "732a4ca71e22": {
+          "id": "732a4ca71e22",
+          "name": "원/달러 환율",
+          "industry": "매크로",
+          "group": "환율",
+          "value": 1538.05,
+          "display_value": "1,538.0원",
+          "observed_at": "2026-07-02",
+          "change_pct": -0.8087244210268296
+        },
+        "d52ec106cae6": {
+          "id": "d52ec106cae6",
+          "name": "VIX",
+          "industry": "매크로",
+          "group": "리스크",
+          "value": 16.9,
+          "display_value": "16.90",
+          "observed_at": "2026-07-08",
+          "change_pct": 4.773713577185368
+        },
+        "8f90b165008f": {
+          "id": "8f90b165008f",
+          "name": "미국 연준 기준금리 상단",
+          "industry": "매크로",
+          "group": "금리",
+          "value": 3.75,
+          "display_value": "3.75%",
+          "observed_at": "2026-07-09",
+          "change_pct": 0.0
+        },
+        "7f309e42a495": {
+          "id": "7f309e42a495",
+          "name": "유럽 ECB 예금금리",
+          "industry": "매크로",
+          "group": "금리",
+          "value": 2.25,
+          "display_value": "2.25%",
+          "observed_at": "2026-07-09",
+          "change_pct": 0.0
+        },
+        "cd95922771e8": {
+          "id": "cd95922771e8",
+          "name": "일본 단기금리",
+          "industry": "매크로",
+          "group": "금리",
+          "value": 0.727,
+          "display_value": "0.73%",
+          "observed_at": "2026-05-01",
+          "change_pct": 0.0
+        },
+        "867c7910b202": {
+          "id": "867c7910b202",
+          "name": "한국 단기금리",
+          "industry": "매크로",
+          "group": "금리",
+          "value": 2.537,
+          "display_value": "2.54%",
+          "observed_at": "2026-05-01",
+          "change_pct": 0.794596742153364
+        },
+        "8516d3eb4ced": {
+          "id": "8516d3eb4ced",
+          "name": "중국 3개월 은행간 금리",
+          "industry": "매크로",
+          "group": "금리",
+          "value": 1.64,
+          "display_value": "1.64%",
+          "observed_at": "2026-04-01",
+          "change_pct": -3.529411764705881
+        },
+        "fe291dc15e17": {
+          "id": "fe291dc15e17",
+          "name": "동남아 금리(인도네시아)",
+          "industry": "매크로",
+          "group": "금리",
+          "value": 4.76,
+          "display_value": "4.76%",
+          "observed_at": "2026-05-01",
+          "change_pct": 14.698795180722879
+        },
+        "0f9e337e8716": {
+          "id": "0f9e337e8716",
+          "name": "미국 10Y-3M 금리차",
+          "industry": "매크로",
+          "group": "경기침체 시그널",
+          "value": 0.69,
+          "display_value": "0.69%",
+          "observed_at": "2026-07-08",
+          "change_pct": 0.0
+        },
+        "a4a1f5ef7ca0": {
+          "id": "a4a1f5ef7ca0",
+          "name": "미국 실업률",
+          "industry": "매크로",
+          "group": "경기침체 시그널",
+          "value": 4.2,
+          "display_value": "4.20%",
+          "observed_at": "2026-06-01",
+          "change_pct": -2.3255813953488302
+        },
+        "aff56aa661cc": {
+          "id": "aff56aa661cc",
+          "name": "Sahm Rule 침체 지표",
+          "industry": "매크로",
+          "group": "경기침체 시그널",
+          "value": 0.07,
+          "display_value": "0.07 %p",
+          "observed_at": "2026-06-01",
+          "change_pct": -29.999999999999993
+        },
+        "d7098d357430": {
+          "id": "d7098d357430",
+          "name": "애틀랜타 연준 GDPNow",
+          "industry": "매크로",
+          "group": "경기침체 시그널",
+          "value": 1.2603,
+          "display_value": "1.26%",
+          "observed_at": "2026-04-01",
+          "change_pct": 1.7027114267269106
+        },
+        "edf7e55e4fcc": {
+          "id": "edf7e55e4fcc",
+          "name": "시카고 연준 금융여건지수",
+          "industry": "매크로",
+          "group": "유동성",
+          "value": -0.515,
+          "display_value": "-0.52 지수",
+          "observed_at": "2026-07-03",
+          "change_pct": 1.980198019801982
+        },
+        "60114acd0831": {
+          "id": "60114acd0831",
+          "name": "미국 연준 총자산",
+          "industry": "매크로",
+          "group": "유동성",
+          "value": 6724.564,
+          "display_value": "$6,724.6B",
+          "observed_at": "2026-07-01",
+          "change_pct": -0.1645128269081919
+        },
+        "3d13d2083a17": {
+          "id": "3d13d2083a17",
+          "name": "미국 M2 통화량",
+          "industry": "매크로",
+          "group": "유동성",
+          "value": 23052.3,
+          "display_value": "$23,052.3B",
+          "observed_at": "2026-05-01",
+          "change_pct": 1.086627639281712
+        },
+        "e9b8cd241fa0": {
+          "id": "e9b8cd241fa0",
+          "name": "미국 CPI",
+          "industry": "매크로",
+          "group": "물가",
+          "value": 333.979,
+          "display_value": "334.0 지수",
+          "observed_at": "2026-05-01",
+          "change_pct": 0.47291422864139676
+        },
+        "d021513d7217": {
+          "id": "d021513d7217",
+          "name": "미국 근원 PCE 물가",
+          "industry": "매크로",
+          "group": "물가",
+          "value": 130.082,
+          "display_value": "130.1 지수",
+          "observed_at": "2026-05-01",
+          "change_pct": 0.3200505911295837
+        },
+        "fe982c0bba20": {
+          "id": "fe982c0bba20",
+          "name": "미국 10년 실질금리",
+          "industry": "매크로",
+          "group": "물가",
+          "value": 2.3,
+          "display_value": "2.30%",
+          "observed_at": "2026-07-07",
+          "change_pct": 2.678571428571419
+        },
+        "e571cc471e26": {
+          "id": "e571cc471e26",
+          "name": "한국 회사채 AA- 3Y-국고채 3Y 스프레드",
+          "industry": "은행/금융",
+          "group": "신용 스프레드",
+          "value": 0.7,
+          "display_value": "0.70%",
+          "observed_at": "2026-07-09",
+          "change_pct": 0.2865329512893977
+        },
+        "7a72f2f6bb0f": {
+          "id": "7a72f2f6bb0f",
+          "name": "한국 회사채 BBB- 3Y-국고채 3Y 스프레드",
+          "industry": "은행/금융",
+          "group": "신용 스프레드",
+          "value": 6.51,
+          "display_value": "6.51%",
+          "observed_at": "2026-07-09",
+          "change_pct": -0.015358623867312016
+        },
+        "c97d9cf16f04": {
+          "id": "c97d9cf16f04",
+          "name": "한국 소비자심리지수(CCSI)",
+          "industry": "매크로",
+          "group": "한국 경기",
+          "value": 106.6,
+          "display_value": "106.6 지수",
+          "observed_at": "2026-06-01",
+          "change_pct": 0.47125353440151674
+        },
+        "2e6184763d59": {
+          "id": "2e6184763d59",
+          "name": "한국 경기선행지수 순환변동치",
+          "industry": "매크로",
+          "group": "한국 경기",
+          "value": 104.8,
+          "display_value": "104.8 지수",
+          "observed_at": "2026-05-01",
+          "change_pct": 0.672430355427478
+        },
+        "1fdbec376059": {
+          "id": "1fdbec376059",
+          "name": "한국 전산업 업황실적 BSI",
+          "industry": "매크로",
+          "group": "한국 경기",
+          "value": 75.0,
+          "display_value": "75.00 지수",
+          "observed_at": "2026-06-01",
+          "change_pct": -1.3157894736842146
+        },
+        "5c5a1ff321ae": {
+          "id": "5c5a1ff321ae",
+          "name": "한국 가계신용",
+          "industry": "매크로",
+          "group": "한국 경기",
+          "value": 1993.1108000000002,
+          "display_value": "1,993.1 조원",
+          "observed_at": "2026-01-01",
+          "change_pct": 0.7085282294616135
+        },
+        "c572177c6bc7": {
+          "id": "c572177c6bc7",
+          "name": "한국 신용융자 잔고",
+          "industry": "매크로",
+          "group": "수급 과열",
+          "value": 37.328228228593,
+          "display_value": "37.33 조원",
+          "observed_at": "2026-06-01",
+          "change_pct": -1.8264176452698178
+        },
+        "3d068a9d3ea3": {
+          "id": "3d068a9d3ea3",
+          "name": "한국 투자자예탁금",
+          "industry": "매크로",
+          "group": "수급 과열",
+          "value": 121.633950527251,
+          "display_value": "121.6 조원",
+          "observed_at": "2026-06-01",
+          "change_pct": -7.562866124109291
+        },
+        "73605cb1caf0": {
+          "id": "73605cb1caf0",
+          "name": "삼성전자(005930.KS)",
+          "industry": "반도체",
+          "group": "대표주가",
+          "value": 278000.0,
+          "display_value": "278,000원",
+          "observed_at": "2026-07-09",
+          "change_pct": 0.18018018018017834
+        },
+        "308bbd1b432a": {
+          "id": "308bbd1b432a",
+          "name": "NVIDIA(NVDA)",
+          "industry": "반도체",
+          "group": "대표주가",
+          "value": 200.60000610351562,
+          "display_value": "$200.6",
+          "observed_at": "2026-07-09",
+          "change_pct": -1.7244704575125058
+        },
+        "4bffa8579327": {
+          "id": "4bffa8579327",
+          "name": "SK하이닉스(000660.KS)",
+          "industry": "반도체",
+          "group": "대표주가",
+          "value": 2186000.0,
+          "display_value": "2,186,000원",
+          "observed_at": "2026-07-09",
+          "change_pct": 5.298651252408471
+        },
+        "df08e35f00ed": {
+          "id": "df08e35f00ed",
+          "name": "Micron(MU)",
+          "industry": "반도체",
+          "group": "대표주가",
+          "value": 1011.1699829101562,
+          "display_value": "$1,011.2",
+          "observed_at": "2026-07-09",
+          "change_pct": 6.573566180398904
+        },
+        "75ff1ab8f86f": {
+          "id": "75ff1ab8f86f",
+          "name": "AMD(AMD)",
+          "industry": "반도체",
+          "group": "대표주가",
+          "value": 552.8499755859375,
+          "display_value": "$552.8",
+          "observed_at": "2026-07-09",
+          "change_pct": 6.849501223569687
+        },
+        "95b1bd8b729a": {
+          "id": "95b1bd8b729a",
+          "name": "Intel(INTC)",
+          "industry": "반도체",
+          "group": "대표주가",
+          "value": 112.56999969482422,
+          "display_value": "$112.6",
+          "observed_at": "2026-07-09",
+          "change_pct": 2.1135720938002978
+        },
+        "f52a4974e818": {
+          "id": "f52a4974e818",
+          "name": "TSMC(TSM)",
+          "industry": "반도체",
+          "group": "대표주가",
+          "value": 441.5050048828125,
+          "display_value": "$441.5",
+          "observed_at": "2026-07-09",
+          "change_pct": 1.0355150768271537
+        },
+        "6410c11f526b": {
+          "id": "6410c11f526b",
+          "name": "ASML(ASML)",
+          "industry": "반도체",
+          "group": "대표주가",
+          "value": 1822.52001953125,
+          "display_value": "$1,822.5",
+          "observed_at": "2026-07-09",
+          "change_pct": 3.0458255942994894
+        },
+        "64a572db5684": {
+          "id": "64a572db5684",
+          "name": "Applied Materials(AMAT)",
+          "industry": "반도체",
+          "group": "대표주가",
+          "value": 609.010009765625,
+          "display_value": "$609.0",
+          "observed_at": "2026-07-09",
+          "change_pct": 6.750220817813313
+        },
+        "67fcc5136d2d": {
+          "id": "67fcc5136d2d",
+          "name": "Lam Research(LRCX)",
+          "industry": "반도체",
+          "group": "대표주가",
+          "value": 352.30499267578125,
+          "display_value": "$352.3",
+          "observed_at": "2026-07-09",
+          "change_pct": 5.749662053197779
+        },
+        "978b7b09e6c6": {
+          "id": "978b7b09e6c6",
+          "name": "NAVER(035420.KS)",
+          "industry": "데이터인프라",
+          "group": "대표주가",
+          "value": 184400.0,
+          "display_value": "184,400원",
+          "observed_at": "2026-07-09",
+          "change_pct": -4.307213284898803
+        },
+        "4af5a09d8c1f": {
+          "id": "4af5a09d8c1f",
+          "name": "Microsoft(MSFT)",
+          "industry": "데이터인프라",
+          "group": "대표주가",
+          "value": 377.739990234375,
+          "display_value": "$377.7",
+          "observed_at": "2026-07-09",
+          "change_pct": -1.460845765381491
+        },
+        "357faedb889d": {
+          "id": "357faedb889d",
+          "name": "현대차(005380.KS)",
+          "industry": "자동차",
+          "group": "대표주가",
+          "value": 445500.0,
+          "display_value": "445,500원",
+          "observed_at": "2026-07-09",
+          "change_pct": -3.6756756756756714
+        },
+        "bb4517dfeb65": {
+          "id": "bb4517dfeb65",
+          "name": "Toyota(TM)",
+          "industry": "자동차",
+          "group": "대표주가",
+          "value": 174.66000366210938,
+          "display_value": "$174.7",
+          "observed_at": "2026-07-09",
+          "change_pct": -1.4055830201326391
+        },
+        "401396037f0e": {
+          "id": "401396037f0e",
+          "name": "LG에너지솔루션(373220.KS)",
+          "industry": "전기차",
+          "group": "대표주가",
+          "value": 313500.0,
+          "display_value": "313,500원",
+          "observed_at": "2026-07-09",
+          "change_pct": -0.6339144215530945
+        },
+        "b410cee1fb25": {
+          "id": "b410cee1fb25",
+          "name": "Tesla(TSLA)",
+          "industry": "전기차",
+          "group": "대표주가",
+          "value": 395.0849914550781,
+          "display_value": "$395.1",
+          "observed_at": "2026-07-09",
+          "change_pct": 0.2601111259287192
+        },
+        "dc57e5380aee": {
+          "id": "dc57e5380aee",
+          "name": "HD현대중공업(329180.KS)",
+          "industry": "조선",
+          "group": "대표주가",
+          "value": 507000.0,
+          "display_value": "507,000원",
+          "observed_at": "2026-07-09",
+          "change_pct": -1.934235976789167
+        },
+        "d240866c2602": {
+          "id": "d240866c2602",
+          "name": "Huntington Ingalls(HII)",
+          "industry": "조선",
+          "group": "대표주가",
+          "value": 284.3699951171875,
+          "display_value": "$284.4",
+          "observed_at": "2026-07-09",
+          "change_pct": -1.761842706328376
+        },
+        "f18445e2954e": {
+          "id": "f18445e2954e",
+          "name": "POSCO홀딩스(005490.KS)",
+          "industry": "철강/소재",
+          "group": "대표주가",
+          "value": 297000.0,
+          "display_value": "297,000원",
+          "observed_at": "2026-07-09",
+          "change_pct": -2.3026315789473673
+        },
+        "4e6caef16f26": {
+          "id": "4e6caef16f26",
+          "name": "Nucor(NUE)",
+          "industry": "철강/소재",
+          "group": "대표주가",
+          "value": 226.375,
+          "display_value": "$226.4",
+          "observed_at": "2026-07-09",
+          "change_pct": -0.13454768203450262
+        },
+        "ecc828144f7e": {
+          "id": "ecc828144f7e",
+          "name": "LG화학(051910.KS)",
+          "industry": "화학/정유",
+          "group": "대표주가",
+          "value": 251500.0,
+          "display_value": "251,500원",
+          "observed_at": "2026-07-09",
+          "change_pct": -1.3725490196078383
+        },
+        "844af39f856d": {
+          "id": "844af39f856d",
+          "name": "Exxon Mobil(XOM)",
+          "industry": "화학/정유",
+          "group": "대표주가",
+          "value": 138.32000732421875,
+          "display_value": "$138.3",
+          "observed_at": "2026-07-09",
+          "change_pct": -1.9910702624342913
+        },
+        "98de535a0a23": {
+          "id": "98de535a0a23",
+          "name": "KB금융(105560.KS)",
+          "industry": "은행/금융",
+          "group": "대표주가",
+          "value": 171400.0,
+          "display_value": "171,400원",
+          "observed_at": "2026-07-09",
+          "change_pct": 0.23391812865496409
+        },
+        "0b637efd9c49": {
+          "id": "0b637efd9c49",
+          "name": "JPMorgan Chase(JPM)",
+          "industry": "은행/금융",
+          "group": "대표주가",
+          "value": 336.04998779296875,
+          "display_value": "$336.0",
+          "observed_at": "2026-07-09",
+          "change_pct": 1.6423666916626223
+        },
+        "20977ed178d1": {
+          "id": "20977ed178d1",
+          "name": "현대건설(000720.KS)",
+          "industry": "건설/부동산",
+          "group": "대표주가",
+          "value": 98900.0,
+          "display_value": "98,900원",
+          "observed_at": "2026-07-09",
+          "change_pct": -1.7874875868917561
+        },
+        "7e86761dbeda": {
+          "id": "7e86761dbeda",
+          "name": "D.R. Horton(DHI)",
+          "industry": "건설/부동산",
+          "group": "대표주가",
+          "value": 150.9600067138672,
+          "display_value": "$151.0",
+          "observed_at": "2026-07-09",
+          "change_pct": 1.6497288382287811
+        },
+        "f1309b1d96bf": {
+          "id": "f1309b1d96bf",
+          "name": "한화에어로스페이스(012450.KS)",
+          "industry": "방산",
+          "group": "대표주가",
+          "value": 953000.0,
+          "display_value": "953,000원",
+          "observed_at": "2026-07-09",
+          "change_pct": -8.453410182516807
+        },
+        "880406c0aba7": {
+          "id": "880406c0aba7",
+          "name": "Lockheed Martin(LMT)",
+          "industry": "방산",
+          "group": "대표주가",
+          "value": 519.3200073242188,
+          "display_value": "$519.3",
+          "observed_at": "2026-07-09",
+          "change_pct": -1.636490319125905
+        },
+        "3054b46e95f2": {
+          "id": "3054b46e95f2",
+          "name": "Coinbase(COIN)",
+          "industry": "스테이블코인",
+          "group": "대표주가",
+          "value": 158.2899932861328,
+          "display_value": "$158.3",
+          "observed_at": "2026-07-09",
+          "change_pct": -0.6714403364210586
+        },
+        "f1f724a230f7": {
+          "id": "f1f724a230f7",
+          "name": "Circle(CRCL)",
+          "industry": "스테이블코인",
+          "group": "대표주가",
+          "value": 62.14500045776367,
+          "display_value": "$62.15",
+          "observed_at": "2026-07-09",
+          "change_pct": -3.0045251228806413
+        },
+        "6b5151610375": {
+          "id": "6b5151610375",
+          "name": "한국전력(015760.KS)",
+          "industry": "전력",
+          "group": "대표주가",
+          "value": 35200.0,
+          "display_value": "35,200원",
+          "observed_at": "2026-07-09",
+          "change_pct": -4.217687074829934
+        },
+        "5c34f945ce51": {
+          "id": "5c34f945ce51",
+          "name": "GE Vernova(GEV)",
+          "industry": "전력",
+          "group": "대표주가",
+          "value": 1074.6199951171875,
+          "display_value": "$1,074.6",
+          "observed_at": "2026-07-09",
+          "change_pct": 0.3389391979301326
+        },
+        "3484513a5bdb": {
+          "id": "3484513a5bdb",
+          "name": "두산로보틱스(454910.KS)",
+          "industry": "로봇",
+          "group": "대표주가",
+          "value": 70400.0,
+          "display_value": "70,400원",
+          "observed_at": "2026-07-09",
+          "change_pct": -2.89655172413793
+        },
+        "d9b2a105ae08": {
+          "id": "d9b2a105ae08",
+          "name": "Teradyne(TER)",
+          "industry": "로봇",
+          "group": "대표주가",
+          "value": 370.6449890136719,
+          "display_value": "$370.6",
+          "observed_at": "2026-07-09",
+          "change_pct": 5.425656709066806
+        },
+        "1708f3deb23c": {
+          "id": "1708f3deb23c",
+          "name": "쎄트렉아이(099320.KQ)",
+          "industry": "우주",
+          "group": "대표주가",
+          "value": 79500.0,
+          "display_value": "79,500원",
+          "observed_at": "2026-07-09",
+          "change_pct": 5.858854860186424
+        },
+        "f23893f07b0e": {
+          "id": "f23893f07b0e",
+          "name": "Rocket Lab(RKLB)",
+          "industry": "우주",
+          "group": "대표주가",
+          "value": 83.33000183105469,
+          "display_value": "$83.33",
+          "observed_at": "2026-07-09",
+          "change_pct": -0.023991173884196915
+        },
+        "95cabb4c530d": {
+          "id": "95cabb4c530d",
+          "name": "삼성바이오로직스(207940.KS)",
+          "industry": "바이오",
+          "group": "대표주가",
+          "value": 1325000.0,
+          "display_value": "1,325,000원",
+          "observed_at": "2026-07-09",
+          "change_pct": -2.7879677182685247
+        },
+        "426f63931dfa": {
+          "id": "426f63931dfa",
+          "name": "Eli Lilly(LLY)",
+          "industry": "바이오",
+          "group": "대표주가",
+          "value": 1214.7601318359375,
+          "display_value": "$1,214.8",
+          "observed_at": "2026-07-09",
+          "change_pct": -0.08799126994876172
+        },
+        "c04f98aa050d": {
+          "id": "c04f98aa050d",
+          "name": "삼성SDI(006400.KS)",
+          "industry": "배터리",
+          "group": "대표주가",
+          "value": 401500.0,
+          "display_value": "401,500원",
+          "observed_at": "2026-07-09",
+          "change_pct": -2.5485436893203928
+        },
+        "8f9705d7a4f7": {
+          "id": "8f9705d7a4f7",
+          "name": "Albemarle(ALB)",
+          "industry": "배터리",
+          "group": "대표주가",
+          "value": 127.74500274658203,
+          "display_value": "$127.7",
+          "observed_at": "2026-07-09",
+          "change_pct": -1.263720879985586
+        },
+        "890be20fa286": {
+          "id": "890be20fa286",
+          "name": "코스피",
+          "industry": "매크로",
+          "group": "시장지수",
+          "value": 7291.91015625,
+          "display_value": "7,291.9 지수",
+          "observed_at": "2026-07-09",
+          "change_pct": 0.6226221119183473
+        },
+        "d101ffa7a785": {
+          "id": "d101ffa7a785",
+          "name": "코스닥",
+          "industry": "매크로",
+          "group": "시장지수",
+          "value": 794.0,
+          "display_value": "794.0 지수",
+          "observed_at": "2026-07-09",
+          "change_pct": 1.146496815286624
+        },
+        "8ccfe639730a": {
+          "id": "8ccfe639730a",
+          "name": "나스닥",
+          "industry": "매크로",
+          "group": "시장지수",
+          "value": 25962.28515625,
+          "display_value": "25,962.3 지수",
+          "observed_at": "2026-07-09",
+          "change_pct": 0.35420356365762906
+        },
+        "c3d9b26b0cca": {
+          "id": "c3d9b26b0cca",
+          "name": "S&P 500",
+          "industry": "매크로",
+          "group": "시장지수",
+          "value": 7506.22021484375,
+          "display_value": "7,506.2 지수",
+          "observed_at": "2026-07-09",
+          "change_pct": 0.3141943764890298
+        },
+        "b2ddd162aa6d": {
+          "id": "b2ddd162aa6d",
+          "name": "다우",
+          "industry": "매크로",
+          "group": "시장지수",
+          "value": 52427.109375,
+          "display_value": "52,427.1 지수",
+          "observed_at": "2026-07-09",
+          "change_pct": 0.15037472797188034
+        },
+        "c0e679b6845a": {
+          "id": "c0e679b6845a",
+          "name": "원/달러 환율",
+          "industry": "매크로",
+          "group": "환율",
+          "value": 1510.27001953125,
+          "display_value": "1,510.3원",
+          "observed_at": "2026-07-09",
+          "change_pct": -0.6309769263445841
+        },
+        "88b0c279358b": {
+          "id": "88b0c279358b",
+          "name": "엔/달러 환율",
+          "industry": "매크로",
+          "group": "엔캐리",
+          "value": 162.3769989013672,
+          "display_value": "162.4 엔",
+          "observed_at": "2026-07-09",
+          "change_pct": 0.008617917260855812
+        },
+        "85e446c2ef95": {
+          "id": "85e446c2ef95",
+          "name": "엔/원 환율",
+          "industry": "매크로",
+          "group": "엔캐리",
+          "value": 9.27400016784668,
+          "display_value": "9.27원",
+          "observed_at": "2026-07-09",
+          "change_pct": -0.9428490461598771
+        },
+        "dafbb2c9961d": {
+          "id": "dafbb2c9961d",
+          "name": "S&P500 선물",
+          "industry": "매크로",
+          "group": "선물",
+          "value": 7553.5,
+          "display_value": "7,553.5 지수",
+          "observed_at": "2026-07-09",
+          "change_pct": 0.3287398306491829
+        },
+        "b189df60a08a": {
+          "id": "b189df60a08a",
+          "name": "나스닥100 선물",
+          "industry": "매크로",
+          "group": "선물",
+          "value": 29765.75,
+          "display_value": "29,765.8 지수",
+          "observed_at": "2026-07-09",
+          "change_pct": 1.008704209579725
+        },
+        "7375616ee7f6": {
+          "id": "7375616ee7f6",
+          "name": "금 선물",
+          "industry": "매크로",
+          "group": "원자재 가격",
+          "value": 4133.39990234375,
+          "display_value": "$4,133.4",
+          "observed_at": "2026-07-09",
+          "change_pct": 1.5352870740942715
+        },
+        "956c2a3a9c19": {
+          "id": "956c2a3a9c19",
+          "name": "비트코인",
+          "industry": "매크로",
+          "group": "크립토",
+          "value": 62875.12890625,
+          "display_value": "$62,875.1",
+          "observed_at": "2026-07-09",
+          "change_pct": 0.9919350299935292
+        },
+        "0712031212cf": {
+          "id": "0712031212cf",
+          "name": "이더리움",
+          "industry": "매크로",
+          "group": "크립토",
+          "value": 1738.5999755859375,
+          "display_value": "$1,738.6",
+          "observed_at": "2026-07-09",
+          "change_pct": -0.23398686538225189
+        },
+        "ba953b12a4d4": {
+          "id": "ba953b12a4d4",
+          "name": "달러인덱스",
+          "industry": "매크로",
+          "group": "환율",
+          "value": 100.91699981689453,
+          "display_value": "100.9 지수",
+          "observed_at": "2026-07-09",
+          "change_pct": -0.131621208160837
+        },
+        "a3fb178fac70": {
+          "id": "a3fb178fac70",
+          "name": "KOSPI200",
+          "industry": "매크로",
+          "group": "선물",
+          "value": 1169.72998046875,
+          "display_value": "1,169.7 지수",
+          "observed_at": "2026-07-09",
+          "change_pct": -9.972297659515817
+        },
+        "c9e38f8f2070": {
+          "id": "c9e38f8f2070",
+          "name": "전체 스테이블코인 유통량",
+          "industry": "스테이블코인",
+          "group": "유통량",
+          "value": 310.4632880550666,
+          "display_value": "$310.5B",
+          "observed_at": "2026-07-09",
+          "change_pct": 0.2662653342125898
+        },
+        "9833e22b7865": {
+          "id": "9833e22b7865",
+          "name": "USDT 유통량",
+          "industry": "스테이블코인",
+          "group": "유통량",
+          "value": 183.28685984317434,
+          "display_value": "$183.3B",
+          "observed_at": "2026-07-09",
+          "change_pct": 0.1793622718102128
+        },
+        "6738d7df4ecd": {
+          "id": "6738d7df4ecd",
+          "name": "USDC 유통량",
+          "industry": "스테이블코인",
+          "group": "유통량",
+          "value": 73.37702712969279,
+          "display_value": "$73.38B",
+          "observed_at": "2026-07-09",
+          "change_pct": -0.013447278681444352
+        },
+        "64fa63647ec0": {
+          "id": "64fa63647ec0",
+          "name": "니켈 가격",
+          "industry": "배터리",
+          "group": "배터리 원재료",
+          "value": 17588.0,
+          "display_value": "17,588.0 $/mt",
+          "observed_at": "2026-06-01",
+          "change_pct": -6.476656386259705
+        },
+        "d907cfbca0b2": {
+          "id": "d907cfbca0b2",
+          "name": "유럽 천연가스 가격",
+          "industry": "전력",
+          "group": "에너지 가격",
+          "value": 15.17,
+          "display_value": "15.17 $/mmbtu",
+          "observed_at": "2026-06-01",
+          "change_pct": -6.184291898577621
+        },
+        "85f0653c42e0": {
+          "id": "85f0653c42e0",
+          "name": "호주 석탄 가격",
+          "industry": "전력",
+          "group": "에너지 가격",
+          "value": 138.5,
+          "display_value": "138.5 $/mt",
+          "observed_at": "2026-06-01",
+          "change_pct": 1.1687363038714427
+        },
+        "9f6b665163ae": {
+          "id": "9f6b665163ae",
+          "name": "Microsoft",
+          "industry": "데이터인프라",
+          "group": "CAPEX",
+          "value": 30.876,
+          "display_value": "$30.88B",
+          "observed_at": "2026-03-31",
+          "change_pct": 3.347168295621894
+        },
+        "984268d55fcc": {
+          "id": "984268d55fcc",
+          "name": "Amazon",
+          "industry": "데이터인프라",
+          "group": "CAPEX",
+          "value": 44.203,
+          "display_value": "$44.20B",
+          "observed_at": "2026-03-31",
+          "change_pct": 25.952414873913664
+        },
+        "80040ceaa27c": {
+          "id": "80040ceaa27c",
+          "name": "Alphabet",
+          "industry": "데이터인프라",
+          "group": "CAPEX",
+          "value": 35.674,
+          "display_value": "$35.67B",
+          "observed_at": "2026-03-31",
+          "change_pct": 107.44315869046926
+        },
+        "f532471276f5": {
+          "id": "f532471276f5",
+          "name": "Meta",
+          "industry": "데이터인프라",
+          "group": "CAPEX",
+          "value": 18.997,
+          "display_value": "$19.00B",
+          "observed_at": "2026-03-31",
+          "change_pct": 46.797001777296956
+        },
+        "6eeb89e9064b": {
+          "id": "6eeb89e9064b",
+          "name": "Oracle",
+          "industry": "데이터인프라",
+          "group": "CAPEX",
+          "value": 8.502,
+          "display_value": "$8.50B",
+          "observed_at": "2025-08-31",
+          "change_pct": 269.1706469821972
+        },
+        "07d2875ecb6d": {
+          "id": "07d2875ecb6d",
+          "name": "CoreWeave",
+          "industry": "데이터인프라",
+          "group": "CAPEX",
+          "value": 7.695,
+          "display_value": "$7.70B",
+          "observed_at": "2026-03-31",
+          "change_pct": 446.90831556503196
+        },
+        "29989cc3085a": {
+          "id": "29989cc3085a",
+          "name": "미국 국방부 계약 의무액",
+          "industry": "방산",
+          "group": "국방 계약",
+          "value": 0.01711577416,
+          "display_value": "$0.02B",
+          "observed_at": "2026-06-01",
+          "change_pct": -45.52971385582344
+        },
+        "6c07660204fb": {
+          "id": "6c07660204fb",
+          "name": "미국 방산 제조 계약 의무액",
+          "industry": "방산",
+          "group": "국방 계약",
+          "value": 0.67375068386,
+          "display_value": "$0.67B",
+          "observed_at": "2026-06-01",
+          "change_pct": 36.66998166695292
+        },
+        "ecb4b1ee414e": {
+          "id": "ecb4b1ee414e",
+          "name": "미국 NASA 계약 의무액",
+          "industry": "우주",
+          "group": "우주 계약",
+          "value": 1.50932241495,
+          "display_value": "$1.51B",
+          "observed_at": "2026-06-01",
+          "change_pct": 17.452791328133376
+        },
+        "4c76b0455189": {
+          "id": "4c76b0455189",
+          "name": "미국 전력 판매량",
+          "industry": "전력",
+          "group": "전력 수요",
+          "value": 302126.84443,
+          "display_value": "302,126.8 GWh",
+          "observed_at": "2026-04-01",
+          "change_pct": -3.87561673133191
+        },
+        "7439690640d0": {
+          "id": "7439690640d0",
+          "name": "미국 총 발전량",
+          "industry": "전력",
+          "group": "전력 수요",
+          "value": 330706.51949,
+          "display_value": "330,706.5 GWh",
+          "observed_at": "2026-04-01",
+          "change_pct": -5.175478837858616
+        },
+        "c13299afa1c3": {
+          "id": "c13299afa1c3",
+          "name": "미국 평균 전력가격",
+          "industry": "전력",
+          "group": "전력 가격",
+          "value": 13.88,
+          "display_value": "13.88 cents/kWh",
+          "observed_at": "2026-04-01",
+          "change_pct": -2.115655853314524
+        },
+        "b3afa8d66655": {
+          "id": "b3afa8d66655",
+          "name": "미국 휘발유 가격",
+          "industry": "화학/정유",
+          "group": "제품 가격",
+          "value": 3.911,
+          "display_value": "3.91 $/gal",
+          "observed_at": "2026-07-06",
+          "change_pct": -1.3370332996972767
+        },
+        "7cf9257921fd": {
+          "id": "7cf9257921fd",
+          "name": "미국 디젤 가격",
+          "industry": "화학/정유",
+          "group": "제품 가격",
+          "value": 4.578,
+          "display_value": "4.58 $/gal",
+          "observed_at": "2026-07-06",
+          "change_pct": -1.9280205655527016
+        },
+        "338fa22c1a4c": {
+          "id": "338fa22c1a4c",
+          "name": "FDA 의약품 승인 활동",
+          "industry": "바이오",
+          "group": "승인 이벤트",
+          "value": 613.0,
+          "display_value": "613.0 건",
+          "observed_at": "2026-06-01",
+          "change_pct": 133.96946564885494
+        },
+        "983f03b746cf": {
+          "id": "983f03b746cf",
+          "name": "글로벌 Phase 3 임상 시작",
+          "industry": "바이오",
+          "group": "임상 이벤트",
+          "value": 228.0,
+          "display_value": "228.0 건",
+          "observed_at": "2026-06-01",
+          "change_pct": 10.144927536231885
+        },
+        "d5ab88b67d0f": {
+          "id": "d5ab88b67d0f",
+          "name": "글로벌 우주 발사 건수",
+          "industry": "우주",
+          "group": "발사 이벤트",
+          "value": 29.0,
+          "display_value": "29.00 건",
+          "observed_at": "2026-06-01",
+          "change_pct": 26.086956521739136
+        },
+        "bd3d2907e306": {
+          "id": "bd3d2907e306",
+          "name": "미국 EV 충전소 수",
+          "industry": "전기차",
+          "group": "충전 인프라",
+          "value": 88990.0,
+          "display_value": "88,990.0 곳",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "cbe282e77754": {
+          "id": "cbe282e77754",
+          "name": "미국 EV 충전 포트 수",
+          "industry": "전기차",
+          "group": "충전 인프라",
+          "value": 289627.0,
+          "display_value": "289,627.0 개",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "320be6d22e2e": {
+          "id": "320be6d22e2e",
+          "name": "한국 주택매매가격지수",
+          "industry": "건설/부동산",
+          "group": "국내 주택",
+          "value": 96.1686227,
+          "display_value": "96.17 지수",
+          "observed_at": "2025-03-01",
+          "change_pct": 0.014269735358829472
+        },
+        "65615e553195": {
+          "id": "65615e553195",
+          "name": "한국 건축허가 동수",
+          "industry": "건설/부동산",
+          "group": "건설 허가",
+          "value": 9174.0,
+          "display_value": "9,174.0 동",
+          "observed_at": "2026-05-01",
+          "change_pct": -22.339795140946418
+        },
+        "f5b24e872a87": {
+          "id": "f5b24e872a87",
+          "name": "한국 수출 반도체 IC(8542)",
+          "industry": "반도체",
+          "group": "수출",
+          "value": 29.433286302,
+          "display_value": "$29.43B",
+          "observed_at": "2026-05-01",
+          "change_pct": 16.615585580934255
+        },
+        "84f53d127d66": {
+          "id": "84f53d127d66",
+          "name": "한국 수출 메모리 IC(854232)",
+          "industry": "반도체",
+          "group": "수출",
+          "value": 24.950563221,
+          "display_value": "$24.95B",
+          "observed_at": "2026-05-01",
+          "change_pct": 19.783292715838897
+        },
+        "31d5add3ce4f": {
+          "id": "31d5add3ce4f",
+          "name": "한국 수출 프로세서/컨트롤러 IC(854231)",
+          "industry": "반도체",
+          "group": "수출",
+          "value": 3.519130437,
+          "display_value": "$3.52B",
+          "observed_at": "2026-05-01",
+          "change_pct": -0.5389354795109158
+        },
+        "26975ec57dc3": {
+          "id": "26975ec57dc3",
+          "name": "한국 수출 반도체 소자(8541)",
+          "industry": "반도체",
+          "group": "수출",
+          "value": 0.318084048,
+          "display_value": "$0.32B",
+          "observed_at": "2026-05-01",
+          "change_pct": 3.4824727295857727
+        },
+        "df2dfef6929f": {
+          "id": "df2dfef6929f",
+          "name": "한국 수출 무선통신기기(8517)",
+          "industry": "반도체",
+          "group": "수출",
+          "value": 0.717624664,
+          "display_value": "$0.72B",
+          "observed_at": "2026-05-01",
+          "change_pct": -10.52993340063929
+        },
+        "f9b5a613c91f": {
+          "id": "f9b5a613c91f",
+          "name": "한국 수출 승용차(8703)",
+          "industry": "자동차",
+          "group": "수출",
+          "value": 5.492266174,
+          "display_value": "$5.49B",
+          "observed_at": "2026-05-01",
+          "change_pct": -6.004759347049394
+        },
+        "39f4d6359fd2": {
+          "id": "39f4d6359fd2",
+          "name": "한국 수출 전기차(870380)",
+          "industry": "전기차",
+          "group": "EV 수출",
+          "value": 0.768855627,
+          "display_value": "$0.77B",
+          "observed_at": "2026-05-01",
+          "change_pct": -16.581316855629137
+        },
+        "a1571b3177f2": {
+          "id": "a1571b3177f2",
+          "name": "한국 수출 선박(8901)",
+          "industry": "조선",
+          "group": "수출",
+          "value": 2.456481037,
+          "display_value": "$2.46B",
+          "observed_at": "2026-05-01",
+          "change_pct": -6.040130553581868
+        },
+        "a18e2f273c59": {
+          "id": "a18e2f273c59",
+          "name": "한국 수출 무기류/탄약(9306)",
+          "industry": "방산",
+          "group": "수출",
+          "value": 0.095451668,
+          "display_value": "$0.10B",
+          "observed_at": "2026-05-01",
+          "change_pct": 447.62120260448563
+        },
+        "8466aa094266": {
+          "id": "8466aa094266",
+          "name": "한국 수출 항공기/우주선(8802)",
+          "industry": "우주",
+          "group": "수출",
+          "value": 0.011674554,
+          "display_value": "$0.01B",
+          "observed_at": "2026-05-01",
+          "change_pct": -92.43682126947392
+        },
+        "bb466986e553": {
+          "id": "bb466986e553",
+          "name": "한국 수출 변압기(8504)",
+          "industry": "전력",
+          "group": "수출",
+          "value": 0.355955099,
+          "display_value": "$0.36B",
+          "observed_at": "2026-05-01",
+          "change_pct": -12.198587241609626
+        },
+        "6fafa22d10f9": {
+          "id": "6fafa22d10f9",
+          "name": "한국 수출 전력 케이블(8544)",
+          "industry": "전력",
+          "group": "수출",
+          "value": 0.351702995,
+          "display_value": "$0.35B",
+          "observed_at": "2026-05-01",
+          "change_pct": -12.320853889985317
+        },
+        "6e0aeb2da3be": {
+          "id": "6e0aeb2da3be",
+          "name": "한국 수출 산업용 로봇(847950)",
+          "industry": "로봇",
+          "group": "수출",
+          "value": 0.048141543,
+          "display_value": "$0.05B",
+          "observed_at": "2026-05-01",
+          "change_pct": 14.617230717423734
+        },
+        "186525551670": {
+          "id": "186525551670",
+          "name": "한국 수출 백신/면역제품(3002)",
+          "industry": "바이오",
+          "group": "수출",
+          "value": 0.707685839,
+          "display_value": "$0.71B",
+          "observed_at": "2026-05-01",
+          "change_pct": -13.864483533632988
+        },
+        "e6860eb5a546": {
+          "id": "e6860eb5a546",
+          "name": "한국 수출 의약품(3004)",
+          "industry": "바이오",
+          "group": "수출",
+          "value": 0.076176575,
+          "display_value": "$0.08B",
+          "observed_at": "2026-05-01",
+          "change_pct": -10.271846595604629
+        },
+        "18ce37332802": {
+          "id": "18ce37332802",
+          "name": "한국 수출 축전지(8507)",
+          "industry": "배터리",
+          "group": "수출",
+          "value": 0.687989142,
+          "display_value": "$0.69B",
+          "observed_at": "2026-05-01",
+          "change_pct": 5.3052674386794285
+        },
+        "b0b6e0910209": {
+          "id": "b0b6e0910209",
+          "name": "S&P 500 Shiller CAPE",
+          "industry": "매크로",
+          "group": "밸류에이션",
+          "value": 41.64,
+          "display_value": "41.64 배",
+          "observed_at": "2026-07-01",
+          "change_pct": 0.7744433688286589
+        },
+        "8eeee41c65f8": {
+          "id": "8eeee41c65f8",
+          "name": "S&P 500 PER",
+          "industry": "매크로",
+          "group": "밸류에이션",
+          "value": 28.13,
+          "display_value": "28.13 배",
+          "observed_at": "2025-09-01",
+          "change_pct": 1.041666666666674
+        },
+        "bf79f6c6337f": {
+          "id": "bf79f6c6337f",
+          "name": "미국 신용융자 잔액(margin debt)",
+          "industry": "매크로",
+          "group": "수급 과열",
+          "value": 1415.557,
+          "display_value": "$1,415.6B",
+          "observed_at": "2026-05-01",
+          "change_pct": 8.531597102158205
+        },
+        "krx-flow-kospi-institution-sell": {
+          "id": "krx-flow-kospi-institution-sell",
+          "name": "KOSPI 기관 매도",
+          "industry": "매크로",
+          "group": "기관",
+          "value": 112300.0,
+          "display_value": "112,300.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-kospi-institution-buy": {
+          "id": "krx-flow-kospi-institution-buy",
+          "name": "KOSPI 기관 매수",
+          "industry": "매크로",
+          "group": "기관",
+          "value": 125180.0,
+          "display_value": "125,180.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-kospi-institution-net": {
+          "id": "krx-flow-kospi-institution-net",
+          "name": "KOSPI 기관 순매수",
+          "industry": "매크로",
+          "group": "기관",
+          "value": 12880.0,
+          "display_value": "12,880.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-kospi-institution-net-20d": {
+          "id": "krx-flow-kospi-institution-net-20d",
+          "name": "KOSPI 기관 20일 누적 순매수",
+          "industry": "매크로",
+          "group": "기관",
+          "value": 12880.0,
+          "display_value": "12,880.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-kospi-foreign-sell": {
+          "id": "krx-flow-kospi-foreign-sell",
+          "name": "KOSPI 외국인 매도",
+          "industry": "매크로",
+          "group": "외국인",
+          "value": 158990.0,
+          "display_value": "158,990.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-kospi-foreign-buy": {
+          "id": "krx-flow-kospi-foreign-buy",
+          "name": "KOSPI 외국인 매수",
+          "industry": "매크로",
+          "group": "외국인",
+          "value": 160330.0,
+          "display_value": "160,330.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-kospi-foreign-net": {
+          "id": "krx-flow-kospi-foreign-net",
+          "name": "KOSPI 외국인 순매수",
+          "industry": "매크로",
+          "group": "외국인",
+          "value": 1340.0,
+          "display_value": "1,340.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-kospi-foreign-net-20d": {
+          "id": "krx-flow-kospi-foreign-net-20d",
+          "name": "KOSPI 외국인 20일 누적 순매수",
+          "industry": "매크로",
+          "group": "외국인",
+          "value": 1340.0,
+          "display_value": "1,340.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-kospi-individual-sell": {
+          "id": "krx-flow-kospi-individual-sell",
+          "name": "KOSPI 개인 매도",
+          "industry": "매크로",
+          "group": "개인",
+          "value": 121530.0,
+          "display_value": "121,530.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-kospi-individual-buy": {
+          "id": "krx-flow-kospi-individual-buy",
+          "name": "KOSPI 개인 매수",
+          "industry": "매크로",
+          "group": "개인",
+          "value": 108260.0,
+          "display_value": "108,260.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-kospi-individual-net": {
+          "id": "krx-flow-kospi-individual-net",
+          "name": "KOSPI 개인 순매수",
+          "industry": "매크로",
+          "group": "개인",
+          "value": -13280.0,
+          "display_value": "-13,280.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-kospi-individual-net-20d": {
+          "id": "krx-flow-kospi-individual-net-20d",
+          "name": "KOSPI 개인 20일 누적 순매수",
+          "industry": "매크로",
+          "group": "개인",
+          "value": -13280.0,
+          "display_value": "-13,280.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-kosdaq-institution-sell": {
+          "id": "krx-flow-kosdaq-institution-sell",
+          "name": "KOSDAQ 기관 매도",
+          "industry": "매크로",
+          "group": "기관",
+          "value": 7910.0,
+          "display_value": "7,910.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-kosdaq-institution-buy": {
+          "id": "krx-flow-kosdaq-institution-buy",
+          "name": "KOSDAQ 기관 매수",
+          "industry": "매크로",
+          "group": "기관",
+          "value": 10990.0,
+          "display_value": "10,990.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-kosdaq-institution-net": {
+          "id": "krx-flow-kosdaq-institution-net",
+          "name": "KOSDAQ 기관 순매수",
+          "industry": "매크로",
+          "group": "기관",
+          "value": 3080.0,
+          "display_value": "3,080.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-kosdaq-institution-net-20d": {
+          "id": "krx-flow-kosdaq-institution-net-20d",
+          "name": "KOSDAQ 기관 20일 누적 순매수",
+          "industry": "매크로",
+          "group": "기관",
+          "value": 3080.0,
+          "display_value": "3,080.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-kosdaq-foreign-sell": {
+          "id": "krx-flow-kosdaq-foreign-sell",
+          "name": "KOSDAQ 외국인 매도",
+          "industry": "매크로",
+          "group": "외국인",
+          "value": 19500.0,
+          "display_value": "19,500.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-kosdaq-foreign-buy": {
+          "id": "krx-flow-kosdaq-foreign-buy",
+          "name": "KOSDAQ 외국인 매수",
+          "industry": "매크로",
+          "group": "외국인",
+          "value": 19720.0,
+          "display_value": "19,720.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-kosdaq-foreign-net": {
+          "id": "krx-flow-kosdaq-foreign-net",
+          "name": "KOSDAQ 외국인 순매수",
+          "industry": "매크로",
+          "group": "외국인",
+          "value": 220.0,
+          "display_value": "220.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-kosdaq-foreign-net-20d": {
+          "id": "krx-flow-kosdaq-foreign-net-20d",
+          "name": "KOSDAQ 외국인 20일 누적 순매수",
+          "industry": "매크로",
+          "group": "외국인",
+          "value": 220.0,
+          "display_value": "220.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-kosdaq-individual-sell": {
+          "id": "krx-flow-kosdaq-individual-sell",
+          "name": "KOSDAQ 개인 매도",
+          "industry": "매크로",
+          "group": "개인",
+          "value": 31130.0,
+          "display_value": "31,130.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-kosdaq-individual-buy": {
+          "id": "krx-flow-kosdaq-individual-buy",
+          "name": "KOSDAQ 개인 매수",
+          "industry": "매크로",
+          "group": "개인",
+          "value": 27910.0,
+          "display_value": "27,910.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-kosdaq-individual-net": {
+          "id": "krx-flow-kosdaq-individual-net",
+          "name": "KOSDAQ 개인 순매수",
+          "industry": "매크로",
+          "group": "개인",
+          "value": -3220.0,
+          "display_value": "-3,220.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-kosdaq-individual-net-20d": {
+          "id": "krx-flow-kosdaq-individual-net-20d",
+          "name": "KOSDAQ 개인 20일 누적 순매수",
+          "industry": "매크로",
+          "group": "개인",
+          "value": -3220.0,
+          "display_value": "-3,220.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-k200-futures-institution-sell": {
+          "id": "krx-flow-k200-futures-institution-sell",
+          "name": "K200 선물 기관 매도",
+          "industry": "매크로",
+          "group": "기관",
+          "value": 67130.0,
+          "display_value": "67,130.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-k200-futures-institution-buy": {
+          "id": "krx-flow-k200-futures-institution-buy",
+          "name": "K200 선물 기관 매수",
+          "industry": "매크로",
+          "group": "기관",
+          "value": 57030.0,
+          "display_value": "57,030.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-k200-futures-institution-net": {
+          "id": "krx-flow-k200-futures-institution-net",
+          "name": "K200 선물 기관 순매수",
+          "industry": "매크로",
+          "group": "기관",
+          "value": -10100.0,
+          "display_value": "-10,100.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-k200-futures-institution-net-20d": {
+          "id": "krx-flow-k200-futures-institution-net-20d",
+          "name": "K200 선물 기관 20일 누적 순매수",
+          "industry": "매크로",
+          "group": "기관",
+          "value": -10100.0,
+          "display_value": "-10,100.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-k200-futures-foreign-sell": {
+          "id": "krx-flow-k200-futures-foreign-sell",
+          "name": "K200 선물 외국인 매도",
+          "industry": "매크로",
+          "group": "외국인",
+          "value": 418480.0,
+          "display_value": "418,480.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-k200-futures-foreign-buy": {
+          "id": "krx-flow-k200-futures-foreign-buy",
+          "name": "K200 선물 외국인 매수",
+          "industry": "매크로",
+          "group": "외국인",
+          "value": 425940.0,
+          "display_value": "425,940.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-k200-futures-foreign-net": {
+          "id": "krx-flow-k200-futures-foreign-net",
+          "name": "K200 선물 외국인 순매수",
+          "industry": "매크로",
+          "group": "외국인",
+          "value": 7460.0,
+          "display_value": "7,460.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-k200-futures-foreign-net-20d": {
+          "id": "krx-flow-k200-futures-foreign-net-20d",
+          "name": "K200 선물 외국인 20일 누적 순매수",
+          "industry": "매크로",
+          "group": "외국인",
+          "value": 7460.0,
+          "display_value": "7,460.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-k200-futures-individual-sell": {
+          "id": "krx-flow-k200-futures-individual-sell",
+          "name": "K200 선물 개인 매도",
+          "industry": "매크로",
+          "group": "개인",
+          "value": 75530.0,
+          "display_value": "75,530.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-k200-futures-individual-buy": {
+          "id": "krx-flow-k200-futures-individual-buy",
+          "name": "K200 선물 개인 매수",
+          "industry": "매크로",
+          "group": "개인",
+          "value": 77580.0,
+          "display_value": "77,580.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-k200-futures-individual-net": {
+          "id": "krx-flow-k200-futures-individual-net",
+          "name": "K200 선물 개인 순매수",
+          "industry": "매크로",
+          "group": "개인",
+          "value": 2060.0,
+          "display_value": "2,060.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "krx-flow-k200-futures-individual-net-20d": {
+          "id": "krx-flow-k200-futures-individual-net-20d",
+          "name": "K200 선물 개인 20일 누적 순매수",
+          "industry": "매크로",
+          "group": "개인",
+          "value": 2060.0,
+          "display_value": "2,060.0 억원",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "us-net-liquidity": {
+          "id": "us-net-liquidity",
+          "name": "미국 순유동성",
+          "industry": "매크로",
+          "group": "미국 유동성",
+          "value": 5939.5966530000005,
+          "display_value": "$5,939.6B",
+          "observed_at": "2026-07-08",
+          "change_pct": 1.9142717677667065e-05
+        },
+        "us-liquidity-walcl": {
+          "id": "us-liquidity-walcl",
+          "name": "미국 연준 총자산",
+          "industry": "매크로",
+          "group": "미국 유동성",
+          "value": 6724.564,
+          "display_value": "$6,724.6B",
+          "observed_at": "2026-07-01",
+          "change_pct": -0.1645128269081919
+        },
+        "us-tga": {
+          "id": "us-tga",
+          "name": "미국 TGA",
+          "industry": "매크로",
+          "group": "미국 유동성",
+          "value": 784.964,
+          "display_value": "$785.0B",
+          "observed_at": "2026-07-07",
+          "change_pct": 0.2371323458991048
+        },
+        "us-rrp": {
+          "id": "us-rrp",
+          "name": "미국 역레포",
+          "industry": "매크로",
+          "group": "미국 유동성",
+          "value": 0.003347,
+          "display_value": "$0.00B",
+          "observed_at": "2026-07-08",
+          "change_pct": -25.35682426404996
+        },
+        "korea-liquidity-bok-assets": {
+          "id": "korea-liquidity-bok-assets",
+          "name": "한국은행 총자산",
+          "industry": "매크로",
+          "group": "한국 유동성",
+          "value": 600.6148000000001,
+          "display_value": "600.6 조원",
+          "observed_at": "2026-04-01",
+          "change_pct": 1.1313262139038383
+        },
+        "korea-liquidity-monetary-base": {
+          "id": "korea-liquidity-monetary-base",
+          "name": "한국 본원통화",
+          "industry": "매크로",
+          "group": "한국 유동성",
+          "value": 306.01529999999997,
+          "display_value": "306.0 조원",
+          "observed_at": "2026-04-01",
+          "change_pct": -0.4006233437549689
+        },
+        "korea-liquidity-m2": {
+          "id": "korea-liquidity-m2",
+          "name": "한국 M2",
+          "industry": "매크로",
+          "group": "한국 유동성",
+          "value": 4153.8725,
+          "display_value": "4,153.9 조원",
+          "observed_at": "2026-04-01",
+          "change_pct": 0.6124151295876512
+        },
+        "korea-liquidity-lf": {
+          "id": "korea-liquidity-lf",
+          "name": "한국 Lf",
+          "industry": "매크로",
+          "group": "한국 유동성",
+          "value": 6219.338900000001,
+          "display_value": "6,219.3 조원",
+          "observed_at": "2026-04-01",
+          "change_pct": 0.4784202079381128
+        },
+        "korea-liquidity-l": {
+          "id": "korea-liquidity-l",
+          "name": "한국 L",
+          "industry": "매크로",
+          "group": "한국 유동성",
+          "value": 7962.8652,
+          "display_value": "7,962.9 조원",
+          "observed_at": "2026-04-01",
+          "change_pct": 1.8150726705715936
+        },
+        "japan-liquidity-boj-assets": {
+          "id": "japan-liquidity-boj-assets",
+          "name": "일본 BOJ 총자산",
+          "industry": "매크로",
+          "group": "일본 유동성",
+          "value": 639.5509000000001,
+          "display_value": "639.6 ¥T",
+          "observed_at": "2026-06-01",
+          "change_pct": -3.7347203260867934
+        },
+        "japan-liquidity-monetary-base": {
+          "id": "japan-liquidity-monetary-base",
+          "name": "일본 본원통화",
+          "industry": "매크로",
+          "group": "일본 유동성",
+          "value": 559.2039,
+          "display_value": "559.2 ¥T",
+          "observed_at": "2026-06-01",
+          "change_pct": -2.876094590243161
+        },
+        "japan-liquidity-m2": {
+          "id": "japan-liquidity-m2",
+          "name": "일본 M2",
+          "industry": "매크로",
+          "group": "일본 유동성",
+          "value": 1296.4426,
+          "display_value": "1,296.4 ¥T",
+          "observed_at": "2026-06-01",
+          "change_pct": -0.1257939156851906
+        },
+        "japan-liquidity-current-account": {
+          "id": "japan-liquidity-current-account",
+          "name": "일본 BOJ 당좌예금",
+          "industry": "매크로",
+          "group": "일본 유동성",
+          "value": 452.13390000000004,
+          "display_value": "452.1 ¥T",
+          "observed_at": "2026-05-01",
+          "change_pct": -3.691095896538621
+        },
+        "europe-liquidity-excess": {
+          "id": "europe-liquidity-excess",
+          "name": "유럽 초과유동성",
+          "industry": "매크로",
+          "group": "유럽 유동성",
+          "value": 2175.991,
+          "display_value": "2,176.0 €B",
+          "observed_at": "2026-07-08",
+          "change_pct": -0.9471963525110816
+        },
+        "europe-liquidity-eurosystem-assets": {
+          "id": "europe-liquidity-eurosystem-assets",
+          "name": "유럽 유로시스템 총자산",
+          "industry": "매크로",
+          "group": "유럽 유동성",
+          "value": 9758.29214573284,
+          "display_value": "9,758.3 €B",
+          "observed_at": "2026-05-01",
+          "change_pct": -0.09014949341724643
+        },
+        "europe-liquidity-m3": {
+          "id": "europe-liquidity-m3",
+          "name": "유럽 M3",
+          "industry": "매크로",
+          "group": "유럽 유동성",
+          "value": 17552.244,
+          "display_value": "17,552.2 €B",
+          "observed_at": "2026-05-01",
+          "change_pct": 0.6734681493236527
+        },
+        "europe-liquidity-base-money": {
+          "id": "europe-liquidity-base-money",
+          "name": "유럽 본원통화",
+          "industry": "매크로",
+          "group": "유럽 유동성",
+          "value": 4248.91915380324,
+          "display_value": "4,248.9 €B",
+          "observed_at": "2025-12-01",
+          "change_pct": -2.0401993835443055
+        },
+        "67892685814f": {
+          "id": "67892685814f",
+          "name": "미국 CNN 공포탐욕지수",
+          "industry": "매크로",
+          "group": "공포탐욕",
+          "value": 46.37,
+          "display_value": "46.37 점",
+          "observed_at": "2026-07-09",
+          "change_pct": 5.123554749489911
+        },
+        "f03bccef5a35": {
+          "id": "f03bccef5a35",
+          "name": "VKOSPI",
+          "industry": "매크로",
+          "group": "공포탐욕",
+          "value": 87.9,
+          "display_value": "87.90",
+          "observed_at": "2026-07-08",
+          "change_pct": 2.5790640681526478
+        },
+        "8be8a0fac107": {
+          "id": "8be8a0fac107",
+          "name": "코스피 공포탐욕지수",
+          "industry": "매크로",
+          "group": "공포탐욕",
+          "value": 27.8,
+          "display_value": "27.80 점",
+          "observed_at": "2026-07-08",
+          "change_pct": -50.970017636684304
+        },
+        "3244f3debcfa": {
+          "id": "3244f3debcfa",
+          "name": "코스닥 공포탐욕지수",
+          "industry": "매크로",
+          "group": "공포탐욕",
+          "value": 37.1,
+          "display_value": "37.10 점",
+          "observed_at": "2026-07-08",
+          "change_pct": -5.35714285714286
+        },
+        "1286947cb019": {
+          "id": "1286947cb019",
+          "name": "김치프리미엄",
+          "industry": "매크로",
+          "group": "크립토",
+          "value": -2.5408093442437774,
+          "display_value": "-2.54%",
+          "observed_at": "2026-07-09",
+          "change_pct": null
+        },
+        "f5037fdc1e82": {
+          "id": "f5037fdc1e82",
+          "name": "엔 환율 10일 실현변동성",
+          "industry": "매크로",
+          "group": "엔캐리",
+          "value": 0.2862709196204591,
+          "display_value": "0.29%",
+          "observed_at": "2026-07-09",
+          "change_pct": -0.13691127284981564
+        }
+      },
+      "trajectory": {
+        "movers": [],
+        "yen_carry_risk": false,
+        "summary": ""
+      }
     }
   ]
 }
