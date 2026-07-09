@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "generated_at": "2026-07-09T14:58:34",
+  "generated_at": "2026-07-09T16:26:26",
   "window": {
-    "from": "2026-07-02",
-    "to": "2026-09-07"
+    "from": "2026-07-03",
+    "to": "2026-09-08"
   },
   "events": [
     {
@@ -12,8 +12,8 @@
       "category": "holiday",
       "country": "US",
       "note": "Independence Day observed",
-      "d_day": -6,
-      "d_day_label": "D-6"
+      "d_day": -7,
+      "d_day_label": "D-7"
     },
     {
       "date": "2026-07-09",
@@ -21,8 +21,8 @@
       "category": "expiry",
       "country": "KR",
       "note": "매월 둘째 목요일 기준, 휴장 시 전영업일",
-      "d_day": 0,
-      "d_day_label": "D-day"
+      "d_day": -1,
+      "d_day_label": "D-1"
     },
     {
       "date": "2026-07-14",
@@ -30,8 +30,8 @@
       "category": "us_data",
       "country": "US",
       "note": "2026년 6월 CPI",
-      "d_day": 5,
-      "d_day_label": "D+5",
+      "d_day": 4,
+      "d_day_label": "D+4",
       "metric_id": "e9b8cd241fa0"
     },
     {
@@ -40,8 +40,8 @@
       "category": "bok",
       "country": "KR",
       "note": "통화정책방향 결정회의",
-      "d_day": 7,
-      "d_day_label": "D+7"
+      "d_day": 6,
+      "d_day_label": "D+6"
     },
     {
       "date": "2026-07-29",
@@ -49,8 +49,8 @@
       "category": "fed",
       "country": "US",
       "note": "7월 FOMC",
-      "d_day": 20,
-      "d_day_label": "D+20"
+      "d_day": 19,
+      "d_day_label": "D+19"
     },
     {
       "date": "2026-08-12",
@@ -58,8 +58,8 @@
       "category": "us_data",
       "country": "US",
       "note": "2026년 7월 CPI",
-      "d_day": 34,
-      "d_day_label": "D+34",
+      "d_day": 33,
+      "d_day_label": "D+33",
       "metric_id": "e9b8cd241fa0"
     },
     {
@@ -68,8 +68,8 @@
       "category": "expiry",
       "country": "KR",
       "note": "매월 둘째 목요일 기준, 휴장 시 전영업일",
-      "d_day": 35,
-      "d_day_label": "D+35"
+      "d_day": 34,
+      "d_day_label": "D+34"
     },
     {
       "date": "2026-08-27",
@@ -77,8 +77,8 @@
       "category": "bok",
       "country": "KR",
       "note": "통화정책방향 결정회의",
-      "d_day": 49,
-      "d_day_label": "D+49"
+      "d_day": 48,
+      "d_day_label": "D+48"
     },
     {
       "date": "2026-09-07",
@@ -86,20 +86,10 @@
       "category": "holiday",
       "country": "US",
       "note": "Labor Day",
-      "d_day": 60,
-      "d_day_label": "D+60"
+      "d_day": 59,
+      "d_day_label": "D+59"
     }
   ],
-  "upcoming": [
-    {
-      "date": "2026-07-09",
-      "name": "한국 옵션만기",
-      "category": "expiry",
-      "country": "KR",
-      "note": "매월 둘째 목요일 기준, 휴장 시 전영업일",
-      "d_day": 0,
-      "d_day_label": "D-day"
-    }
-  ],
+  "upcoming": [],
   "missing_years": []
 }
