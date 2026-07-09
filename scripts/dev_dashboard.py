@@ -715,6 +715,35 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
         history_key="fred-RRPONTSYD",
         meaning=dashboard.US_RRP_MEANING,
     )
+    liquidity_mock_values = {
+        "한국은행 총자산": ("조원", 650, 1.8, 4.5),
+        "한국 본원통화": ("조원", 305, -0.9, 2.8),
+        "한국 M2": ("조원", 4160, 12.5, 22),
+        "한국 Lf": ("조원", 5750, 9.4, 18),
+        "한국 L": ("조원", 7350, 14.2, 26),
+        "일본 BOJ 총자산": ("¥T", 760, -1.5, 4.8),
+        "일본 본원통화": ("¥T", 670, 2.4, 6.2),
+        "일본 M2": ("¥T", 1260, 4.5, 8.2),
+        "일본 BOJ 당좌예금": ("¥T", 555, 1.2, 5.4),
+        "유럽 초과유동성": ("€B", 2440, -12.0, 35),
+        "유럽 유로시스템 총자산": ("€B", 9800, -35.0, 70),
+        "유럽 M3": ("€B", 16900, 42.0, 110),
+        "유럽 본원통화": ("€B", 4450, -18.0, 42),
+    }
+    for item in dashboard.KOREA_LIQUIDITY_ITEMS + dashboard.JAPAN_LIQUIDITY_ITEMS + dashboard.EUROPE_LIQUIDITY_ITEMS:
+        unit, value, step, wave = liquidity_mock_values[str(item["name"])]
+        add_market(
+            str(item["name"]),
+            "유동성",
+            str(item["group"]),
+            unit,
+            value,
+            step,
+            wave,
+            metric_id=str(item["metric_id"]),
+            history_key=str(item["history_key"]),
+            meaning=str(item["meaning"]),
+        )
     add_market("원/달러 환율", "원자재·크립토", "환율", "원", 1360, 0.8, 12)
     add_market("비트코인", "원자재·크립토", "크립토", "$", 96000, 110, 2100)
     add_market("김치프리미엄", "원자재·크립토", "크립토", "%", 3.2, 0.04, 0.25)
