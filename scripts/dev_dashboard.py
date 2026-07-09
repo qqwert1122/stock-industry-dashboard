@@ -265,12 +265,38 @@ def mock_metric(
 
 
 def add_mock_percentile(metric: dict[str, Any], percentile: float) -> dict[str, Any]:
+    values = sorted(
+        float(point["value"])
+        for point in metric.get("history") or []
+        if isinstance(point, dict) and isinstance(point.get("value"), (int, float))
+    )
+    if not values:
+        values = [float(metric.get("value") or 0)]
     metric["percentiles"] = {
         "y10": {
             "pct": percentile,
+            "p20": mock_quantile(values, 0.2),
+            "median": mock_quantile(values, 0.5),
+            "p80": mock_quantile(values, 0.8),
+            "min": values[0],
+            "max": values[-1],
+            "from": str((metric.get("history") or [{}])[0].get("date") or ""),
+            "to": str((metric.get("history") or [{}])[-1].get("date") or ""),
         }
     }
     return metric
+
+
+def mock_quantile(values: list[float], ratio: float) -> float:
+    if not values:
+        return 0.0
+    if len(values) == 1:
+        return values[0]
+    position = (len(values) - 1) * ratio
+    lower = int(position)
+    upper = min(lower + 1, len(values) - 1)
+    weight = position - lower
+    return values[lower] * (1 - weight) + values[upper] * weight
 
 
 def previous_mock_metric(metric: dict[str, Any], dashboard: Any, *, updated: bool) -> dict[str, Any]:
@@ -767,8 +793,19 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
     }
     for metric in metrics:
         percentile = mock_percentiles.get(str(metric.get("name") or ""))
-        if percentile is not None:
-            add_mock_percentile(metric, percentile)
+        if percentile is None:
+            values = [
+                float(point["value"])
+                for point in metric.get("history") or []
+                if isinstance(point, dict) and isinstance(point.get("value"), (int, float))
+            ]
+            current = float(metric.get("value") or 0)
+            if values:
+                lower_or_equal = sum(1 for value in values if value <= current)
+                percentile = max(1.0, min(99.0, lower_or_equal / len(values) * 100))
+            else:
+                percentile = 50.0
+        add_mock_percentile(metric, percentile)
 
     dashboard.apply_interpretations(metrics, load_mock_config())
 
