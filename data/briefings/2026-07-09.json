@@ -1,0 +1,455 @@
+{
+  "version": 1,
+  "date": "2026-07-09",
+  "cards": [
+    {
+      "status": "ok",
+      "status_message": "Gemini 요약",
+      "model": "gemini-3.1-flash-lite",
+      "generated_label": "2026-07-09 13:09 KST",
+      "headline": "국내 증시 변동성 확대와 방산주 조정",
+      "summary": "한국 옵션만기일을 맞아 시장 변동성이 커진 가운데, 방산주를 중심으로 차익실현 매물이 출회되었습니다. 투자심리가 위축된 상황이므로 오늘 예정된 주요 지표 발표와 만기일 수급 변화를 주의 깊게 살펴야 합니다.",
+      "bullets": [
+        {
+          "title": "급변 지표",
+          "body": "매크로 산업의 대표주가(주식 가격)인 KOSPI200이 -10.3% 급락하고, 코스피 공포탐욕지수(공포탐욕)가 -34.4% 하락하며 시장의 공포 심리가 빠르게 확산되고 있습니다.",
+          "metric_ids": [
+            "a3fb178fac70",
+            "8be8a0fac107"
+          ]
+        },
+        {
+          "title": "주의할 흐름",
+          "body": "방산 산업의 대표주가(주식 가격) 한화에어로스페이스(012450.KS)가 -7.8% 하락하며 그간의 상승세에 제동이 걸렸으니, 실제 수주 계약이 기대치를 충족하는지 확인이 필요합니다.",
+          "metric_ids": [
+            "f1309b1d96bf"
+          ]
+        },
+        {
+          "title": "좋아진 흐름",
+          "body": "우주 산업의 대표주가(주식 가격) 쎄트렉아이(099320.KQ)는 +6.7% 상승하며 시장 전반의 하락세와는 다른 강한 흐름을 보이고 있습니다.",
+          "metric_ids": [
+            "1708f3deb23c"
+          ]
+        },
+        {
+          "title": "관망 심리",
+          "body": "오늘 한국 옵션만기일이라는 큰 일정이 예정되어 있어, 만기일 전후의 수급 변동성과 불확실성에 대비해 신중한 접근이 필요한 시점입니다.",
+          "metric_ids": []
+        }
+      ],
+      "top_movers": [
+        {
+          "id": "8be8a0fac107",
+          "industry": "매크로",
+          "group": "공포탐욕",
+          "kind": "공포탐욕",
+          "name": "코스피 공포탐욕지수",
+          "value": "37.20 점",
+          "observed_label": "2026.07.08",
+          "change_pct": -34.39153439153439,
+          "change_pct_label": "-34.4%",
+          "yoy_pct": null,
+          "yoy_pct_label": "n/a",
+          "meaning": "코스피 시장의 가격 추세, 상승·하락 종목 수, 52주 신고가·신저가, 변동성을 합쳐 투자심리가 공포 쪽인지 탐욕 쪽인지 보여줍니다. 0에 가까우면 공포, 100에 가까우면 탐욕이 강한 구간입니다."
+        },
+        {
+          "id": "a3fb178fac70",
+          "industry": "매크로",
+          "group": "선물",
+          "kind": "선물",
+          "name": "KOSPI200",
+          "value": "1,165.9 지수",
+          "observed_label": "2026.07.09",
+          "change_pct": -10.270149962429064,
+          "change_pct_label": "-10.3%",
+          "yoy_pct": null,
+          "yoy_pct_label": "n/a",
+          "meaning": "코스피200 지수입니다. 국내 대형주 선물과 옵션시장의 기준이 되는 현물 지수입니다."
+        },
+        {
+          "id": "f1309b1d96bf",
+          "industry": "방산",
+          "group": "대표주가",
+          "kind": "대표주가(주식 가격)",
+          "name": "한화에어로스페이스(012450.KS)",
+          "value": "960,000원",
+          "observed_label": "2026.07.09",
+          "change_pct": -7.78097982708934,
+          "change_pct_label": "-7.8%",
+          "yoy_pct": -3.6144578313253017,
+          "yoy_pct_label": "-3.6%",
+          "meaning": "한화에어로스페이스 주가는 방산 수주와 항공우주 성장 기대를 보여줍니다."
+        },
+        {
+          "id": "1708f3deb23c",
+          "industry": "우주",
+          "group": "대표주가",
+          "kind": "대표주가(주식 가격)",
+          "name": "쎄트렉아이(099320.KQ)",
+          "value": "80,100원",
+          "observed_label": "2026.07.09",
+          "change_pct": 6.657789613848197,
+          "change_pct_label": "+6.7%",
+          "yoy_pct": 63.63636363636365,
+          "yoy_pct_label": "+63.6%",
+          "meaning": "쎄트렉아이 주가는 위성 시스템 수주와 국내 우주 산업 성장 기대를 보여줍니다."
+        },
+        {
+          "id": "3244f3debcfa",
+          "industry": "매크로",
+          "group": "공포탐욕",
+          "kind": "공포탐욕",
+          "name": "코스닥 공포탐욕지수",
+          "value": "37.00 점",
+          "observed_label": "2026.07.08",
+          "change_pct": -5.6122448979591955,
+          "change_pct_label": "-5.6%",
+          "yoy_pct": null,
+          "yoy_pct_label": "n/a",
+          "meaning": "코스닥 시장의 가격 추세, 상승·하락 종목 수, 52주 신고가·신저가, 변동성을 합쳐 투자심리가 공포 쪽인지 탐욕 쪽인지 보여줍니다. 0에 가까우면 공포, 100에 가까우면 탐욕이 강한 구간입니다."
+        }
+      ],
+      "improving_industries": [
+        {
+          "industry": "데이터인프라",
+          "score": 111.96,
+          "drivers": [
+            {
+              "id": "07d2875ecb6d",
+              "industry": "데이터인프라",
+              "group": "CAPEX",
+              "kind": "설비투자(CAPEX)",
+              "name": "CoreWeave",
+              "value": "$7.70B",
+              "observed_label": "2026.03.31",
+              "change_pct": 446.90831556503196,
+              "change_pct_label": "+446.9%",
+              "yoy_pct": 446.90831556503196,
+              "yoy_pct_label": "+446.9%",
+              "meaning": "CoreWeave의 CAPEX는 데이터센터, 서버, AI 인프라 같은 장기 설비투자 규모를 보여줍니다. 투자가 커질수록 클라우드와 AI 인프라 수요가 강하다는 신호로 볼 수 있습니다."
+            },
+            {
+              "id": "6eeb89e9064b",
+              "industry": "데이터인프라",
+              "group": "CAPEX",
+              "kind": "설비투자(CAPEX)",
+              "name": "Oracle",
+              "value": "$8.50B",
+              "observed_label": "2025.08.31",
+              "change_pct": 269.1706469821972,
+              "change_pct_label": "+269.2%",
+              "yoy_pct": 269.1706469821972,
+              "yoy_pct_label": "+269.2%",
+              "meaning": "Oracle의 CAPEX는 데이터센터, 서버, AI 인프라 같은 장기 설비투자 규모를 보여줍니다. 투자가 커질수록 클라우드와 AI 인프라 수요가 강하다는 신호로 볼 수 있습니다."
+            }
+          ]
+        },
+        {
+          "industry": "방산",
+          "score": 61.1,
+          "drivers": [
+            {
+              "id": "a18e2f273c59",
+              "industry": "방산",
+              "group": "수출",
+              "kind": "수출 지표",
+              "name": "한국 수출 무기류/탄약(9306)",
+              "value": "$0.10B",
+              "observed_label": "2026.05",
+              "change_pct": 447.62120260448563,
+              "change_pct_label": "+447.6%",
+              "yoy_pct": -41.123424869418116,
+              "yoy_pct_label": "-41.1%",
+              "meaning": "무기류/탄약 수출은 해당 품목의 대외 수요와 가격/물량 사이클을 확인하는 지표입니다."
+            },
+            {
+              "id": "29989cc3085a",
+              "industry": "방산",
+              "group": "국방 계약",
+              "kind": "산업 활동 지표",
+              "name": "미국 국방부 계약 의무액",
+              "value": "$0.02B",
+              "observed_label": "2026.06",
+              "change_pct": -45.52971385582344,
+              "change_pct_label": "-45.5%",
+              "yoy_pct": -99.95673053525233,
+              "yoy_pct_label": "-100.0%",
+              "meaning": "미국 국방부가 실제로 계약에 배정한 금액입니다. 방산 예산이 어느 분야로 흘러가는지 볼 때 중요합니다."
+            }
+          ]
+        },
+        {
+          "industry": "바이오",
+          "score": 14.56,
+          "drivers": [
+            {
+              "id": "338fa22c1a4c",
+              "industry": "바이오",
+              "group": "승인 이벤트",
+              "kind": "산업 활동 지표",
+              "name": "FDA 의약품 승인 활동",
+              "value": "613.0 건",
+              "observed_label": "2026.06",
+              "change_pct": 133.96946564885494,
+              "change_pct_label": "+134.0%",
+              "yoy_pct": 59.22077922077922,
+              "yoy_pct_label": "+59.2%",
+              "meaning": "FDA 의약품 승인 관련 기록 수로 바이오 규제 이벤트와 신약 모멘텀을 확인합니다."
+            },
+            {
+              "id": "186525551670",
+              "industry": "바이오",
+              "group": "수출",
+              "kind": "수출 지표",
+              "name": "한국 수출 백신/면역제품(3002)",
+              "value": "$0.71B",
+              "observed_label": "2026.05",
+              "change_pct": -13.864483533632988,
+              "change_pct_label": "-13.9%",
+              "yoy_pct": 10.215202783460375,
+              "yoy_pct_label": "+10.2%",
+              "meaning": "백신/면역제품 수출은 해당 품목의 대외 수요와 가격/물량 사이클을 확인하는 지표입니다."
+            }
+          ]
+        }
+      ],
+      "slowing_industries": [
+        {
+          "industry": "방산",
+          "score": -29.42,
+          "drivers": [
+            {
+              "id": "29989cc3085a",
+              "industry": "방산",
+              "group": "국방 계약",
+              "kind": "산업 활동 지표",
+              "name": "미국 국방부 계약 의무액",
+              "value": "$0.02B",
+              "observed_label": "2026.06",
+              "change_pct": -45.52971385582344,
+              "change_pct_label": "-45.5%",
+              "yoy_pct": -99.95673053525233,
+              "yoy_pct_label": "-100.0%",
+              "meaning": "미국 국방부가 실제로 계약에 배정한 금액입니다. 방산 예산이 어느 분야로 흘러가는지 볼 때 중요합니다."
+            },
+            {
+              "id": "6c07660204fb",
+              "industry": "방산",
+              "group": "국방 계약",
+              "kind": "산업 활동 지표",
+              "name": "미국 방산 제조 계약 의무액",
+              "value": "$0.67B",
+              "observed_label": "2026.06",
+              "change_pct": 36.66998166695292,
+              "change_pct_label": "+36.7%",
+              "yoy_pct": -89.96767922389613,
+              "yoy_pct_label": "-90.0%",
+              "meaning": "미국 연방 방산/항공우주 제조업 계약 의무액으로 방산 제조 밸류체인의 수주 모멘텀을 확인합니다."
+            }
+          ]
+        },
+        {
+          "industry": "스테이블코인",
+          "score": -13.99,
+          "drivers": [
+            {
+              "id": "f1f724a230f7",
+              "industry": "스테이블코인",
+              "group": "대표주가",
+              "kind": "대표주가(주식 가격)",
+              "name": "Circle(CRCL)",
+              "value": "$64.07",
+              "observed_label": "2026.07.08",
+              "change_pct": -1.6577157417650867,
+              "change_pct_label": "-1.7%",
+              "yoy_pct": -65.0882747366857,
+              "yoy_pct_label": "-65.1%",
+              "meaning": "Circle 주가는 USDC 유통량과 스테이블코인 결제 시장 성장 기대를 보여줍니다."
+            },
+            {
+              "id": "3054b46e95f2",
+              "industry": "스테이블코인",
+              "group": "대표주가",
+              "kind": "대표주가(주식 가격)",
+              "name": "Coinbase(COIN)",
+              "value": "$159.4",
+              "observed_label": "2026.07.08",
+              "change_pct": -2.5380674184481533,
+              "change_pct_label": "-2.5%",
+              "yoy_pct": -49.359687510243155,
+              "yoy_pct_label": "-49.4%",
+              "meaning": "Coinbase 주가는 암호자산 거래와 스테이블코인 관련 수익 기대를 보여줍니다."
+            }
+          ]
+        },
+        {
+          "industry": "은행/금융",
+          "score": -5.27,
+          "drivers": [
+            {
+              "id": "98de535a0a23",
+              "industry": "은행/금융",
+              "group": "대표주가",
+              "kind": "대표주가(주식 가격)",
+              "name": "KB금융(105560.KS)",
+              "value": "173,700원",
+              "observed_label": "2026.07.09",
+              "change_pct": 1.5789473684210575,
+              "change_pct_label": "+1.6%",
+              "yoy_pct": 56.62759242560866,
+              "yoy_pct_label": "+56.6%",
+              "meaning": "KB금융 주가는 국내 금리, 대출 성장, 은행 건전성에 대한 시장 평가를 보여줍니다."
+            },
+            {
+              "id": "e571cc471e26",
+              "industry": "은행/금융",
+              "group": "신용 스프레드",
+              "kind": "금융여건 지표",
+              "name": "한국 회사채 AA- 3Y-국고채 3Y 스프레드",
+              "value": "0.70%",
+              "observed_label": "2026.07.08",
+              "change_pct": 0.8670520231213841,
+              "change_pct_label": "+0.9%",
+              "yoy_pct": 41.86991869918699,
+              "yoy_pct_label": "+41.9%",
+              "meaning": "한국 회사채 AA- 3년 금리와 국고채 3년 금리의 차이로 국내 우량 기업 신용위험과 자금조달 여건을 확인합니다."
+            }
+          ]
+        }
+      ],
+      "equity_leads": [
+        {
+          "industry": "데이터인프라",
+          "equity_score": -1.98,
+          "fundamental_score": 149.94,
+          "gap": -151.92,
+          "drivers": [
+            {
+              "id": "978b7b09e6c6",
+              "industry": "데이터인프라",
+              "group": "대표주가",
+              "kind": "대표주가(주식 가격)",
+              "name": "NAVER(035420.KS)",
+              "value": "187,800원",
+              "observed_label": "2026.07.09",
+              "change_pct": -2.5428126621691693,
+              "change_pct_label": "-2.5%",
+              "yoy_pct": -20.085106382978722,
+              "yoy_pct_label": "-20.1%",
+              "meaning": "NAVER 주가는 국내 클라우드, AI, 인터넷 서비스 성장에 대한 시장 기대를 보여줍니다."
+            },
+            {
+              "id": "07d2875ecb6d",
+              "industry": "데이터인프라",
+              "group": "CAPEX",
+              "kind": "설비투자(CAPEX)",
+              "name": "CoreWeave",
+              "value": "$7.70B",
+              "observed_label": "2026.03.31",
+              "change_pct": 446.90831556503196,
+              "change_pct_label": "+446.9%",
+              "yoy_pct": 446.90831556503196,
+              "yoy_pct_label": "+446.9%",
+              "meaning": "CoreWeave의 CAPEX는 데이터센터, 서버, AI 인프라 같은 장기 설비투자 규모를 보여줍니다. 투자가 커질수록 클라우드와 AI 인프라 수요가 강하다는 신호로 볼 수 있습니다."
+            }
+          ]
+        },
+        {
+          "industry": "방산",
+          "equity_score": -4.58,
+          "fundamental_score": 87.37,
+          "gap": -91.95,
+          "drivers": [
+            {
+              "id": "f1309b1d96bf",
+              "industry": "방산",
+              "group": "대표주가",
+              "kind": "대표주가(주식 가격)",
+              "name": "한화에어로스페이스(012450.KS)",
+              "value": "960,000원",
+              "observed_label": "2026.07.09",
+              "change_pct": -7.78097982708934,
+              "change_pct_label": "-7.8%",
+              "yoy_pct": -3.6144578313253017,
+              "yoy_pct_label": "-3.6%",
+              "meaning": "한화에어로스페이스 주가는 방산 수주와 항공우주 성장 기대를 보여줍니다."
+            },
+            {
+              "id": "a18e2f273c59",
+              "industry": "방산",
+              "group": "수출",
+              "kind": "수출 지표",
+              "name": "한국 수출 무기류/탄약(9306)",
+              "value": "$0.10B",
+              "observed_label": "2026.05",
+              "change_pct": 447.62120260448563,
+              "change_pct_label": "+447.6%",
+              "yoy_pct": -41.123424869418116,
+              "yoy_pct_label": "-41.1%",
+              "meaning": "무기류/탄약 수출은 해당 품목의 대외 수요와 가격/물량 사이클을 확인하는 지표입니다."
+            }
+          ]
+        },
+        {
+          "industry": "바이오",
+          "equity_score": -1.75,
+          "fundamental_score": 20.0,
+          "gap": -21.76,
+          "drivers": [
+            {
+              "id": "95cabb4c530d",
+              "industry": "바이오",
+              "group": "대표주가",
+              "kind": "대표주가(주식 가격)",
+              "name": "삼성바이오로직스(207940.KS)",
+              "value": "1,337,000원",
+              "observed_label": "2026.07.09",
+              "change_pct": -1.9075568598679427,
+              "change_pct_label": "-1.9%",
+              "yoy_pct": -18.50298455389261,
+              "yoy_pct_label": "-18.5%",
+              "meaning": "삼성바이오로직스 주가는 바이오의약품 위탁생산 수요와 증설 기대를 보여줍니다."
+            },
+            {
+              "id": "338fa22c1a4c",
+              "industry": "바이오",
+              "group": "승인 이벤트",
+              "kind": "산업 활동 지표",
+              "name": "FDA 의약품 승인 활동",
+              "value": "613.0 건",
+              "observed_label": "2026.06",
+              "change_pct": 133.96946564885494,
+              "change_pct_label": "+134.0%",
+              "yoy_pct": 59.22077922077922,
+              "yoy_pct_label": "+59.2%",
+              "meaning": "FDA 의약품 승인 관련 기록 수로 바이오 규제 이벤트와 신약 모멘텀을 확인합니다."
+            }
+          ]
+        }
+      ],
+      "source_issues": [
+        {
+          "name": "KOSIS",
+          "status": "partial",
+          "message": "0/3개 지표 자동 수집"
+        },
+        {
+          "name": "시장 수급",
+          "status": "partial",
+          "message": "0/1개 지표 자동 수집"
+        }
+      ],
+      "id": "2026-07-09-morning-da26653260",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-07-09T13:09:06+09:00",
+      "low_signal": false,
+      "trajectory": {
+        "movers": [],
+        "yen_carry_risk": false,
+        "summary": ""
+      }
+    }
+  ]
+}
