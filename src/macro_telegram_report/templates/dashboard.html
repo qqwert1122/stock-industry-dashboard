@@ -3298,32 +3298,26 @@
 
     .detail-measurements {
       display: flex;
-      align-items: baseline;
+      align-items: flex-end;
       flex-wrap: wrap;
-      gap: 7px 18px;
+      gap: 8px 20px;
     }
 
-    .detail-value-card,
-    .detail-change-card {
+    .detail-value-card {
       min-width: 0;
-      display: inline-flex;
-      align-items: baseline;
-      gap: 7px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: flex-end;
+      gap: 4px;
+      text-align: right;
     }
 
     .detail-field-label {
       color: var(--muted);
       font-size: 12px;
       line-height: 1.25;
-      font-weight: 700;
-    }
-
-    .detail-change-list {
-      display: inline-flex;
-      align-items: baseline;
-      flex-wrap: wrap;
-      gap: 7px 18px;
-      min-width: 0;
+      font-weight: 500;
     }
 
     .detail-actions-row {
@@ -3388,11 +3382,12 @@
     .detail-current-value {
       display: flex;
       align-items: baseline;
+      justify-content: flex-end;
       min-width: 0;
       color: var(--text);
-      font-size: 22px;
+      font-size: 24px;
       line-height: 1.1;
-      font-weight: 760;
+      font-weight: 800;
       letter-spacing: 0;
       overflow-wrap: anywhere;
     }
@@ -3417,9 +3412,13 @@
     }
 
     .detail-delta {
-      display: grid;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: flex-end;
       gap: 4px;
       min-width: 86px;
+      text-align: right;
     }
 
     .detail-delta-label {
@@ -5376,12 +5375,8 @@
 
       .detail-measurements {
         display: flex;
+        align-items: flex-end;
         gap: 7px 14px;
-      }
-
-      .detail-change-list {
-        display: inline-flex;
-        gap: 7px 13px;
       }
 
       .detail-actions-row {
@@ -5427,7 +5422,7 @@
       }
 
       .detail-current-value {
-        font-size: 22px;
+        font-size: 24px;
       }
 
       .detail-deltas {
@@ -9463,14 +9458,9 @@
           <span class="detail-field-label">${escapeHtml(t("currentValue"))}</span>
           <div class="detail-current-value">${detailCurrentValueMarkup(metric)}</div>
         </div>
-        <div class="detail-change-card">
-          <span class="detail-field-label">${escapeHtml(t("tooltipChange"))}</span>
-          <div class="detail-change-list">
-            ${detailDelta(t("previousChange"), displayMetricChange(metric), metric.change_abs)}
-            ${detailDelta(t("previousChangePct"), metric.change_pct_label, metric.change_pct)}
-            ${detailDelta(t("yoy"), metric.yoy_pct_label, metric.yoy_pct)}
-          </div>
-        </div>
+        ${detailDelta(t("previousChange"), displayMetricChange(metric), metric.change_abs)}
+        ${detailDelta(t("previousChangePct"), metric.change_pct_label, metric.change_pct)}
+        ${detailDelta(t("yoy"), metric.yoy_pct_label, metric.yoy_pct)}
       </div>`;
     }
 
