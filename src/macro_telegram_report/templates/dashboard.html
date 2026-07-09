@@ -3213,10 +3213,132 @@
     }
 
     .metric-detail-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 18px 0 20px;
+    }
+
+    .detail-title-block {
       display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: 12px;
-      padding: 16px 0 18px;
+      gap: 9px;
+      min-width: 0;
+    }
+
+    .detail-title {
+      margin: 0;
+      color: var(--text);
+      font-size: 36px;
+      line-height: 1.08;
+      font-weight: 400;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .detail-description {
+      margin: 0;
+      max-width: 880px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.62;
+      font-weight: 500;
+    }
+
+    .detail-interpretation-row {
+      display: grid;
+      grid-template-columns: 64px minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+      padding: 0;
+    }
+
+    .detail-interpretation-label {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+      font-weight: 700;
+    }
+
+    .detail-interpretation-content {
+      display: flex;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 7px 10px;
+      min-width: 0;
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.62;
+      font-weight: 520;
+    }
+
+    .detail-interpretation-text {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .detail-measurements {
+      display: grid;
+      grid-template-columns: minmax(150px, 0.82fr) minmax(0, 1fr);
+      gap: 14px 20px;
+      align-items: start;
+    }
+
+    .detail-value-card,
+    .detail-change-card {
+      min-width: 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .detail-field-label {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .detail-change-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 22px;
+      min-width: 0;
+    }
+
+    .detail-actions-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .detail-chart-section {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .detail-period-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .detail-period-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      max-width: 100%;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--chip-radius);
+      background: var(--menu);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 700;
+      overflow-wrap: anywhere;
     }
 
     .detail-stats {
@@ -3284,8 +3406,8 @@
     .detail-deltas {
       display: flex;
       flex-wrap: wrap;
-      gap: 16px 30px;
-      margin-top: 18px;
+      gap: 10px 22px;
+      margin-top: 0;
     }
 
     .detail-delta {
@@ -3553,7 +3675,7 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 8px;
-      margin: 0 0 10px;
+      margin: 0;
     }
 
     .detail-icon-button,
@@ -5213,8 +5335,47 @@
       }
 
       .metric-detail-inner {
-        gap: 8px;
-        padding: 10px 0 12px;
+        gap: 13px;
+        padding: 13px 0 15px;
+      }
+
+      .detail-title-block {
+        gap: 7px;
+      }
+
+      .detail-title {
+        font-size: 36px;
+        line-height: 1.04;
+      }
+
+      .detail-description,
+      .detail-interpretation-content {
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .detail-interpretation-row {
+        grid-template-columns: 46px minmax(0, 1fr);
+        gap: 10px;
+      }
+
+      .detail-interpretation-label {
+        font-size: 12px;
+      }
+
+      .detail-measurements {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+      }
+
+      .detail-change-list {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .detail-actions-row {
+        gap: 7px;
       }
 
       .detail-chart {
@@ -5263,7 +5424,7 @@
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 10px;
-        margin-top: 14px;
+        margin-top: 0;
       }
 
       .detail-delta {
@@ -5276,8 +5437,8 @@
       }
 
       .detail-meta-strip {
-        gap: 6px 16px;
-        padding: 11px 12px;
+        gap: 7px 15px;
+        padding: 10px 11px;
       }
 
       .detail-meta-item {
@@ -5285,6 +5446,16 @@
       }
 
       .detail-meta-value {
+        font-size: 11.5px;
+      }
+
+      .detail-period-row {
+        gap: 7px;
+      }
+
+      .detail-period-chip {
+        min-height: 26px;
+        padding: 0 10px;
         font-size: 11.5px;
       }
 
@@ -5855,7 +6026,7 @@
     .pct-band { fill: rgba(59, 130, 246, 0.08); }
     body.theme-dark .pct-band { fill: rgba(96, 165, 250, 0.1); }
     .pct-band-median { stroke: rgba(59, 130, 246, 0.55); stroke-width: 1; stroke-dasharray: 4 4; }
-    .detail-range-toggle { display: flex; gap: 6px; margin: 10px 0 0; }
+    .detail-range-toggle { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
     .detail-range-toggle[hidden] { display: none; }
     .detail-range-toggle button {
       border: 1px solid var(--line);
@@ -8730,7 +8901,6 @@
 
     function detailMetaStrip(metric) {
       return `<div class="detail-meta-strip">
-        ${detailMetaItem(t("visiblePeriod"), displayPeriodLabel(metric))}
         ${detailMetaItem(t("dataAsOf"), dateText(metric.observed_label || metric.observed_at, metric))}
         ${detailMetaItem(t("lastChecked"), lastCheckedText(metric), metric.fetch_status === "failed" ? "negative" : "")}
         ${detailMetaItem(t("nextUpdate"), dateText(metric.next_update_label, metric))}
@@ -8738,14 +8908,22 @@
       </div>`;
     }
 
-    function displayPeriodLabel(metric) {
-      const history = Array.isArray(metric?.history) ? metric.history : [];
+    function displayPointsPeriodLabel(points, metric) {
+      const history = Array.isArray(points) ? points : [];
       if (history.length) {
         const start = fullDateText(history[0].date, metric);
         const end = fullDateText(history[history.length - 1].date, metric);
         return start === end ? start : `${start} - ${end}`;
       }
       return fullDateText(metric?.observed_label || metric?.observed_at || "", metric);
+    }
+
+    function displayPeriodLabel(metric) {
+      return displayPointsPeriodLabel(metric?.history, metric);
+    }
+
+    function detailPeriodChip(metric) {
+      return `<div class="detail-period-chip" data-period-chip="${escapeHtml(metric.id)}">${escapeHtml(displayPeriodLabel(metric))}</div>`;
     }
 
     function fetchStatusText(metric) {
@@ -9232,44 +9410,44 @@
       const headline = item.headline || item.meaning_text || item.text || "";
       const level = item.level_label || zone;
       const detail = item.detail_text || item.trend_label || "";
-      const structured = Boolean(item.headline || item.detail_text || item.source === "threshold" || item.source === "flow");
-      if (structured) {
-        return `<div class="metric-interpretation">
-          <div class="interpretation-head">
-            <span>${escapeHtml(localizedText(item.caption || "계산 기반 해석"))}</span>
-            <span class="interpretation-zone ${escapeHtml(zone)}">${escapeHtml(localizedText(level))}</span>
-          </div>
-          <div class="interpretation-grid">
-            <div class="interpretation-cell">
-              <span class="interpretation-label">${escapeHtml(t("interpretationColumnSignal"))}</span>
-              <p class="interpretation-text">${escapeHtml(localizedText(headline))}</p>
-            </div>
-            <div class="interpretation-cell">
-              <span class="interpretation-label">${escapeHtml(t("interpretationColumnPosition"))}</span>
-              <p class="interpretation-text">${escapeHtml(localizedText(level))}</p>
-            </div>
-            <div class="interpretation-cell">
-              <span class="interpretation-label">${escapeHtml(t("interpretationColumnMeaning"))}</span>
-              <p class="interpretation-text">${escapeHtml(localizedText(detail || item.text))}</p>
-            </div>
-          </div>
-        </div>`;
-      }
-      return `<div class="metric-interpretation">
-        <div class="interpretation-head">
-          <span>${escapeHtml(localizedText(item.caption || "계산 기반 해석"))}</span>
-          <span class="interpretation-zone ${escapeHtml(zone)}">${escapeHtml(localizedText(item.level_label || zone))}</span>
+      const secondary = detail && detail !== headline && detail !== item.text ? detail : "";
+      return `<div class="detail-interpretation-row">
+        <span class="detail-interpretation-label">${escapeHtml(t("interpretationColumnSignal"))}</span>
+        <div class="detail-interpretation-content">
+          <span class="interpretation-zone ${escapeHtml(zone)}">${escapeHtml(localizedText(level))}</span>
+          <span class="detail-interpretation-text">${escapeHtml(localizedText(headline || item.text))}${secondary ? ` ${escapeHtml(localizedText(secondary))}` : ""}</span>
         </div>
-        <p class="interpretation-text">${escapeHtml(localizedText(item.text))}</p>
+      </div>`;
+    }
+
+    function detailMeasurementsMarkup(metric) {
+      return `<div class="detail-measurements">
+        <div class="detail-value-card">
+          <span class="detail-field-label">${escapeHtml(t("currentValue"))}</span>
+          <div class="detail-current-value">${detailCurrentValueMarkup(metric)}</div>
+        </div>
+        <div class="detail-change-card">
+          <span class="detail-field-label">${escapeHtml(t("tooltipChange"))}</span>
+          <div class="detail-change-list">
+            ${detailDelta(t("previousChange"), displayMetricChange(metric), metric.change_abs)}
+            ${detailDelta(t("previousChangePct"), metric.change_pct_label, metric.change_pct)}
+            ${detailDelta(t("yoy"), metric.yoy_pct_label, metric.yoy_pct)}
+          </div>
+        </div>
       </div>`;
     }
 
     function metricDetail(metric) {
       return `<div class="metric-detail-panel">
         <div class="metric-detail-inner">
+          <div class="detail-title-block">
+            <h3 class="detail-title">${escapeHtml(localizedField(metric, "name"))}</h3>
+            <p class="detail-description">${escapeHtml(localizedField(metric, "meaning") || "")}</p>
+          </div>
           ${interpretationMarkup(metric)}
-          ${noteBlockMarkup(metric)}
-          <div class="detail-toolbar">
+          ${detailMeasurementsMarkup(metric)}
+          ${detailMetaStrip(metric)}
+          <div class="detail-toolbar detail-actions-row">
             ${favoriteButtonMarkup(metric)}
             <button class="detail-icon-button${metricHasNote(metric) ? " note-active" : ""}" type="button" data-note-open="${escapeHtml(metric.id)}">
               <i class="fa-${metricHasNote(metric) ? "solid" : "regular"} fa-note-sticky" aria-hidden="true"></i>
@@ -9285,14 +9463,15 @@
             </button>
           </div>
           ${comparePanelMarkup(metric)}
-          <div class="detail-performance">
-            ${detailSummaryMarkup(metric)}
+          <div class="detail-chart-section">
             <div class="detail-chart-host" data-chart-host="${escapeHtml(metric.id)}">${detailChartForMetric(metric)}</div>
-            <div class="detail-range-toggle" data-range-toggle="${escapeHtml(metric.id)}" hidden>
-              <button type="button" class="is-active" data-range="recent">${escapeHtml(t("rangeRecent"))}</button>
-              <button type="button" data-range="full">${escapeHtml(t("rangeFull"))}</button>
+            <div class="detail-period-row">
+              ${detailPeriodChip(metric)}
+              <div class="detail-range-toggle" data-range-toggle="${escapeHtml(metric.id)}" hidden>
+                <button type="button" class="is-active" data-range="recent">${escapeHtml(t("rangeRecent"))}</button>
+                <button type="button" data-range="full">${escapeHtml(t("rangeFull"))}</button>
+              </div>
             </div>
-            ${detailMetaStrip(metric)}
           </div>
         </div>
       </div>`;
@@ -10505,7 +10684,10 @@
             if (!metric || !host) return;
             toggle.querySelectorAll("button").forEach((other) => other.classList.toggle("is-active", other === button));
             const useFull = button.dataset.range === "full";
-            host.innerHTML = detailChart(useFull ? longHistoryPoints(entry) : metric.history, metric);
+            const points = useFull ? longHistoryPoints(entry) : metric.history;
+            host.innerHTML = detailChart(points, metric);
+            const periodChip = detail.querySelector("[data-period-chip]");
+            if (periodChip) periodChip.textContent = displayPointsPeriodLabel(points, metric);
             bindDetailTooltipsWithin(host);
           });
         });
