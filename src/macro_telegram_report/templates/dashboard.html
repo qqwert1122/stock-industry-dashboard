@@ -117,6 +117,10 @@
       letter-spacing: 0;
     }
 
+    body.has-mover-ticker {
+      padding-bottom: calc(34px + env(safe-area-inset-bottom));
+    }
+
     .offline-banner {
       position: sticky;
       top: 0;
@@ -153,6 +157,7 @@
     body.theme-ready .currency-toggle,
     body.theme-ready .theme-toggle,
     body.theme-ready .scroll-top-button,
+    body.theme-ready .mover-ticker,
     body.theme-ready .industry,
     body.theme-ready .industry-head,
     body.theme-ready .industry-icon-wrap,
@@ -1232,6 +1237,7 @@
       body.theme-ready .currency-toggle,
       body.theme-ready .theme-toggle,
       body.theme-ready .scroll-top-button,
+      body.theme-ready .mover-ticker,
       body.theme-ready .industry,
       body.theme-ready .industry-head,
       body.theme-ready .industry-icon-wrap,
@@ -1250,7 +1256,8 @@
       body.theme-ready .axis-line,
       body.theme-ready .guide,
       body.theme-ready .trend-line,
-      body.theme-ready .current-dot {
+      body.theme-ready .current-dot,
+      .mover-ticker-track {
         transition-duration: 1ms;
       }
 
@@ -1261,6 +1268,16 @@
       .theme-icon.is-exiting,
       .theme-icon.is-entering {
         animation-duration: 1ms;
+      }
+
+      .mover-ticker-track {
+        animation: none;
+      }
+
+      .mover-ticker-viewport {
+        overflow-x: auto;
+        -webkit-mask-image: none;
+        mask-image: none;
       }
     }
 
@@ -1273,6 +1290,111 @@
     .daily-updates {
       min-width: 0;
       margin: 4px 0 18px;
+    }
+
+    .mover-ticker {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 70;
+      min-width: 0;
+      background: color-mix(in srgb, var(--surface) 94%, transparent);
+      color: var(--text);
+      box-shadow: 0 -8px 18px rgba(0, 0, 0, 0.045);
+      backdrop-filter: saturate(120%) blur(10px);
+      -webkit-backdrop-filter: saturate(120%) blur(10px);
+    }
+
+    .mover-ticker[hidden] {
+      display: none;
+    }
+
+    body.theme-dark .mover-ticker {
+      background: color-mix(in srgb, var(--surface) 94%, transparent);
+      box-shadow: 0 -8px 20px rgba(0, 0, 0, 0.22);
+    }
+
+    .mover-ticker-viewport {
+      width: 100%;
+      min-width: 0;
+      overflow: hidden;
+      padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
+      -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+      mask-image: linear-gradient(90deg, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+    }
+
+    .mover-ticker-track {
+      display: flex;
+      width: max-content;
+      min-width: 100%;
+      will-change: transform;
+      animation: moverTickerFlow 58s linear infinite;
+    }
+
+    .mover-ticker:hover .mover-ticker-track,
+    .mover-ticker:focus-within .mover-ticker-track {
+      animation-play-state: paused;
+    }
+
+    .mover-ticker-group {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 24px;
+      padding-right: 24px;
+    }
+
+    .mover-ticker-item {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 6px;
+      min-width: 0;
+      height: 22px;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      padding: 0;
+      font: inherit;
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 400;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .mover-ticker-item:hover .mover-ticker-name {
+      color: var(--text);
+    }
+
+    .mover-ticker-name {
+      color: color-mix(in srgb, var(--text) 88%, var(--muted));
+    }
+
+    .mover-ticker-value {
+      color: var(--text);
+    }
+
+    .mover-ticker-change {
+      color: var(--muted);
+    }
+
+    .mover-ticker-change.positive {
+      color: var(--chart-up) !important;
+    }
+
+    .mover-ticker-change.negative {
+      color: var(--chart-down) !important;
+    }
+
+    @keyframes moverTickerFlow {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    body.has-mover-ticker .scroll-top-button {
+      bottom: calc(max(18px, env(safe-area-inset-bottom)) + 34px);
     }
 
     .morning-briefing {
@@ -2591,7 +2713,6 @@
     .calendar-chip.calendar-us_data { color: #7c3aed; }
     .calendar-chip.calendar-expiry { color: #c2410c; }
     .calendar-chip.calendar-holiday { color: #64748b; }
-    .calendar-chip.calendar-site_update { color: #047857; }
 
     .calendar-main {
       min-width: 0;
@@ -4571,6 +4692,10 @@
         font-size: 16px;
       }
 
+      body.has-mover-ticker .scroll-top-button {
+        bottom: calc(max(18px, env(safe-area-inset-bottom)) + 38px);
+      }
+
       .currency-toggle .toggle-label,
       .theme-toggle .toggle-label {
         display: inline;
@@ -5862,6 +5987,7 @@
       <div class="empty" id="empty" data-i18n="empty">표시할 지표가 없습니다.</div>
     </section>
   </main>
+  <section class="mover-ticker" id="moverTicker" hidden></section>
 
   <script>
     const DASHBOARD_DATA = __DASHBOARD_JSON__;
@@ -6100,7 +6226,6 @@
         calendarUsData: "미 지표",
         calendarExpiry: "만기",
         calendarHoliday: "휴장",
-        calendarSiteUpdate: "지표",
         calendarEvent: "일정",
         metricSearch: "지표 검색",
         metricSearchPlaceholder: "지표명, 업종, 주체, 출처 검색",
@@ -6119,6 +6244,8 @@
         compareRecent: "최근 비교",
         compareShortRange: "비교 가능 구간이 짧습니다",
         compareFlowBadge: "20일 누적",
+        compareLimitCount: "최대 4개 지표까지 비교할 수 있습니다.",
+        compareUnitLimit: "원단위 비교는 2개 지표까지만 가능합니다.",
         compareLimitRaw: "음수 값 지표는 2개까지만 원단위 비교",
         compareNeedsPositive: "표시 구간에 0 이하 값이 있어 =100 비교를 사용할 수 없습니다"
       },
@@ -6287,7 +6414,6 @@
         calendarUsData: "US data",
         calendarExpiry: "Expiry",
         calendarHoliday: "Holiday",
-        calendarSiteUpdate: "Metric",
         calendarEvent: "Event",
         metricSearch: "Search metrics",
         metricSearchPlaceholder: "Search metric, sector, investor, source",
@@ -6306,6 +6432,8 @@
         compareRecent: "Recent",
         compareShortRange: "Comparable window is short",
         compareFlowBadge: "20d sum",
+        compareLimitCount: "Up to 4 metrics can be compared.",
+        compareUnitLimit: "Raw-unit comparison is limited to two metrics.",
         compareLimitRaw: "Negative-value metrics are limited to two raw series",
         compareNeedsPositive: "=100 is unavailable because the visible range includes zero or negative values"
       }
@@ -6565,14 +6693,12 @@
       "FOMC 결정": "FOMC decision",
       "한국은행 금통위": "BOK rate decision",
       "한국 옵션만기": "Korea options expiry",
-      "VIX 갱신 예정": "VIX update due",
       "NYSE 휴장": "NYSE holiday",
       "미국 PCE 발표": "US PCE release",
       "인플레이션 방향 확인": "Check inflation direction",
       "금리와 유동성 기대가 크게 움직일 수 있는 날": "Rates and liquidity expectations may move sharply",
       "국내 금리 민감 업종을 볼 때 중요": "Important for Korea rate-sensitive sectors",
       "수급 변동성이 커질 수 있는 날": "Market flows may become more volatile",
-      "대시보드 지표 발표 예정일": "Scheduled dashboard metric update",
       "미국 주식시장 휴장": "US stock market holiday",
       "연준이 선호하는 물가 지표": "Inflation gauge preferred by the Fed",
       "공포 구간 더미 시그널입니다.": "Dummy fear-zone signal triggered.",
@@ -6587,6 +6713,104 @@
       "미국 성장률 추정치가 1% 아래로 둔화됐습니다.": "The US growth estimate has slowed below 1%.",
       "바이오 Phase 3 임상 시작 변화가 눈에 띕니다.": "Biotech Phase 3 trial starts stand out."
     };
+    const englishMarketFallbacks = {
+      "코스피": "KOSPI",
+      "코스닥": "KOSDAQ",
+      "K200 선물": "K200 Futures",
+      "선물": "Futures",
+      "한국": "Korea",
+      "미국": "US",
+      "중국": "China",
+      "일본": "Japan",
+      "유럽": "Europe",
+      "동남아": "Southeast Asia",
+      "글로벌": "Global",
+      "전세계": "Global"
+    };
+    const englishInvestorFallbacks = {
+      "개인": "Retail Investors",
+      "외국인": "Foreign Investors",
+      "기관합계": "Institutions Total",
+      "기관": "Institutions",
+      "금융투자": "Financial Investment",
+      "보험": "Insurance",
+      "투신": "Investment Trusts",
+      "사모": "Private Funds",
+      "은행": "Banks",
+      "기타금융": "Other Financials",
+      "연기금": "Pension Funds",
+      "기타법인": "Other Corporations"
+    };
+    const englishFlowMeasureFallbacks = {
+      "20일 누적 순매수": "20d Net Buying",
+      "순매수": "Net Buying",
+      "매수": "Buying",
+      "매도": "Selling"
+    };
+    const englishPhraseFallbacks = [
+      ["한국장 마감", "Korea market close"],
+      ["미국장 마감", "US market close"],
+      ["공포탐욕지수", "Fear & Greed Index"],
+      ["경기침체", "Recession"],
+      ["시장온도계", "Market Thermometer"],
+      ["시장 온도계", "Market Thermometer"],
+      ["종합", "Overview"],
+      ["수급", "Flows"],
+      ["신용·예탁금", "Credit/Cash"],
+      ["금리·채권", "Rates/Bonds"],
+      ["원자재·크립토", "Commodities/Crypto"],
+      ["심리·변동성", "Sentiment/Volatility"],
+      ["밸류에이션", "Valuation"],
+      ["캘린더", "Calendar"],
+      ["대표주가", "Representative Stocks"],
+      ["대표 주가", "Representative Stocks"],
+      ["시장지수", "Market Indexes"],
+      ["월매출", "Monthly Revenue"],
+      ["판매액", "Sales"],
+      ["판매량", "Sales Volume"],
+      ["매출", "Revenue"],
+      ["수출", "Exports"],
+      ["가격", "Price"],
+      ["기준금리", "Policy Rate"],
+      ["국채금리", "Treasury Yield"],
+      ["금리차", "Yield Spread"],
+      ["회사채", "Corporate Bond"],
+      ["하이일드", "High Yield"],
+      ["스프레드", "Spread"],
+      ["환율", "Exchange Rate"],
+      ["유가", "Crude Oil Price"],
+      ["철광석", "Iron Ore"],
+      ["구리", "Copper"],
+      ["알루미늄", "Aluminum"],
+      ["리튬", "Lithium"],
+      ["배터리", "Battery"],
+      ["전력수요", "Power Demand"],
+      ["전력 수요", "Power Demand"],
+      ["주택착공", "Housing Starts"],
+      ["건축허가", "Building Permits"],
+      ["미분양 주택", "Unsold Homes"],
+      ["주택가격지수", "House Price Index"],
+      ["발표", "Release"],
+      ["결정", "Decision"],
+      ["휴장", "Holiday"],
+      ["만기", "Expiry"],
+      ["갱신 예정", "Scheduled update"],
+      ["갱신", "Update"],
+      ["예정", "Scheduled"],
+      ["최근", "Recent"],
+      ["누적", "Cumulative"],
+      ["증가율", "Growth Rate"],
+      ["변화율", "Change Rate"],
+      ["변화", "Change"],
+      ["지표", "Metric"],
+      ["흐름", "Trend"],
+      ["위험", "Risk"],
+      ["주의", "Watch"],
+      ["안정", "Stable"],
+      ["낮음", "Low"],
+      ["보통", "Moderate"],
+      ["높음", "High"]
+    ];
 
     function metricById(metricId) {
       return (DASHBOARD_DATA.metrics || []).find((metric) => metric.id === metricId) || null;
@@ -7121,14 +7345,116 @@
       return /[가-힣]/.test(String(value || ""));
     }
 
+    function englishFallbackSentence(text) {
+      if (/순매수|매수|매도|수급|외국인|개인|기관/.test(text)) {
+        return "Tracks investor trading flows and helps show which group is buying or selling the market.";
+      }
+      if (/공포|탐욕|심리|변동성/.test(text)) {
+        return "Shows market sentiment and risk appetite.";
+      }
+      if (/침체|경기|실업|성장/.test(text)) {
+        return "Helps read the economic cycle and recession risk.";
+      }
+      if (/금리|스프레드|채권|회사채/.test(text)) {
+        return "Tracks rates, credit conditions, and funding stress.";
+      }
+      if (/환율|원\/달러/.test(text)) {
+        return "Tracks currency moves that affect exporters, foreign flows, and market liquidity.";
+      }
+      if (/가격|원자재|유가|철광석|구리|알루미늄|리튬/.test(text)) {
+        return "Tracks price movements that affect costs, margins, and demand expectations.";
+      }
+      if (/판매|매출|수출|CAPEX|투자/.test(text)) {
+        return "Tracks demand and investment momentum for the related industry.";
+      }
+      if (/캘린더|일정|발표|결정|휴장|만기/.test(text)) {
+        return "Scheduled market event.";
+      }
+      return "Market indicator used to track investment conditions.";
+    }
+
+    function englishGenericText(value, fallback = "Market indicator") {
+      const original = String(value || "");
+      if (!original) return "";
+      if (!hasHangul(original)) return original;
+      if (englishTextFallbacks[original]) return englishTextFallbacks[original];
+      if (englishMeaningFallbacks[original]) return englishMeaningFallbacks[original];
+      if (englishMetricNameFallbacks[original]) return englishMetricNameFallbacks[original];
+      if (englishIndustryFallbacks[original]) return englishIndustryFallbacks[original];
+      if (englishGroupFallbacks[original]) return englishGroupFallbacks[original];
+      if (englishDepthFallbacks[original]) return englishDepthFallbacks[original];
+
+      const flowMatch = original.match(/^(코스피|코스닥|K200 선물|선물)?\s*(개인|외국인|기관합계|기관|금융투자|보험|투신|사모|은행|기타금융|연기금|기타법인)\s+(20일 누적 순매수|순매수|매수|매도)$/);
+      if (flowMatch) {
+        const market = flowMatch[1] ? `${englishMarketFallbacks[flowMatch[1]] || flowMatch[1]} ` : "";
+        return `${market}${englishInvestorFallbacks[flowMatch[2]] || flowMatch[2]} ${englishFlowMeasureFallbacks[flowMatch[3]] || flowMatch[3]}`.trim();
+      }
+
+      const exportMatch = original.match(/^한국 수출 (.+)\(([^)]+)\)$/);
+      if (exportMatch) {
+        const item = englishGenericText(exportMatch[1], "Export Item");
+        return `Korea Exports: ${item} (${exportMatch[2]})`;
+      }
+
+      const stockMatch = original.match(/^(.+) 주가$/);
+      if (stockMatch) {
+        const company = englishGenericText(stockMatch[1], "Company");
+        return `${company} Stock Price`;
+      }
+
+      const releaseMatch = original.match(/^미국 (.+) 발표$/);
+      if (releaseMatch) return `US ${englishGenericText(releaseMatch[1], "Data")} release`;
+
+      let translated = original;
+      Object.entries(englishInvestorFallbacks)
+        .sort((a, b) => b[0].length - a[0].length)
+        .forEach(([source, target]) => {
+          translated = translated.replaceAll(source, target);
+        });
+      Object.entries(englishFlowMeasureFallbacks)
+        .sort((a, b) => b[0].length - a[0].length)
+        .forEach(([source, target]) => {
+          translated = translated.replaceAll(source, target);
+        });
+      englishPhraseFallbacks
+        .sort((a, b) => b[0].length - a[0].length)
+        .forEach(([source, target]) => {
+          translated = translated.replaceAll(source, target);
+        });
+      Object.entries(englishMarketFallbacks)
+        .sort((a, b) => b[0].length - a[0].length)
+        .forEach(([source, target]) => {
+          translated = translated.replaceAll(source, target);
+        });
+      translated = translated
+        .replace(/(\d+)일/g, "$1d")
+        .replace(/(\d+)년/g, "$1y")
+        .replace(/(\d+)개월/g, "$1mo")
+        .replace(/에서/g, " in ")
+        .replace(/동안/g, " for ")
+        .replace(/입니다|합니다|하세요|됩니다|합니다\.|입니다\./g, "")
+        .replace(/[가-힣]+/g, "")
+        .replace(/[·]/g, "/")
+        .replace(/\s*\/\s*/g, "/")
+        .replace(/\s+/g, " ")
+        .trim();
+      if (translated && !hasHangul(translated)) return localizedValueLabel(translated);
+      return fallback || englishFallbackSentence(original);
+    }
+
+    function ensureEnglish(value, fallback = "Market indicator") {
+      const text = String(value || "");
+      if (state.language !== "en" || !text) return text;
+      return hasHangul(text) ? englishGenericText(text, fallback) : text;
+    }
+
     function englishMetricName(value) {
       const text = String(value || "");
       if (!text) return "";
       if (englishMetricNameFallbacks[text]) return englishMetricNameFallbacks[text];
-      const updateMatch = text.match(/^(.+) 갱신 예정$/);
-      if (updateMatch) return `${englishMetricName(updateMatch[1])} update due`;
       const usReleaseMatch = text.match(/^미국 (.+) 발표$/);
       if (usReleaseMatch) return `US ${usReleaseMatch[1]} release`;
+      if (hasHangul(text)) return englishGenericText(text, "Metric");
       return text;
     }
 
@@ -7164,7 +7490,8 @@
       if (englishGroupFallbacks[text]) return englishGroupFallbacks[text];
       if (englishDepthFallbacks[text]) return englishDepthFallbacks[text];
       if (englishFrequencyFallbacks[text]) return englishFrequencyFallbacks[text];
-      return localizedValueLabel(englishMetricName(text));
+      const translated = localizedValueLabel(englishMetricName(text));
+      return hasHangul(translated) ? englishGenericText(translated, englishFallbackSentence(text)) : translated;
     }
 
     function localizedMeaning(item) {
@@ -7177,19 +7504,20 @@
       if (raw.includes("흐름을 이해할 때 참고하는 보조 지표입니다.")) {
         return `Proxy indicator used to monitor ${industry || "sector"} trends.`;
       }
-      return localizedText(raw);
+      const translated = localizedText(raw);
+      return hasHangul(translated) ? englishFallbackSentence(raw) : translated;
     }
 
     function localizedIndustry(industry) {
       if (state.language !== "en") return industry || "";
-      return DASHBOARD_DATA.industry_labels_en?.[industry] || englishIndustryFallbacks[industry] || industry || "";
+      return ensureEnglish(DASHBOARD_DATA.industry_labels_en?.[industry] || englishIndustryFallbacks[industry] || industry || "", "Industry");
     }
 
     function localizedField(item, field) {
       if (!item) return "";
       if (state.language !== "en") return item[field] || "";
       const translated = item[`${field}_en`];
-      if (translated) return translated;
+      if (translated) return ensureEnglish(translated, field === "meaning" ? englishFallbackSentence(item[field] || "") : "Metric");
       if (field === "name") return englishMetricName(item.name);
       if (field === "meaning") return localizedMeaning(item);
       if (field === "industry") return localizedIndustry(item.industry);
@@ -7206,13 +7534,13 @@
     function localizedGroup(group, items = []) {
       if (state.language !== "en") return group || "";
       const first = items.find((item) => item.group === group && item.group_en);
-      return first?.group_en || englishGroupFallbacks[group] || group || "";
+      return ensureEnglish(first?.group_en || englishGroupFallbacks[group] || group || "", "Group");
     }
 
     function localizedDepth(depth, items = []) {
       if (state.language !== "en") return depth || "";
       const first = items.find((item) => item.depth === depth && item.depth_en);
-      return first?.depth_en || englishDepthFallbacks[depth] || depth || "";
+      return ensureEnglish(first?.depth_en || englishDepthFallbacks[depth] || depth || "", "Section");
     }
 
     function localizedUnit(metric) {
@@ -9064,7 +9392,7 @@
       if (!baseMetric || metricId === baseMetric.id || state.compareMetricIds.includes(metricId)) return;
       const proposed = [...state.compareMetricIds, metricId].slice(0, 3);
       if (proposed.length !== state.compareMetricIds.length + 1) {
-        state.compareWarning = "최대 4개 지표까지 비교할 수 있습니다.";
+        state.compareWarning = t("compareLimitCount");
         refreshMetricDetail(baseMetric.id);
         return;
       }
@@ -9132,7 +9460,7 @@
       const series = compareSeries(baseMetric);
       const visible = filterCompareSeries(series, compareTimeWindow(series));
       if (mode === "raw" && visible.length > 2) {
-        state.compareWarning = "원단위 비교는 2개 지표까지만 가능합니다.";
+        state.compareWarning = t("compareUnitLimit");
       } else if (mode === "indexed" && !compareAllPositive(visible)) {
         state.compareWarning = t("compareNeedsPositive");
       } else {
@@ -9556,14 +9884,18 @@
       return {
         morning: "Morning",
         intraday: "Intraday",
-        close: "Close"
+        close: "Korea close",
+        us_close: "US close"
       }[type] || localizedText(raw);
     }
 
     function briefingChipLabel(card) {
       const source = card.generated_at || card.generated_label || "";
       const time = timeOnlyText(source);
-      return `${briefingCardTypeLabel(card)}${time ? ` ${time}` : ""}`.trim();
+      if (["close", "us_close"].includes(card?.card_type || "")) {
+        return `${briefingCardTypeLabel(card)}${time ? ` ${time}` : ""}`.trim();
+      }
+      return time;
     }
 
     function briefingDateLabel(briefing) {
@@ -10270,7 +10602,8 @@
       const rightAxis = showRightAxis ? `<svg class="chart detail-chart-axis compare-axis-right" viewBox="0 0 ${axisWidth} ${chartHeight}" preserveAspectRatio="none" aria-hidden="true">
           ${axisLabelsForScale(rightScale, "2", "start")}
         </svg>` : "";
-      const warning = windowRange?.days < 180 ? `<div class="compare-warning">${escapeHtml(t("compareShortRange"))}(${windowRange.days}일)</div>` : "";
+      const shortRangeUnit = windowRange?.days < 180 ? (state.language === "en" ? `${windowRange.days}d` : `${windowRange.days}일`) : "";
+      const warning = shortRangeUnit ? `<div class="compare-warning">${escapeHtml(t("compareShortRange"))} (${escapeHtml(shortRangeUnit)})</div>` : "";
       return `<div class="detail-chart compare-chart${showRightAxis ? " has-right-axis" : ""}">
         <svg class="chart detail-chart-axis" viewBox="0 0 ${axisWidth} ${chartHeight}" preserveAspectRatio="none" aria-hidden="true">
           ${leftAxisLabels}
@@ -10347,7 +10680,7 @@
             </div>
           </div>
         </div>
-        ${state.compareWarning ? `<div class="compare-warning">${escapeHtml(state.compareWarning)}</div>` : ""}
+        ${state.compareWarning ? `<div class="compare-warning">${escapeHtml(localizedText(state.compareWarning))}</div>` : ""}
         <div class="compare-search-box">
           <div class="compare-search-row">
             <i class="fa-solid fa-magnifying-glass compare-search-icon" aria-hidden="true"></i>
@@ -10457,8 +10790,15 @@
       </section>`;
     }
 
+    function isMetricUpdateCalendarEvent(event) {
+      const name = String(event?.name || "");
+      const note = String(event?.note || "");
+      return event?.category === "site_update" || name.endsWith("갱신 예정") || note === "대시보드 지표 발표 예정일";
+    }
+
     function calendarEvents() {
-      return Array.isArray(DASHBOARD_DATA.calendar?.events) ? DASHBOARD_DATA.calendar.events : [];
+      const events = Array.isArray(DASHBOARD_DATA.calendar?.events) ? DASHBOARD_DATA.calendar.events : [];
+      return events.filter((event) => !isMetricUpdateCalendarEvent(event));
     }
 
     const calendarCategoryColors = {
@@ -10467,7 +10807,6 @@
       us_data: "#8b6ac9",
       expiry: "#d08a4e",
       holiday: "#8792a2",
-      site_update: "#3f9b75",
       event: "#8a8a8a"
     };
 
@@ -10477,17 +10816,13 @@
         bok: t("calendarBok"),
         us_data: t("calendarUsData"),
         expiry: t("calendarExpiry"),
-        holiday: t("calendarHoliday"),
-        site_update: t("calendarSiteUpdate")
+        holiday: t("calendarHoliday")
       }[category] || t("calendarEvent");
     }
 
     function localizedCalendarEventName(event) {
       if (state.language !== "en") return event?.name || "";
       if (event?.name_en) return event.name_en;
-      if (event?.category === "site_update" && event.metric_id) {
-        return `${localizedMetricName(event.metric_id, event.name)} update due`;
-      }
       return localizedText(event?.name || "");
     }
 
@@ -10893,6 +11228,70 @@
       </section>`;
     }
 
+    function moverTickerMetrics() {
+      return changedMetrics()
+        .filter((metric) => !isGrossFlowMetric(metric))
+        .filter((metric) => (
+          typeof metric.change_pct === "number" && Number.isFinite(metric.change_pct)
+        ) || (
+          typeof metric.change_abs === "number" && Number.isFinite(metric.change_abs)
+        ) || metric.daily_status === "new")
+        .sort((a, b) => {
+          const aPct = typeof a.change_pct === "number" && Number.isFinite(a.change_pct) ? Math.abs(a.change_pct) : -1;
+          const bPct = typeof b.change_pct === "number" && Number.isFinite(b.change_pct) ? Math.abs(b.change_pct) : -1;
+          if (aPct !== bPct) return bPct - aPct;
+          const aAbs = typeof a.change_abs === "number" && Number.isFinite(a.change_abs) ? Math.abs(a.change_abs) : 0;
+          const bAbs = typeof b.change_abs === "number" && Number.isFinite(b.change_abs) ? Math.abs(b.change_abs) : 0;
+          return bAbs - aAbs;
+        })
+        .slice(0, 24);
+    }
+
+    function moverTickerChangeText(metric) {
+      const absolute = displayMetricChange(metric);
+      const pct = metric.change_pct_label || (
+        typeof metric.change_pct === "number" && Number.isFinite(metric.change_pct)
+          ? `${numberText(metric.change_pct, true)}%`
+          : ""
+      );
+      if (absolute && pct) return `${absolute} (${pct})`;
+      if (absolute) return absolute;
+      if (pct) return pct;
+      return metric.daily_status === "new" ? t("newBadge") : "n/a";
+    }
+
+    function moverTickerItemMarkup(metric, duplicate = false) {
+      const change = moverTickerChangeText(metric);
+      const attrs = duplicate ? ` tabindex="-1" aria-hidden="true"` : "";
+      const label = `${localizedField(metric, "name")} ${displayMetricValue(metric)} ${change}`;
+      return `<button class="mover-ticker-item" type="button" data-daily-update-metric="${escapeHtml(metric.id)}"${attrs} aria-label="${escapeHtml(label)}">
+        <span class="mover-ticker-name">${escapeHtml(localizedField(metric, "name"))}</span>
+        <span class="mover-ticker-value">${escapeHtml(displayMetricValue(metric))}</span>
+        <span class="mover-ticker-change ${directionClass(metric.change_pct)}">${escapeHtml(change)}</span>
+      </button>`;
+    }
+
+    function renderMoverTicker() {
+      const section = document.getElementById("moverTicker");
+      if (!section) return;
+      const metrics = state.navRoot === "overview" && !isSearchFiltering() ? moverTickerMetrics() : [];
+      document.body.classList.toggle("has-mover-ticker", Boolean(metrics.length));
+      if (!metrics.length) {
+        section.hidden = true;
+        section.innerHTML = "";
+        return;
+      }
+      const primaryItems = metrics.map((metric) => moverTickerItemMarkup(metric, false)).join("");
+      const duplicateItems = metrics.map((metric) => moverTickerItemMarkup(metric, true)).join("");
+      section.hidden = false;
+      section.innerHTML = `<div class="mover-ticker-viewport" aria-label="${escapeHtml(t("dailyHeatmap"))}">
+        <div class="mover-ticker-track">
+          <div class="mover-ticker-group">${primaryItems}</div>
+          <div class="mover-ticker-group" aria-hidden="true">${duplicateItems}</div>
+        </div>
+      </div>`;
+    }
+
     function renderSearchResultsCards() {
       if (!isSearchFiltering()) return "";
       const metrics = state.searchResults || [];
@@ -10911,6 +11310,7 @@
     function renderDailyUpdates() {
       const section = document.getElementById("dailyUpdates");
       if (!section) return;
+      renderMoverTicker();
       if (isSearchFiltering()) {
         section.innerHTML = renderSearchResultsCards();
         initDailyUpdateLinks();
@@ -10939,8 +11339,7 @@
       const overviewActive = state.navRoot === "overview";
       const scheduleAlerts = overviewActive ? renderScheduleAlerts() : "";
       const gauges = overviewActive ? renderMarketGauges() : "";
-      const heatmap = overviewActive ? renderDailyHeatmap() : "";
-      section.innerHTML = `${renderMorningBriefing()}${favorites}${scheduleAlerts}${gauges}${heatmap}<details class="daily-update-details">
+      section.innerHTML = `${renderMorningBriefing()}${favorites}${scheduleAlerts}${gauges}<details class="daily-update-details">
         <summary class="daily-update-summary">
           <span>${escapeHtml(t("showDailyChanges"))}</span>
           <span class="daily-update-summary-icon" aria-hidden="true">›</span>

@@ -14,6 +14,7 @@ from macro_telegram_report.market_flows import (
     raw_flow_investors,
     raw_flow_series,
     raw_flow_snapshot_path,
+    row_investor_name,
     rolling_sum_series,
     store_raw_flow_rows,
 )
@@ -98,6 +99,20 @@ class MarketFlowsRawSnapshotTest(unittest.TestCase):
         self.assertEqual(flow_row_value(rows[0], "sell"), 1100.0)
         self.assertEqual(raw_flow_series(document, investor="개인", measure="net"), [(date(2026, 7, 8), 150.0)])
         self.assertEqual(rolling_sum_series([(date(2026, 7, 7), 10.0), (date(2026, 7, 8), 20.0)], 20)[-1][1], 30.0)
+
+    def test_main_widget_rows_strip_unit_and_convert_to_억원(self):
+        row = {
+            "TRD_DD": "20260709",
+            "INVST_TP": "외국인(십억원)",
+            "ACC_ASK_TRDVAL": "8,540",
+            "ACC_BID_TRDVAL": "8,643",
+            "NETBID_TRDVAL": "103",
+        }
+
+        self.assertEqual(row_investor_name(row), "외국인")
+        self.assertEqual(flow_row_value(row, "sell"), 85400.0)
+        self.assertEqual(flow_row_value(row, "buy"), 86430.0)
+        self.assertEqual(flow_row_value(row, "net"), 1030.0)
 
     def test_raw_snapshot_round_trip_keeps_existing_metric_output_byte_identical(self):
         rows = load_fixture("krx_flow_stock_rows.json")

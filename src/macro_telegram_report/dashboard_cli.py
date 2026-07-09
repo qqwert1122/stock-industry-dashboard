@@ -26,7 +26,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--briefing-only",
-        choices=["intraday", "close"],
+        choices=["intraday", "close", "us_close"],
         help="기존 dashboard.json을 기반으로 AI/룰 기반 브리핑 카드만 추가 생성합니다.",
     )
     return parser.parse_args(argv)

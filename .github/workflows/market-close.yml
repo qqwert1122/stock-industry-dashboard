@@ -2,9 +2,20 @@ name: Market Close Briefing
 
 on:
   schedule:
+    # 한국장 마감 직후 15:50 KST.
+    - cron: "50 6 * * 1-5"
     # 미국장 마감 이후 06:15 KST 부근. 서머타임/비서머타임 차이는 경량 카드 재생성으로 흡수합니다.
     - cron: "15 21 * * 1-5"
   workflow_dispatch:
+    inputs:
+      card_type:
+        description: "생성할 마감 카드 타입"
+        required: false
+        default: "us_close"
+        type: choice
+        options:
+          - close
+          - us_close
 
 permissions:
   contents: write
@@ -73,7 +84,16 @@ jobs:
       - name: Build close briefing
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: industry-dashboard --config config.yaml --out site --briefing-only close
+          REQUESTED_CARD_TYPE: ${{ inputs.card_type }}
+          EVENT_SCHEDULE: ${{ github.event.schedule }}
+        run: |
+          CARD_TYPE="${REQUESTED_CARD_TYPE:-us_close}"
+          if [ "$EVENT_SCHEDULE" = "50 6 * * 1-5" ]; then
+            CARD_TYPE="close"
+          elif [ "$EVENT_SCHEDULE" = "15 21 * * 1-5" ]; then
+            CARD_TYPE="us_close"
+          fi
+          industry-dashboard --config config.yaml --out site --briefing-only "$CARD_TYPE"
 
       - name: Commit data cache back to repository
         run: |

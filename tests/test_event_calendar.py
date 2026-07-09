@@ -37,7 +37,7 @@ def test_expiry_events_2026() -> None:
     assert quad == ["2026-03-20", "2026-06-18", "2026-09-18", "2026-12-18"]
 
 
-def test_event_calendar_links_cpi_and_metric_update() -> None:
+def test_event_calendar_links_manual_cpi_but_ignores_metric_updates() -> None:
     payload = {
         "metrics": [
             {"id": "metric-cpi", "name": "미국 CPI", "next_update_label": "2026.07.14"},
@@ -50,10 +50,8 @@ def test_event_calendar_links_cpi_and_metric_update() -> None:
     cpi_events = [item for item in calendar["events"] if item["name"] == "미국 CPI 발표"]
     assert cpi_events
     assert cpi_events[0]["metric_id"] == "metric-cpi"
-    assert any(
-        item["name"] == "다른 지표 갱신 예정" and item["metric_id"] == "metric-other"
-        for item in calendar["events"]
-    )
+    assert not any(item["category"] == "site_update" for item in calendar["events"])
+    assert not any("갱신 예정" in item["name"] for item in calendar["events"])
 
 
 def test_event_calendar_missing_yaml_records_fetch_warning(tmp_path: Path) -> None:

@@ -10,13 +10,15 @@ from typing import Any
 
 BRIEFINGS_DIRNAME = "briefings"
 BRIEFING_INDEX_FILENAME = "index.json"
+GEMINI_USAGE_FILENAME = "gemini_usage.json"
 INTRADAY_TRACK_FILENAME = "intraday_track.json"
 BRIEFING_HISTORY_VERSION = 1
 
 CARD_LABELS = {
     "morning": "아침",
     "intraday": "장중",
-    "close": "마감",
+    "close": "한국장 마감",
+    "us_close": "미국장 마감",
 }
 
 
@@ -59,6 +61,10 @@ def build_briefing_card(
     generated_at: str,
     generated_label: str,
     trajectory: dict[str, Any] | None = None,
+    low_signal: bool | None = None,
+    session_context: dict[str, Any] | None = None,
+    gate_reason: str = "",
+    metric_snapshot: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     card = dict(briefing)
     card_type = card_type if card_type in CARD_LABELS else "morning"
@@ -67,7 +73,13 @@ def build_briefing_card(
     card["card_type_label"] = CARD_LABELS[card_type]
     card["generated_at"] = generated_at
     card["generated_label"] = generated_label
-    card["low_signal"] = low_signal_card(card)
+    card["low_signal"] = low_signal_card(card) if low_signal is None else bool(low_signal)
+    if session_context:
+        card["session_context"] = session_context
+    if gate_reason:
+        card["gate_reason"] = gate_reason
+    if metric_snapshot is not None:
+        card["metric_snapshot"] = metric_snapshot
     if trajectory:
         card["trajectory"] = trajectory
     return card
@@ -79,6 +91,10 @@ def day_briefing_path(data_path: Path, date_key: str) -> Path:
 
 def briefing_index_path(data_path: Path) -> Path:
     return data_path / BRIEFINGS_DIRNAME / BRIEFING_INDEX_FILENAME
+
+
+def gemini_usage_path(data_path: Path) -> Path:
+    return data_path / BRIEFINGS_DIRNAME / GEMINI_USAGE_FILENAME
 
 
 def load_day_document(data_path: Path, date_key: str) -> dict[str, Any]:
@@ -103,7 +119,84 @@ def compact_card(card: dict[str, Any]) -> dict[str, Any]:
         "generated_label": str(card.get("generated_label") or ""),
         "headline": str(card.get("headline") or ""),
         "low_signal": bool(card.get("low_signal")),
+        "session_label": str((card.get("session_context") or {}).get("label") or ""),
+        "gate_reason": str(card.get("gate_reason") or ""),
+        "gemini_call_attempted": bool(card.get("gemini_call_attempted")),
     }
+
+
+def load_briefing_index(data_path: Path) -> dict[str, Any]:
+    index = load_json(briefing_index_path(data_path), {})
+    if not isinstance(index, dict):
+        return {"version": BRIEFING_HISTORY_VERSION, "cards": []}
+    cards = index.get("cards")
+    if not isinstance(cards, list):
+        cards = []
+    return {
+        "version": int(index.get("version") or BRIEFING_HISTORY_VERSION),
+        "updated_at": str(index.get("updated_at") or ""),
+        "cards": [card for card in cards if isinstance(card, dict)],
+    }
+
+
+def load_recent_briefing_cards(data_path: Path, *, limit: int = 10) -> list[dict[str, Any]]:
+    cards = load_briefing_index(data_path).get("cards", [])
+    sorted_cards = sorted(cards, key=lambda item: str(item.get("generated_at") or ""), reverse=True)
+    return sorted_cards[:limit] if limit > 0 else sorted_cards
+
+
+def load_latest_briefing_card(data_path: Path) -> dict[str, Any] | None:
+    for summary in load_recent_briefing_cards(data_path, limit=20):
+        date_key = str(summary.get("date") or briefing_date_key(str(summary.get("generated_at") or "")))
+        card_id = str(summary.get("id") or "")
+        day_document = load_day_document(data_path, date_key)
+        for card in reversed(day_document.get("cards", [])):
+            if not isinstance(card, dict):
+                continue
+            if card_id and str(card.get("id") or "") != card_id:
+                continue
+            return card
+    return None
+
+
+def load_gemini_usage(data_path: Path, date_key: str) -> dict[str, Any]:
+    document = load_json(gemini_usage_path(data_path), {})
+    if not isinstance(document, dict):
+        document = {}
+    days = document.get("days")
+    if not isinstance(days, dict):
+        days = {}
+    count = 0
+    day = days.get(date_key)
+    if isinstance(day, dict):
+        try:
+            count = int(day.get("count") or 0)
+        except (TypeError, ValueError):
+            count = 0
+    return {
+        "version": BRIEFING_HISTORY_VERSION,
+        "date": date_key,
+        "count": max(0, count),
+        "days": days,
+    }
+
+
+def increment_gemini_usage(data_path: Path, generated_at: str) -> dict[str, Any]:
+    date_key = briefing_date_key(generated_at)
+    usage = load_gemini_usage(data_path, date_key)
+    days = dict(usage.get("days") or {})
+    day = days.get(date_key) if isinstance(days.get(date_key), dict) else {}
+    count = max(0, int(day.get("count") or 0)) + 1
+    days[date_key] = {"count": count, "updated_at": generated_at}
+    # Keep the file tiny even if the repository lives for years.
+    kept_keys = sorted(days.keys())[-45:]
+    document = {
+        "version": BRIEFING_HISTORY_VERSION,
+        "updated_at": generated_at,
+        "days": {key: days[key] for key in kept_keys},
+    }
+    write_json(gemini_usage_path(data_path), document)
+    return {"version": BRIEFING_HISTORY_VERSION, "date": date_key, "count": count, "days": document["days"]}
 
 
 def write_briefing_outputs(data_path: Path, card: dict[str, Any], *, max_cards: int = 80) -> dict[str, Any]:

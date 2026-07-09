@@ -20,6 +20,7 @@ RAW_FLOW_SNAPSHOT_VERSION = 1
 KRX_GETJSON_URL = "https://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd"
 KRX_STOCK_FLOW_BLD = "dbms/MDC/STAT/standard/MDCSTAT02203"
 KRX_FUTURES_FLOW_BLD = "dbms/MDC/STAT/standard/MDCSTAT13502"
+KRX_MAIN_INVESTOR_FLOW_BLD = "dbms/MDC/MAIN/MDCMAIN00103"
 
 INVESTOR_SLUGS = {
     "개인": "individual",
@@ -40,11 +41,11 @@ INVESTOR_SLUGS = {
 FLOW_MEASURES = {
     "sell": {
         "label": "매도",
-        "fields": ("ASK_TRDVAL", "ASK_TRD_VAL", "SEL_TRDVAL", "SELL_TRDVAL", "ASK_AMT"),
+        "fields": ("ASK_TRDVAL", "ASK_TRD_VAL", "SEL_TRDVAL", "SELL_TRDVAL", "ASK_AMT", "ACC_ASK_TRDVAL"),
     },
     "buy": {
         "label": "매수",
-        "fields": ("BID_TRDVAL", "BID_TRD_VAL", "BUY_TRDVAL", "BID_AMT"),
+        "fields": ("BID_TRDVAL", "BID_TRD_VAL", "BUY_TRDVAL", "BID_AMT", "ACC_BID_TRDVAL"),
     },
     "net": {
         "label": "순매수",
@@ -183,8 +184,15 @@ def row_investor_name(row: dict[str, Any]) -> str:
     for key in ("INVST_TP_NM", "INVST_NM", "INVST_TP", "INVESTOR_NM"):
         value = str(row.get(key) or "").strip()
         if value:
-            return value
+            return value.split("(", 1)[0].strip()
     return ""
+
+
+def flow_row_unit_multiplier(row: dict[str, Any]) -> float:
+    unit_text = " ".join(str(row.get(key) or "") for key in ("INVST_TP", "INVST_TP_NM", "INVST_NM"))
+    if "십억원" in unit_text:
+        return 10.0
+    return 1.0
 
 
 def flow_row_value(row: dict[str, Any], measure: str) -> float | None:
@@ -192,7 +200,18 @@ def flow_row_value(row: dict[str, Any], measure: str) -> float | None:
     for field in fields:
         value = parse_krx_number(row.get(field))
         if value is not None:
-            return value
+            return value * flow_row_unit_multiplier(row)
+    return None
+
+
+def row_trade_date(row: dict[str, Any]) -> date | None:
+    for key in ("TRD_DD", "BAS_DD", "basDd"):
+        raw = str(row.get(key) or "").strip().replace("-", "")
+        if len(raw) == 8 and raw.isdigit():
+            try:
+                return date(int(raw[:4]), int(raw[4:6]), int(raw[6:8]))
+            except ValueError:
+                return None
     return None
 
 
@@ -267,6 +286,29 @@ def fetch_krx_getjson_rows(
         if isinstance(rows, list):
             return [row for row in rows if isinstance(row, dict)]
     return []
+
+
+def fetch_krx_main_investor_flow_rows(
+    session: requests.Session,
+    *,
+    market: str,
+    endpoint: str = KRX_GETJSON_URL,
+) -> tuple[date | None, list[dict[str, Any]]]:
+    market_key = str(market).lower()
+    form: dict[str, Any] = {
+        "bld": KRX_MAIN_INVESTOR_FLOW_BLD,
+        "locale": "ko_KR",
+    }
+    if market_key in STOCK_MARKET_IDS:
+        form["mktId"] = STOCK_MARKET_IDS[market_key]
+    elif market_key in {"k200-futures", "futures"}:
+        form["prodId"] = "KR___FUK2I"
+    else:
+        form["mktId"] = str(market).upper()
+    rows = fetch_krx_getjson_rows(session, endpoint=endpoint, form=form)
+    observed_dates = [row_trade_date(row) for row in rows]
+    observed_at = next((item for item in observed_dates if item is not None), None)
+    return observed_at, rows
 
 
 def fetch_krx_stock_flow_rows(

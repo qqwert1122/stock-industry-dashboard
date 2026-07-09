@@ -41,6 +41,8 @@ LIVE_RELOAD_SNIPPET = """
 
 
 class ReloadServer(ThreadingHTTPServer):
+    allow_reuse_address = True
+
     def __init__(self, server_address: tuple[str, int], handler_class: type[SimpleHTTPRequestHandler]):
         super().__init__(server_address, handler_class)
         self.reload_clients: list[queue.Queue[str]] = []
@@ -285,13 +287,11 @@ def metric_by_name(payload: dict[str, Any], name: str) -> dict[str, Any] | None:
 
 def mock_calendar(today: date, payload: dict[str, Any]) -> dict[str, Any]:
     cpi_metric = metric_by_name(payload, "미국 CPI")
-    vix_metric = metric_by_name(payload, "VIX")
     definitions = [
         (-3, "미국 CPI 발표", "us_data", "US", "인플레이션 방향 확인", cpi_metric),
         (0, "FOMC 결정", "fed", "US", "금리와 유동성 기대가 크게 움직일 수 있는 날", None),
         (1, "한국은행 금통위", "bok", "KR", "국내 금리 민감 업종을 볼 때 중요", None),
         (3, "한국 옵션만기", "expiry", "KR", "수급 변동성이 커질 수 있는 날", None),
-        (8, "VIX 갱신 예정", "site_update", "", "대시보드 지표 발표 예정일", vix_metric),
         (18, "NYSE 휴장", "holiday", "US", "미국 주식시장 휴장", None),
         (27, "미국 PCE 발표", "us_data", "US", "연준이 선호하는 물가 지표", cpi_metric),
     ]
@@ -449,7 +449,8 @@ def write_mock_briefings(dashboard: Any, data_path: Path, payload: dict[str, Any
     for card_type, hour, headline in [
         ("morning", 8, "아침 더미 브리핑"),
         ("intraday", 12, "장중 더미 브리핑"),
-        ("close", 6, "마감 더미 브리핑"),
+        ("close", 15, "한국장 마감 더미 브리핑"),
+        ("us_close", 6, "미국장 마감 더미 브리핑"),
     ]:
         generated_at = now.replace(hour=hour, minute=0, second=0, microsecond=0).isoformat(timespec="seconds")
         card = dict(base)
@@ -758,6 +759,7 @@ def newest_mtime(paths: list[Path]) -> float:
 def find_available_port(host: str, start: int) -> int:
     for port in range(start, start + 50):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             try:
                 sock.bind((host, port))
             except OSError:

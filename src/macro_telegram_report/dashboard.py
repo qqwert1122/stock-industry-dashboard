@@ -20,7 +20,13 @@ from bs4 import BeautifulSoup
 from openpyxl import load_workbook
 
 from .briefing import (
+    briefing_date_key,
     build_briefing_card,
+    increment_gemini_usage,
+    load_briefing_index,
+    load_gemini_usage,
+    load_latest_briefing_card,
+    load_recent_briefing_cards,
     update_intraday_track,
     write_briefing_outputs,
 )
@@ -47,6 +53,7 @@ from .market_gauges import build_market_gauges
 from .market_flows import (
     FLOW_MEASURES,
     fetch_krx_futures_flow_rows,
+    fetch_krx_main_investor_flow_rows,
     fetch_krx_stock_flow_rows,
     investor_slug,
     load_raw_flow_snapshot,
@@ -79,6 +86,7 @@ from .wsts import find_wsts_xlsx_url, parse_wsts_sheet
 FRED_OBSERVATIONS_URL = "https://api.stlouisfed.org/fred/series/observations"
 GEMINI_DEFAULT_MODEL = "gemini-3.1-flash-lite"
 GEMINI_GENERATE_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+GEMINI_DAILY_CALL_LIMIT = 400
 MARKET_GAUGE_HISTORY_FILENAME = "market_gauges_history.json"
 MARKET_GAUGE_HISTORY_VERSION = 1
 FETCH_LOG_HISTORY_FILENAME = "fetch_log_history.json"
@@ -551,12 +559,17 @@ def build_dashboard_site(config: dict[str, Any], output_dir: str | Path, session
         briefing_generated_at = str(payload.get("generated_at") or datetime.now(ZoneInfo(timezone_name)).isoformat(timespec="seconds"))
         base_briefing = build_morning_briefing(payload, session)
         trajectory = update_intraday_track(data_path, payload, briefing_generated_at)
+        briefing_time = datetime.fromisoformat(briefing_generated_at.replace("Z", "+00:00"))
         payload["morning_briefing"] = build_briefing_card(
             base_briefing,
             card_type="morning",
             generated_at=briefing_generated_at,
             generated_label=str(payload.get("generated_label") or ""),
             trajectory=trajectory,
+            low_signal=False,
+            session_context=briefing_session_context(briefing_time),
+            gate_reason="일일 전체 빌드",
+            metric_snapshot=briefing_metric_snapshot(payload),
         )
         payload["briefing_index"] = write_briefing_outputs(data_path, payload["morning_briefing"])
         try:
@@ -684,6 +697,260 @@ def refresh_prices_site(
     return payload
 
 
+def briefing_metric_snapshot(payload: dict[str, Any]) -> dict[str, Any]:
+    snapshot: dict[str, Any] = {}
+    for metric in payload.get("metrics", []) or []:
+        if not isinstance(metric, dict):
+            continue
+        metric_id = str(metric.get("id") or "").strip()
+        if not metric_id:
+            continue
+        snapshot[metric_id] = {
+            "id": metric_id,
+            "name": str(metric.get("name") or ""),
+            "industry": str(metric.get("industry") or ""),
+            "group": str(metric.get("group") or ""),
+            "value": to_float(metric.get("value")),
+            "display_value": str(metric.get("display_value") or ""),
+            "observed_at": str(metric.get("observed_at") or ""),
+            "change_pct": to_float(metric.get("change_pct")),
+        }
+    return snapshot
+
+
+def observed_at_progressed(current: object, previous: object) -> bool:
+    current_text = str(current or "").strip()
+    previous_text = str(previous or "").strip()
+    if not current_text or current_text == previous_text:
+        return False
+    current_date = parse_iso_date(current_text)
+    previous_date = parse_iso_date(previous_text)
+    if current_date and previous_date:
+        return current_date > previous_date
+    return bool(current_text and current_text != previous_text)
+
+
+def briefing_metric_changes(
+    current_snapshot: dict[str, Any],
+    previous_snapshot: dict[str, Any] | None,
+    *,
+    limit: int = 8,
+) -> dict[str, Any]:
+    if not previous_snapshot:
+        return {
+            "changed": True,
+            "changed_count": len(current_snapshot),
+            "changes": [],
+            "reason": "이전 카드 지표 스냅샷 없음",
+        }
+
+    changes: list[dict[str, Any]] = []
+    for metric_id, current in current_snapshot.items():
+        if not isinstance(current, dict):
+            continue
+        previous = previous_snapshot.get(metric_id)
+        if not isinstance(previous, dict):
+            changes.append({"id": metric_id, "name": current.get("name", ""), "reason": "신규 지표"})
+            continue
+        if observed_at_progressed(current.get("observed_at"), previous.get("observed_at")):
+            changes.append(
+                {
+                    "id": metric_id,
+                    "name": current.get("name", ""),
+                    "reason": "관측일 전진",
+                    "previous_observed_at": previous.get("observed_at", ""),
+                    "observed_at": current.get("observed_at", ""),
+                }
+            )
+            continue
+        if not numeric_values_equal(current.get("value"), previous.get("value")):
+            changes.append(
+                {
+                    "id": metric_id,
+                    "name": current.get("name", ""),
+                    "reason": "값 변화",
+                    "previous_value": previous.get("value"),
+                    "value": current.get("value"),
+                }
+            )
+
+    return {
+        "changed": bool(changes),
+        "changed_count": len(changes),
+        "changes": changes[:limit],
+        "reason": f"{len(changes)}개 지표 변화" if changes else "직전 카드 이후 지표 변화 없음",
+    }
+
+
+def briefing_session_context(now: datetime) -> dict[str, Any]:
+    if now.tzinfo is None:
+        now = now.replace(tzinfo=ZoneInfo("Asia/Seoul"))
+    kst = now.astimezone(ZoneInfo("Asia/Seoul"))
+    minute = kst.hour * 60 + kst.minute
+    korea_open = 9 * 60
+    korea_close = 15 * 60 + 45
+    us_open = 23 * 60
+    us_close = 6 * 60 + 15
+    if korea_open <= minute <= korea_close:
+        return {
+            "key": "korea",
+            "label": "한국장",
+            "benchmark_names": ["코스피", "코스닥"],
+            "prompt_focus": "코스피·코스닥과 국내 수급 흐름을 중심으로 쓰고, 남은 한국장 또는 다음 한국장에 줄 함의로 마무리한다.",
+        }
+    if minute >= us_open or minute <= us_close:
+        return {
+            "key": "us",
+            "label": "미국장",
+            "benchmark_names": ["S&P 500", "S&P500 선물", "나스닥", "나스닥100 선물"],
+            "prompt_focus": "미국 지수, 환율, 미국 대표주 흐름을 중심으로 쓰고, 내일 한국장에 줄 함의로 마무리한다.",
+        }
+    return {
+        "key": "off",
+        "label": "세션 외",
+        "benchmark_names": ["코스피", "코스닥", "S&P 500", "나스닥"],
+        "prompt_focus": "새로 변한 지표만 짧게 정리하고 다음 정규장에 확인할 점으로 마무리한다.",
+    }
+
+
+def normalized_metric_name(value: object) -> str:
+    return re.sub(r"\s+", "", str(value or "")).lower()
+
+
+def benchmark_change_summary(
+    current_snapshot: dict[str, Any],
+    previous_snapshot: dict[str, Any] | None,
+    benchmark_names: list[str],
+) -> dict[str, Any]:
+    if not previous_snapshot:
+        return {"significant": False, "drivers": []}
+    targets = {normalized_metric_name(name) for name in benchmark_names}
+    drivers: list[dict[str, Any]] = []
+    for metric_id, current in current_snapshot.items():
+        if not isinstance(current, dict):
+            continue
+        if normalized_metric_name(current.get("name")) not in targets:
+            continue
+        previous = previous_snapshot.get(metric_id)
+        if not isinstance(previous, dict):
+            continue
+        current_value = to_float(current.get("value"))
+        previous_value = to_float(previous.get("value"))
+        if current_value is None or previous_value in (None, 0):
+            continue
+        change_pct = (current_value / previous_value - 1.0) * 100.0
+        if abs(change_pct) >= 0.5:
+            drivers.append(
+                {
+                    "id": metric_id,
+                    "name": current.get("name", ""),
+                    "change_pct": round(change_pct, 3),
+                    "basis": "직전 카드 대비 기준 지수 변화",
+                }
+            )
+    drivers.sort(key=lambda item: abs(float(item.get("change_pct") or 0)), reverse=True)
+    return {"significant": bool(drivers), "drivers": drivers}
+
+
+def daily_move_significance(payload: dict[str, Any]) -> dict[str, Any]:
+    drivers: list[dict[str, Any]] = []
+    for metric in payload.get("metrics", []) or []:
+        if not isinstance(metric, dict):
+            continue
+        change_pct = to_float(metric.get("change_pct"))
+        if change_pct is None or abs(change_pct) < 1.0:
+            continue
+        drivers.append(
+            {
+                "id": str(metric.get("id") or ""),
+                "name": str(metric.get("name") or ""),
+                "change_pct": round(change_pct, 3),
+                "basis": "당일 등락률",
+            }
+        )
+    drivers.sort(key=lambda item: abs(float(item.get("change_pct") or 0)), reverse=True)
+    return {"significant": bool(drivers), "drivers": drivers[:8]}
+
+
+def consecutive_low_signal_count(cards: list[dict[str, Any]]) -> int:
+    count = 0
+    for card in cards:
+        if not isinstance(card, dict) or not card.get("low_signal"):
+            break
+        count += 1
+    return count
+
+
+def briefing_generation_decision(
+    payload: dict[str, Any],
+    previous_card: dict[str, Any] | None,
+    recent_cards: list[dict[str, Any]],
+    now: datetime,
+) -> dict[str, Any]:
+    current_snapshot = briefing_metric_snapshot(payload)
+    previous_snapshot = (
+        previous_card.get("metric_snapshot")
+        if isinstance(previous_card, dict) and isinstance(previous_card.get("metric_snapshot"), dict)
+        else None
+    )
+    changes = briefing_metric_changes(current_snapshot, previous_snapshot)
+    session_context = briefing_session_context(now)
+    benchmark = benchmark_change_summary(
+        current_snapshot,
+        previous_snapshot,
+        list(session_context.get("benchmark_names") or []),
+    )
+    daily_move = daily_move_significance(payload)
+    significant = bool(benchmark["significant"] or daily_move["significant"])
+    low_signal = bool(changes["changed"] and not significant)
+    low_signal_streak = consecutive_low_signal_count(recent_cards)
+
+    skip = False
+    reason = str(changes["reason"])
+    if not changes["changed"]:
+        skip = True
+    elif low_signal and low_signal_streak >= 2:
+        skip = True
+        reason = "low_signal 카드 2회 연속 이후 유의미한 변화 없음"
+    elif significant:
+        drivers = [*benchmark.get("drivers", []), *daily_move.get("drivers", [])]
+        lead = drivers[0] if drivers else {}
+        reason = f"유의미한 변화: {lead.get('name') or '주요 지표'}"
+    elif low_signal:
+        reason = "변화는 있으나 유의미성 낮음"
+
+    return {
+        "skip": skip,
+        "reason": reason,
+        "low_signal": low_signal,
+        "low_signal_streak": low_signal_streak,
+        "significant": significant,
+        "session": session_context,
+        "changes": changes,
+        "benchmark": benchmark,
+        "daily_move": daily_move,
+        "metric_snapshot": current_snapshot,
+    }
+
+
+def write_briefing_site_outputs(
+    output_path: Path,
+    data_path: Path,
+    payload: dict[str, Any],
+    logger: FetchLogger,
+) -> None:
+    fetch_log_history = write_fetch_log_outputs(data_path, logger)
+    payload["fetch_log_summary"] = fetch_log_history.get("runs", [])[-1].get("summary", {}) if fetch_log_history.get("runs") else {}
+    copy_dashboard_assets(output_path)
+    (data_path / "dashboard.json").write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    (output_path / "index.html").write_text(render_dashboard_html(payload), encoding="utf-8")
+    write_admin_html(output_path)
+    (output_path / ".nojekyll").write_text("", encoding="utf-8")
+
+
 def refresh_briefing_site(
     config: dict[str, Any],
     output_dir: str | Path,
@@ -701,9 +968,68 @@ def refresh_briefing_site(
 
     timezone_name = str(config.get("timezone") or payload.get("timezone") or "Asia/Seoul")
     now = datetime.now(ZoneInfo(timezone_name))
+    logger = FetchLogger(run_type=f"briefing-{card_type}", timezone_name=timezone_name)
+    with use_fetch_logger(logger):
+        started_at, started_monotonic = logger.source_started()
+        previous_card = load_latest_briefing_card(data_path)
+        recent_cards = load_recent_briefing_cards(data_path, limit=4)
+        decision = briefing_generation_decision(payload, previous_card, recent_cards, now)
+        payload["briefing_index"] = load_briefing_index(data_path)
+        if decision["skip"]:
+            if previous_card:
+                payload["morning_briefing"] = previous_card
+            logger.record(
+                source="AI 요약",
+                endpoint=GEMINI_GENERATE_URL.format(model=os.getenv("GEMINI_MODEL", GEMINI_DEFAULT_MODEL)),
+                status="no_new_data",
+                message=f"카드 생성 스킵: {decision['reason']}",
+                metric_count=int((decision.get("changes") or {}).get("changed_count") or 0),
+                new_data_count=0,
+                started_at=started_at,
+                started_monotonic=started_monotonic,
+            )
+            write_briefing_site_outputs(output_path, data_path, payload, logger)
+            return payload
+
     payload["generated_at"] = now.isoformat(timespec="seconds")
     payload["generated_label"] = now.strftime("%Y-%m-%d %H:%M %Z")
-    base_briefing = build_morning_briefing(payload, session)
+    usage = load_gemini_usage(data_path, briefing_date_key(payload["generated_at"]))
+    gemini_allowed = int(usage.get("count") or 0) < GEMINI_DAILY_CALL_LIMIT
+    gemini_guard_message = ""
+    if not gemini_allowed:
+        gemini_guard_message = f"Gemini 일일 호출 {GEMINI_DAILY_CALL_LIMIT}회 도달; 룰 기반 폴백"
+    briefing_context = {
+        "card_type": card_type,
+        "session": decision["session"],
+        "low_signal": bool(decision["low_signal"]),
+        "reason": decision["reason"],
+        "significant": bool(decision["significant"]),
+        "benchmark_drivers": (decision.get("benchmark") or {}).get("drivers", []),
+        "daily_move_drivers": (decision.get("daily_move") or {}).get("drivers", []),
+        "changed_metrics": (decision.get("changes") or {}).get("changes", []),
+        "recent_cards": [
+            {
+                "generated_at": str(card.get("generated_at") or ""),
+                "card_type": str(card.get("card_type") or ""),
+                "headline": str(card.get("headline") or ""),
+                "low_signal": bool(card.get("low_signal")),
+                "gate_reason": str(card.get("gate_reason") or ""),
+            }
+            for card in recent_cards[:6]
+            if isinstance(card, dict)
+        ],
+        "gemini_daily_count_before": int(usage.get("count") or 0),
+    }
+    base_briefing = build_morning_briefing(
+        payload,
+        session,
+        briefing_context=briefing_context,
+        gemini_allowed=gemini_allowed,
+        disabled_message=gemini_guard_message or None,
+    )
+    if base_briefing.get("gemini_call_attempted"):
+        usage = increment_gemini_usage(data_path, payload["generated_at"])
+        base_briefing["gemini_daily_count"] = int(usage.get("count") or 0)
     trajectory = update_intraday_track(data_path, payload, payload["generated_at"])
     card = build_briefing_card(
         base_briefing,
@@ -711,18 +1037,28 @@ def refresh_briefing_site(
         generated_at=payload["generated_at"],
         generated_label=payload["generated_label"],
         trajectory=trajectory,
+        low_signal=bool(decision["low_signal"]),
+        session_context=decision["session"],
+        gate_reason=decision["reason"],
+        metric_snapshot=decision["metric_snapshot"],
     )
     payload["morning_briefing"] = card
     payload["briefing_index"] = write_briefing_outputs(data_path, card)
 
-    copy_dashboard_assets(output_path)
-    (data_path / "dashboard.json").write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
+    status_detail = "Gemini 호출" if card.get("gemini_call_attempted") else "룰 기반 폴백"
+    if gemini_guard_message:
+        status_detail = gemini_guard_message
+    logger.record(
+        source="AI 요약",
+        endpoint=GEMINI_GENERATE_URL.format(model=os.getenv("GEMINI_MODEL", GEMINI_DEFAULT_MODEL)),
+        status="success",
+        message=f"카드 생성: {decision['reason']} ({status_detail})",
+        metric_count=int((decision.get("changes") or {}).get("changed_count") or 0),
+        new_data_count=1,
+        started_at=started_at,
+        started_monotonic=started_monotonic,
     )
-    (output_path / "index.html").write_text(render_dashboard_html(payload), encoding="utf-8")
-    write_admin_html(output_path)
-    (output_path / ".nojekyll").write_text("", encoding="utf-8")
+    write_briefing_site_outputs(output_path, data_path, payload, logger)
     return payload
 
 
@@ -1260,8 +1596,23 @@ def daily_change_item(
     }
 
 
-def build_morning_briefing(payload: dict[str, Any], session: requests.Session) -> dict[str, Any]:
+def build_morning_briefing(
+    payload: dict[str, Any],
+    session: requests.Session,
+    *,
+    briefing_context: dict[str, Any] | None = None,
+    gemini_allowed: bool = True,
+    disabled_message: str | None = None,
+) -> dict[str, Any]:
     briefing = rule_based_morning_briefing(payload)
+    if briefing_context:
+        briefing["briefing_context"] = briefing_context
+        briefing["low_signal"] = bool(briefing_context.get("low_signal"))
+    briefing["gemini_call_attempted"] = False
+    if not gemini_allowed:
+        briefing["status"] = "disabled"
+        briefing["status_message"] = disabled_message or "Gemini 요약 비활성화"
+        return briefing
     if str(os.getenv("GEMINI_BRIEFING_ENABLED", "1")).strip().lower() in {"0", "false", "no", "off"}:
         briefing["status"] = "disabled"
         briefing["status_message"] = "Gemini 요약 비활성화"
@@ -1276,6 +1627,7 @@ def build_morning_briefing(payload: dict[str, Any], session: requests.Session) -
     model = os.getenv("GEMINI_MODEL", GEMINI_DEFAULT_MODEL).strip() or GEMINI_DEFAULT_MODEL
     try:
         prompt = gemini_morning_briefing_prompt(payload, briefing)
+        briefing["gemini_call_attempted"] = True
         raw_text = request_gemini_briefing(session, api_key, model, prompt)
         parsed = parse_json_object(raw_text)
         return normalize_gemini_briefing(parsed, briefing, model)
@@ -1645,8 +1997,17 @@ def rule_based_bullets(
     return bullets
 
 def gemini_morning_briefing_prompt(payload: dict[str, Any], briefing: dict[str, Any]) -> str:
+    briefing_context = briefing.get("briefing_context") if isinstance(briefing.get("briefing_context"), dict) else {}
+    session_context = briefing_context.get("session") if isinstance(briefing_context.get("session"), dict) else {}
+    session_label = str(session_context.get("label") or "세션 외")
+    prompt_focus = str(session_context.get("prompt_focus") or "")
+    low_signal = bool(briefing_context.get("low_signal"))
+    card_type = str(briefing_context.get("card_type") or "")
     context = {
         "generated_label": payload.get("generated_label", ""),
+        "briefing_context": briefing_context,
+        "session_label": session_label,
+        "low_signal": low_signal,
         "narrative_context": narrative_context_for_briefing(briefing),
         "top_movers": briefing.get("top_movers", []),
         "improving_industries": briefing.get("improving_industries", []),
@@ -1656,9 +2017,32 @@ def gemini_morning_briefing_prompt(payload: dict[str, Any], briefing: dict[str, 
         "daily_changes": payload.get("daily_changes", {}),
         "upcoming_events": (payload.get("calendar", {}) or {}).get("upcoming", []),
     }
+    session_instruction = (
+        f"현재 실행 세션은 '{session_label}'이다. {prompt_focus}\n"
+        "한국장 카드라면 코스피·코스닥과 국내 수급을 우선하고, 미국장 카드라면 미국 지수·환율·미국 대표주를 우선하라.\n"
+        "특히 미국장 카드는 마지막 문장에 내일 한국장에 줄 함의를 짧게 넣어라.\n"
+    )
+    low_signal_instruction = (
+        "이번 카드는 low_signal=true다. 변화는 있지만 유의미성이 낮으므로 과장하지 말고, headline·summary를 담백하게 쓰고 bullets는 1~2개만 사용하라.\n"
+        if low_signal
+        else ""
+    )
+    close_instruction = ""
+    if card_type == "close":
+        close_instruction = (
+            "이번 카드는 한국장 마감 카드다. recent_cards와 changed_metrics를 함께 보고 당일 한국장 흐름을 종합하라. "
+            "코스피·코스닥·수급·환율을 우선하고 다음 거래일에 확인할 점으로 마무리하라.\n"
+        )
+    elif card_type == "us_close":
+        close_instruction = (
+            "이번 카드는 미국장 마감 카드다. 미국 지수·환율·미국 대표주 움직임을 우선하고 내일 한국장에 줄 함의로 마무리하라.\n"
+        )
     return (
         "너는 개인 투자자가 매일 아침 산업별 지표 대시보드를 빠르게 훑도록 돕는 한국어 브리핑 작성자다.\n"
         "아래 JSON 데이터만 근거로 사용하고, 매수/매도 추천이나 목표가는 쓰지 마라.\n"
+        f"{session_instruction}"
+        f"{low_signal_instruction}"
+        f"{close_instruction}"
         "가장 중요한 목표는 오늘 바뀐 지표가 어떤 의미인지 쉬운 말로 설명하는 것이다.\n"
         "각 지표를 언급할 때는 name만 쓰지 말고 반드시 kind와 industry를 함께 써라. 예: '로봇 대표주가(주식 가격) Teradyne(TER)'처럼 쓴다.\n"
         "narrative_context는 시장이 요즘 그 산업을 보는 관점이다. 단, 지표 데이터와 충돌하면 지표 데이터를 우선하고 내러티브는 해석 렌즈로만 사용하라.\n"
@@ -1856,6 +2240,9 @@ def build_dashboard_payload(
             metrics.extend(source_metrics)
             ok_count = sum(1 for item in source_metrics if item.get("status") == "ok")
             message = f"{ok_count}/{len(source_metrics)}개 지표 자동 수집"
+            issue_summary = metric_issue_summary(source_metrics)
+            if issue_summary:
+                message = f"{message} ({issue_summary})"
             source_status.append(
                 {
                     "name": source_name,
@@ -1997,11 +2384,13 @@ def build_dashboard_payload(
 
 def metric_issue_summary(metrics: list[dict[str, Any]], limit: int = 3) -> str:
     issues: list[str] = []
+    warning_tokens = ("이전 저장값 표시", "응답 실패", "관측값 없음", "API_KEY 없음")
     for metric in metrics:
-        if metric.get("status") == "ok":
+        note = str(metric.get("note") or metric.get("status_label") or metric.get("status") or "").strip()
+        has_warning_note = any(token in note for token in warning_tokens)
+        if metric.get("status") == "ok" and not has_warning_note:
             continue
         name = str(metric.get("name") or "지표")
-        note = str(metric.get("note") or metric.get("status_label") or metric.get("status") or "").strip()
         compact = f"{name}: {note}" if note else name
         if compact not in issues:
             issues.append(compact)
@@ -4001,23 +4390,62 @@ def collect_kosis_metrics(
     source_url = str(kosis_config.get("source_url") or "https://kosis.kr/openapi/")
     history_limit = int(config.get("dashboard", {}).get("history_points", 48))
 
+    def cached_kosis_metric(item: dict[str, Any], history_key: str, note: str) -> dict[str, Any] | None:
+        store = attach_history_store(config)
+        if store is None:
+            return None
+        points = store.series(history_key)
+        if not points:
+            return None
+        latest_date, latest_value = points[-1]
+        previous_value = points[-2][1] if len(points) > 1 else None
+        yoy_value = find_yoy_value(points, latest_date)
+        return make_metric(
+            industry=str(item.get("industry") or "건설/부동산"),
+            name=str(item.get("name") or item.get("tbl_id") or "KOSIS 지표"),
+            source="KOSIS OpenAPI",
+            source_url=source_url,
+            frequency=str(item.get("frequency") or "월간"),
+            automation="무료 공식 API 자동 수집",
+            status="ok",
+            value=latest_value,
+            unit=str(item.get("unit") or ""),
+            observed_at=latest_date.isoformat(),
+            previous_value=previous_value,
+            yoy_value=yoy_value,
+            history=points[-history_limit:],
+            note=f"{note}; 이전 저장값 표시",
+            group=str(item.get("group") or "국내 주택"),
+            meaning=str(item.get("meaning") or ""),
+            history_key=history_key,
+        )
+
     if not api_key:
-        return [
-            make_metric(
-                industry=str(item.get("industry") or "건설/부동산"),
-                name=str(item.get("name") or item.get("tbl_id") or "KOSIS 지표"),
-                source="KOSIS OpenAPI",
-                source_url=source_url,
-                frequency=str(item.get("frequency") or "월간"),
-                automation="무료 공식 API 자동 수집",
-                status="needs_key",
-                note="GitHub Secrets에 KOSIS_API_KEY 등록 필요",
-                group=str(item.get("group") or "국내 주택"),
-                meaning=str(item.get("meaning") or ""),
+        metrics: list[dict[str, Any]] = []
+        for item in items:
+            if not item.get("tbl_id") or not item.get("item_id"):
+                continue
+            org_id = str(item.get("org_id") or item.get("orgId") or "").strip()
+            tbl_id = str(item.get("tbl_id") or item.get("tblId") or "").strip()
+            item_id = item.get("item_id") or item.get("itmId")
+            history_key = f"kosis-{org_id}-{tbl_id}-{kosis_code_param(item_id).rstrip('+')}"
+            cached = cached_kosis_metric(item, history_key, "KOSIS_API_KEY 없음")
+            metrics.append(
+                cached
+                or make_metric(
+                    industry=str(item.get("industry") or "건설/부동산"),
+                    name=str(item.get("name") or item.get("tbl_id") or "KOSIS 지표"),
+                    source="KOSIS OpenAPI",
+                    source_url=source_url,
+                    frequency=str(item.get("frequency") or "월간"),
+                    automation="무료 공식 API 자동 수집",
+                    status="needs_key",
+                    note="GitHub Secrets에 KOSIS_API_KEY 등록 필요",
+                    group=str(item.get("group") or "국내 주택"),
+                    meaning=str(item.get("meaning") or ""),
+                )
             )
-            for item in items
-            if item.get("tbl_id") and item.get("item_id")
-        ]
+        return metrics
 
     metrics: list[dict[str, Any]] = []
     for item in items:
@@ -4064,7 +4492,10 @@ def collect_kosis_metrics(
             payload = response.json()
             points = parse_kosis_points(payload, prd_se)
             if not points:
+                cached = cached_kosis_metric(item, history_key, "KOSIS 관측값 없음")
                 metrics.append(
+                    cached
+                    or
                     make_metric(
                         industry=str(item.get("industry") or "건설/부동산"),
                         name=name,
@@ -4104,7 +4535,10 @@ def collect_kosis_metrics(
                 )
             )
         except Exception as exc:  # noqa: BLE001 - one KOSIS table should not break the page.
+            cached = cached_kosis_metric(item, history_key, f"KOSIS 응답 실패: {exc}")
             metrics.append(
+                cached
+                or
                 make_metric(
                     industry=str(item.get("industry") or "건설/부동산"),
                     name=name,
@@ -4736,8 +5170,26 @@ def collect_market_flow_metrics(
                     keep_calendar_days=keep_days,
                 )
             except Exception as exc:  # noqa: BLE001 - KRX 정보데이터시스템은 soft-fail.
-                errors.append(f"{label} {target_date.isoformat()}: {exc}")
-                break
+                try:
+                    fallback_date, rows = fetch_krx_main_investor_flow_rows(
+                        session,
+                        market=market,
+                        endpoint=endpoint or "https://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd",
+                    )
+                    if not rows or fallback_date is None:
+                        raise RuntimeError("KRX 메인 투자자별 매매동향 응답 없음")
+                    document = store_raw_flow_rows(
+                        history_dir=history_dir,
+                        market=market,
+                        observed_at=fallback_date,
+                        rows=rows,
+                        today=today,
+                        keep_calendar_days=keep_days,
+                    )
+                    break
+                except Exception as fallback_exc:  # noqa: BLE001
+                    errors.append(f"{label} {target_date.isoformat()}: {exc}; fallback: {fallback_exc}")
+                    break
         document = load_raw_flow_snapshot(path, market)
         metric_docs.append((market, label, document))
 
@@ -4767,8 +5219,26 @@ def collect_market_flow_metrics(
                 keep_calendar_days=keep_days,
             )
         except Exception as exc:  # noqa: BLE001
-            errors.append(f"K200 선물 {target_date.isoformat()}: {exc}")
-            break
+            try:
+                fallback_date, rows = fetch_krx_main_investor_flow_rows(
+                    session,
+                    market=futures_market,
+                    endpoint=endpoint or "https://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd",
+                )
+                if not rows or fallback_date is None:
+                    raise RuntimeError("KRX 메인 투자자별 매매동향 응답 없음")
+                futures_doc = store_raw_flow_rows(
+                    history_dir=history_dir,
+                    market=futures_market,
+                    observed_at=fallback_date,
+                    rows=rows,
+                    today=today,
+                    keep_calendar_days=keep_days,
+                )
+                break
+            except Exception as fallback_exc:  # noqa: BLE001
+                errors.append(f"K200 선물 {target_date.isoformat()}: {exc}; fallback: {fallback_exc}")
+                break
     futures_doc = load_raw_flow_snapshot(futures_path, futures_market)
     metric_docs.append((futures_market, "K200 선물", futures_doc))
 
@@ -5600,16 +6070,210 @@ def clean_display_text(value: object) -> str:
     return text
 
 
+HANGUL_RE = re.compile(r"[가-힣]")
+EN_MARKET_FALLBACKS = {
+    "코스피": "KOSPI",
+    "코스닥": "KOSDAQ",
+    "K200 선물": "K200 Futures",
+    "선물": "Futures",
+    "한국": "Korea",
+    "미국": "US",
+    "중국": "China",
+    "일본": "Japan",
+    "유럽": "Europe",
+    "동남아": "Southeast Asia",
+    "글로벌": "Global",
+    "전세계": "Global",
+}
+EN_INVESTOR_FALLBACKS = {
+    "개인": "Retail Investors",
+    "외국인": "Foreign Investors",
+    "기관합계": "Institutions Total",
+    "기관": "Institutions",
+    "금융투자": "Financial Investment",
+    "보험": "Insurance",
+    "투신": "Investment Trusts",
+    "사모": "Private Funds",
+    "은행": "Banks",
+    "기타금융": "Other Financials",
+    "연기금": "Pension Funds",
+    "기타법인": "Other Corporations",
+}
+EN_FLOW_MEASURE_FALLBACKS = {
+    "20일 누적 순매수": "20d Net Buying",
+    "순매수": "Net Buying",
+    "매수": "Buying",
+    "매도": "Selling",
+}
+EN_PHRASE_FALLBACKS = {
+    "한국장 마감": "Korea market close",
+    "미국장 마감": "US market close",
+    "공포탐욕지수": "Fear & Greed Index",
+    "경기침체": "Recession",
+    "시장온도계": "Market Thermometer",
+    "시장 온도계": "Market Thermometer",
+    "종합": "Overview",
+    "수급": "Flows",
+    "신용·예탁금": "Credit/Cash",
+    "금리·채권": "Rates/Bonds",
+    "원자재·크립토": "Commodities/Crypto",
+    "심리·변동성": "Sentiment/Volatility",
+    "밸류에이션": "Valuation",
+    "캘린더": "Calendar",
+    "대표주가": "Representative Stocks",
+    "대표 주가": "Representative Stocks",
+    "시장지수": "Market Indexes",
+    "월매출": "Monthly Revenue",
+    "판매액": "Sales",
+    "판매량": "Sales Volume",
+    "매출": "Revenue",
+    "수출": "Exports",
+    "가격": "Price",
+    "기준금리": "Policy Rate",
+    "국채금리": "Treasury Yield",
+    "금리차": "Yield Spread",
+    "회사채": "Corporate Bond",
+    "하이일드": "High Yield",
+    "스프레드": "Spread",
+    "환율": "Exchange Rate",
+    "유가": "Crude Oil Price",
+    "철광석": "Iron Ore",
+    "구리": "Copper",
+    "알루미늄": "Aluminum",
+    "리튬": "Lithium",
+    "배터리": "Battery",
+    "전력수요": "Power Demand",
+    "전력 수요": "Power Demand",
+    "주택착공": "Housing Starts",
+    "건축허가": "Building Permits",
+    "미분양 주택": "Unsold Homes",
+    "주택가격지수": "House Price Index",
+    "발표": "Release",
+    "결정": "Decision",
+    "휴장": "Holiday",
+    "만기": "Expiry",
+    "갱신 예정": "Scheduled update",
+    "갱신": "Update",
+    "예정": "Scheduled",
+    "최근": "Recent",
+    "누적": "Cumulative",
+    "증가율": "Growth Rate",
+    "변화율": "Change Rate",
+    "변화": "Change",
+    "지표": "Metric",
+    "흐름": "Trend",
+    "위험": "Risk",
+    "주의": "Watch",
+    "안정": "Stable",
+    "낮음": "Low",
+    "보통": "Moderate",
+    "높음": "High",
+}
+
+
+def contains_hangul(value: object) -> bool:
+    return bool(HANGUL_RE.search(str(value or "")))
+
+
+def english_sentence_fallback(text: str) -> str:
+    if re.search(r"순매수|매수|매도|수급|외국인|개인|기관", text):
+        return "Tracks investor trading flows and helps show which group is buying or selling the market."
+    if re.search(r"공포|탐욕|심리|변동성", text):
+        return "Shows market sentiment and risk appetite."
+    if re.search(r"침체|경기|실업|성장", text):
+        return "Helps read the economic cycle and recession risk."
+    if re.search(r"금리|스프레드|채권|회사채", text):
+        return "Tracks rates, credit conditions, and funding stress."
+    if re.search(r"환율|원/달러", text):
+        return "Tracks currency moves that affect exporters, foreign flows, and market liquidity."
+    if re.search(r"가격|원자재|유가|철광석|구리|알루미늄|리튬", text):
+        return "Tracks price movements that affect costs, margins, and demand expectations."
+    if re.search(r"판매|매출|수출|CAPEX|투자", text):
+        return "Tracks demand and investment momentum for the related industry."
+    if re.search(r"캘린더|일정|발표|결정|휴장|만기", text):
+        return "Scheduled market event."
+    return "Market indicator used to track investment conditions."
+
+
+def english_generic_text(value: object, fallback: str = "Market indicator") -> str:
+    text = str(value or "").strip()
+    if not text:
+        return ""
+    if not contains_hangul(text):
+        return text
+    exact = (
+        EN_MEANING_LABELS.get(text)
+        or EN_METRIC_NAME_LABELS.get(text)
+        or EN_INDUSTRY_LABELS.get(text)
+        or EN_GROUP_LABELS.get(text)
+        or EN_DEPTH_LABELS.get(text)
+        or EN_FREQUENCY_LABELS.get(text)
+    )
+    if exact:
+        return exact
+
+    flow_match = re.match(
+        r"^(코스피|코스닥|K200 선물|선물)?\s*"
+        r"(개인|외국인|기관합계|기관|금융투자|보험|투신|사모|은행|기타금융|연기금|기타법인)\s+"
+        r"(20일 누적 순매수|순매수|매수|매도)$",
+        text,
+    )
+    if flow_match:
+        market, investor, measure = flow_match.groups()
+        prefix = f"{EN_MARKET_FALLBACKS.get(market, market)} " if market else ""
+        return f"{prefix}{EN_INVESTOR_FALLBACKS.get(investor, investor)} {EN_FLOW_MEASURE_FALLBACKS.get(measure, measure)}".strip()
+
+    export_match = re.match(r"^한국 수출 (.+)\(([^)]+)\)$", text)
+    if export_match:
+        item = english_export_item(export_match.group(1))
+        if contains_hangul(item):
+            item = english_generic_text(item, "Export Item")
+        return f"Korea Exports: {item} ({export_match.group(2)})"
+
+    stock_match = re.match(r"^(.+) 주가$", text)
+    if stock_match:
+        company = EN_METRIC_NAME_LABELS.get(stock_match.group(1)) or english_generic_text(stock_match.group(1), "Company")
+        return f"{company} Stock Price"
+
+    release_match = re.match(r"^미국 (.+) 발표$", text)
+    if release_match:
+        return f"US {english_generic_text(release_match.group(1), 'Data')} release"
+
+    translated = text
+    replacements: dict[str, str] = {}
+    replacements.update(EN_INVESTOR_FALLBACKS)
+    replacements.update(EN_FLOW_MEASURE_FALLBACKS)
+    replacements.update(EN_PHRASE_FALLBACKS)
+    replacements.update(EN_MARKET_FALLBACKS)
+    for source, target in sorted(replacements.items(), key=lambda item: len(item[0]), reverse=True):
+        translated = translated.replace(source, target)
+    translated = re.sub(r"(\d+)일", r"\1d", translated)
+    translated = re.sub(r"(\d+)년", r"\1y", translated)
+    translated = re.sub(r"(\d+)개월", r"\1mo", translated)
+    translated = translated.replace("에서", " in ").replace("동안", " for ")
+    translated = re.sub(r"입니다|합니다|하세요|됩니다", "", translated)
+    translated = HANGUL_RE.sub("", translated)
+    translated = translated.replace("·", "/")
+    translated = re.sub(r"\s*/\s*", "/", translated)
+    translated = re.sub(r"\s+", " ", translated).strip()
+    if translated and not contains_hangul(translated):
+        return translated
+    return fallback or english_sentence_fallback(text)
+
+
 def english_industry(industry: str) -> str:
-    return EN_INDUSTRY_LABELS.get(industry, industry)
+    value = EN_INDUSTRY_LABELS.get(industry, industry)
+    return english_generic_text(value, "Industry") if contains_hangul(value) else value
 
 
 def english_group(group: str) -> str:
-    return EN_GROUP_LABELS.get(group, group)
+    value = EN_GROUP_LABELS.get(group, group)
+    return english_generic_text(value, "Group") if contains_hangul(value) else value
 
 
 def english_depth(depth: str) -> str:
-    return EN_DEPTH_LABELS.get(depth, depth)
+    value = EN_DEPTH_LABELS.get(depth, depth)
+    return english_generic_text(value, "Section") if contains_hangul(value) else value
 
 
 def english_frequency(frequency: str) -> str:
@@ -5623,11 +6287,13 @@ def english_frequency(frequency: str) -> str:
 
 
 def english_unit(unit: str) -> str:
-    return EN_UNIT_LABELS.get(unit, unit)
+    value = EN_UNIT_LABELS.get(unit, unit)
+    return english_generic_text(value, "Unit") if contains_hangul(value) else value
 
 
 def english_export_item(name: str) -> str:
-    return EN_EXPORT_ITEM_LABELS.get(name, name)
+    value = EN_EXPORT_ITEM_LABELS.get(name, name)
+    return english_generic_text(value, "Export Item") if contains_hangul(value) else value
 
 
 def english_metric_name(name: str) -> str:
@@ -5646,9 +6312,10 @@ def english_metric_name(name: str) -> str:
 
     stock_match = re.match(r"^(.+) 주가$", name)
     if stock_match:
-        return f"{stock_match.group(1)} Stock Price"
+        company = english_metric_name(stock_match.group(1))
+        return f"{company} Stock Price"
 
-    return name
+    return english_generic_text(name, "Metric") if contains_hangul(name) else name
 
 
 def english_metric_meaning(meaning: str, industry: str = "") -> str:
@@ -5695,7 +6362,7 @@ def english_metric_meaning(meaning: str, industry: str = "") -> str:
         target_industry = english_industry(industry_match.group(1) or industry)
         return f"Supplementary indicator for understanding {target_industry} industry trends."
 
-    return meaning
+    return english_sentence_fallback(meaning) if contains_hangul(meaning) else meaning
 
 
 def infer_export_industry(hs_code: str) -> str:

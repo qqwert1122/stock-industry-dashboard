@@ -1,10 +1,16 @@
 import unittest
 from datetime import date, datetime, timezone
 from unittest.mock import patch
+from pathlib import Path
+from tempfile import TemporaryDirectory
+import json
 
 from macro_telegram_report.dashboard import (
     DEFAULT_INDUSTRIES,
     annotate_dashboard_updates,
+    briefing_generation_decision,
+    briefing_metric_snapshot,
+    briefing_session_context,
     build_morning_briefing,
     collect_stablecoin_metrics,
     completed_months,
@@ -25,9 +31,12 @@ from macro_telegram_report.dashboard import (
     parse_world_bank_month,
     parse_yahoo_chart_points,
     render_dashboard_html,
+    refresh_briefing_site,
     sec_capex_points,
     narrative_context_for_briefing,
+    visible_dashboard_metrics,
 )
+from macro_telegram_report.briefing import build_briefing_card, write_briefing_outputs
 
 
 class FakeResponse:
@@ -58,8 +67,10 @@ class FakePostSession:
         self.post_url = ""
         self.post_headers = {}
         self.post_json = {}
+        self.post_count = 0
 
     def post(self, url, **kwargs):
+        self.post_count += 1
         self.post_url = url
         self.post_headers = kwargs.get("headers", {})
         self.post_json = kwargs.get("json", {})
@@ -106,6 +117,36 @@ class DashboardTest(unittest.TestCase):
 
         self.assertEqual(metric["display_value"], "$151.2")
         self.assertEqual(metric["change_abs_label"], "$+1.25")
+
+    def test_visible_dashboard_metrics_english_fields_do_not_keep_hangul_for_flow(self):
+        metric = make_metric(
+            industry="매크로",
+            name="코스피 기타금융 20일 누적 순매수",
+            source="KRX 정보데이터시스템",
+            source_url="https://data.krx.co.kr/",
+            frequency="일간",
+            automation="공개 JSON 자동 수집",
+            status="ok",
+            value=123.0,
+            unit="억원",
+            observed_at="2026-07-08",
+            previous_value=100.0,
+            history=[(date(2026, 7, 7), 100.0), (date(2026, 7, 8), 123.0)],
+            group="기타금융",
+            depth="코스피",
+            meaning=(
+                "코스피에서 기타금융이 최근 20거래일 동안 순매수한 금액의 합계입니다. "
+                "하루짜리 수급보다 잡음이 적어서, 같은 주체가 시장을 꾸준히 사는지 파는지 볼 때 씁니다."
+            ),
+        )
+
+        visible = visible_dashboard_metrics([metric])[0]
+
+        self.assertEqual(visible["name_en"], "KOSPI Other Financials 20d Net Buying")
+        self.assertEqual(visible["group_en"], "Other Financials")
+        self.assertEqual(visible["depth_en"], "KOSPI")
+        for key in ("industry_en", "group_en", "depth_en", "name_en", "meaning_en", "unit_en", "frequency_en"):
+            self.assertNotRegex(visible[key], r"[가-힣]")
 
     def test_parse_yahoo_chart_points(self):
         first = int(datetime(2026, 7, 1, tzinfo=timezone.utc).timestamp())
@@ -426,6 +467,288 @@ class DashboardTest(unittest.TestCase):
         self.assertIn("AI 서버", str(session.post_json))
         self.assertNotIn("secret-test-key", str(briefing))
         self.assertNotIn("secret-test-key", str(session.post_json))
+
+    def test_briefing_session_context_selects_session_benchmarks(self):
+        korea = briefing_session_context(datetime.fromisoformat("2026-07-09T10:00:00+09:00"))
+        us = briefing_session_context(datetime.fromisoformat("2026-07-09T23:30:00+09:00"))
+        off = briefing_session_context(datetime.fromisoformat("2026-07-09T08:00:00+09:00"))
+
+        self.assertEqual(korea["label"], "한국장")
+        self.assertEqual(korea["benchmark_names"], ["코스피", "코스닥"])
+        self.assertEqual(us["label"], "미국장")
+        self.assertIn("S&P 500", us["benchmark_names"])
+        self.assertEqual(off["label"], "세션 외")
+
+    def test_briefing_gate_no_change_skips(self):
+        payload = {
+            "metrics": [
+                {"id": "kospi", "name": "코스피", "value": 100.0, "observed_at": "2026-07-09", "change_pct": 0.1}
+            ]
+        }
+        snapshot = briefing_metric_snapshot(payload)
+        previous_card = {"metric_snapshot": snapshot}
+
+        decision = briefing_generation_decision(
+            payload,
+            previous_card,
+            [],
+            datetime.fromisoformat("2026-07-09T10:00:00+09:00"),
+        )
+
+        self.assertTrue(decision["skip"])
+        self.assertFalse(decision["low_signal"])
+
+    def test_briefing_gate_low_signal_once_generates(self):
+        previous_payload = {
+            "metrics": [
+                {"id": "kospi", "name": "코스피", "value": 100.0, "observed_at": "2026-07-09", "change_pct": 0.1}
+            ]
+        }
+        payload = {
+            "metrics": [
+                {"id": "kospi", "name": "코스피", "value": 100.2, "observed_at": "2026-07-09", "change_pct": 0.2}
+            ]
+        }
+
+        decision = briefing_generation_decision(
+            payload,
+            {"metric_snapshot": briefing_metric_snapshot(previous_payload)},
+            [{"low_signal": False}],
+            datetime.fromisoformat("2026-07-09T10:00:00+09:00"),
+        )
+
+        self.assertFalse(decision["skip"])
+        self.assertTrue(decision["low_signal"])
+        self.assertFalse(decision["significant"])
+
+    def test_briefing_gate_two_low_signal_cards_skip_until_significant_change(self):
+        previous_payload = {
+            "metrics": [
+                {"id": "kospi", "name": "코스피", "value": 100.0, "observed_at": "2026-07-09", "change_pct": 0.1}
+            ]
+        }
+        quiet_payload = {
+            "metrics": [
+                {"id": "kospi", "name": "코스피", "value": 100.2, "observed_at": "2026-07-09", "change_pct": 0.2}
+            ]
+        }
+        active_payload = {
+            "metrics": [
+                {"id": "kospi", "name": "코스피", "value": 101.0, "observed_at": "2026-07-09", "change_pct": 0.2}
+            ]
+        }
+        previous_card = {"metric_snapshot": briefing_metric_snapshot(previous_payload)}
+        recent = [{"low_signal": True}, {"low_signal": True}]
+
+        quiet = briefing_generation_decision(
+            quiet_payload,
+            previous_card,
+            recent,
+            datetime.fromisoformat("2026-07-09T10:00:00+09:00"),
+        )
+        active = briefing_generation_decision(
+            active_payload,
+            previous_card,
+            recent,
+            datetime.fromisoformat("2026-07-09T10:00:00+09:00"),
+        )
+
+        self.assertTrue(quiet["skip"])
+        self.assertTrue(quiet["low_signal"])
+        self.assertFalse(active["skip"])
+        self.assertFalse(active["low_signal"])
+        self.assertTrue(active["significant"])
+
+    def test_refresh_briefing_site_skips_without_gemini_call_when_metrics_unchanged(self):
+        payload = {
+            "generated_at": "2026-07-09T09:00:00+09:00",
+            "generated_label": "2026-07-09 09:00 KST",
+            "timezone": "Asia/Seoul",
+            "industries": ["매크로"],
+            "source_status": [],
+            "metrics": [
+                {
+                    "id": "kospi",
+                    "industry": "매크로",
+                    "group": "시장지수",
+                    "name": "코스피",
+                    "value": 100.0,
+                    "display_value": "100",
+                    "observed_at": "2026-07-09",
+                    "change_pct": 0.1,
+                    "history": [],
+                    "status": "ok",
+                }
+            ],
+        }
+        with TemporaryDirectory() as tmp:
+            site = Path(tmp) / "site"
+            data_path = site / "data"
+            data_path.mkdir(parents=True)
+            (data_path / "dashboard.json").write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+            previous_card = build_briefing_card(
+                {"headline": "기존", "summary": "기존 카드", "bullets": []},
+                card_type="intraday",
+                generated_at="2026-07-09T09:00:00+09:00",
+                generated_label="2026-07-09 09:00 KST",
+                metric_snapshot=briefing_metric_snapshot(payload),
+            )
+            write_briefing_outputs(data_path, previous_card)
+            session = FakePostSession({})
+
+            with patch.dict("os.environ", {"GEMINI_API_KEY": "secret-test-key"}, clear=True):
+                refreshed = refresh_briefing_site({"timezone": "Asia/Seoul"}, site, session, "intraday")
+
+            self.assertEqual(session.post_count, 0)
+            self.assertEqual(refreshed["morning_briefing"]["headline"], "기존")
+            fetch_log = json.loads((data_path / "fetch_log.json").read_text(encoding="utf-8"))
+            self.assertIn("카드 생성 스킵", fetch_log["runs"][-1]["records"][-1]["message"])
+
+    def test_refresh_briefing_site_uses_rule_fallback_after_gemini_daily_limit(self):
+        previous_payload = {
+            "metrics": [
+                {
+                    "id": "kospi",
+                    "industry": "매크로",
+                    "group": "시장지수",
+                    "name": "코스피",
+                    "value": 100.0,
+                    "display_value": "100",
+                    "observed_at": "2026-07-09",
+                    "change_pct": 0.1,
+                    "history": [],
+                    "status": "ok",
+                }
+            ]
+        }
+        payload = {
+            "generated_at": "2026-07-09T10:00:00+09:00",
+            "generated_label": "2026-07-09 10:00 KST",
+            "timezone": "Asia/Seoul",
+            "industries": ["매크로"],
+            "source_status": [],
+            "metrics": [
+                {
+                    "id": "kospi",
+                    "industry": "매크로",
+                    "group": "시장지수",
+                    "name": "코스피",
+                    "value": 101.0,
+                    "display_value": "101",
+                    "observed_at": "2026-07-09",
+                    "change_pct": 0.1,
+                    "change_pct_label": "+0.1%",
+                    "history": [],
+                    "status": "ok",
+                }
+            ],
+        }
+        with TemporaryDirectory() as tmp:
+            site = Path(tmp) / "site"
+            data_path = site / "data"
+            briefings_path = data_path / "briefings"
+            briefings_path.mkdir(parents=True)
+            (data_path / "dashboard.json").write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+            previous_card = build_briefing_card(
+                {"headline": "기존", "summary": "기존 카드", "bullets": []},
+                card_type="intraday",
+                generated_at="2026-07-09T09:00:00+09:00",
+                generated_label="2026-07-09 09:00 KST",
+                metric_snapshot=briefing_metric_snapshot(previous_payload),
+            )
+            write_briefing_outputs(data_path, previous_card)
+            today_key = datetime.now().date().isoformat()
+            (briefings_path / "gemini_usage.json").write_text(
+                json.dumps({"version": 1, "days": {today_key: {"count": 400}}}, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            session = FakePostSession({"candidates": []})
+
+            with patch.dict("os.environ", {"GEMINI_API_KEY": "secret-test-key"}, clear=True):
+                refreshed = refresh_briefing_site({"timezone": "Asia/Seoul"}, site, session, "intraday")
+
+            self.assertEqual(session.post_count, 0)
+            self.assertEqual(refreshed["morning_briefing"]["status"], "disabled")
+            self.assertIn("400회", refreshed["morning_briefing"]["status_message"])
+
+    def test_refresh_briefing_site_calls_gemini_when_changed_and_allowed(self):
+        gemini_payload = {
+            "candidates": [
+                {
+                    "content": {
+                        "parts": [
+                            {
+                                "text": (
+                                    '{"headline":"장중 변화","summary":"코스피 변화가 감지됐습니다.",'
+                                    '"bullets":[{"title":"시장지수","body":"코스피가 움직였습니다.",'
+                                    '"metric_ids":["kospi"]}]}'
+                                )
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+        previous_payload = {
+            "metrics": [
+                {
+                    "id": "kospi",
+                    "industry": "매크로",
+                    "group": "시장지수",
+                    "name": "코스피",
+                    "value": 100.0,
+                    "display_value": "100",
+                    "observed_at": "2026-07-09",
+                    "change_pct": 0.1,
+                    "history": [],
+                    "status": "ok",
+                }
+            ]
+        }
+        payload = {
+            "generated_at": "2026-07-09T10:00:00+09:00",
+            "generated_label": "2026-07-09 10:00 KST",
+            "timezone": "Asia/Seoul",
+            "industries": ["매크로"],
+            "source_status": [],
+            "metrics": [
+                {
+                    "id": "kospi",
+                    "industry": "매크로",
+                    "group": "시장지수",
+                    "name": "코스피",
+                    "value": 101.0,
+                    "display_value": "101",
+                    "observed_at": "2026-07-09",
+                    "change_pct": 0.1,
+                    "change_pct_label": "+0.1%",
+                    "history": [],
+                    "status": "ok",
+                }
+            ],
+        }
+        with TemporaryDirectory() as tmp:
+            site = Path(tmp) / "site"
+            data_path = site / "data"
+            data_path.mkdir(parents=True)
+            (data_path / "dashboard.json").write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+            previous_card = build_briefing_card(
+                {"headline": "기존", "summary": "기존 카드", "bullets": []},
+                card_type="intraday",
+                generated_at="2026-07-09T09:00:00+09:00",
+                generated_label="2026-07-09 09:00 KST",
+                metric_snapshot=briefing_metric_snapshot(previous_payload),
+            )
+            write_briefing_outputs(data_path, previous_card)
+            session = FakePostSession(gemini_payload)
+
+            with patch.dict("os.environ", {"GEMINI_API_KEY": "secret-test-key"}, clear=True):
+                refreshed = refresh_briefing_site({"timezone": "Asia/Seoul"}, site, session, "intraday")
+
+            self.assertEqual(session.post_count, 1)
+            self.assertEqual(refreshed["morning_briefing"]["status"], "ok")
+            self.assertEqual(refreshed["morning_briefing"]["headline"], "장중 변화")
+            self.assertTrue(refreshed["morning_briefing"]["gemini_call_attempted"])
 
     def test_default_industries_include_new_categories(self):
         for industry in [

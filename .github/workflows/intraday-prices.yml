@@ -93,7 +93,7 @@ jobs:
 
       - name: Build intraday briefing card
         env:
-          GEMINI_BRIEFING_ENABLED: "0"
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: industry-dashboard --config config.yaml --out site --briefing-only intraday
 
       - name: Commit data cache back to repository

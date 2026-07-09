@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 from datetime import date, datetime, timedelta
 from pathlib import Path
-import re
 from typing import Any
 
 import yaml
@@ -101,33 +100,6 @@ def metric_event_links(events: list[dict[str, Any]], payload: dict[str, Any]) ->
                 item["metric_id"] = metric.get("id")
 
 
-def metric_next_update_events(payload: dict[str, Any]) -> list[dict[str, Any]]:
-    events: list[dict[str, Any]] = []
-    for metric in payload.get("metrics", []):
-        if not isinstance(metric, dict):
-            continue
-        label = str(metric.get("next_update_label") or "").strip()
-        match = re.fullmatch(r"(\d{4})[.-](\d{1,2})[.-](\d{1,2})", label)
-        if not match:
-            continue
-        year, month, day = (int(part) for part in match.groups())
-        try:
-            update_day = date(year, month, day)
-        except ValueError:
-            continue
-        events.append(
-            {
-                "date": update_day.isoformat(),
-                "name": f"{metric.get('name') or '지표'} 갱신 예정",
-                "category": "site_update",
-                "country": "",
-                "note": "대시보드 지표 발표 예정일",
-                "metric_id": metric.get("id"),
-            }
-        )
-    return events
-
-
 def record_calendar_warnings(missing_years: list[int]) -> None:
     if not missing_years:
         return
@@ -178,7 +150,7 @@ def build_event_calendar(
         if not items and year == today.year:
             missing_years.append(year)
         manual.extend(items)
-    all_events = [*manual, *metric_next_update_events(payload)]
+    all_events = list(manual)
     for year in sorted(years):
         all_events.extend(expiry_events(year, manual))
     metric_event_links(all_events, payload)
