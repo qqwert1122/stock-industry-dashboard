@@ -3331,6 +3331,7 @@
     }
 
     .detail-chart-section {
+      --detail-chart-axis-width: 42px;
       display: grid;
       gap: 8px;
       min-width: 0;
@@ -3341,6 +3342,8 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 8px 14px;
+      box-sizing: border-box;
+      padding-left: var(--detail-chart-axis-width);
     }
 
     .detail-stats {
@@ -5383,6 +5386,10 @@
 
       .detail-actions-row {
         gap: 7px;
+      }
+
+      .detail-chart-section {
+        --detail-chart-axis-width: 40px;
       }
 
       .detail-chart {
