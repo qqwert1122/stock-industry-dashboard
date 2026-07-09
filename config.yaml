@@ -71,6 +71,7 @@ search_aliases:
   이더리움: [ETH, ethereum]
   김치프리미엄: [김프, kimchi premium, 업비트]
   WSTS: [반도체판매, 반도체매출, 세계반도체]
+  미국 순유동성: [미국 유동성, 순유동성, net liquidity, liquidity, TGA, RRP, 역레포]
 
 interpretation:
   defaults:
@@ -243,6 +244,12 @@ interpretation:
         neutral: 역사적 중간 구간
         cool: 역사적 저평가
         cold: 역사적 극단 저평가
+
+    # Source: dashboard calculation from FRED WALCL/RRPONTSYD and Treasury FiscalData TGA.
+    # No absolute valuation threshold is used; higher net liquidity is generally friendlier to risk assets.
+    - match: { history_key: us-net-liquidity, name: 미국 순유동성 }
+      polarity: higher_is_better
+      template: us_liquidity_trend
 
 dashboard:
   title: 산업별 핵심 지표 대시보드

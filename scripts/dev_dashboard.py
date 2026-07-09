@@ -545,6 +545,7 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
         count: int = 90,
         chart_style: str = "",
         metric_id: str = "",
+        history_key: str = "",
         meaning: str = "",
     ) -> dict[str, Any]:
         history = mock_days(now.date(), count, start, step, wave)
@@ -562,6 +563,7 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
             market_category=category,
             chart_style=chart_style,
             metric_id=metric_id,
+            history_key=history_key,
         )
         metrics.append(metric)
         return metric
@@ -665,6 +667,54 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
     add_market("한국 기준금리", "금리·채권", "금리", "%", 2.75, 0, 0.02)
     add_market("미국 10Y-3M 금리차", "금리·채권", "경기침체", "%p", -1.4, 0.01, 0.03)
     add_market("미국 하이일드 회사채 OAS", "금리·채권", "신용", "%", 4.3, 0.008, 0.06)
+    add_market(
+        "미국 순유동성",
+        "금리·채권",
+        "미국 유동성",
+        "$B",
+        5400,
+        5.2,
+        24,
+        metric_id="us-net-liquidity",
+        history_key="us-net-liquidity",
+        meaning=dashboard.US_NET_LIQUIDITY_MEANING,
+    )
+    add_market(
+        "미국 연준 총자산",
+        "금리·채권",
+        "미국 유동성",
+        "$B",
+        6650,
+        -1.2,
+        10,
+        metric_id="us-liquidity-walcl",
+        history_key="fred-WALCL",
+        meaning="연준 대차대조표 규모로 양적완화/긴축 방향을 보여줍니다. 글로벌 유동성의 큰 물줄기를 확인하는 지표입니다.",
+    )
+    add_market(
+        "미국 TGA",
+        "금리·채권",
+        "미국 유동성",
+        "$B",
+        720,
+        1.4,
+        18,
+        metric_id="us-tga",
+        history_key="fiscaldata-tga",
+        meaning=dashboard.US_TGA_MEANING,
+    )
+    add_market(
+        "미국 역레포",
+        "금리·채권",
+        "미국 유동성",
+        "$B",
+        210,
+        -2.1,
+        14,
+        metric_id="us-rrp",
+        history_key="fred-RRPONTSYD",
+        meaning=dashboard.US_RRP_MEANING,
+    )
     add_market("원/달러 환율", "원자재·크립토", "환율", "원", 1360, 0.8, 12)
     add_market("비트코인", "원자재·크립토", "크립토", "$", 96000, 110, 2100)
     add_market("김치프리미엄", "원자재·크립토", "크립토", "%", 3.2, 0.04, 0.25)

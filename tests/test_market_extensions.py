@@ -8,6 +8,8 @@ from unittest.mock import patch
 from macro_telegram_report.alerts import process_alerts
 from macro_telegram_report.dashboard import (
     assign_market_navigation_fields,
+    calculate_us_net_liquidity,
+    collect_us_liquidity_metrics,
     flow_metrics_from_raw_document,
     make_metric,
     update_market_gauge_history,
@@ -53,6 +55,38 @@ class FakeKrxSession:
         self.headers = kwargs.get("headers", {})
         self.params = kwargs.get("params", {})
         return FakeResponse(self.payload)
+
+
+class FakeLiquiditySession:
+    def get(self, url, params=None, **kwargs):
+        params = params or {}
+        if "fiscaldata.treasury.gov" in url:
+            return FakeResponse(
+                {
+                    "data": [
+                        {
+                            "record_date": "2024-01-02",
+                            "account_type": "Treasury General Account (TGA) Closing Balance",
+                            "open_today_bal": "800000",
+                        },
+                        {
+                            "record_date": "2024-01-04",
+                            "account_type": "Treasury General Account (TGA) Closing Balance",
+                            "open_today_bal": "900000",
+                        },
+                    ]
+                }
+            )
+        if params.get("series_id") == "RRPONTSYD":
+            return FakeResponse(
+                {
+                    "observations": [
+                        {"date": "2024-01-02", "value": "500000"},
+                        {"date": "2024-01-05", "value": "400000"},
+                    ]
+                }
+            )
+        raise AssertionError(f"unexpected request: {url} {params}")
 
 
 class MarketExtensionsTest(unittest.TestCase):
@@ -177,6 +211,53 @@ class MarketExtensionsTest(unittest.TestCase):
         self.assertEqual(kospi["market_category"], "종합")
         self.assertNotEqual(rate.get("section"), "market")
         self.assertEqual(rate["also_market_category"], ["금리·채권"])
+
+    def test_us_net_liquidity_aligns_components_as_of_each_day(self):
+        walcl = [(date(2024, 1, 1), 7000.0), (date(2024, 1, 3), 7100.0)]
+        tga = [(date(2024, 1, 2), 800.0), (date(2024, 1, 4), 900.0)]
+        rrp = [(date(2024, 1, 2), 500.0), (date(2024, 1, 5), 400.0)]
+
+        points = calculate_us_net_liquidity(walcl, tga, rrp)
+
+        self.assertEqual(points[0], (date(2024, 1, 2), 5700.0))
+        self.assertEqual(points[1], (date(2024, 1, 3), 5800.0))
+        self.assertEqual(points[2], (date(2024, 1, 4), 5700.0))
+        self.assertEqual(points[-1], (date(2024, 1, 5), 5800.0))
+
+    @patch.dict("os.environ", {"FRED_API_KEY": "test-key"})
+    def test_us_liquidity_collector_builds_market_group_in_display_order(self):
+        walcl = make_metric(
+            industry="매크로",
+            name="미국 연준 총자산",
+            source="FRED API",
+            source_url="https://fred.stlouisfed.org/series/WALCL",
+            frequency="주간",
+            automation="자동",
+            status="ok",
+            value=7100,
+            unit="$B",
+            observed_at="2024-01-03",
+            previous_value=7000,
+            history=[(date(2024, 1, 1), 7000.0), (date(2024, 1, 3), 7100.0)],
+            group="유동성",
+            history_key="fred-WALCL",
+        )
+
+        metrics = collect_us_liquidity_metrics(
+            {"history": {"enabled": False}},
+            FakeLiquiditySession(),
+            date(2024, 1, 5),
+            [walcl],
+        )
+
+        self.assertEqual([metric["name"] for metric in metrics], ["미국 순유동성", "미국 연준 총자산", "미국 TGA", "미국 역레포"])
+        self.assertTrue(all(metric["group"] == "미국 유동성" for metric in metrics))
+        self.assertTrue(all(metric["section"] == "market" for metric in metrics))
+        self.assertTrue(all(metric["market_category"] == "금리·채권" for metric in metrics))
+        self.assertEqual(metrics[0]["value"], 5800.0)
+        self.assertIn("가장 최근 값을 사용", metrics[0]["meaning"])
+        self.assertEqual(metrics[2]["frequency"], "일간")
+        self.assertEqual(metrics[2]["history_key"], "fiscaldata-tga")
 
     def test_flow_metrics_from_raw_document_generates_gross_and_net_metrics(self):
         rows = json.loads((Path(__file__).resolve().parent / "fixtures" / "krx_flow_stock_rows.json").read_text(encoding="utf-8"))
