@@ -7,6 +7,7 @@ call, so the detail panel can show what the latest value means.
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 
@@ -16,6 +17,9 @@ ZONE_LABELS = {
     "neutral": "중간 구간",
     "cool": "평균보다 낮은 구간",
     "cold": "역사적 저점권",
+    "bad": "위험 신호",
+    "watch": "경계 구간",
+    "good": "우호적 구간",
 }
 
 ZONE_ORDER = [
@@ -73,6 +77,18 @@ def percentile_zone(percentile: float | None) -> str:
     return "cold"
 
 
+def to_float(value: object) -> float | None:
+    if isinstance(value, (int, float)):
+        return float(value)
+    try:
+        text = str(value or "").replace(",", "").strip()
+        if not text:
+            return None
+        return float(text)
+    except ValueError:
+        return None
+
+
 def window_percentile(metric: dict[str, Any]) -> tuple[float | None, str]:
     stats = metric.get("percentiles")
     if not isinstance(stats, dict):
@@ -85,6 +101,10 @@ def window_percentile(metric: dict[str, Any]) -> tuple[float | None, str]:
         return None, ""
     label = "10년" if stats.get("y10") else "전체 기간"
     return float(pct), label
+
+
+def display_current_value(metric: dict[str, Any]) -> str:
+    return str(metric.get("display_value") or metric.get("value") or "").strip()
 
 
 def trend_label(metric: dict[str, Any]) -> str:
@@ -124,8 +144,72 @@ def trend_label(metric: dict[str, Any]) -> str:
     return "직전과 같은 수준"
 
 
+def history_values(metric: dict[str, Any]) -> list[float]:
+    history = metric.get("history")
+    if not isinstance(history, list):
+        return []
+    return [
+        float(point.get("value"))
+        for point in history
+        if isinstance(point, dict) and isinstance(point.get("value"), (int, float))
+    ]
+
+
+def flow_streak(values: list[float]) -> tuple[int, int]:
+    if not values:
+        return 0, 0
+    latest = values[-1]
+    direction = 1 if latest > 0 else -1 if latest < 0 else 0
+    if direction == 0:
+        return 0, 0
+    streak = 0
+    for value in reversed(values):
+        step = 1 if value > 0 else -1 if value < 0 else 0
+        if step != direction:
+            break
+        streak += 1
+    return direction, streak
+
+
+def flow_investor_name(name: str) -> str:
+    match = re.match(
+        r"^(?:코스피|코스닥|KOSPI|KOSDAQ|K200 선물|K200 Futures)\s+(.+?)\s+"
+        r"(?:20일 누적 순매수|순매수|매수|매도|20d Net Buying|Net Buying|Buying|Selling)$",
+        name,
+    )
+    return match.group(1) if match else "해당 주체"
+
+
+def build_flow_interpretation(metric: dict[str, Any]) -> dict[str, Any]:
+    name = str(metric.get("name") or "")
+    values = history_values(metric)
+    direction, streak = flow_streak(values)
+    current = to_float(metric.get("value"))
+    if direction == 0 or current is None:
+        return {}
+    investor = flow_investor_name(name)
+    action = "순매수" if direction > 0 else "순매도"
+    support_text = "수급이 지수를 받치는 구간" if direction > 0 else "수급이 지수에 부담을 주는 구간"
+    zone = "good" if direction > 0 else "bad"
+    streak_unit = "거래일" if str(metric.get("frequency") or "") == "일간" else "개 관측치"
+    headline = f"{investor} {streak}{streak_unit} 연속 {action}, 현재 {display_current_value(metric)} - {support_text}입니다."
+    level = "20일 누적 수급" if "20일 누적" in name or str(metric.get("history_key") or "").endswith("-net-20d") else "일간 순매수/순매도"
+    trend = trend_label(metric)
+    detail = trend or "순매수는 플러스, 순매도는 마이너스로 봅니다."
+    return {
+        "zone": zone,
+        "level_label": level,
+        "headline": headline,
+        "detail_text": detail,
+        "trend_label": trend,
+        "text": " ".join(part for part in (headline, detail) if part),
+        "caption": "계산 기반 해석",
+        "source": "flow",
+    }
+
+
 def match_rule(metric: dict[str, Any], rules: list[dict[str, Any]]) -> dict[str, Any]:
-    priorities = ("id", "name", "group", "industry", "chart_style", "name_contains")
+    priorities = ("id", "history_key", "name", "group", "industry", "chart_style", "name_contains")
     for priority in priorities:
         for rule in rules:
             match = rule.get("match") if isinstance(rule, dict) else None
@@ -148,6 +232,86 @@ def configured_rules(config: dict[str, Any]) -> list[dict[str, Any]]:
     return rules + DEFAULT_RULES
 
 
+def threshold_matches(value: float, threshold: dict[str, Any]) -> bool:
+    if threshold.get("default") is True:
+        return True
+    if "at_or_above" in threshold:
+        target = to_float(threshold.get("at_or_above"))
+        return target is not None and value >= target
+    if "above" in threshold:
+        target = to_float(threshold.get("above"))
+        return target is not None and value >= target
+    if "above_strict" in threshold:
+        target = to_float(threshold.get("above_strict"))
+        return target is not None and value > target
+    if "at_or_below" in threshold:
+        target = to_float(threshold.get("at_or_below"))
+        return target is not None and value <= target
+    if "below" in threshold:
+        target = to_float(threshold.get("below"))
+        return target is not None and value < target
+    if "below_strict" in threshold:
+        target = to_float(threshold.get("below_strict"))
+        return target is not None and value < target
+    return False
+
+
+def threshold_interpretation(
+    metric: dict[str, Any],
+    rule: dict[str, Any],
+    pct: float | None,
+    window_label: str,
+) -> dict[str, Any]:
+    thresholds = rule.get("thresholds")
+    if not isinstance(thresholds, list):
+        return {}
+    value = to_float(metric.get("value"))
+    if value is None:
+        return {}
+    selected = next(
+        (
+            threshold
+            for threshold in thresholds
+            if isinstance(threshold, dict) and threshold_matches(value, threshold)
+        ),
+        None,
+    )
+    if not isinstance(selected, dict):
+        return {}
+    headline = str(selected.get("text") or "").strip()
+    if not headline:
+        return {}
+    zone = str(selected.get("zone") or "neutral")
+    level_label = str(selected.get("label") or ZONE_LABELS.get(zone) or "기준선 판정")
+    trend = trend_label(metric)
+    details = []
+    if pct is not None:
+        details.append(percentile_level_label(metric, rule, pct, window_label))
+    if trend:
+        details.append(trend)
+    detail_text = " ".join(details)
+    return {
+        "zone": zone,
+        "level_label": level_label,
+        "headline": headline,
+        "detail_text": detail_text,
+        "trend_label": trend,
+        "text": " ".join(part for part in (headline, detail_text) if part),
+        "caption": "계산 기반 해석",
+        "source": "threshold",
+    }
+
+
+def percentile_level_label(metric: dict[str, Any], rule: dict[str, Any], pct: float, window_label: str) -> str:
+    zone = percentile_zone(pct)
+    zone_labels = rule.get("percentile_zone_labels") if isinstance(rule.get("percentile_zone_labels"), dict) else {}
+    zone_label = str(zone_labels.get(zone) or ZONE_LABELS.get(zone) or "현재 위치")
+    basis = str(rule.get("percentile_basis") or window_label or "전체 기간")
+    if basis == "1871년 이후":
+        return f"1871년 이후 상위 {pct:.1f}% - {zone_label}"
+    return f"{basis} 범위 상위 {pct:.1f}% - {zone_label}"
+
+
 def polarity_text(metric: dict[str, Any], rule: dict[str, Any], zone: str) -> str:
     polarity = str(rule.get("polarity") or ((metric.get("interpretation") or {}).get("polarity") or "neutral"))
     if polarity == "lower_is_better":
@@ -164,26 +328,41 @@ def polarity_text(metric: dict[str, Any], rule: dict[str, Any], zone: str) -> st
 
 
 def build_interpretation(metric: dict[str, Any], config: dict[str, Any]) -> dict[str, Any]:
+    rule = match_rule(metric, configured_rules(config))
+    if str(metric.get("chart_style") or "") == "flow_bars" or str(rule.get("polarity") or "") == "flow":
+        flow = build_flow_interpretation(metric)
+        if flow:
+            return flow
+
     pct, window_label = window_percentile(metric)
+    threshold = threshold_interpretation(metric, rule, pct, window_label)
+    if threshold:
+        return threshold
+
     if pct is None:
         return {}
     zone = percentile_zone(pct)
-    level_label = f"{window_label} 범위 상위 {pct:.1f}% - {ZONE_LABELS.get(zone, '현재 위치')}"
+    level_label = percentile_level_label(metric, rule, pct, window_label)
     trend = trend_label(metric)
-    rule = match_rule(metric, configured_rules(config))
     meaning = str(metric.get("meaning") or "").strip()
     status = polarity_text(metric, rule, zone)
-    text_parts = [meaning, level_label]
+    detail_parts = [level_label]
     if trend:
-        text_parts.append(trend)
-    if status:
-        text_parts.append(status)
+        detail_parts.append(trend)
+    if rule.get("percentile_basis") and status:
+        detail_parts.append(status)
+    detail_text = " ".join(detail_parts)
+    headline = level_label if rule.get("percentile_basis") else status or meaning or level_label
+    text_parts = [headline, detail_text]
     return {
         "zone": zone,
         "level_label": level_label,
+        "headline": headline,
+        "detail_text": detail_text,
         "trend_label": trend,
         "text": " ".join(part for part in text_parts if part),
         "caption": "계산 기반 해석",
+        "source": "percentile",
     }
 
 

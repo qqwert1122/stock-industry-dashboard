@@ -3420,10 +3420,36 @@
     }
 
     .interpretation-zone.hot { color: #dc2626; background: rgba(239, 68, 68, 0.12); }
+    .interpretation-zone.bad { color: #dc2626; background: rgba(239, 68, 68, 0.12); }
     .interpretation-zone.warm { color: #ea580c; background: rgba(249, 115, 22, 0.12); }
+    .interpretation-zone.watch { color: #ea580c; background: rgba(249, 115, 22, 0.12); }
     .interpretation-zone.neutral { color: #a16207; background: rgba(234, 179, 8, 0.14); }
     .interpretation-zone.cool { color: #2563eb; background: rgba(59, 130, 246, 0.12); }
     .interpretation-zone.cold { color: #1d4ed8; background: rgba(29, 78, 216, 0.14); }
+    .interpretation-zone.good { color: #15803d; background: rgba(34, 197, 94, 0.13); }
+
+    .interpretation-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .interpretation-cell {
+      min-width: 0;
+      display: grid;
+      align-content: start;
+      gap: 4px;
+      padding: 9px 10px;
+      border-radius: 8px;
+      background: var(--menu);
+    }
+
+    .interpretation-label {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
 
     .interpretation-text {
       margin: 0;
@@ -4889,6 +4915,10 @@
         padding: 12px;
       }
 
+      .interpretation-grid {
+        grid-template-columns: 1fr;
+      }
+
       .event-banner {
         margin-bottom: 12px;
         padding: 9px 10px;
@@ -6115,6 +6145,9 @@
         detailReferenceMax: "최고",
         detailReferenceCurrent: "현재",
         detailReferenceMin: "최저",
+        interpretationColumnSignal: "해석",
+        interpretationColumnPosition: "위치",
+        interpretationColumnMeaning: "의미 설명",
         marketDiagnosis: "시장 진단",
         marketThermometer: "시장 온도계",
         recessionSignals: "경기침체 시그널",
@@ -6303,6 +6336,9 @@
         detailReferenceMax: "High",
         detailReferenceCurrent: "Current",
         detailReferenceMin: "Low",
+        interpretationColumnSignal: "Signal",
+        interpretationColumnPosition: "Position",
+        interpretationColumnMeaning: "Meaning",
         marketDiagnosis: "Market Diagnosis",
         yoy: "YoY",
         visiblePeriod: "Period",
@@ -9193,6 +9229,32 @@
       const item = metric?.interpretation;
       if (!item || !item.text) return "";
       const zone = String(item.zone || "neutral");
+      const headline = item.headline || item.meaning_text || item.text || "";
+      const level = item.level_label || zone;
+      const detail = item.detail_text || item.trend_label || "";
+      const structured = Boolean(item.headline || item.detail_text || item.source === "threshold" || item.source === "flow");
+      if (structured) {
+        return `<div class="metric-interpretation">
+          <div class="interpretation-head">
+            <span>${escapeHtml(localizedText(item.caption || "계산 기반 해석"))}</span>
+            <span class="interpretation-zone ${escapeHtml(zone)}">${escapeHtml(localizedText(level))}</span>
+          </div>
+          <div class="interpretation-grid">
+            <div class="interpretation-cell">
+              <span class="interpretation-label">${escapeHtml(t("interpretationColumnSignal"))}</span>
+              <p class="interpretation-text">${escapeHtml(localizedText(headline))}</p>
+            </div>
+            <div class="interpretation-cell">
+              <span class="interpretation-label">${escapeHtml(t("interpretationColumnPosition"))}</span>
+              <p class="interpretation-text">${escapeHtml(localizedText(level))}</p>
+            </div>
+            <div class="interpretation-cell">
+              <span class="interpretation-label">${escapeHtml(t("interpretationColumnMeaning"))}</span>
+              <p class="interpretation-text">${escapeHtml(localizedText(detail || item.text))}</p>
+            </div>
+          </div>
+        </div>`;
+      }
       return `<div class="metric-interpretation">
         <div class="interpretation-head">
           <span>${escapeHtml(localizedText(item.caption || "계산 기반 해석"))}</span>
