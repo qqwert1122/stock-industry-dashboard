@@ -1329,7 +1329,7 @@
       width: max-content;
       min-width: 100%;
       will-change: transform;
-      animation: moverTickerFlow 58s linear infinite;
+      animation: moverTickerFlow var(--mover-ticker-duration, 180s) linear infinite;
     }
 
     .mover-ticker:hover .mover-ticker-track,
@@ -11274,7 +11274,7 @@
     function renderMoverTicker() {
       const section = document.getElementById("moverTicker");
       if (!section) return;
-      const metrics = state.navRoot === "overview" && !isSearchFiltering() ? moverTickerMetrics() : [];
+      const metrics = isSearchFiltering() ? [] : moverTickerMetrics();
       document.body.classList.toggle("has-mover-ticker", Boolean(metrics.length));
       if (!metrics.length) {
         section.hidden = true;
@@ -11283,7 +11283,9 @@
       }
       const primaryItems = metrics.map((metric) => moverTickerItemMarkup(metric, false)).join("");
       const duplicateItems = metrics.map((metric) => moverTickerItemMarkup(metric, true)).join("");
+      const duration = Math.max(120, Math.min(280, metrics.length * 10));
       section.hidden = false;
+      section.style.setProperty("--mover-ticker-duration", `${duration}s`);
       section.innerHTML = `<div class="mover-ticker-viewport" aria-label="${escapeHtml(t("dailyHeatmap"))}">
         <div class="mover-ticker-track">
           <div class="mover-ticker-group">${primaryItems}</div>
