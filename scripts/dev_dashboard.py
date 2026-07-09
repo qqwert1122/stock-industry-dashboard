@@ -669,7 +669,7 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
     add_market("미국 하이일드 회사채 OAS", "금리·채권", "신용", "%", 4.3, 0.008, 0.06)
     add_market(
         "미국 순유동성",
-        "금리·채권",
+        "유동성",
         "미국 유동성",
         "$B",
         5400,
@@ -681,7 +681,7 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
     )
     add_market(
         "미국 연준 총자산",
-        "금리·채권",
+        "유동성",
         "미국 유동성",
         "$B",
         6650,
@@ -693,7 +693,7 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
     )
     add_market(
         "미국 TGA",
-        "금리·채권",
+        "유동성",
         "미국 유동성",
         "$B",
         720,
@@ -705,7 +705,7 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
     )
     add_market(
         "미국 역레포",
-        "금리·채권",
+        "유동성",
         "미국 유동성",
         "$B",
         210,

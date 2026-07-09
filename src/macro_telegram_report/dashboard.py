@@ -2339,7 +2339,7 @@ def build_dashboard_payload(
                     note=str(exc),
                     group="미국 유동성",
                     section="market",
-                    market_category="금리·채권",
+                    market_category=US_LIQUIDITY_CATEGORY,
                 )
             )
 
@@ -2614,7 +2614,7 @@ def fetch_fred_history(
 
 
 US_LIQUIDITY_GROUP = "미국 유동성"
-US_LIQUIDITY_CATEGORY = "금리·채권"
+US_LIQUIDITY_CATEGORY = "유동성"
 US_NET_LIQUIDITY_KEY = "us-net-liquidity"
 US_TGA_DAILY_KEY = "fiscaldata-tga"
 US_RRP_KEY = "fred-RRPONTSYD"
@@ -6651,6 +6651,7 @@ EN_PHRASE_FALLBACKS = {
     "수급": "Flows",
     "신용·예탁금": "Credit/Cash",
     "금리·채권": "Rates/Bonds",
+    "유동성": "Liquidity",
     "원자재·크립토": "Commodities/Crypto",
     "심리·변동성": "Sentiment/Volatility",
     "밸류에이션": "Valuation",

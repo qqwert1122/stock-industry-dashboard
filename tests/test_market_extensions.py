@@ -253,7 +253,7 @@ class MarketExtensionsTest(unittest.TestCase):
         self.assertEqual([metric["name"] for metric in metrics], ["미국 순유동성", "미국 연준 총자산", "미국 TGA", "미국 역레포"])
         self.assertTrue(all(metric["group"] == "미국 유동성" for metric in metrics))
         self.assertTrue(all(metric["section"] == "market" for metric in metrics))
-        self.assertTrue(all(metric["market_category"] == "금리·채권" for metric in metrics))
+        self.assertTrue(all(metric["market_category"] == "유동성" for metric in metrics))
         self.assertEqual(metrics[0]["value"], 5800.0)
         self.assertIn("가장 최근 값을 사용", metrics[0]["meaning"])
         self.assertEqual(metrics[2]["frequency"], "일간")
