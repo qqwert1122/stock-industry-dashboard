@@ -166,6 +166,13 @@ def load_dashboard_module():
     return importlib.reload(dashboard)
 
 
+def load_mock_config() -> dict[str, Any]:
+    add_src_to_path()
+    from macro_telegram_report.config import load_config
+
+    return load_config(CONFIG)
+
+
 def write_dashboard_preview(payload: dict[str, Any], dashboard: Any) -> None:
     SITE.mkdir(parents=True, exist_ok=True)
     dashboard.copy_dashboard_assets(SITE)
@@ -656,17 +663,21 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
     add_market("신용융자 잔고", "신용·예탁금", "신용", "조원", 18.5, 0.02, 0.32)
     add_market("미국 10년 국채금리", "금리·채권", "금리", "%", 4.1, -0.002, 0.06)
     add_market("한국 기준금리", "금리·채권", "금리", "%", 2.75, 0, 0.02)
-    add_market("미국 10Y-3M 금리차", "금리·채권", "경기침체", "%p", -0.65, 0.01, 0.08)
-    add_market("미국 하이일드 회사채 OAS", "금리·채권", "신용", "%", 3.8, 0.01, 0.08)
+    add_market("미국 10Y-3M 금리차", "금리·채권", "경기침체", "%p", -1.4, 0.01, 0.03)
+    add_market("미국 하이일드 회사채 OAS", "금리·채권", "신용", "%", 4.3, 0.008, 0.06)
     add_market("원/달러 환율", "원자재·크립토", "환율", "원", 1360, 0.8, 12)
     add_market("비트코인", "원자재·크립토", "크립토", "$", 96000, 110, 2100)
+    add_market("김치프리미엄", "원자재·크립토", "크립토", "%", 3.2, 0.04, 0.25)
     add_market("WTI 유가", "원자재·크립토", "원자재", "$", 72, 0.05, 1.6)
-    add_market("VIX", "심리·변동성", "시장 심리", "", 24, -0.02, 0.9)
+    add_market("VIX", "심리·변동성", "시장 심리", "", 34, 0.02, 0.35)
     add_market("VKOSPI", "심리·변동성", "변동성", "", 18, 0.01, 0.7)
     add_market("미국 CNN 공포탐욕지수", "심리·변동성", "공포탐욕", "점", 58, 0.05, 2.2)
     add_market("코스피 공포탐욕지수", "심리·변동성", "공포탐욕", "점", 42, 0.2, 2.6)
     add_market("코스닥 공포탐욕지수", "심리·변동성", "공포탐욕", "점", 64, -0.08, 2.9)
-    add_market("코스피 PBR", "밸류에이션", "밸류에이션", "배", 0.9, 0.003, 0.02)
+    add_market("한국 소비자심리지수(CCSI)", "종합", "심리", "", 98.5, -0.01, 0.2)
+    add_market("한국 전산업 업황실적 BSI", "종합", "심리", "", 99, 0.02, 0.2)
+    add_market("한국 경기선행지수 순환변동치", "종합", "경기", "", 99.2, 0.005, 0.08)
+    add_market("코스피 PBR", "밸류에이션", "밸류에이션", "배", 0.78, 0.001, 0.005)
     add_market("S&P 500 Shiller CAPE", "밸류에이션", "밸류에이션", "배", 31, 0.04, 0.35, frequency="월간")
 
     mock_percentiles = {
@@ -679,6 +690,8 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
         percentile = mock_percentiles.get(str(metric.get("name") or ""))
         if percentile is not None:
             add_mock_percentile(metric, percentile)
+
+    dashboard.apply_interpretations(metrics, load_mock_config())
 
     industries = [industry for industry in dashboard.DEFAULT_INDUSTRIES if any(metric["industry"] == industry for metric in metrics)]
     payload = {

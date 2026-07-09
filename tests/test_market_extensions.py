@@ -72,6 +72,21 @@ class MarketExtensionsTest(unittest.TestCase):
             [item["name"] for item in gauges["fear_greed"]["items"]],
             ["미국 CNN", "코스피", "코스닥"],
         )
+        metrics_by_name = {str(metric.get("name") or ""): metric for metric in payload.get("metrics", [])}
+        self.assertEqual(metrics_by_name["Sahm Rule 침체 지표"]["interpretation"]["source"], "threshold")
+        self.assertIn("기준 0.5", metrics_by_name["Sahm Rule 침체 지표"]["interpretation"]["headline"])
+        self.assertEqual(metrics_by_name["미국 10Y-3M 금리차"]["interpretation"]["source"], "threshold")
+        self.assertIn("역전 기준 0", metrics_by_name["미국 10Y-3M 금리차"]["interpretation"]["headline"])
+        self.assertEqual(metrics_by_name["VIX"]["interpretation"]["source"], "threshold")
+        self.assertIn("기준 30", metrics_by_name["VIX"]["interpretation"]["headline"])
+        self.assertEqual(metrics_by_name["미국 하이일드 회사채 OAS"]["interpretation"]["source"], "threshold")
+        self.assertIn("기준 5%p", metrics_by_name["미국 하이일드 회사채 OAS"]["interpretation"]["headline"])
+        self.assertEqual(metrics_by_name["코스피 PBR"]["interpretation"]["source"], "threshold")
+        self.assertIn("기준 0.9", metrics_by_name["코스피 PBR"]["interpretation"]["headline"])
+        self.assertEqual(metrics_by_name["코스피 외국인 순매수"]["interpretation"]["source"], "flow")
+        self.assertIn("외국인", metrics_by_name["코스피 외국인 순매수"]["interpretation"]["headline"])
+        self.assertEqual(metrics_by_name["S&P 500 Shiller CAPE"]["interpretation"]["source"], "percentile")
+        self.assertIn("1871년 이후", metrics_by_name["S&P 500 Shiller CAPE"]["interpretation"]["headline"])
 
     def test_retry_after_is_capped_for_dashboard_builds(self):
         self.assertEqual(parse_retry_after("120"), 20.0)
