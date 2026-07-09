@@ -1,9 +1,9 @@
-name: Daily Industry Dashboard
+name: Market Close Briefing
 
 on:
   schedule:
-    # 23:00 UTC = 08:00 KST
-    - cron: "0 23 * * *"
+    # 미국장 마감 이후 06:15 KST 부근. 서머타임/비서머타임 차이는 경량 카드 재생성으로 흡수합니다.
+    - cron: "15 21 * * 1-5"
   workflow_dispatch:
 
 permissions:
@@ -14,9 +14,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  close-briefing:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
 
     steps:
       - name: Check out repository
@@ -38,9 +38,6 @@ jobs:
       - name: Restore previous dashboard data
         run: |
           mkdir -p site/data
-          # KRX flow raw snapshots live under data/history/krx-flow-raw-*.json.
-          # They are restored by actions/checkout and committed by `git add data` below.
-          mkdir -p data/history
           if [ -f data/last_dashboard.json ]; then
             cp data/last_dashboard.json site/data/dashboard.json
           else
@@ -49,21 +46,12 @@ jobs:
           fi
           if [ -f data/market_gauges_history.json ]; then
             cp data/market_gauges_history.json site/data/market_gauges_history.json
-          else
-            curl -fsSL https://qqwert1122.github.io/stock-industry-dashboard/data/market_gauges_history.json \
-              -o site/data/market_gauges_history.json || true
           fi
           if [ -f data/fetch_log_history.json ]; then
             cp data/fetch_log_history.json site/data/fetch_log_history.json
-          else
-            curl -fsSL https://qqwert1122.github.io/stock-industry-dashboard/data/fetch_log_history.json \
-              -o site/data/fetch_log_history.json || true
           fi
           if [ -f data/signal_log.json ]; then
             cp data/signal_log.json site/data/signal_log.json
-          else
-            curl -fsSL https://qqwert1122.github.io/stock-industry-dashboard/data/signal_log.json \
-              -o site/data/signal_log.json || true
           fi
           if [ -f data/calendar.json ]; then
             cp data/calendar.json site/data/calendar.json
@@ -82,31 +70,17 @@ jobs:
             cp -R data/briefings/. site/data/briefings/
           fi
 
-      - name: Build dashboard
+      - name: Build close briefing
         env:
-          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
-          ECOS_API_KEY: ${{ secrets.ECOS_API_KEY }}
-          DATA_GO_KR_SERVICE_KEY: ${{ secrets.DATA_GO_KR_SERVICE_KEY }}
-          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
-          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
-          NREL_API_KEY: ${{ secrets.NREL_API_KEY }}
-          OPENFDA_API_KEY: ${{ secrets.OPENFDA_API_KEY }}
-          KOSIS_API_KEY: ${{ secrets.KOSIS_API_KEY }}
-          KRX_OPEN_API_KEY: ${{ secrets.KRX_OPEN_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: industry-dashboard --config config.yaml --out site
+        run: industry-dashboard --config config.yaml --out site --briefing-only close
 
       - name: Commit data cache back to repository
         run: |
           mkdir -p data
           cp site/data/dashboard.json data/last_dashboard.json
-          if [ -f site/data/market_gauges_history.json ]; then
-            cp site/data/market_gauges_history.json data/market_gauges_history.json
-          fi
-          if [ -f site/data/fetch_log_history.json ]; then
-            cp site/data/fetch_log_history.json data/fetch_log_history.json
+          if [ -f site/data/intraday_track.json ]; then
+            cp site/data/intraday_track.json data/intraday_track.json
           fi
           if [ -f site/data/signal_log.json ]; then
             cp site/data/signal_log.json data/signal_log.json
@@ -114,22 +88,17 @@ jobs:
           if [ -f site/data/calendar.json ]; then
             cp site/data/calendar.json data/calendar.json
           fi
-          if [ -f site/data/intraday_track.json ]; then
-            cp site/data/intraday_track.json data/intraday_track.json
-          fi
           if [ -d site/data/briefings ]; then
             rm -rf data/briefings
-            mkdir -p data
             cp -R site/data/briefings data/briefings
           fi
-          # Includes data/history/krx-flow-raw-*.json produced during incremental KRX flow backfill.
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data
           if git diff --cached --quiet; then
             echo "No data cache changes."
           else
-            git commit -m "Update data cache [skip ci]"
+            git commit -m "Update close briefing cache [skip ci]"
             git pull --rebase origin main || true
             git push origin HEAD:main
           fi
@@ -161,18 +130,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No dashboard changes to deploy."
           else
-            git commit -m "Update stock industry dashboard"
+            git commit -m "Update market close briefing"
             git push origin main
-          fi
-
-      - name: Notify failure via Telegram
-        if: failure()
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: |
-          if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
-            curl -fsS -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
-              -d chat_id="${TELEGRAM_CHAT_ID}" \
-              -d text="🛑 일일 대시보드 빌드 실패: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" || true
           fi

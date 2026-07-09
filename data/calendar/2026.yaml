@@ -1,0 +1,63 @@
+# 2026 FOMC: Federal Reserve, Meeting calendars and information
+# https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm
+# 2026 금통위: 한국은행, 통화정책방향 결정회의 일정 및 자료
+# https://www.bok.or.kr/portal/singl/crncyPolicyDrcMtg/listYear.do?menuNo=200755&mtgSe=A
+# 2026 CPI: U.S. Bureau of Labor Statistics, Schedule of Releases for the Consumer Price Index
+# https://www.bls.gov/schedule/news_release/cpi.htm
+# 2026 NYSE holidays: NYSE, Holidays & Trading Hours
+# https://www.nyse.com/markets/hours-calendars
+# 2026 KRX 연말/연초 운영: 한국거래소 공지 기반 증권사 안내
+# https://www.samsungpop.com/ux/kor/customer/notice/notice/noticeViewContent.do?MenuSeqNo=23456
+events:
+  - {date: "2026-01-01", name: "NYSE 휴장", category: "holiday", country: "US", note: "New Year's Day"}
+  - {date: "2026-01-01", name: "KRX 휴장", category: "holiday", country: "KR", note: "신정"}
+  - {date: "2026-01-13", name: "미국 CPI 발표", category: "us_data", country: "US", note: "2025년 12월 CPI"}
+  - {date: "2026-01-15", name: "한국은행 금통위", category: "bok", country: "KR", note: "통화정책방향 결정회의"}
+  - {date: "2026-01-19", name: "NYSE 휴장", category: "holiday", country: "US", note: "Martin Luther King Jr. Day"}
+  - {date: "2026-01-28", name: "FOMC 결정", category: "fed", country: "US", note: "1월 FOMC"}
+  - {date: "2026-02-13", name: "미국 CPI 발표", category: "us_data", country: "US", note: "2026년 1월 CPI"}
+  - {date: "2026-02-16", name: "NYSE 휴장", category: "holiday", country: "US", note: "Washington's Birthday"}
+  - {date: "2026-02-16", name: "KRX 휴장", category: "holiday", country: "KR", note: "설 연휴"}
+  - {date: "2026-02-17", name: "KRX 휴장", category: "holiday", country: "KR", note: "설 연휴"}
+  - {date: "2026-02-18", name: "KRX 휴장", category: "holiday", country: "KR", note: "설 연휴"}
+  - {date: "2026-02-26", name: "한국은행 금통위", category: "bok", country: "KR", note: "통화정책방향 결정회의"}
+  - {date: "2026-03-02", name: "KRX 휴장", category: "holiday", country: "KR", note: "삼일절 대체휴일"}
+  - {date: "2026-03-11", name: "미국 CPI 발표", category: "us_data", country: "US", note: "2026년 2월 CPI"}
+  - {date: "2026-03-18", name: "FOMC 결정", category: "fed", country: "US", note: "3월 FOMC·SEP"}
+  - {date: "2026-04-03", name: "NYSE 휴장", category: "holiday", country: "US", note: "Good Friday"}
+  - {date: "2026-04-10", name: "한국은행 금통위", category: "bok", country: "KR", note: "통화정책방향 결정회의"}
+  - {date: "2026-04-10", name: "미국 CPI 발표", category: "us_data", country: "US", note: "2026년 3월 CPI"}
+  - {date: "2026-04-29", name: "FOMC 결정", category: "fed", country: "US", note: "4월 FOMC"}
+  - {date: "2026-05-01", name: "KRX 휴장", category: "holiday", country: "KR", note: "근로자의 날"}
+  - {date: "2026-05-05", name: "KRX 휴장", category: "holiday", country: "KR", note: "어린이날"}
+  - {date: "2026-05-12", name: "미국 CPI 발표", category: "us_data", country: "US", note: "2026년 4월 CPI"}
+  - {date: "2026-05-25", name: "NYSE 휴장", category: "holiday", country: "US", note: "Memorial Day"}
+  - {date: "2026-05-25", name: "KRX 휴장", category: "holiday", country: "KR", note: "부처님오신날 대체휴일"}
+  - {date: "2026-05-28", name: "한국은행 금통위", category: "bok", country: "KR", note: "통화정책방향 결정회의"}
+  - {date: "2026-06-10", name: "미국 CPI 발표", category: "us_data", country: "US", note: "2026년 5월 CPI"}
+  - {date: "2026-06-17", name: "FOMC 결정", category: "fed", country: "US", note: "6월 FOMC·SEP"}
+  - {date: "2026-06-19", name: "NYSE 휴장", category: "holiday", country: "US", note: "Juneteenth"}
+  - {date: "2026-07-03", name: "NYSE 휴장", category: "holiday", country: "US", note: "Independence Day observed"}
+  - {date: "2026-07-14", name: "미국 CPI 발표", category: "us_data", country: "US", note: "2026년 6월 CPI"}
+  - {date: "2026-07-16", name: "한국은행 금통위", category: "bok", country: "KR", note: "통화정책방향 결정회의"}
+  - {date: "2026-07-29", name: "FOMC 결정", category: "fed", country: "US", note: "7월 FOMC"}
+  - {date: "2026-08-12", name: "미국 CPI 발표", category: "us_data", country: "US", note: "2026년 7월 CPI"}
+  - {date: "2026-08-27", name: "한국은행 금통위", category: "bok", country: "KR", note: "통화정책방향 결정회의"}
+  - {date: "2026-09-07", name: "NYSE 휴장", category: "holiday", country: "US", note: "Labor Day"}
+  - {date: "2026-09-11", name: "미국 CPI 발표", category: "us_data", country: "US", note: "2026년 8월 CPI"}
+  - {date: "2026-09-16", name: "FOMC 결정", category: "fed", country: "US", note: "9월 FOMC·SEP"}
+  - {date: "2026-09-24", name: "KRX 휴장", category: "holiday", country: "KR", note: "추석 연휴"}
+  - {date: "2026-09-25", name: "KRX 휴장", category: "holiday", country: "KR", note: "추석 연휴"}
+  - {date: "2026-10-05", name: "KRX 휴장", category: "holiday", country: "KR", note: "개천절 대체휴일"}
+  - {date: "2026-10-09", name: "KRX 휴장", category: "holiday", country: "KR", note: "한글날"}
+  - {date: "2026-10-14", name: "미국 CPI 발표", category: "us_data", country: "US", note: "2026년 9월 CPI"}
+  - {date: "2026-10-22", name: "한국은행 금통위", category: "bok", country: "KR", note: "통화정책방향 결정회의"}
+  - {date: "2026-10-28", name: "FOMC 결정", category: "fed", country: "US", note: "10월 FOMC"}
+  - {date: "2026-11-10", name: "미국 CPI 발표", category: "us_data", country: "US", note: "2026년 10월 CPI"}
+  - {date: "2026-11-26", name: "NYSE 휴장", category: "holiday", country: "US", note: "Thanksgiving Day"}
+  - {date: "2026-11-26", name: "한국은행 금통위", category: "bok", country: "KR", note: "통화정책방향 결정회의"}
+  - {date: "2026-12-09", name: "FOMC 결정", category: "fed", country: "US", note: "12월 FOMC·SEP"}
+  - {date: "2026-12-10", name: "미국 CPI 발표", category: "us_data", country: "US", note: "2026년 11월 CPI"}
+  - {date: "2026-12-25", name: "NYSE 휴장", category: "holiday", country: "US", note: "Christmas Day"}
+  - {date: "2026-12-25", name: "KRX 휴장", category: "holiday", country: "KR", note: "성탄절"}
+  - {date: "2026-12-31", name: "KRX 휴장", category: "holiday", country: "KR", note: "연말 휴장일"}

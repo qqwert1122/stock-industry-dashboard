@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>수집 로그</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #ffffff;
+      --panel: #f7f7f7;
+      --text: #171717;
+      --muted: #6d6d6d;
+      --line: #e6e6e6;
+      --ok: #15803d;
+      --ok-bg: rgba(22, 163, 74, 0.12);
+      --warn: #a16207;
+      --warn-bg: rgba(234, 179, 8, 0.16);
+      --bad: #b91c1c;
+      --bad-bg: rgba(239, 68, 68, 0.13);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        color-scheme: dark;
+        --bg: #111111;
+        --panel: #1d1d1d;
+        --text: #f2f2f2;
+        --muted: #a7a7a7;
+        --line: #303030;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      padding: 28px 18px 48px;
+    }
+    header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    h1 { margin: 0; font-size: 24px; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 14px;
+    }
+    .toolbar label {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+    .run-list,
+    .record-panel {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+    .run-list {
+      display: grid;
+      gap: 0;
+    }
+    .run-button {
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+      color: var(--text);
+      padding: 13px 14px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .run-button:last-child { border-bottom: 0; }
+    .run-button.is-active { background: rgba(127, 127, 127, 0.10); }
+    .run-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 7px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .success { color: var(--ok); background: var(--ok-bg); }
+    .no_new_data { color: var(--warn); background: var(--warn-bg); }
+    .failed { color: var(--bad); background: var(--bad-bg); }
+    .record-head {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .record-title { font-size: 15px; font-weight: 750; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th, td {
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      text-align: left;
+    }
+    th {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      background: rgba(127, 127, 127, 0.08);
+    }
+    tr:last-child td { border-bottom: 0; }
+    .endpoint {
+      max-width: 280px;
+      overflow-wrap: anywhere;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .empty {
+      padding: 28px 16px;
+      color: var(--muted);
+      text-align: center;
+    }
+    @media (max-width: 820px) {
+      header { display: grid; align-items: start; }
+      .layout { grid-template-columns: 1fr; }
+      .record-panel { overflow-x: auto; }
+      table { min-width: 760px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>수집 로그</h1>
+        <div class="muted" id="updatedAt">데이터를 불러오는 중</div>
+      </div>
+      <a class="muted" href="../">대시보드로 돌아가기</a>
+    </header>
+    <div class="toolbar">
+      <label><input type="checkbox" id="failedOnly"> 실패만 보기</label>
+    </div>
+    <section class="layout">
+      <div class="run-list" id="runList"></div>
+      <div class="record-panel" id="recordPanel"></div>
+    </section>
+  </main>
+  <script>
+    const state = { history: null, selectedRunId: "", failedOnly: false };
+    const statusLabels = {
+      success: "업데이트",
+      no_new_data: "신규 없음",
+      failed: "실패",
+    };
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      }[char]));
+    }
+
+    function formatDate(value) {
+      const date = new Date(value || "");
+      if (Number.isNaN(date.getTime())) return value || "";
+      return new Intl.DateTimeFormat("ko-KR", {
+        timeZone: "Asia/Seoul",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      }).format(date);
+    }
+
+    function runSummary(run) {
+      const summary = run.summary || {};
+      return ["success", "no_new_data", "failed"].map((status) => {
+        const count = Number(summary[status] || 0);
+        return `<span class="badge ${status}">${escapeHtml(statusLabels[status])} ${count}</span>`;
+      }).join("");
+    }
+
+    function renderRuns() {
+      const runs = [...(state.history?.runs || [])].reverse();
+      const list = document.getElementById("runList");
+      if (!runs.length) {
+        list.innerHTML = `<div class="empty">수집 로그가 없습니다.</div>`;
+        return;
+      }
+      if (!state.selectedRunId) state.selectedRunId = String(runs[0].run_id || "");
+      list.innerHTML = runs.map((run) => {
+        const id = String(run.run_id || "");
+        return `<button class="run-button${id === state.selectedRunId ? " is-active" : ""}" type="button" data-run-id="${escapeHtml(id)}">
+          <span class="run-top">
+            <span>${escapeHtml(run.run_type || "run")}</span>
+            <span>${escapeHtml(formatDate(run.started_at))}</span>
+          </span>
+          <span class="badges">${runSummary(run)}</span>
+        </button>`;
+      }).join("");
+      list.querySelectorAll("[data-run-id]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.selectedRunId = button.dataset.runId || "";
+          renderRuns();
+          renderRecords();
+        });
+      });
+    }
+
+    function selectedRun() {
+      return (state.history?.runs || []).find((run) => String(run.run_id || "") === state.selectedRunId) || null;
+    }
+
+    function renderRecords() {
+      const panel = document.getElementById("recordPanel");
+      const run = selectedRun();
+      if (!run) {
+        panel.innerHTML = `<div class="empty">실행을 선택하세요.</div>`;
+        return;
+      }
+      const records = (run.records || []).filter((record) => !state.failedOnly || record.status === "failed");
+      const rows = records.map((record) => `<tr>
+        <td><span class="badge ${escapeHtml(record.status)}">${escapeHtml(statusLabels[record.status] || record.status)}</span></td>
+        <td>${escapeHtml(record.source)}</td>
+        <td>${escapeHtml(record.message)}</td>
+        <td>${Number(record.metric_count || 0)}</td>
+        <td>${Number(record.new_data_count || 0)}</td>
+        <td>${Number(record.duration_ms || 0).toLocaleString("ko-KR")}</td>
+        <td>${record.http_status ?? ""}</td>
+        <td class="endpoint">${escapeHtml(record.endpoint)}</td>
+      </tr>`).join("");
+      panel.innerHTML = `<div class="record-head">
+          <div>
+            <div class="record-title">${escapeHtml(run.run_type || "run")} 실행 상세</div>
+            <div class="muted">${escapeHtml(formatDate(run.started_at))} - ${escapeHtml(formatDate(run.finished_at))}</div>
+          </div>
+          <div class="badges">${runSummary(run)}</div>
+        </div>
+        ${rows ? `<table>
+          <thead>
+            <tr>
+              <th>상태</th>
+              <th>소스</th>
+              <th>메시지</th>
+              <th>지표</th>
+              <th>신규</th>
+              <th>ms</th>
+              <th>HTTP</th>
+              <th>endpoint</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>` : `<div class="empty">표시할 기록이 없습니다.</div>`}`;
+    }
+
+    async function load() {
+      try {
+        const response = await fetch("../data/fetch_log.json", { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        state.history = await response.json();
+        document.getElementById("updatedAt").textContent = `최근 갱신: ${formatDate(state.history.updated_at)}`;
+      } catch (error) {
+        state.history = { runs: [] };
+        document.getElementById("updatedAt").textContent = `수집 로그를 불러오지 못했습니다: ${error.message}`;
+      }
+      renderRuns();
+      renderRecords();
+    }
+
+    document.getElementById("failedOnly").addEventListener("change", (event) => {
+      state.failedOnly = event.target.checked;
+      renderRecords();
+    });
+    load();
+  </script>
+</body>
+</html>

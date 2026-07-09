@@ -7,6 +7,8 @@ from unittest.mock import patch
 
 from macro_telegram_report.alerts import process_alerts
 from macro_telegram_report.dashboard import (
+    assign_market_navigation_fields,
+    flow_metrics_from_raw_document,
     make_metric,
     update_market_gauge_history,
     visible_dashboard_metrics,
@@ -25,6 +27,7 @@ from macro_telegram_report.market_valuation import (
     parse_finra_margin_table,
     parse_multpl_table,
 )
+from macro_telegram_report.market_flows import load_raw_flow_snapshot, merge_raw_flow_rows
 
 
 class FakeResponse:
@@ -53,6 +56,23 @@ class FakeKrxSession:
 
 
 class MarketExtensionsTest(unittest.TestCase):
+    def test_dev_mock_payload_includes_market_gauges(self):
+        import scripts.dev_dashboard as dev_dashboard
+
+        dashboard = dev_dashboard.load_dashboard_module()
+        payload = dev_dashboard.build_mock_payload(dashboard)
+        gauges = payload.get("market_gauges") or {}
+
+        self.assertIn("thermometer", gauges)
+        self.assertIn("recession", gauges)
+        self.assertIn("fear_greed", gauges)
+        self.assertGreaterEqual(len(gauges["thermometer"]["components"]), 3)
+        self.assertGreaterEqual(len(gauges["recession"]["signals"]), 2)
+        self.assertEqual(
+            [item["name"] for item in gauges["fear_greed"]["items"]],
+            ["미국 CNN", "코스피", "코스닥"],
+        )
+
     def test_retry_after_is_capped_for_dashboard_builds(self):
         self.assertEqual(parse_retry_after("120"), 20.0)
         self.assertEqual(parse_retry_after("2.5"), 2.5)
@@ -79,6 +99,85 @@ class MarketExtensionsTest(unittest.TestCase):
         self.assertEqual(visible["status"], "ok")
         self.assertEqual(visible["history_key"], "custom-history-key")
         self.assertEqual(visible["history_merge"], "latest")
+
+    def test_visible_metrics_keep_market_navigation_fields(self):
+        metric = make_metric(
+            industry="매크로",
+            name="테스트 수급",
+            source="테스트",
+            source_url="https://example.com",
+            frequency="일간",
+            automation="자동",
+            status="ok",
+            value=1.0,
+            observed_at="2026-07-08",
+            history=[(date(2026, 7, 8), 1.0)],
+            group="수급",
+            section="market",
+            market_category="수급",
+            also_market_category=["심리·변동성"],
+            chart_style="flow_bars",
+            refresh_scope="intraday",
+        )
+
+        visible = visible_dashboard_metrics([metric])[0]
+
+        self.assertEqual(visible["section"], "market")
+        self.assertEqual(visible["market_category"], "수급")
+        self.assertEqual(visible["also_market_category"], ["심리·변동성"])
+        self.assertEqual(visible["chart_style"], "flow_bars")
+        self.assertEqual(visible["refresh_scope"], "intraday")
+
+    def test_assign_market_navigation_moves_indices_and_parallels_rates(self):
+        kospi = make_metric(
+            industry="매크로",
+            name="코스피",
+            source="Yahoo",
+            source_url="https://example.com",
+            frequency="일간",
+            automation="자동",
+            status="ok",
+            value=3000,
+            observed_at="2026-07-08",
+            history=[(date(2026, 7, 8), 3000)],
+            group="시장지수",
+        )
+        rate = make_metric(
+            industry="은행/금융",
+            name="미국 10년 국채금리",
+            source="FRED",
+            source_url="https://example.com",
+            frequency="일간",
+            automation="자동",
+            status="ok",
+            value=4.1,
+            observed_at="2026-07-08",
+            history=[(date(2026, 7, 8), 4.1)],
+            group="금리",
+        )
+
+        assign_market_navigation_fields([kospi, rate])
+
+        self.assertEqual(kospi["section"], "market")
+        self.assertEqual(kospi["market_category"], "종합")
+        self.assertNotEqual(rate.get("section"), "market")
+        self.assertEqual(rate["also_market_category"], ["금리·채권"])
+
+    def test_flow_metrics_from_raw_document_generates_gross_and_net_metrics(self):
+        rows = json.loads((Path(__file__).resolve().parent / "fixtures" / "krx_flow_stock_rows.json").read_text(encoding="utf-8"))
+        document = load_raw_flow_snapshot(Path("missing.json"), "kospi")
+        merge_raw_flow_rows(document, date(2026, 7, 8), rows)
+
+        metrics = flow_metrics_from_raw_document("kospi", "KOSPI", document, "https://data.krx.co.kr/")
+        by_name = {metric["name"]: metric for metric in metrics}
+
+        self.assertIn("KOSPI 기타금융 매수", by_name)
+        self.assertIn("KOSPI 기타금융 순매수", by_name)
+        self.assertEqual(by_name["KOSPI 기타금융 순매수"]["chart_style"], "flow_bars")
+        self.assertEqual(by_name["KOSPI 기타금융 매수"]["exclude_from_movers"], True)
+        self.assertIn("산 금액에서 판 금액을 뺀 값", by_name["KOSPI 기타금융 순매수"]["meaning"])
+        self.assertIn("사들인 거래대금", by_name["KOSPI 기타금융 매수"]["meaning"])
+        self.assertNotIn("매크로 흐름을 이해할 때 참고하는 보조 지표", by_name["KOSPI 기타금융 순매수"]["meaning"])
 
     def test_history_store_does_not_persist_empty_placeholder(self):
         with TemporaryDirectory() as tmp:
@@ -267,6 +366,45 @@ class MarketExtensionsTest(unittest.TestCase):
         self.assertEqual(len(first), 1)
         self.assertEqual(second, [])
         self.assertEqual(send.call_count, 1)
+
+    def test_alerts_append_signal_log_on_trigger_and_clear(self):
+        config = {
+            "alerts": {
+                "enabled": True,
+                "state_file": "",
+                "signal_log_file": "",
+                "weekly_digest": False,
+                "rules": [{"metric": "VIX", "above": 40, "message": "공포 구간"}],
+            }
+        }
+        payload = {
+            "metrics": [
+                {
+                    "id": "vix",
+                    "name": "VIX",
+                    "status": "ok",
+                    "value": 45.0,
+                    "display_value": "45.0",
+                    "observed_at": "2026-07-08",
+                }
+            ],
+            "source_status": [],
+        }
+
+        with TemporaryDirectory() as tmp:
+            config["alerts"]["state_file"] = str(Path(tmp, "alerts.json"))
+            config["alerts"]["signal_log_file"] = str(Path(tmp, "signal_log.json"))
+            with patch("macro_telegram_report.alerts.send_telegram"):
+                process_alerts(config, payload, session=None, now=datetime(2026, 7, 8), include_weekly=False)
+                process_alerts(config, payload, session=None, now=datetime(2026, 7, 8), include_weekly=False)
+                payload["metrics"][0]["value"] = 35.0
+                payload["metrics"][0]["display_value"] = "35.0"
+                payload["metrics"][0]["observed_at"] = "2026-07-09"
+                process_alerts(config, payload, session=None, now=datetime(2026, 7, 9), include_weekly=False)
+            document = json.loads(Path(tmp, "signal_log.json").read_text(encoding="utf-8"))
+
+        self.assertEqual([event["direction"] for event in document["events"]], ["triggered", "cleared"])
+        self.assertEqual(document["events"][0]["metric_id"], "vix")
 
     def test_market_valuation_parsers(self):
         multpl_html = """

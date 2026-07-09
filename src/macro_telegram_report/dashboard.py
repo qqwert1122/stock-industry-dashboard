@@ -19,15 +19,44 @@ import yaml
 from bs4 import BeautifulSoup
 from openpyxl import load_workbook
 
+from .briefing import (
+    build_briefing_card,
+    update_intraday_track,
+    write_briefing_outputs,
+)
 from .history_store import (
     HistoryStore,
     downsample_history,
     parse_stored_points,
     percentile_stats,
 )
+from .interpretation import apply_interpretations
+from .fetch_log import (
+    FetchLogger,
+    append_fetch_log_run,
+    current_logger,
+    load_fetch_log_history,
+    sanitize_message,
+    save_fetch_log_history,
+    use_fetch_logger,
+)
+from .event_calendar import build_event_calendar, write_event_calendar
 from .korea_exports import fetch_itemtrade_records
 from .alerts import process_alerts
 from .market_gauges import build_market_gauges
+from .market_flows import (
+    FLOW_MEASURES,
+    fetch_krx_futures_flow_rows,
+    fetch_krx_stock_flow_rows,
+    investor_slug,
+    load_raw_flow_snapshot,
+    raw_flow_investors,
+    raw_flow_known_dates,
+    raw_flow_series,
+    raw_flow_snapshot_path,
+    rolling_sum_series,
+    store_raw_flow_rows,
+)
 from .market_valuation import (
     fetch_finra_margin_series,
     fetch_krx_valuation_series,
@@ -42,6 +71,7 @@ from .market_sentiment import (
     fetch_vkospi_points,
     merge_existing_and_incoming,
     metric_full_points,
+    missing_recent_dates,
 )
 from .utils import add_months, fmt_number, fmt_pct, fmt_signed, month_key, pct_change, to_float
 from .wsts import find_wsts_xlsx_url, parse_wsts_sheet
@@ -51,6 +81,30 @@ GEMINI_DEFAULT_MODEL = "gemini-3.1-flash-lite"
 GEMINI_GENERATE_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 MARKET_GAUGE_HISTORY_FILENAME = "market_gauges_history.json"
 MARKET_GAUGE_HISTORY_VERSION = 1
+FETCH_LOG_HISTORY_FILENAME = "fetch_log_history.json"
+FETCH_LOG_FILENAME = "fetch_log.json"
+FETCH_SOURCE_ENDPOINTS = {
+    "WSTS": "https://www.wsts.org/76/Recent-News-Release",
+    "FRED": FRED_OBSERVATIONS_URL,
+    "ECOS 신용스프레드": "https://ecos.bok.or.kr/api/",
+    "ECOS 매크로": "https://ecos.bok.or.kr/api/",
+    "대표주가/시장지수": "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}",
+    "스테이블코인": "https://stablecoins.llama.fi/stablecoins",
+    "World Bank 원자재": "https://thedocs.worldbank.org/",
+    "SEC CAPEX": "https://data.sec.gov/submissions/{cik}.json",
+    "USAspending 방산": "https://api.usaspending.gov/api/v2/search/spending_over_time/",
+    "EIA": "https://api.eia.gov/v2/",
+    "openFDA": "https://api.fda.gov/",
+    "ClinicalTrials.gov": "https://clinicaltrials.gov/api/v2/studies",
+    "Launch Library": "https://ll.thespacedevs.com/2.3.0/launches/",
+    "AFDC EV 충전": "https://developer.nrel.gov/api/alt-fuel-stations/v1/count.json",
+    "KOSIS": "https://kosis.kr/openapi/",
+    "한국 수출": "https://apis.data.go.kr/1220000/Itemtrade",
+    "밸류에이션/수급": "https://finance.naver.com/",
+    "시장 수급": "https://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd",
+    "시장 파생지표": "https://api.upbit.com/v1/ticker",
+    "시장 심리": "https://production.dataviz.cnn.io/index/fearandgreed/graphdata/{start_date}",
+}
 DEFAULT_INDUSTRIES = [
     "반도체",
     "데이터인프라",
@@ -473,26 +527,45 @@ def build_dashboard_site(config: dict[str, Any], output_dir: str | Path, session
     data_path = output_path / "data"
     data_path.mkdir(parents=True, exist_ok=True)
 
+    timezone_name = str(config.get("timezone") or "Asia/Seoul")
     previous_payload = load_previous_dashboard_payload(data_path / "dashboard.json")
-    payload = build_dashboard_payload(config, session)
-    long_histories = enrich_metrics_with_history(
-        payload.get("metrics", []), config, previous_payload
-    )
-    payload["market_gauges"] = build_market_gauges(payload.get("metrics", []))
-    market_gauge_history = update_market_gauge_history(
-        load_previous_dashboard_payload(data_path / MARKET_GAUGE_HISTORY_FILENAME),
-        payload,
-        str(config.get("timezone") or "Asia/Seoul"),
-    )
-    payload["collection_issues"] = annotate_metric_freshness(
-        payload.get("metrics", []), datetime.now(ZoneInfo(str(config.get("timezone") or "Asia/Seoul"))).date()
-    )
-    annotate_dashboard_updates(payload, previous_payload)
-    payload["morning_briefing"] = build_morning_briefing(payload, session)
-    try:
-        process_alerts(config, payload, session)
-    except Exception:  # noqa: BLE001 - 알림 실패가 배포를 막으면 안 됩니다.
-        pass
+    logger = FetchLogger(run_type="full", timezone_name=timezone_name)
+    with use_fetch_logger(logger):
+        payload = build_dashboard_payload(config, session, previous_payload)
+        long_histories = enrich_metrics_with_history(
+            payload.get("metrics", []), config, previous_payload
+        )
+        apply_interpretations(payload.get("metrics", []), config)
+        payload["market_gauges"] = build_market_gauges(payload.get("metrics", []))
+        payload["calendar"] = build_event_calendar(config, payload, today=datetime.now(ZoneInfo(timezone_name)).date())
+        write_event_calendar(data_path / "calendar.json", payload["calendar"])
+        market_gauge_history = update_market_gauge_history(
+            load_previous_dashboard_payload(data_path / MARKET_GAUGE_HISTORY_FILENAME),
+            payload,
+            timezone_name,
+        )
+        payload["collection_issues"] = annotate_metric_freshness(
+            payload.get("metrics", []), datetime.now(ZoneInfo(timezone_name)).date()
+        )
+        annotate_dashboard_updates(payload, previous_payload)
+        briefing_generated_at = str(payload.get("generated_at") or datetime.now(ZoneInfo(timezone_name)).isoformat(timespec="seconds"))
+        base_briefing = build_morning_briefing(payload, session)
+        trajectory = update_intraday_track(data_path, payload, briefing_generated_at)
+        payload["morning_briefing"] = build_briefing_card(
+            base_briefing,
+            card_type="morning",
+            generated_at=briefing_generated_at,
+            generated_label=str(payload.get("generated_label") or ""),
+            trajectory=trajectory,
+        )
+        payload["briefing_index"] = write_briefing_outputs(data_path, payload["morning_briefing"])
+        try:
+            process_alerts(config, payload, session)
+        except Exception:  # noqa: BLE001 - 알림 실패가 배포를 막으면 안 됩니다.
+            pass
+        copy_signal_log_output(config, data_path)
+    fetch_log_history = write_fetch_log_outputs(data_path, logger)
+    payload["fetch_log_summary"] = fetch_log_history.get("runs", [])[-1].get("summary", {}) if fetch_log_history.get("runs") else {}
     json_text = json.dumps(payload, ensure_ascii=False, indent=2)
 
     copy_dashboard_assets(output_path)
@@ -506,6 +579,7 @@ def build_dashboard_site(config: dict[str, Any], output_dir: str | Path, session
         encoding="utf-8",
     )
     (output_path / "index.html").write_text(render_dashboard_html(payload), encoding="utf-8")
+    write_admin_html(output_path)
     (output_path / ".nojekyll").write_text("", encoding="utf-8")
     return payload
 
@@ -529,8 +603,23 @@ def refresh_prices_site(
 
     timezone_name = str(config.get("timezone") or "Asia/Seoul")
     now = datetime.now(ZoneInfo(timezone_name))
-    fresh_metrics = collect_equity_price_metrics(config, session, now.date())
-    fresh_long = enrich_metrics_with_history(fresh_metrics, config, previous_payload)
+    previous_by_key = previous_metric_index(previous_payload)
+    logger = FetchLogger(run_type="prices", timezone_name=timezone_name)
+    with use_fetch_logger(logger):
+        started_at, started_monotonic = logger.source_started()
+        fresh_metrics = collect_equity_price_metrics(config, session, now.date())
+        ok_count = sum(1 for item in fresh_metrics if item.get("status") == "ok")
+        message = f"{ok_count}/{len(fresh_metrics)}개 지표 자동 수집"
+        apply_fetch_metadata(fresh_metrics, now.isoformat(timespec="seconds"), previous_by_key)
+        record_fetch_result(
+            "대표주가/시장지수",
+            fresh_metrics,
+            previous_by_key,
+            started_at,
+            started_monotonic,
+            message,
+        )
+        fresh_long = enrich_metrics_with_history(fresh_metrics, config, previous_payload)
 
     payload = previous_payload
     metrics = payload.get("metrics", [])
@@ -555,13 +644,17 @@ def refresh_prices_site(
     payload["generated_at"] = now.isoformat(timespec="seconds")
     payload["generated_label"] = now.strftime("%Y-%m-%d %H:%M %Z")
     payload["market_gauges"] = build_market_gauges(metrics)
+    payload["calendar"] = build_event_calendar(config, payload, today=now.date())
+    write_event_calendar(data_path / "calendar.json", payload["calendar"])
     payload["collection_issues"] = annotate_metric_freshness(metrics, now.date())
+    apply_interpretations(metrics, config)
     payload["prices_refreshed_at"] = now.isoformat(timespec="seconds")
 
     try:
         process_alerts(config, payload, session, include_weekly=False)
     except Exception:  # noqa: BLE001
         pass
+    copy_signal_log_output(config, data_path)
 
     long_history_path = data_path / "long_history.json"
     long_histories: dict[str, Any] = {}
@@ -575,6 +668,8 @@ def refresh_prices_site(
     long_histories.update(fresh_long)
 
     copy_dashboard_assets(output_path)
+    fetch_log_history = write_fetch_log_outputs(data_path, logger)
+    payload["fetch_log_summary"] = fetch_log_history.get("runs", [])[-1].get("summary", {}) if fetch_log_history.get("runs") else {}
     (data_path / "dashboard.json").write_text(
         json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
@@ -583,8 +678,51 @@ def refresh_prices_site(
         encoding="utf-8",
     )
     (output_path / "index.html").write_text(render_dashboard_html(payload), encoding="utf-8")
+    write_admin_html(output_path)
     (output_path / ".nojekyll").write_text("", encoding="utf-8")
     payload["_prices_refreshed_count"] = replaced
+    return payload
+
+
+def refresh_briefing_site(
+    config: dict[str, Any],
+    output_dir: str | Path,
+    session: requests.Session,
+    card_type: str,
+) -> dict[str, Any]:
+    """Generate a briefing card from the latest published dashboard payload."""
+    output_path = Path(output_dir)
+    data_path = output_path / "data"
+    data_path.mkdir(parents=True, exist_ok=True)
+
+    payload = load_previous_dashboard_payload(data_path / "dashboard.json")
+    if not payload or not payload.get("metrics"):
+        return build_dashboard_site(config, output_dir, session)
+
+    timezone_name = str(config.get("timezone") or payload.get("timezone") or "Asia/Seoul")
+    now = datetime.now(ZoneInfo(timezone_name))
+    payload["generated_at"] = now.isoformat(timespec="seconds")
+    payload["generated_label"] = now.strftime("%Y-%m-%d %H:%M %Z")
+    base_briefing = build_morning_briefing(payload, session)
+    trajectory = update_intraday_track(data_path, payload, payload["generated_at"])
+    card = build_briefing_card(
+        base_briefing,
+        card_type=card_type,
+        generated_at=payload["generated_at"],
+        generated_label=payload["generated_label"],
+        trajectory=trajectory,
+    )
+    payload["morning_briefing"] = card
+    payload["briefing_index"] = write_briefing_outputs(data_path, card)
+
+    copy_dashboard_assets(output_path)
+    (data_path / "dashboard.json").write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    (output_path / "index.html").write_text(render_dashboard_html(payload), encoding="utf-8")
+    write_admin_html(output_path)
+    (output_path / ".nojekyll").write_text("", encoding="utf-8")
     return payload
 
 
@@ -749,6 +887,155 @@ def load_previous_dashboard_payload(path: Path) -> dict[str, Any] | None:
     except (OSError, json.JSONDecodeError):
         return None
     return payload if isinstance(payload, dict) else None
+
+
+def metric_identity(metric: dict[str, Any]) -> str:
+    return str(metric.get("history_key") or metric.get("id") or "")
+
+
+def previous_metric_index(previous_payload: dict[str, Any] | None) -> dict[str, dict[str, Any]]:
+    if not isinstance(previous_payload, dict):
+        return {}
+    metrics = previous_payload.get("metrics")
+    if not isinstance(metrics, list):
+        return {}
+    indexed: dict[str, dict[str, Any]] = {}
+    for metric in metrics:
+        if not isinstance(metric, dict):
+            continue
+        key = metric_identity(metric)
+        if key:
+            indexed[key] = metric
+        metric_id = str(metric.get("id") or "")
+        if metric_id:
+            indexed[metric_id] = metric
+    return indexed
+
+
+def metric_observed_advanced(metric: dict[str, Any], previous: dict[str, Any] | None) -> bool:
+    if metric.get("status") != "ok":
+        return False
+    observed_at = str(metric.get("observed_at") or "")
+    if not observed_at:
+        return False
+    if not previous:
+        return True
+    previous_observed_at = str(previous.get("observed_at") or "")
+    if not previous_observed_at:
+        return True
+    observed_date = parse_iso_date(observed_at)
+    previous_date = parse_iso_date(previous_observed_at)
+    if observed_date is not None and previous_date is not None:
+        return observed_date > previous_date
+    return observed_at != previous_observed_at
+
+
+def fetch_status_label(status: str) -> str:
+    return {
+        "success": "업데이트됨",
+        "no_new_data": "신규 데이터 없음",
+        "failed": "수집 실패",
+    }.get(status, status)
+
+
+def infer_metric_fetch_status(metric: dict[str, Any], previous: dict[str, Any] | None) -> str:
+    if metric.get("status") != "ok":
+        return "failed"
+    return "success" if metric_observed_advanced(metric, previous) else "no_new_data"
+
+
+def apply_fetch_metadata(
+    metrics: list[dict[str, Any]],
+    fetched_at: str,
+    previous_by_key: dict[str, dict[str, Any]],
+) -> None:
+    for metric in metrics:
+        if not isinstance(metric, dict):
+            continue
+        previous = previous_by_key.get(metric_identity(metric)) or previous_by_key.get(str(metric.get("id") or ""))
+        status = infer_metric_fetch_status(metric, previous)
+        metric["fetched_at"] = fetched_at
+        metric["fetch_status"] = status
+        metric["fetch_status_label"] = fetch_status_label(status)
+
+
+def source_new_data_count(
+    metrics: list[dict[str, Any]],
+    previous_by_key: dict[str, dict[str, Any]],
+) -> int:
+    count = 0
+    for metric in metrics:
+        if not isinstance(metric, dict):
+            continue
+        previous = previous_by_key.get(metric_identity(metric)) or previous_by_key.get(str(metric.get("id") or ""))
+        if metric_observed_advanced(metric, previous):
+            count += 1
+    return count
+
+
+def record_fetch_result(
+    source_name: str,
+    source_metrics: list[dict[str, Any]],
+    previous_by_key: dict[str, dict[str, Any]],
+    started_at: str,
+    started_monotonic: float,
+    message: str,
+) -> None:
+    logger = current_logger()
+    if logger is None:
+        return
+    ok_count = sum(1 for item in source_metrics if isinstance(item, dict) and item.get("status") == "ok")
+    new_count = source_new_data_count(source_metrics, previous_by_key)
+    if not source_metrics:
+        status = "no_new_data"
+    elif ok_count <= 0:
+        status = "failed"
+    elif new_count > 0:
+        status = "success"
+    else:
+        status = "no_new_data"
+    logger.record(
+        source=source_name,
+        endpoint=FETCH_SOURCE_ENDPOINTS.get(source_name, ""),
+        status=status,
+        message=message,
+        metric_count=len(source_metrics),
+        new_data_count=new_count,
+        started_at=started_at,
+        started_monotonic=started_monotonic,
+    )
+
+
+def record_fetch_failure(
+    source_name: str,
+    started_at: str,
+    started_monotonic: float,
+    exc: Exception,
+) -> None:
+    logger = current_logger()
+    if logger is None:
+        return
+    logger.record(
+        source=source_name,
+        endpoint=FETCH_SOURCE_ENDPOINTS.get(source_name, ""),
+        status="failed",
+        message=str(exc),
+        metric_count=0,
+        new_data_count=0,
+        started_at=started_at,
+        started_monotonic=started_monotonic,
+    )
+
+
+def write_fetch_log_outputs(data_path: Path, logger: FetchLogger) -> dict[str, Any]:
+    run = logger.finish()
+    history = append_fetch_log_run(
+        load_fetch_log_history(data_path / FETCH_LOG_HISTORY_FILENAME),
+        run,
+    )
+    save_fetch_log_history(data_path / FETCH_LOG_HISTORY_FILENAME, history)
+    save_fetch_log_history(data_path / FETCH_LOG_FILENAME, history)
+    return history
 
 
 def market_gauge_snapshot_date(payload: dict[str, Any], timezone_name: str) -> str:
@@ -1120,6 +1407,7 @@ def top_mover_metrics(metrics: list[dict[str, Any]]) -> list[dict[str, Any]]:
         metric
         for metric in candidates
         if to_float(metric.get("change_pct")) is not None
+        and not metric.get("exclude_from_movers")
     ]
     ranked.sort(key=lambda metric: abs(to_float(metric.get("change_pct")) or 0.0), reverse=True)
     return [brief_metric(metric) for metric in ranked[:5]]
@@ -1366,6 +1654,7 @@ def gemini_morning_briefing_prompt(payload: dict[str, Any], briefing: dict[str, 
         "equity_leads": briefing.get("equity_leads", []),
         "source_issues": briefing.get("source_issues", []),
         "daily_changes": payload.get("daily_changes", {}),
+        "upcoming_events": (payload.get("calendar", {}) or {}).get("upcoming", []),
     }
     return (
         "너는 개인 투자자가 매일 아침 산업별 지표 대시보드를 빠르게 훑도록 돕는 한국어 브리핑 작성자다.\n"
@@ -1377,6 +1666,7 @@ def gemini_morning_briefing_prompt(payload: dict[str, Any], briefing: dict[str, 
         "어려운 통계 용어를 피하고, 수요가 강해졌는지, 비용 부담이 커졌는지, 투자심리가 흔들렸는지처럼 사용자가 바로 이해할 수 있게 써라.\n"
         "주가 지표는 기업 실적 자체가 아니라 시장 기대와 위험 선호가 움직인 신호라는 점을 구분해서 설명하라.\n"
         "월간·분기 지표는 새 발표 전까지 그대로일 수 있으니, daily_changes와 top_movers를 우선해서 해석하라.\n"
+        "upcoming_events에 오늘·내일 FOMC, 금통위, CPI, 만기일 같은 큰 일정이 있으면 관망 심리나 변동성 가능성을 짧게 언급하라.\n"
         "불확실하거나 데이터 공백이 있으면 사용자 친화적으로 짧게 말하라.\n"
         "출력은 설명 없이 JSON 객체 하나만 반환하라.\n"
         "스키마: {\"headline\": string, \"summary\": string, \"bullets\": "
@@ -1487,22 +1777,52 @@ def short_text(value: Any, fallback: Any, max_length: int) -> str:
 
 def copy_dashboard_assets(output_path: Path) -> None:
     candidates = [
-        Path.cwd() / "assets" / "industry-icons",
-        Path(__file__).resolve().parents[2] / "assets" / "industry-icons",
+        Path.cwd() / "assets",
+        Path(__file__).resolve().parents[2] / "assets",
     ]
-    source = next((path for path in candidates if path.exists()), None)
-    if source is None:
+    assets_source = next((path for path in candidates if path.exists()), None)
+    if assets_source is None:
         return
 
+    source = assets_source / "industry-icons"
     target = output_path / "assets" / "industry-icons"
-    if target.exists():
-        shutil.rmtree(target, ignore_errors=True)
-    shutil.copytree(source, target, dirs_exist_ok=True)
+    if source.exists():
+        if target.exists():
+            shutil.rmtree(target, ignore_errors=True)
+        shutil.copytree(source, target, dirs_exist_ok=True)
+
+    assets_target = output_path / "assets"
+    assets_target.mkdir(parents=True, exist_ok=True)
+    for filename in (
+        "marketbrief-logo.svg",
+        "marketbrief-logo.png",
+        "pwa-icon-192.png",
+        "pwa-icon-512.png",
+    ):
+        source_file = assets_source / filename
+        if source_file.exists():
+            shutil.copyfile(source_file, assets_target / filename)
+
+    manifest = assets_source / "manifest.webmanifest"
+    if manifest.exists():
+        shutil.copyfile(manifest, output_path / "manifest.webmanifest")
+
+    service_worker = assets_source / "service-worker.js"
+    if service_worker.exists():
+        build_ts = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+        worker_text = service_worker.read_text(encoding="utf-8").replace("__BUILD_TS__", build_ts)
+        (output_path / "service-worker.js").write_text(worker_text, encoding="utf-8")
 
 
-def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -> dict[str, Any]:
+def build_dashboard_payload(
+    config: dict[str, Any],
+    session: requests.Session,
+    previous_payload: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     timezone = str(config.get("timezone") or "Asia/Seoul")
     now = datetime.now(ZoneInfo(timezone))
+    fetched_at = now.isoformat(timespec="seconds")
+    previous_by_key = previous_metric_index(previous_payload)
 
     source_status: list[dict[str, str]] = []
     metrics: list[dict[str, Any]] = []
@@ -1525,22 +1845,35 @@ def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -
         ("KOSIS", collect_kosis_metrics),
         ("한국 수출", collect_korea_export_metrics),
         ("밸류에이션/수급", collect_valuation_metrics),
+        ("시장 수급", collect_market_flow_metrics),
     ]
     for source_name, collector in collectors:
         before = len(metrics)
+        logger = current_logger()
+        started_at, started_monotonic = logger.source_started() if logger else (fetched_at, time.monotonic())
         try:
             source_metrics = collector(config, session, now.date())
             metrics.extend(source_metrics)
             ok_count = sum(1 for item in source_metrics if item.get("status") == "ok")
+            message = f"{ok_count}/{len(source_metrics)}개 지표 자동 수집"
             source_status.append(
                 {
                     "name": source_name,
                     "status": "ok" if ok_count else "partial",
-                    "message": f"{ok_count}/{len(source_metrics)}개 지표 자동 수집",
+                    "message": sanitize_message(message),
                 }
             )
+            record_fetch_result(
+                source_name,
+                source_metrics,
+                previous_by_key,
+                started_at,
+                started_monotonic,
+                message,
+            )
         except Exception as exc:  # noqa: BLE001 - dashboard should survive source-level failures.
-            source_status.append({"name": source_name, "status": "error", "message": str(exc)})
+            source_status.append({"name": source_name, "status": "error", "message": sanitize_message(str(exc))})
+            record_fetch_failure(source_name, started_at, started_monotonic, exc)
             if len(metrics) == before:
                 metrics.append(
                     make_metric(
@@ -1556,6 +1889,8 @@ def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -
                 )
 
     before = len(metrics)
+    logger = current_logger()
+    started_at, started_monotonic = logger.source_started() if logger else (fetched_at, time.monotonic())
     try:
         source_metrics = collect_market_sentiment_metrics(config, session, now.date(), metrics)
         metrics.extend(source_metrics)
@@ -1568,11 +1903,20 @@ def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -
             {
                 "name": "시장 심리",
                 "status": "ok" if source_metrics and ok_count == len(source_metrics) else "partial",
-                "message": message,
+                "message": sanitize_message(message),
             }
         )
+        record_fetch_result(
+            "시장 심리",
+            source_metrics,
+            previous_by_key,
+            started_at,
+            started_monotonic,
+            message,
+        )
     except Exception as exc:  # noqa: BLE001 - sentiment failure should not block the dashboard.
-        source_status.append({"name": "시장 심리", "status": "error", "message": str(exc)})
+        source_status.append({"name": "시장 심리", "status": "error", "message": sanitize_message(str(exc))})
+        record_fetch_failure("시장 심리", started_at, started_monotonic, exc)
         if len(metrics) == before:
             metrics.append(
                 make_metric(
@@ -1588,7 +1932,52 @@ def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -
                 )
             )
 
+    before = len(metrics)
+    logger = current_logger()
+    started_at, started_monotonic = logger.source_started() if logger else (fetched_at, time.monotonic())
+    try:
+        source_metrics = collect_market_derived_metrics(config, session, now.date(), metrics)
+        metrics.extend(source_metrics)
+        ok_count = sum(1 for item in source_metrics if item.get("status") == "ok")
+        message = f"{ok_count}/{len(source_metrics)}개 지표 자동 수집"
+        source_status.append(
+            {
+                "name": "시장 파생지표",
+                "status": "ok" if ok_count == len(source_metrics) else "partial",
+                "message": sanitize_message(message),
+            }
+        )
+        record_fetch_result(
+            "시장 파생지표",
+            source_metrics,
+            previous_by_key,
+            started_at,
+            started_monotonic,
+            message,
+        )
+    except Exception as exc:  # noqa: BLE001
+        source_status.append({"name": "시장 파생지표", "status": "error", "message": sanitize_message(str(exc))})
+        record_fetch_failure("시장 파생지표", started_at, started_monotonic, exc)
+        if len(metrics) == before:
+            metrics.append(
+                make_metric(
+                    industry="매크로",
+                    name="시장 파생지표 수집 상태",
+                    source="시장 파생지표",
+                    source_url="",
+                    frequency="",
+                    automation="부분 자동화 가능",
+                    status="error",
+                    note=str(exc),
+                    group="시장 분위기",
+                    section="market",
+                    market_category="심리·변동성",
+                )
+            )
+
     metrics.extend(collect_reference_metrics(config))
+    apply_fetch_metadata(metrics, fetched_at, previous_by_key)
+    assign_market_navigation_fields(metrics)
     metrics = visible_dashboard_metrics(metrics)
     industries = configured_industries(config, metrics)
 
@@ -1600,6 +1989,7 @@ def build_dashboard_payload(config: dict[str, Any], session: requests.Session) -
         "industries": industries,
         "industry_labels_en": {industry: english_industry(industry) for industry in industries},
         "industry_icons": INDUSTRY_ICONS,
+        "search_aliases": config.get("search_aliases", {}) or {},
         "source_status": source_status,
         "metrics": metrics,
     }
@@ -2174,6 +2564,11 @@ def collect_equity_price_metrics(
                         group=str(item.get("group") or "대표주가"),
                         depth=str(item.get("depth") or ""),
                         meaning=str(item.get("meaning") or equity_price_meaning(name)),
+                        section=str(item.get("section") or ""),
+                        market_category=str(item.get("market_category") or ""),
+                        also_market_category=item.get("also_market_category") or "",
+                        refresh_scope=str(item.get("refresh_scope") or ""),
+                        chart_style=str(item.get("chart_style") or ""),
                     )
                 )
                 continue
@@ -2205,6 +2600,11 @@ def collect_equity_price_metrics(
                     depth=str(item.get("depth") or ""),
                     meaning=str(item.get("meaning") or equity_price_meaning(name)),
                     history_key=history_key,
+                    section=str(item.get("section") or ""),
+                    market_category=str(item.get("market_category") or ""),
+                    also_market_category=item.get("also_market_category") or "",
+                    refresh_scope=str(item.get("refresh_scope") or ""),
+                    chart_style=str(item.get("chart_style") or ""),
                 )
             )
         except Exception as exc:  # noqa: BLE001 - one ticker should not break the dashboard.
@@ -2221,6 +2621,11 @@ def collect_equity_price_metrics(
                     group=str(item.get("group") or "대표주가"),
                     depth=str(item.get("depth") or ""),
                     meaning=str(item.get("meaning") or equity_price_meaning(name)),
+                    section=str(item.get("section") or ""),
+                    market_category=str(item.get("market_category") or ""),
+                    also_market_category=item.get("also_market_category") or "",
+                    refresh_scope=str(item.get("refresh_scope") or ""),
+                    chart_style=str(item.get("chart_style") or ""),
                 )
             )
     return metrics
@@ -4283,6 +4688,380 @@ def krx_valuation_meaning(prefix: str, field_name: str) -> str:
     return f"{prefix} 전체의 배당수익률입니다. 높을수록 배당 대비 주가가 싼 상태라는 뜻입니다."
 
 
+def collect_market_flow_metrics(
+    config: dict[str, Any],
+    session: requests.Session,
+    today: date,
+) -> list[dict[str, Any]]:
+    overview_config = config.get("market_overview", {}) or {}
+    flows_config = overview_config.get("flows", {}) if isinstance(overview_config, dict) else {}
+    if not flows_config.get("enabled", True):
+        return []
+
+    history_config = config.get("history", {}) or {}
+    history_dir = str(history_config.get("dir") or "data/history")
+    keep_days = int(flows_config.get("keep_calendar_days") or 760)
+    lookback_days = int(flows_config.get("lookback_calendar_days") or 760)
+    max_fetch = int(flows_config.get("max_backfill_days_per_run") or 3)
+    endpoint = str(flows_config.get("krx_getjson_endpoint") or "")
+    source_url = "https://data.krx.co.kr/"
+
+    metric_docs: list[tuple[str, str, dict[str, Any]]] = []
+    errors: list[str] = []
+
+    for market, label in (("kospi", "KOSPI"), ("kosdaq", "KOSDAQ")):
+        path = raw_flow_snapshot_path(history_dir, market)
+        document = load_raw_flow_snapshot(path, market)
+        missing = missing_recent_dates(
+            today=today,
+            known_dates=raw_flow_known_dates(document),
+            calendar_days=lookback_days,
+            max_fetch=max_fetch,
+        )
+        for target_date in missing:
+            try:
+                rows = fetch_krx_stock_flow_rows(
+                    session,
+                    market=market,
+                    start_date=target_date,
+                    end_date=target_date,
+                    endpoint=endpoint or "https://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd",
+                )
+                document = store_raw_flow_rows(
+                    history_dir=history_dir,
+                    market=market,
+                    observed_at=target_date,
+                    rows=rows,
+                    today=today,
+                    keep_calendar_days=keep_days,
+                )
+            except Exception as exc:  # noqa: BLE001 - KRX 정보데이터시스템은 soft-fail.
+                errors.append(f"{label} {target_date.isoformat()}: {exc}")
+                break
+        document = load_raw_flow_snapshot(path, market)
+        metric_docs.append((market, label, document))
+
+    futures_market = "k200-futures"
+    futures_path = raw_flow_snapshot_path(history_dir, futures_market)
+    futures_doc = load_raw_flow_snapshot(futures_path, futures_market)
+    missing = missing_recent_dates(
+        today=today,
+        known_dates=raw_flow_known_dates(futures_doc),
+        calendar_days=lookback_days,
+        max_fetch=max_fetch,
+    )
+    for target_date in missing:
+        try:
+            rows = fetch_krx_futures_flow_rows(
+                session,
+                start_date=target_date,
+                end_date=target_date,
+                endpoint=endpoint or "https://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd",
+            )
+            futures_doc = store_raw_flow_rows(
+                history_dir=history_dir,
+                market=futures_market,
+                observed_at=target_date,
+                rows=rows,
+                today=today,
+                keep_calendar_days=keep_days,
+            )
+        except Exception as exc:  # noqa: BLE001
+            errors.append(f"K200 선물 {target_date.isoformat()}: {exc}")
+            break
+    futures_doc = load_raw_flow_snapshot(futures_path, futures_market)
+    metric_docs.append((futures_market, "K200 선물", futures_doc))
+
+    metrics: list[dict[str, Any]] = []
+    for market, market_label, document in metric_docs:
+        metrics.extend(flow_metrics_from_raw_document(market, market_label, document, source_url))
+
+    if not metrics and errors:
+        metrics.append(
+            make_metric(
+                industry="매크로",
+                name="KRX 수급 수집 상태",
+                source="KRX 정보데이터시스템",
+                source_url=source_url,
+                frequency="일간",
+                automation="공개 JSON 자동 수집",
+                status="error",
+                note="; ".join(errors[:3]),
+                group="수급",
+                section="market",
+                market_category="수급",
+                meaning="KRX 투자자별 매매동향 수집 상태입니다.",
+            )
+        )
+    return metrics
+
+
+def flow_metrics_from_raw_document(
+    market: str,
+    market_label: str,
+    document: dict[str, Any],
+    source_url: str,
+) -> list[dict[str, Any]]:
+    metrics: list[dict[str, Any]] = []
+    investors = raw_flow_investors(document)
+    if not investors:
+        return []
+
+    for investor in investors:
+        investor_id = investor_slug(investor)
+        for measure, spec in FLOW_MEASURES.items():
+            points = raw_flow_series(document, investor=investor, measure=measure)
+            if not points:
+                continue
+            latest_date, latest_value = points[-1]
+            previous_value = points[-2][1] if len(points) > 1 else None
+            metric_id = f"krx-flow-{market}-{investor_id}-{measure}"
+            measure_label = str(spec.get("label") or measure)
+            chart_style = "flow_bars" if measure == "net" else ""
+            metrics.append(
+                make_metric(
+                    industry="매크로",
+                    name=f"{market_label} {investor} {measure_label}",
+                    source="KRX 정보데이터시스템",
+                    source_url=source_url,
+                    frequency="일간",
+                    automation="공개 JSON 자동 수집",
+                    status="ok",
+                    value=latest_value,
+                    unit="억원",
+                    observed_at=latest_date.isoformat(),
+                    previous_value=previous_value,
+                    yoy_value=find_yoy_value(points, latest_date),
+                    history=points,
+                    group=investor,
+                    depth=market_label,
+                    meaning=flow_metric_meaning(market_label, investor, measure_label),
+                    history_key=metric_id,
+                    metric_id=metric_id,
+                    section="market",
+                    market_category="수급",
+                    chart_style=chart_style,
+                    exclude_from_movers=measure != "net",
+                )
+            )
+
+        net_points = raw_flow_series(document, investor=investor, measure="net")
+        rolling = rolling_sum_series(net_points, 20)
+        if rolling:
+            latest_date, latest_value = rolling[-1]
+            previous_value = rolling[-2][1] if len(rolling) > 1 else None
+            metric_id = f"krx-flow-{market}-{investor_id}-net-20d"
+            metrics.append(
+                make_metric(
+                    industry="매크로",
+                    name=f"{market_label} {investor} 20일 누적 순매수",
+                    source="KRX 정보데이터시스템",
+                    source_url=source_url,
+                    frequency="일간",
+                    automation="공개 JSON 자동 수집",
+                    status="ok",
+                    value=latest_value,
+                    unit="억원",
+                    observed_at=latest_date.isoformat(),
+                    previous_value=previous_value,
+                    yoy_value=find_yoy_value(rolling, latest_date),
+                    history=rolling,
+                    group=investor,
+                    depth=market_label,
+                    meaning=f"{market_label}에서 {investor}이 최근 20거래일 동안 순매수한 금액의 합계입니다. 한 주체가 시장을 계속 받치는지 확인할 때 봅니다.",
+                    history_key=metric_id,
+                    metric_id=metric_id,
+                    section="market",
+                    market_category="수급",
+                    chart_style="flow_bars",
+                )
+            )
+    return metrics
+
+
+def flow_metric_meaning(market_label: str, investor: str, measure_label: str) -> str:
+    investor_meanings = {
+        "개인": "개인투자자의 위험 선호와 반대매매·저가매수 흐름을 볼 때 중요합니다",
+        "외국인": "환율, 글로벌 자금 흐름, 한국 시장 선호가 실제 매매로 들어오는지 볼 때 중요합니다",
+        "기관": "국내 기관 자금이 시장을 받치는지, 리밸런싱 압력이 있는지 확인할 때 봅니다",
+        "기관합계": "국내 기관 전체의 매매 방향을 한눈에 보기 위한 합산 지표입니다",
+        "기관종합": "국내 기관 전체의 매매 방향을 한눈에 보기 위한 합산 지표입니다",
+        "금융투자": "증권사·금융투자 쪽의 단기 포지션과 프로그램성 매매 압력을 볼 때 중요합니다",
+        "보험": "보험사 자금의 주식 비중 조절 흐름을 확인할 때 봅니다",
+        "투신": "펀드 자금 유입·유출이 실제 주식 매매로 이어지는지 확인할 때 봅니다",
+        "기타금융": "기타 금융기관 자금의 보조적인 매매 방향을 확인할 때 봅니다",
+        "은행": "은행권 자금의 위험자산 선호 변화를 보조적으로 확인할 때 봅니다",
+        "연기금": "국민연금 등 장기 자금이 시장을 받치는지, 비중 조절에 나서는지 볼 때 중요합니다",
+        "사모": "사모펀드와 전문투자자 쪽의 비교적 민감한 자금 흐름을 확인할 때 봅니다",
+        "기타법인": "자사주, 지주회사, 일반 법인 자금이 시장에 들어오는지 볼 때 참고합니다",
+    }
+    investor_note = investor_meanings.get(investor, f"{investor} 자금의 매매 방향과 시장 영향력을 확인할 때 봅니다")
+    if measure_label == "순매수":
+        return (
+            f"{market_label}에서 {investor}이 산 금액에서 판 금액을 뺀 값입니다. "
+            f"플러스면 그 주체가 시장을 순매수한 것이고, 마이너스면 순매도한 것입니다. {investor_note}."
+        )
+    if measure_label == "매수":
+        return (
+            f"{market_label}에서 {investor}이 사들인 거래대금입니다. "
+            f"순매수와 함께 보면 실제 매수 강도가 커진 것인지, 매도도 같이 늘어난 단순 거래 증가인지 구분할 수 있습니다. {investor_note}."
+        )
+    if measure_label == "매도":
+        return (
+            f"{market_label}에서 {investor}이 판 거래대금입니다. "
+            f"매도가 빠르게 늘면 해당 주체의 차익실현이나 위험 축소 압력이 커졌는지 확인할 수 있습니다. {investor_note}."
+        )
+    return (
+        f"{market_label}에서 {investor}의 {measure_label} 거래대금입니다. "
+        f"누가 시장을 밀고 당기는지 확인하는 수급 지표입니다. {investor_note}."
+    )
+
+
+def infer_flow_metric_meaning(name: str) -> str:
+    text = str(name or "").strip()
+    flow_match = re.match(r"^(.+?)\s+(.+?)\s+(20일 누적 순매수|순매수|매수|매도)$", text)
+    if not flow_match:
+        return ""
+    market_label, investor, measure_label = flow_match.groups()
+    if measure_label == "20일 누적 순매수":
+        return (
+            f"{market_label}에서 {investor}이 최근 20거래일 동안 순매수한 금액의 합계입니다. "
+            "하루짜리 수급보다 잡음이 적어서, 같은 주체가 시장을 꾸준히 사는지 파는지 볼 때 씁니다."
+        )
+    return flow_metric_meaning(market_label, investor, measure_label)
+
+
+def metric_by_name(metrics: list[dict[str, Any]], name: str) -> dict[str, Any] | None:
+    for metric in metrics:
+        if isinstance(metric, dict) and str(metric.get("name") or "") == name and metric.get("status") == "ok":
+            return metric
+    return None
+
+
+def collect_market_derived_metrics(
+    config: dict[str, Any],
+    session: requests.Session,
+    today: date,
+    current_metrics: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    del config
+    metrics: list[dict[str, Any]] = []
+    metrics.extend(collect_kimchi_premium_metric(session, today, current_metrics))
+    yen_vol = yen_realized_volatility_metric(today, current_metrics)
+    if yen_vol:
+        metrics.append(yen_vol)
+    return metrics
+
+
+def collect_kimchi_premium_metric(
+    session: requests.Session,
+    today: date,
+    current_metrics: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    btc_metric = metric_by_name(current_metrics, "비트코인")
+    usdkrw_metric = metric_by_name(current_metrics, "원/달러 환율")
+    btc_usd = to_float((btc_metric or {}).get("value"))
+    usdkrw = to_float((usdkrw_metric or {}).get("value"))
+    if btc_usd is None or usdkrw is None or btc_usd <= 0 or usdkrw <= 0:
+        return []
+    try:
+        response = session.get(
+            "https://api.upbit.com/v1/ticker",
+            params={"markets": "KRW-BTC"},
+            timeout=(5, 20),
+        )
+        response.raise_for_status()
+        payload = response.json()
+        item = payload[0] if isinstance(payload, list) and payload else {}
+        krw_btc = to_float(item.get("trade_price")) if isinstance(item, dict) else None
+        if krw_btc is None or krw_btc <= 0:
+            raise ValueError("업비트 BTC 가격 없음")
+        premium = (krw_btc / (btc_usd * usdkrw) - 1.0) * 100.0
+        observed_at = today.isoformat()
+        return [
+            make_metric(
+                industry="매크로",
+                name="김치프리미엄",
+                source="Upbit/Yahoo Finance",
+                source_url="https://api.upbit.com/v1/ticker",
+                frequency="장중",
+                automation="무료 공개 API 자동 수집",
+                status="ok",
+                value=premium,
+                unit="%",
+                observed_at=observed_at,
+                previous_value=None,
+                history=[(today, premium)],
+                group="크립토",
+                meaning="국내 비트코인 가격이 글로벌 달러 가격을 원화로 환산한 값보다 얼마나 높은지 보여줍니다. 높아질수록 국내 개인 위험선호가 강하다는 신호로 볼 수 있습니다.",
+                history_key="kimchi-premium-btc",
+                section="market",
+                market_category="원자재·크립토",
+                also_market_category=["심리·변동성"],
+                refresh_scope="intraday",
+            )
+        ]
+    except Exception as exc:  # noqa: BLE001
+        return [
+            make_metric(
+                industry="매크로",
+                name="김치프리미엄",
+                source="Upbit/Yahoo Finance",
+                source_url="https://api.upbit.com/v1/ticker",
+                frequency="장중",
+                automation="무료 공개 API 자동 수집",
+                status="error",
+                note=str(exc),
+                group="크립토",
+                meaning="국내 비트코인 가격이 글로벌 가격보다 얼마나 높은지 보여주는 지표입니다.",
+                section="market",
+                market_category="원자재·크립토",
+            )
+        ]
+
+
+def yen_realized_volatility_metric(today: date, current_metrics: list[dict[str, Any]]) -> dict[str, Any] | None:
+    yen = metric_by_name(current_metrics, "엔/달러 환율")
+    points = parse_stored_points((yen or {}).get("history"))
+    if len(points) < 11:
+        return None
+    returns: list[tuple[date, float]] = []
+    for (prev_date, previous), (current_date, current) in zip(points[:-1], points[1:]):
+        del prev_date
+        if previous <= 0 or current <= 0:
+            continue
+        returns.append((current_date, (current / previous - 1.0) * 100.0))
+    vol_points: list[tuple[date, float]] = []
+    for index in range(9, len(returns)):
+        window = [value for _, value in returns[index - 9 : index + 1]]
+        mean = sum(window) / len(window)
+        variance = sum((value - mean) ** 2 for value in window) / len(window)
+        vol_points.append((returns[index][0], variance ** 0.5))
+    if not vol_points:
+        return None
+    latest_date, latest_value = vol_points[-1]
+    previous_value = vol_points[-2][1] if len(vol_points) > 1 else None
+    return make_metric(
+        industry="매크로",
+        name="엔 환율 10일 실현변동성",
+        source="Yahoo Finance chart API",
+        source_url="https://finance.yahoo.com/quote/JPY=X",
+        frequency="일간",
+        automation="계산 지표",
+        status="ok",
+        value=latest_value,
+        unit="%",
+        observed_at=latest_date.isoformat() or today.isoformat(),
+        previous_value=previous_value,
+        history=vol_points,
+        group="엔캐리",
+        meaning="엔/달러 환율의 최근 10거래일 변동폭입니다. 변동성이 빠르게 커지면 엔캐리 포지션이 흔들릴 가능성을 점검합니다.",
+        history_key="yen-realized-volatility-10d",
+        section="market",
+        market_category="심리·변동성",
+    )
+
+
 def collect_market_sentiment_metrics(
     config: dict[str, Any],
     session: requests.Session,
@@ -4609,11 +5388,18 @@ def make_metric(
     meaning: str = "",
     history_key: str = "",
     history_merge: str = "full",
+    metric_id: str = "",
+    section: str = "",
+    market_category: str = "",
+    also_market_category: str | list[str] = "",
+    refresh_scope: str = "",
+    chart_style: str = "",
+    exclude_from_movers: bool = False,
 ) -> dict[str, Any]:
     change_abs = value - previous_value if value is not None and previous_value is not None else None
     change_pct = pct_change(value, previous_value) if value is not None else None
     yoy_pct = pct_change(value, yoy_value) if value is not None else None
-    metric_id = hashlib.sha1(f"{industry}|{name}|{source}".encode("utf-8")).hexdigest()[:12]
+    resolved_id = metric_id or hashlib.sha1(f"{industry}|{name}|{source}".encode("utf-8")).hexdigest()[:12]
     history_points = [
         {"date": observed_date.isoformat(), "value": observed_value}
         for observed_date, observed_value in (history or [])
@@ -4623,8 +5409,14 @@ def make_metric(
     resolved_depth = depth or infer_metric_depth(industry, name, resolved_group)
 
     return {
-        "id": metric_id,
+        "id": resolved_id,
         "industry": industry,
+        "section": section,
+        "market_category": market_category,
+        "also_market_category": also_market_category,
+        "refresh_scope": refresh_scope,
+        "chart_style": chart_style,
+        "exclude_from_movers": exclude_from_movers,
         "depth": resolved_depth,
         "group": resolved_group,
         "name": name,
@@ -4660,11 +5452,74 @@ def configured_industries(config: dict[str, Any], metrics: list[dict[str, Any]])
     configured = list(config.get("dashboard", {}).get("industries") or DEFAULT_INDUSTRIES)
     seen = set(configured)
     for metric in metrics:
+        if str(metric.get("section") or "") == "market":
+            continue
         industry = str(metric.get("industry") or "매크로")
         if industry not in seen:
             configured.append(industry)
             seen.add(industry)
     return configured
+
+
+def normalize_market_categories(value: Any) -> list[str]:
+    if isinstance(value, list):
+        return [clean_display_text(item) for item in value if clean_display_text(item)]
+    text = clean_display_text(value)
+    return [text] if text else []
+
+
+def set_market_category(metric: dict[str, Any], category: str, *, primary: bool = False) -> None:
+    if primary:
+        metric["section"] = "market"
+        metric["market_category"] = category
+        return
+    existing = normalize_market_categories(metric.get("also_market_category"))
+    if category and category != metric.get("market_category") and category not in existing:
+        existing.append(category)
+    metric["also_market_category"] = existing
+
+
+def assign_market_navigation_fields(metrics: list[dict[str, Any]]) -> None:
+    """Map existing market-level indicators into the new 시황 navigation.
+
+    Explicit collector/config fields win. These heuristics keep legacy payloads
+    useful without changing metric names or history keys.
+    """
+    for metric in metrics:
+        if not isinstance(metric, dict):
+            continue
+        name = str(metric.get("name") or "")
+        group = str(metric.get("group") or "")
+        industry = str(metric.get("industry") or "")
+        source = str(metric.get("source") or "")
+        section = str(metric.get("section") or "")
+        primary_category = str(metric.get("market_category") or "")
+
+        if section == "market" and primary_category:
+            metric["also_market_category"] = normalize_market_categories(metric.get("also_market_category"))
+            continue
+
+        if group == "시장지수" or name in {"코스피", "코스닥", "나스닥", "S&P 500", "다우"}:
+            set_market_category(metric, "종합", primary=True)
+        elif any(token in name for token in ("원/달러", "USD/KRW", "엔/달러", "엔/원", "S&P500 선물", "나스닥100 선물", "KOSPI200 선물", "KOSPI200 베이시스")):
+            set_market_category(metric, "종합", primary=True)
+        elif name in {"VIX", "VKOSPI"} or group == "공포탐욕" or "공포탐욕" in name:
+            set_market_category(metric, "심리·변동성", primary=True)
+        elif group in {"수급", "프로그램", "공매도"} or str(metric.get("chart_style") or "") == "flow_bars":
+            set_market_category(metric, "수급", primary=True)
+        elif group == "수급 과열" or "FINRA" in source or any(token in name for token in ("신용융자", "투자자예탁금", "CMA")):
+            set_market_category(metric, "신용·예탁금", primary=True)
+        elif group == "밸류에이션" and (industry == "매크로" or name.startswith(("코스피", "코스닥", "S&P 500"))):
+            set_market_category(metric, "밸류에이션", primary=True)
+        elif any(token in name for token in ("달러인덱스", "금 선물", "금 가격", "천연가스", "BTC", "ETH", "비트코인", "이더리움", "김치프리미엄")):
+            set_market_category(metric, "원자재·크립토", primary=True)
+        else:
+            if group in {"금리", "신용 스프레드", "스프레드", "금리/스프레드"} or any(token in name for token in ("국채", "금리차", "기준금리", "회사채")):
+                set_market_category(metric, "금리·채권")
+            if industry in {"화학/정유", "철강/소재", "스테이블코인"} and any(token in name for token in ("유가", "WTI", "Brent", "구리", "스테이블코인")):
+                set_market_category(metric, "원자재·크립토")
+
+        metric["also_market_category"] = normalize_market_categories(metric.get("also_market_category"))
 
 
 def visible_dashboard_metrics(metrics: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -4678,6 +5533,20 @@ def visible_dashboard_metrics(metrics: list[dict[str, Any]]) -> list[dict[str, A
                     "status": metric["status"],
                     "history_key": metric.get("history_key", ""),
                     "history_merge": metric.get("history_merge", "full"),
+                    "section": clean_display_text(metric.get("section") or ""),
+                    "market_category": clean_display_text(metric.get("market_category") or ""),
+                    "also_market_category": [
+                        clean_display_text(item)
+                        for item in (
+                            metric.get("also_market_category")
+                            if isinstance(metric.get("also_market_category"), list)
+                            else [metric.get("also_market_category")]
+                        )
+                        if clean_display_text(item)
+                    ],
+                    "refresh_scope": clean_display_text(metric.get("refresh_scope") or ""),
+                    "chart_style": clean_display_text(metric.get("chart_style") or ""),
+                    "exclude_from_movers": bool(metric.get("exclude_from_movers")),
                     "source": clean_display_text(metric.get("source") or ""),
                     "industry": clean_display_text(metric["industry"]),
                     "industry_en": english_industry(clean_display_text(metric["industry"])),
@@ -4700,6 +5569,9 @@ def visible_dashboard_metrics(metrics: list[dict[str, Any]]) -> list[dict[str, A
                     "frequency_en": english_frequency(clean_display_text(metric["frequency"])),
                     "observed_at": metric["observed_at"],
                     "observed_label": metric["observed_label"],
+                    "fetched_at": metric.get("fetched_at", ""),
+                    "fetch_status": metric.get("fetch_status", ""),
+                    "fetch_status_label": metric.get("fetch_status_label", ""),
                     "next_update_label": metric["next_update_label"],
                     "change_abs": metric["change_abs"],
                     "change_pct": metric["change_pct"],
@@ -4709,6 +5581,7 @@ def visible_dashboard_metrics(metrics: list[dict[str, Any]]) -> list[dict[str, A
                     "yoy_pct_label": metric["yoy_pct_label"],
                     "history": metric["history"],
                     "period_label": metric["period_label"],
+                    "interpretation": metric.get("interpretation") or {},
                 }
             )
     return visible
@@ -4931,6 +5804,9 @@ def infer_metric_depth(industry: str, name: str, group: str = "") -> str:
 
 
 def infer_metric_meaning(industry: str, name: str) -> str:
+    flow_meaning = infer_flow_metric_meaning(name)
+    if flow_meaning:
+        return flow_meaning
     wsts_old_match = re.match(r"^WSTS 반도체 판매액( 3MMA)? - (.+)$", name)
     if wsts_old_match:
         return wsts_metric_meaning(wsts_old_match.group(2), bool(wsts_old_match.group(1)))
@@ -4940,8 +5816,25 @@ def infer_metric_meaning(industry: str, name: str) -> str:
         return wsts_metric_meaning(name, False)
     if "WSTS" in name:
         return wsts_metric_meaning("Worldwide", False)
+    if name in {"코스피", "코스닥", "S&P 500", "나스닥", "다우"}:
+        market_meanings = {
+            "코스피": "한국 대형주 중심의 대표 주가지수입니다. 국내 증시 전체 방향과 외국인 자금 흐름을 볼 때 기준점으로 씁니다.",
+            "코스닥": "한국 성장주와 중소형주 비중이 큰 주가지수입니다. 개인투자자 심리와 성장주 위험 선호를 확인할 때 봅니다.",
+            "S&P 500": "미국 대형주 500개로 구성된 대표 지수입니다. 글로벌 위험 선호와 미국 증시의 넓은 방향을 보는 기준입니다.",
+            "나스닥": "기술주 비중이 높은 미국 주가지수입니다. AI, 반도체, 소프트웨어 같은 성장주 투자심리를 확인할 때 봅니다.",
+            "다우": "미국 우량 대형주 중심의 주가지수입니다. 경기민감 대형주의 흐름과 미국 증시의 전통 산업 쪽 분위기를 볼 때 참고합니다.",
+        }
+        return market_meanings[name]
+    if "Sahm Rule" in name:
+        return "실업률이 최근 저점보다 얼마나 높아졌는지 보는 경기침체 신호입니다. 0.5%p를 넘으면 과거에는 침체 진입 가능성이 커진 경우가 많았습니다."
+    if "GDPNow" in name:
+        return "애틀랜타 연은이 실시간 경제지표를 반영해 추정하는 미국 GDP 성장률 전망입니다. 경기 기대가 좋아지는지 식는지 빠르게 볼 때 씁니다."
+    if name == "미국 CPI" or "소비자물가" in name:
+        return "미국 소비자물가 상승률입니다. 인플레이션 압력과 연준 금리 기대를 움직여 주식, 채권, 환율에 모두 영향을 줍니다."
     if "반도체 PPI" in name:
         return "반도체 생산자 가격입니다. 반도체 가격이 오르는지 내리는지 볼 때 참고합니다."
+    if "기준금리" in name:
+        return "중앙은행이 정하는 정책금리입니다. 예금·대출금리, 기업 조달비용, 주식시장 할인율에 영향을 주는 기본 금리입니다."
     if "국채금리" in name:
         return "할인율과 금융주 마진 기대를 좌우하는 시장 금리입니다."
     if "금리차" in name:
@@ -4996,10 +5889,28 @@ def infer_metric_meaning(industry: str, name: str) -> str:
         return "바이오 의약품과 진단 제품의 가격 사이클을 확인하는 지표입니다."
     if "배터리" in name:
         return "배터리 제품 가격 흐름으로 셀/소재 밸류체인의 업황을 점검합니다."
+    if "고객예탁금" in name or "투자자예탁금" in name:
+        return "증권계좌에 대기 중인 현금입니다. 늘어나면 주식시장으로 들어올 수 있는 대기 자금이 많아졌다는 뜻으로 봅니다."
+    if "신용융자" in name:
+        return "투자자가 빚을 내서 주식을 산 잔고입니다. 빠르게 늘면 과열 신호가 될 수 있고, 급감하면 반대매매 압력을 의심할 수 있습니다."
     if "환율" in name:
         return "수출주 원화 환산 매출과 외국인 수급에 영향을 주는 매크로 변수입니다."
     if "VIX" in name:
         return "시장 위험 회피 심리와 변동성 확대 여부를 봅니다."
+    if "VKOSPI" in name:
+        return vkospi_meaning()
+    if "공포탐욕" in name:
+        if "코스피" in name:
+            return korea_fear_greed_meaning("코스피")
+        if "코스닥" in name:
+            return korea_fear_greed_meaning("코스닥")
+        return "여러 시장 심리 지표를 묶어 투자심리가 공포 쪽인지 탐욕 쪽인지 보여줍니다. 낮을수록 공포, 높을수록 탐욕에 가깝습니다."
+    if "비트코인" in name:
+        return "대표적인 위험자산이자 크립토 유동성 지표입니다. 글로벌 유동성, 위험 선호, 크립토 시장 분위기를 빠르게 확인할 때 봅니다."
+    if "PBR" in name:
+        return "주가를 장부가치와 비교한 밸류에이션 지표입니다. 낮을수록 시장이 자산가치 대비 싸게 거래되는지 볼 때 참고합니다."
+    if "CAPE" in name or "Shiller" in name:
+        return "경기순환을 감안한 장기 이익 대비 주가 수준입니다. 미국 증시가 장기 평균보다 비싼지 싼지 판단할 때 봅니다."
     if "수출" in name:
         return "해당 품목의 대외 수요와 가격/물량 사이클을 확인합니다."
     if industry:
@@ -5130,3 +6041,22 @@ def load_dashboard_template() -> str:
 def render_dashboard_html(payload: dict[str, Any]) -> str:
     json_text = json.dumps(payload, ensure_ascii=False).replace("</", "<\\/")
     return load_dashboard_template().replace("__DASHBOARD_JSON__", json_text)
+
+
+def copy_signal_log_output(config: dict[str, Any], data_path: Path) -> None:
+    signal_path = Path(str((config.get("alerts", {}) or {}).get("signal_log_file") or "data/signal_log.json"))
+    if not signal_path.exists():
+        return
+    data_path.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(signal_path, data_path / "signal_log.json")
+
+
+def load_admin_template() -> str:
+    template_path = Path(__file__).resolve().parent / "templates" / "admin.html"
+    return template_path.read_text(encoding="utf-8")
+
+
+def write_admin_html(output_path: Path) -> None:
+    admin_path = output_path / "admin"
+    admin_path.mkdir(parents=True, exist_ok=True)
+    (admin_path / "index.html").write_text(load_admin_template(), encoding="utf-8")

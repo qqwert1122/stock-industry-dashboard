@@ -13,6 +13,7 @@ from typing import Any
 
 import requests
 
+from .history_store import parse_stored_points, safe_history_key
 from .telegram import send_telegram
 from .utils import to_float
 
@@ -32,6 +33,25 @@ def save_alert_state(path: Path, state: dict[str, Any]) -> None:
     path.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
+def load_signal_log(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        return {"version": 1, "events": []}
+    try:
+        loaded = json.loads(path.read_text(encoding="utf-8"))
+        if isinstance(loaded, dict) and isinstance(loaded.get("events"), list):
+            loaded.setdefault("version", 1)
+            return loaded
+    except (OSError, json.JSONDecodeError):
+        pass
+    return {"version": 1, "events": []}
+
+
+def save_signal_log(path: Path, document: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    document["events"] = sorted(document.get("events", []), key=lambda item: str(item.get("observed_at") or item.get("ts") or ""))
+    path.write_text(json.dumps(document, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
 def find_metric_by_fragment(metrics: list[dict[str, Any]], fragment: str) -> dict[str, Any] | None:
     lowered = fragment.lower()
     for metric in metrics:
@@ -48,6 +68,146 @@ def rule_key(rule: dict[str, Any]) -> str:
         if rule.get(field) is not None:
             parts.append(f"{field}={rule[field]}")
     return "|".join(parts)
+
+
+def threshold_label(rule: dict[str, Any]) -> str:
+    if rule.get("above") is not None:
+        return f"≥ {rule['above']}"
+    if rule.get("below") is not None:
+        return f"≤ {rule['below']}"
+    if rule.get("pct_above") is not None:
+        return f"≥ P{rule['pct_above']}"
+    if rule.get("pct_below") is not None:
+        return f"≤ P{rule['pct_below']}"
+    return ""
+
+
+def market_context(payload: dict[str, Any]) -> dict[str, float]:
+    fragments = {
+        "KS11": ("코스피", "KOSPI"),
+        "GSPC": ("S&P 500", "S&P500", "미국 S&P"),
+        "USDKRW": ("원/달러", "USD/KRW", "환율"),
+    }
+    context: dict[str, float] = {}
+    metrics = payload.get("metrics", [])
+    for key, names in fragments.items():
+        for metric in metrics:
+            metric_name = str(metric.get("name") or "")
+            if any(name.lower() in metric_name.lower() for name in names):
+                value = to_float(metric.get("value"))
+                if value is not None:
+                    context[key] = value
+                    break
+    return context
+
+
+def signal_event(
+    *,
+    rule: dict[str, Any],
+    metric: dict[str, Any],
+    direction: str,
+    payload: dict[str, Any],
+    now: datetime,
+    backfilled: bool = False,
+    observed_at: str | None = None,
+    value: float | None = None,
+) -> dict[str, Any]:
+    event_value = value if value is not None else to_float(metric.get("value"))
+    observed = observed_at or str(metric.get("observed_at") or now.date().isoformat())
+    return {
+        "ts": now.isoformat(timespec="seconds"),
+        "observed_at": observed,
+        "rule_key": rule_key(rule),
+        "metric_id": str(metric.get("id") or metric.get("history_key") or metric.get("name") or ""),
+        "metric_name": str(metric.get("name") or ""),
+        "direction": direction,
+        "value": event_value,
+        "display_value": str(metric.get("display_value") or event_value or ""),
+        "threshold_label": threshold_label(rule),
+        "message": str(rule.get("message") or ""),
+        "context": market_context(payload),
+        "telegram_sent": False,
+        **({"backfilled": True} if backfilled else {}),
+    }
+
+
+def append_signal_event(document: dict[str, Any], event: dict[str, Any]) -> dict[str, Any]:
+    events = document.setdefault("events", [])
+    fingerprint = (
+        event.get("rule_key"),
+        event.get("observed_at"),
+        event.get("direction"),
+        event.get("backfilled", False),
+    )
+    for existing in events:
+        if (
+            existing.get("rule_key"),
+            existing.get("observed_at"),
+            existing.get("direction"),
+            existing.get("backfilled", False),
+        ) == fingerprint:
+            return existing
+    events.append(event)
+    return event
+
+
+def rule_triggered_for_value(rule: dict[str, Any], value: float) -> bool | None:
+    above = to_float(rule.get("above"))
+    if above is not None:
+        return value >= above
+    below = to_float(rule.get("below"))
+    if below is not None:
+        return value <= below
+    return None
+
+
+def initialize_signal_log_backfill(
+    config: dict[str, Any],
+    payload: dict[str, Any],
+    document: dict[str, Any],
+    now: datetime,
+) -> None:
+    if document.get("events"):
+        return
+    history_dir = Path(str((config.get("history") or {}).get("dir") or "data/history"))
+    for rule in (config.get("alerts", {}) or {}).get("rules", []):
+        if rule.get("above") is None and rule.get("below") is None:
+            continue
+        metric = find_metric_by_fragment(payload.get("metrics", []), str(rule.get("metric") or ""))
+        if not metric:
+            continue
+        key = str(metric.get("history_key") or metric.get("id") or "")
+        path = history_dir / f"{safe_history_key(key)}.json"
+        if not path.exists():
+            continue
+        try:
+            loaded = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        previous: bool | None = None
+        for point_date, point_value in parse_stored_points(loaded.get("points")):
+            triggered = rule_triggered_for_value(rule, point_value)
+            if triggered is None:
+                continue
+            if previous is not None and triggered == previous:
+                continue
+            if previous is None and not triggered:
+                previous = triggered
+                continue
+            append_signal_event(
+                document,
+                signal_event(
+                    rule=rule,
+                    metric=metric,
+                    direction="triggered" if triggered else "cleared",
+                    payload=payload,
+                    now=now,
+                    backfilled=True,
+                    observed_at=point_date.isoformat(),
+                    value=point_value,
+                ),
+            )
+            previous = triggered
 
 
 def metric_percentile_10y(metric: dict[str, Any]) -> float | None:
@@ -88,7 +248,13 @@ def evaluate_rule(rule: dict[str, Any], metric: dict[str, Any]) -> tuple[bool, s
 
 
 def threshold_alert_lines(
-    config: dict[str, Any], payload: dict[str, Any], state: dict[str, Any]
+    config: dict[str, Any],
+    payload: dict[str, Any],
+    state: dict[str, Any],
+    *,
+    signal_log: dict[str, Any] | None = None,
+    now: datetime | None = None,
+    new_signal_events: list[dict[str, Any]] | None = None,
 ) -> list[str]:
     alerts_config = config.get("alerts", {}) or {}
     rules = alerts_config.get("rules", [])
@@ -110,7 +276,22 @@ def threshold_alert_lines(
             "triggered": triggered,
             "value": metric.get("value"),
             "observed_at": metric.get("observed_at"),
+            "metric_id": metric.get("id"),
+            "metric_name": metric.get("name"),
         }
+        if signal_log is not None and triggered != was_triggered:
+            event = append_signal_event(
+                signal_log,
+                signal_event(
+                    rule=rule,
+                    metric=metric,
+                    direction="triggered" if triggered else "cleared",
+                    payload=payload,
+                    now=now or datetime.now(),
+                ),
+            )
+            if new_signal_events is not None:
+                new_signal_events.append(event)
         if triggered and not was_triggered:
             note = str(rule.get("message") or "").strip()
             line = f"⚠️ {metric.get('name')}: {reason}"
@@ -192,16 +373,27 @@ def process_alerts(
         return []
 
     state_path = Path(str(alerts_config.get("state_file") or "data/alerts_state.json"))
+    signal_path = Path(str(alerts_config.get("signal_log_file") or "data/signal_log.json"))
     state = load_alert_state(state_path)
+    signal_log = load_signal_log(signal_path)
+    current = now or datetime.now()
+    initialize_signal_log_backfill(config, payload, signal_log, current)
+    new_signal_events: list[dict[str, Any]] = []
     sent: list[str] = []
 
-    lines = threshold_alert_lines(config, payload, state)
+    lines = threshold_alert_lines(
+        config,
+        payload,
+        state,
+        signal_log=signal_log,
+        now=current,
+        new_signal_events=new_signal_events,
+    )
     lines += failure_alert_lines(payload, state)
     if lines:
         message = "📢 산업 지표 대시보드 알림\n\n" + "\n\n".join(lines)
         sent.append(message)
 
-    current = now or datetime.now()
     last_digest = str(state.get("last_weekly_digest") or "")
     today_text = current.date().isoformat()
     if (
@@ -213,11 +405,17 @@ def process_alerts(
         sent.append(weekly_digest_text(payload))
         state["last_weekly_digest"] = today_text
 
+    telegram_delivered = False
     for message in sent:
         try:
             send_telegram(message, session)
+            telegram_delivered = True
         except Exception:  # noqa: BLE001 - 알림 실패가 빌드를 막으면 안 됩니다.
             pass
+    if telegram_delivered:
+        for event in new_signal_events:
+            event["telegram_sent"] = True
 
     save_alert_state(state_path, state)
+    save_signal_log(signal_path, signal_log)
     return sent

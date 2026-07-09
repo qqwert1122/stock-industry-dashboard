@@ -11,6 +11,7 @@ from macro_telegram_report.dashboard import (
     compute_spread_points,
     fiscal_month_to_calendar_date,
     kosis_code_param,
+    load_admin_template,
     make_metric,
     month_date_range,
     openfda_month_range,
@@ -165,8 +166,11 @@ class DashboardTest(unittest.TestCase):
         )
 
         self.assertIn("테스트 대시보드", html)
+        self.assertIn("assets/marketbrief-logo.svg", html)
         self.assertIn("DASHBOARD_DATA", html)
         self.assertIn("renderFavoriteMetrics", html)
+        self.assertIn("favoriteCardStarMarkup", html)
+        self.assertIn('fa-${active ? "solid" : "regular"} fa-star', html)
         self.assertIn("metric-favorite-button", html)
         self.assertIn('data-setting-action="timezone"', html)
         self.assertIn("dashboard-timezone", html)
@@ -181,6 +185,12 @@ class DashboardTest(unittest.TestCase):
         self.assertIn("scheduleDynamicDetailAxis", html)
         self.assertIn("data-band-toggle", html)
         self.assertIn("lastUpdatedInline", html)
+        self.assertIn("lastCheckedText", html)
+        self.assertIn("dataAsOf", html)
+        self.assertIn("searchToggle", html)
+        self.assertIn("buildSearchIndex", html)
+        self.assertIn("runMetricSearch", html)
+        self.assertIn("metricSearchPlaceholder", html)
         self.assertIn("gauge-basis-title", html)
         self.assertIn("recession-signal-list", html)
         self.assertIn("fear-greed-gauge-list", html)
@@ -191,6 +201,13 @@ class DashboardTest(unittest.TestCase):
         self.assertIn("percentileBandLegend", html)
         self.assertIn("한국 (KST, UTC+9)", html)
         self.assertIn('colspan="6"', html)
+
+    def test_admin_template_reads_fetch_log_json(self):
+        html = load_admin_template()
+
+        self.assertIn("../data/fetch_log.json", html)
+        self.assertIn("수집 로그", html)
+        self.assertIn("실패만 보기", html)
 
     def test_annotate_dashboard_updates_detects_updated_and_new_metrics(self):
         payload = {

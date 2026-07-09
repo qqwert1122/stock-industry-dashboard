@@ -26,6 +26,52 @@ market_sentiment:
     high_low_window_days: 370
     min_high_low_points: 120
 
+market_overview:
+  enabled: true
+  flows:
+    enabled: true
+    krx_getjson_endpoint: https://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd
+    lookback_calendar_days: 760
+    keep_calendar_days: 760
+    max_backfill_days_per_run: 3
+
+calendar:
+  enabled: true
+  dir: data/calendar
+
+search_aliases:
+  원/달러 환율: [환율, 달러, 원달러, USDKRW, USD/KRW]
+  미국 10년 국채금리: [미국채, 미국 국채, 장기금리, DGS10, 미10년]
+  미국 2년 국채금리: [단기금리, DGS2, 미2년]
+  미국 10Y-2Y 금리차: [장단기금리차, 10년2년, 경기침체, 역전]
+  미국 10Y-3M 금리차: [10년3개월, 단기스프레드, 침체]
+  미국 투자등급 회사채 OAS: [회사채스프레드, IG OAS, 우량회사채]
+  미국 하이일드 회사채 OAS: [하이일드, HY OAS, 정크본드]
+  WTI 유가: [유가, 원유, WTI, 서부텍사스]
+  Brent 유가: [브렌트, 브렌트유, 북해산]
+  철광석: [철광, iron ore, iron]
+  구리: [동, copper, 닥터코퍼]
+  알루미늄: [aluminum, aluminium, 알루미늄가격]
+  코스피: [KOSPI, 코스피지수, 한국종합]
+  코스닥: [KOSDAQ, 코스닥지수]
+  S&P 500: [S&P, SP500, GSPC, 미국시장]
+  나스닥: [NASDAQ, IXIC, 기술주]
+  다우: [DOW, 다우존스, DJI]
+  VKOSPI: [브이코스피, 한국변동성, 변동성]
+  VIX: [공포지수, 변동성지수, 미국변동성]
+  CNN Fear & Greed: [공포탐욕, 공탐, fear greed, CNN]
+  한국 Fear & Greed: [한국공포탐욕, 코스피공탐, 코스닥공탐]
+  외국인 순매수: [외인, 외국인수급, 외인순매, 외국인매수]
+  기관 순매수: [기관수급, 기관매수, 기관순매]
+  개인 순매수: [개인수급, 개인매수, 개인순매]
+  연기금 순매수: [연기금, pension, 연금]
+  투자자예탁금: [예탁금, 고객예탁금, 증시자금]
+  신용융자 잔고: [신용잔고, 빚투, 신용]
+  비트코인: [BTC, bitcoin, 코인]
+  이더리움: [ETH, ethereum]
+  김치프리미엄: [김프, kimchi premium, 업비트]
+  WSTS: [반도체판매, 반도체매출, 세계반도체]
+
 dashboard:
   title: 산업별 핵심 지표 대시보드
   history_points: 48
@@ -765,6 +811,102 @@ equities:
       unit: 지수
       group: 시장지수
       meaning: 다우는 미국 전통 대형 우량주 흐름을 보여주는 지수입니다. 경기민감주와 오래된 대형 기업들의 시장 분위기를 볼 때 사용합니다.
+    - name: 원/달러 환율
+      symbol: KRW=X
+      industry: 매크로
+      unit: 원
+      group: 환율
+      section: market
+      market_category: 종합
+      refresh_scope: intraday
+      meaning: 달러 한 단위를 사는 데 필요한 원화 가격입니다. 수출주 실적과 외국인 수급에 큰 영향을 줍니다.
+    - name: 엔/달러 환율
+      symbol: JPY=X
+      industry: 매크로
+      unit: 엔
+      group: 엔캐리
+      section: market
+      market_category: 심리·변동성
+      also_market_category:
+        - 종합
+      refresh_scope: intraday
+      meaning: 달러 한 단위를 사는 데 필요한 엔화 가격입니다. 급락하면 엔화 강세로, 엔캐리 포지션 청산 위험을 볼 때 중요합니다.
+    - name: 엔/원 환율
+      symbol: JPYKRW=X
+      industry: 매크로
+      unit: 원
+      group: 엔캐리
+      section: market
+      market_category: 심리·변동성
+      also_market_category:
+        - 종합
+      refresh_scope: intraday
+      meaning: 엔화 한 단위를 원화로 환산한 가격입니다. 원화 대비 엔화가 빠르게 강해질 때 국내 증시 외국인 수급 부담을 볼 수 있습니다.
+    - name: S&P500 선물
+      symbol: ES=F
+      industry: 매크로
+      unit: 지수
+      group: 선물
+      section: market
+      market_category: 종합
+      refresh_scope: intraday
+      meaning: 미국 S&P500 선물 가격입니다. 한국 시간 장중에 미국 증시 기대가 어떻게 바뀌는지 빠르게 보여줍니다.
+    - name: 나스닥100 선물
+      symbol: NQ=F
+      industry: 매크로
+      unit: 지수
+      group: 선물
+      section: market
+      market_category: 종합
+      refresh_scope: intraday
+      meaning: 미국 나스닥100 선물 가격입니다. AI, 반도체, 성장주 투자심리가 장중에 강해지는지 약해지는지 볼 때 사용합니다.
+    - name: 금 선물
+      symbol: GC=F
+      industry: 매크로
+      unit: "$"
+      group: 원자재 가격
+      section: market
+      market_category: 원자재·크립토
+      refresh_scope: intraday
+      meaning: 금 선물 가격입니다. 안전자산 선호, 실질금리 부담, 달러 흐름을 함께 볼 때 참고합니다.
+    - name: 비트코인
+      symbol: BTC-USD
+      industry: 매크로
+      unit: "$"
+      group: 크립토
+      section: market
+      market_category: 원자재·크립토
+      refresh_scope: intraday
+      meaning: 비트코인 가격입니다. 글로벌 위험선호와 암호자산 유동성 분위기를 빠르게 보여줍니다.
+    - name: 이더리움
+      symbol: ETH-USD
+      industry: 매크로
+      unit: "$"
+      group: 크립토
+      section: market
+      market_category: 원자재·크립토
+      refresh_scope: intraday
+      meaning: 이더리움 가격입니다. 암호자산 위험선호와 온체인 생태계 투자심리를 함께 볼 때 참고합니다.
+    - name: 달러인덱스
+      symbol: DX-Y.NYB
+      industry: 매크로
+      unit: 지수
+      group: 환율
+      section: market
+      market_category: 원자재·크립토
+      also_market_category:
+        - 종합
+      refresh_scope: intraday
+      meaning: 달러가 주요 통화 대비 강한지 보여주는 지수입니다. 달러 강세는 원자재와 신흥국 증시에 부담으로 작용할 수 있습니다.
+    - name: KOSPI200
+      symbol: ^KS200
+      industry: 매크로
+      unit: 지수
+      group: 선물
+      section: market
+      market_category: 종합
+      refresh_scope: intraday
+      meaning: 코스피200 지수입니다. 국내 대형주 선물과 옵션시장의 기준이 되는 현물 지수입니다.
 
 stablecoins:
   enabled: true
@@ -1102,6 +1244,7 @@ ecos:
 alerts:
   enabled: true
   state_file: data/alerts_state.json
+  signal_log_file: data/signal_log.json
   weekly_digest: true  # 월요일 실행 시 주간 다이제스트 발송
   rules:
     - metric: 하이일드 회사채 OAS

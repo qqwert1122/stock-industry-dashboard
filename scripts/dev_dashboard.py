@@ -5,12 +5,13 @@ import importlib
 import json
 import os
 import queue
+import shutil
 import socket
 import subprocess
 import sys
 import threading
 import time
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
@@ -22,6 +23,7 @@ SRC = ROOT / "src"
 SITE = ROOT / "site"
 CONFIG = ROOT / "config.yaml"
 DASHBOARD_SOURCE = ROOT / "src" / "macro_telegram_report" / "dashboard.py"
+DASHBOARD_TEMPLATE = ROOT / "src" / "macro_telegram_report" / "templates" / "dashboard.html"
 ASSETS = ROOT / "assets"
 
 
@@ -197,6 +199,15 @@ def mock_months(start_year: int, start_month: int, count: int, start: float, ste
     return points
 
 
+def mock_days(end: date, count: int, start: float, step: float, wave: float = 0) -> list[tuple[date, float]]:
+    points: list[tuple[date, float]] = []
+    for index in range(count):
+        day = end - timedelta(days=count - index - 1)
+        value = start + step * index + ((index % 7) - 3) * wave
+        points.append((day, round(value, 2)))
+    return points
+
+
 def mock_metric(
     dashboard: Any,
     *,
@@ -209,6 +220,12 @@ def mock_metric(
     frequency: str = "월간",
     depth: str = "",
     meaning: str = "",
+    section: str = "",
+    market_category: str = "",
+    also_market_category: str | list[str] = "",
+    chart_style: str = "",
+    metric_id: str = "",
+    history_key: str = "",
 ) -> dict[str, Any]:
     previous_value = history[-2][1] if len(history) >= 2 else None
     yoy_value = history[-13][1] if len(history) >= 13 else None
@@ -229,7 +246,22 @@ def mock_metric(
         group=group,
         depth=depth,
         meaning=meaning,
+        section=section,
+        market_category=market_category,
+        also_market_category=also_market_category,
+        chart_style=chart_style,
+        metric_id=metric_id,
+        history_key=history_key,
     )
+
+
+def add_mock_percentile(metric: dict[str, Any], percentile: float) -> dict[str, Any]:
+    metric["percentiles"] = {
+        "y10": {
+            "pct": percentile,
+        }
+    }
+    return metric
 
 
 def previous_mock_metric(metric: dict[str, Any], dashboard: Any, *, updated: bool) -> dict[str, Any]:
@@ -245,6 +277,199 @@ def previous_mock_metric(metric: dict[str, Any], dashboard: Any, *, updated: boo
         previous["observed_label"] = dashboard.compact_date_label(previous_observed_at)
         previous["history"] = previous_history
     return previous
+
+
+def metric_by_name(payload: dict[str, Any], name: str) -> dict[str, Any] | None:
+    return next((metric for metric in payload.get("metrics", []) if metric.get("name") == name), None)
+
+
+def mock_calendar(today: date, payload: dict[str, Any]) -> dict[str, Any]:
+    cpi_metric = metric_by_name(payload, "미국 CPI")
+    vix_metric = metric_by_name(payload, "VIX")
+    definitions = [
+        (-3, "미국 CPI 발표", "us_data", "US", "인플레이션 방향 확인", cpi_metric),
+        (0, "FOMC 결정", "fed", "US", "금리와 유동성 기대가 크게 움직일 수 있는 날", None),
+        (1, "한국은행 금통위", "bok", "KR", "국내 금리 민감 업종을 볼 때 중요", None),
+        (3, "한국 옵션만기", "expiry", "KR", "수급 변동성이 커질 수 있는 날", None),
+        (8, "VIX 갱신 예정", "site_update", "", "대시보드 지표 발표 예정일", vix_metric),
+        (18, "NYSE 휴장", "holiday", "US", "미국 주식시장 휴장", None),
+        (27, "미국 PCE 발표", "us_data", "US", "연준이 선호하는 물가 지표", cpi_metric),
+    ]
+    events: list[dict[str, Any]] = []
+    for offset, name, category, country, note, metric in definitions:
+        day = today + timedelta(days=offset)
+        event = {
+            "date": day.isoformat(),
+            "name": name,
+            "category": category,
+            "country": country,
+            "note": note,
+            "d_day": offset,
+            "d_day_label": "D-day" if offset == 0 else f"D{offset:+d}",
+        }
+        if metric:
+            event["metric_id"] = metric.get("id")
+        events.append(event)
+    return {
+        "version": 1,
+        "generated_at": datetime.now(ZoneInfo("Asia/Seoul")).isoformat(timespec="seconds"),
+        "window": {"from": (today - timedelta(days=7)).isoformat(), "to": (today + timedelta(days=60)).isoformat()},
+        "events": events,
+        "upcoming": [event for event in events if 0 <= int(event["d_day"]) <= 1],
+        "missing_years": [],
+    }
+
+
+def mock_long_history(payload: dict[str, Any]) -> dict[str, Any]:
+    document: dict[str, Any] = {}
+    for metric in payload.get("metrics", []):
+        points = [
+            [point.get("date"), point.get("value")]
+            for point in metric.get("history", [])
+            if point.get("date") and isinstance(point.get("value"), (int, float))
+        ]
+        if not points:
+            continue
+        entry = {
+            "metric_id": metric.get("id", ""),
+            "history_key": metric.get("history_key", ""),
+            "points": points,
+        }
+        document[str(metric.get("id"))] = entry
+        if metric.get("history_key"):
+            document[str(metric.get("history_key"))] = entry
+    return document
+
+
+def mock_market_gauge_history(payload: dict[str, Any]) -> dict[str, Any]:
+    today = datetime.now(ZoneInfo("Asia/Seoul")).date()
+    snapshots: list[dict[str, Any]] = []
+    for index in range(45):
+        day = today - timedelta(days=44 - index)
+        thermometer_score = round(36 + index * 0.9 + ((index % 9) - 4) * 1.4, 1)
+        cnn_score = round(48 + ((index % 13) - 6) * 2.2, 1)
+        kospi_score = round(42 + ((index % 11) - 5) * 2.5 + index * 0.18, 1)
+        kosdaq_score = round(58 - ((index % 10) - 5) * 2.0, 1)
+        alert_count = 1 if index % 14 in {0, 1, 2, 3} else 0
+        snapshots.append(
+            {
+                "date": day.isoformat(),
+                "generated_at": datetime.combine(day, datetime.min.time(), ZoneInfo("Asia/Seoul")).replace(hour=8).isoformat(timespec="seconds"),
+                "thermometer": {
+                    "score": max(0, min(100, thermometer_score)),
+                    "label": "중립" if thermometer_score < 60 else "과열",
+                    "comment": "더미 시장 온도계 추이입니다.",
+                    "components": [],
+                },
+                "recession": {
+                    "alert_count": alert_count,
+                    "warn_count": 1 if alert_count else 0,
+                    "summary": "더미 침체 시그널 추이입니다.",
+                    "signals": [],
+                },
+                "fear_greed": {
+                    "comment": "더미 공포탐욕 추이입니다.",
+                    "items": [
+                        {"name": "미국 CNN", "score": max(0, min(100, cnn_score)), "label": "중립", "value_label": f"{cnn_score:.1f} 점"},
+                        {"name": "코스피", "score": max(0, min(100, kospi_score)), "label": "중립", "value_label": f"{kospi_score:.1f} 점"},
+                        {"name": "코스닥", "score": max(0, min(100, kosdaq_score)), "label": "중립", "value_label": f"{kosdaq_score:.1f} 점"},
+                    ],
+                },
+            }
+        )
+    return {
+        "version": 1,
+        "updated_at": snapshots[-1]["generated_at"],
+        "count": len(snapshots),
+        "first_date": snapshots[0]["date"],
+        "last_date": snapshots[-1]["date"],
+        "snapshots": snapshots,
+    }
+
+
+def mock_signal_log(payload: dict[str, Any]) -> dict[str, Any]:
+    now = datetime.now(ZoneInfo("Asia/Seoul"))
+    vix = metric_by_name(payload, "VIX") or {}
+    sahm = metric_by_name(payload, "Sahm Rule 침체 지표") or {}
+    events = [
+        {
+            "ts": (now - timedelta(days=14)).isoformat(timespec="seconds"),
+            "observed_at": (now.date() - timedelta(days=14)).isoformat(),
+            "rule_key": "VIX|above|40",
+            "metric_id": str(vix.get("id") or ""),
+            "metric_name": "VIX",
+            "direction": "triggered",
+            "value": 42.6,
+            "display_value": "42.6",
+            "threshold_label": "≥ 40",
+            "message": "공포 구간 더미 시그널입니다.",
+            "context": {"KS11": 3120.4, "GSPC": 5488.2, "USDKRW": 1382.5},
+            "telegram_sent": False,
+            "backfilled": True,
+        },
+        {
+            "ts": (now - timedelta(days=7)).isoformat(timespec="seconds"),
+            "observed_at": (now.date() - timedelta(days=7)).isoformat(),
+            "rule_key": "VIX|above|40",
+            "metric_id": str(vix.get("id") or ""),
+            "metric_name": "VIX",
+            "direction": "cleared",
+            "value": 29.2,
+            "display_value": "29.2",
+            "threshold_label": "≥ 40",
+            "message": "공포 구간 더미 시그널이 해제됐습니다.",
+            "context": {"KS11": 3188.6, "GSPC": 5561.8, "USDKRW": 1369.2},
+            "telegram_sent": False,
+        },
+        {
+            "ts": (now - timedelta(days=1)).isoformat(timespec="seconds"),
+            "observed_at": (now.date() - timedelta(days=1)).isoformat(),
+            "rule_key": "Sahm Rule|above|0.5",
+            "metric_id": str(sahm.get("id") or ""),
+            "metric_name": "Sahm Rule 침체 지표",
+            "direction": "triggered",
+            "value": 0.77,
+            "display_value": "0.77%p",
+            "threshold_label": "≥ 0.5",
+            "message": "침체 가능성 더미 시그널입니다.",
+            "context": {"KS11": 3210.2, "GSPC": 5608.3, "USDKRW": 1374.4},
+            "telegram_sent": False,
+        },
+    ]
+    return {"version": 1, "updated_at": now.isoformat(timespec="seconds"), "events": events}
+
+
+def write_mock_briefings(dashboard: Any, data_path: Path, payload: dict[str, Any]) -> dict[str, Any]:
+    briefings_dir = data_path / "briefings"
+    if briefings_dir.exists():
+        shutil.rmtree(briefings_dir)
+    now = datetime.now(ZoneInfo("Asia/Seoul"))
+    cards: list[dict[str, Any]] = []
+    base = payload.get("morning_briefing") or dashboard.rule_based_morning_briefing(payload)
+    for card_type, hour, headline in [
+        ("morning", 8, "아침 더미 브리핑"),
+        ("intraday", 12, "장중 더미 브리핑"),
+        ("close", 6, "마감 더미 브리핑"),
+    ]:
+        generated_at = now.replace(hour=hour, minute=0, second=0, microsecond=0).isoformat(timespec="seconds")
+        card = dict(base)
+        card.pop("id", None)
+        card.pop("card_type", None)
+        card.pop("card_type_label", None)
+        card["headline"] = headline
+        card["summary"] = f"{headline}입니다. UI 점검용으로 급변, 개선, 주의 흐름을 모두 포함했습니다."
+        cards.append(
+            dashboard.build_briefing_card(
+                card,
+                card_type=card_type,
+                generated_at=generated_at,
+                generated_label=generated_at.replace("T", " ")[:16] + " KST",
+            )
+        )
+    index: dict[str, Any] = {"version": 1, "cards": []}
+    for card in cards:
+        index = dashboard.write_briefing_outputs(data_path, card)
+    return index
 
 
 def build_mock_payload(dashboard: Any) -> dict[str, Any]:
@@ -266,26 +491,75 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
         depth: str = "",
         meaning: str = "",
         count: int = 54,
-    ) -> None:
+        section: str = "",
+        market_category: str = "",
+        also_market_category: str | list[str] = "",
+        chart_style: str = "",
+        metric_id: str = "",
+        history_key: str = "",
+    ) -> dict[str, Any]:
         end_serial = end_year * 12 + end_month
         start_serial = end_serial - count + 1
         start_year = (start_serial - 1) // 12
         start_month = (start_serial - 1) % 12 + 1
         history = mock_months(start_year, start_month, count, start, step, wave)
-        metrics.append(
-            mock_metric(
-                dashboard,
-                industry=industry,
-                name=name,
-                value=history[-1][1],
-                unit=unit,
-                group=group,
-                history=history,
-                frequency=frequency,
-                depth=depth,
-                meaning=meaning,
-            )
+        metric = mock_metric(
+            dashboard,
+            industry=industry,
+            name=name,
+            value=history[-1][1],
+            unit=unit,
+            group=group,
+            history=history,
+            frequency=frequency,
+            depth=depth,
+            meaning=meaning,
+            section=section,
+            market_category=market_category,
+            also_market_category=also_market_category,
+            chart_style=chart_style,
+            metric_id=metric_id,
+            history_key=history_key,
         )
+        metrics.append(metric)
+        return metric
+
+    def add_market(
+        name: str,
+        category: str,
+        group: str,
+        unit: str,
+        start: float,
+        step: float,
+        wave: float = 0,
+        *,
+        frequency: str = "일간",
+        count: int = 90,
+        chart_style: str = "",
+        metric_id: str = "",
+        meaning: str = "",
+    ) -> dict[str, Any]:
+        history = mock_days(now.date(), count, start, step, wave)
+        metric = mock_metric(
+            dashboard,
+            industry="매크로",
+            name=name,
+            value=history[-1][1],
+            unit=unit,
+            group=group,
+            history=history,
+            frequency=frequency,
+            meaning=meaning,
+            section="market",
+            market_category=category,
+            chart_style=chart_style,
+            metric_id=metric_id,
+        )
+        metrics.append(metric)
+        return metric
+
+    def flow_meaning(market_label: str, investor: str, measure_label: str) -> str:
+        return dashboard.flow_metric_meaning(market_label, investor, measure_label)
 
     add("반도체", "Worldwide", "$B", "판매액(WSTS)", 38, 0.42, 1.1, depth="전체 업황")
     add("반도체", "Asia Pacific", "$B", "판매액(WSTS)", 21, 0.28, 0.8, depth="전체 업황")
@@ -323,6 +597,88 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
     add("바이오", "Phase 3 임상 시작", "건", "파이프라인", 18, 0.05, 1.1)
     add("배터리", "리튬 가격", "$", "원자재", 13200, -34, 210)
 
+    add_market("코스피", "종합", "시장지수", "", 2920, 4.2, 22, count=90)
+    add_market("코스닥", "종합", "시장지수", "", 780, 1.1, 12, count=90)
+    add_market("S&P 500", "종합", "시장지수", "", 5200, 6.4, 28, count=90)
+    add_market("나스닥", "종합", "시장지수", "", 16800, 22, 120, count=90)
+    add_market("다우", "종합", "시장지수", "", 39200, 16, 150, count=90)
+    add_market("Sahm Rule 침체 지표", "종합", "경기침체", "%p", 0.42, 0.006, 0.03, frequency="월간", count=54)
+    add_market("GDPNow 성장률", "종합", "경기침체", "%", 1.6, -0.02, 0.1, frequency="주간", count=36)
+    add_market("미국 CPI", "종합", "물가", "%", 3.2, -0.01, 0.04, frequency="월간", count=54)
+    add_market(
+        "코스피 외국인 순매수",
+        "수급",
+        "외국인",
+        "억원",
+        -2100,
+        65,
+        520,
+        chart_style="flow_bars",
+        metric_id="mock-flow-kospi-foreign-net",
+        meaning=flow_meaning("코스피", "외국인", "순매수"),
+    )
+    add_market(
+        "코스피 외국인 매수",
+        "수급",
+        "외국인",
+        "억원",
+        42000,
+        38,
+        950,
+        metric_id="mock-flow-kospi-foreign-buy",
+        meaning=flow_meaning("코스피", "외국인", "매수"),
+    )
+    add_market(
+        "코스피 외국인 매도",
+        "수급",
+        "외국인",
+        "억원",
+        43800,
+        -12,
+        900,
+        metric_id="mock-flow-kospi-foreign-sell",
+        meaning=flow_meaning("코스피", "외국인", "매도"),
+    )
+    add_market(
+        "코스닥 개인 순매수",
+        "수급",
+        "개인",
+        "억원",
+        1600,
+        -22,
+        410,
+        chart_style="flow_bars",
+        metric_id="mock-flow-kosdaq-retail-net",
+        meaning=flow_meaning("코스닥", "개인", "순매수"),
+    )
+    add_market("고객예탁금", "신용·예탁금", "예탁금", "조원", 54, 0.04, 0.8)
+    add_market("신용융자 잔고", "신용·예탁금", "신용", "조원", 18.5, 0.02, 0.32)
+    add_market("미국 10년 국채금리", "금리·채권", "금리", "%", 4.1, -0.002, 0.06)
+    add_market("한국 기준금리", "금리·채권", "금리", "%", 2.75, 0, 0.02)
+    add_market("미국 10Y-3M 금리차", "금리·채권", "경기침체", "%p", -0.65, 0.01, 0.08)
+    add_market("미국 하이일드 회사채 OAS", "금리·채권", "신용", "%", 3.8, 0.01, 0.08)
+    add_market("원/달러 환율", "원자재·크립토", "환율", "원", 1360, 0.8, 12)
+    add_market("비트코인", "원자재·크립토", "크립토", "$", 96000, 110, 2100)
+    add_market("WTI 유가", "원자재·크립토", "원자재", "$", 72, 0.05, 1.6)
+    add_market("VIX", "심리·변동성", "시장 심리", "", 24, -0.02, 0.9)
+    add_market("VKOSPI", "심리·변동성", "변동성", "", 18, 0.01, 0.7)
+    add_market("미국 CNN 공포탐욕지수", "심리·변동성", "공포탐욕", "점", 58, 0.05, 2.2)
+    add_market("코스피 공포탐욕지수", "심리·변동성", "공포탐욕", "점", 42, 0.2, 2.6)
+    add_market("코스닥 공포탐욕지수", "심리·변동성", "공포탐욕", "점", 64, -0.08, 2.9)
+    add_market("코스피 PBR", "밸류에이션", "밸류에이션", "배", 0.9, 0.003, 0.02)
+    add_market("S&P 500 Shiller CAPE", "밸류에이션", "밸류에이션", "배", 31, 0.04, 0.35, frequency="월간")
+
+    mock_percentiles = {
+        "VIX": 72.0,
+        "미국 하이일드 회사채 OAS": 68.0,
+        "코스피 PBR": 36.0,
+        "S&P 500 Shiller CAPE": 84.0,
+    }
+    for metric in metrics:
+        percentile = mock_percentiles.get(str(metric.get("name") or ""))
+        if percentile is not None:
+            add_mock_percentile(metric, percentile)
+
     industries = [industry for industry in dashboard.DEFAULT_INDUSTRIES if any(metric["industry"] == industry for metric in metrics)]
     payload = {
         "title": "산업별 지표 대시보드",
@@ -346,6 +702,7 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
         ]
     }
     dashboard.annotate_dashboard_updates(payload, previous)
+    payload["market_gauges"] = dashboard.build_market_gauges(metrics)
     payload["morning_briefing"] = dashboard.rule_based_morning_briefing(payload)
     return payload
 
@@ -354,10 +711,31 @@ def render_mock_payload() -> bool:
     try:
         dashboard = load_dashboard_module()
         payload = build_mock_payload(dashboard)
-        SITE.mkdir(parents=True, exist_ok=True)
+        data_path = SITE / "data"
+        data_path.mkdir(parents=True, exist_ok=True)
+        generated_at = str(payload.get("generated_at") or datetime.now(ZoneInfo("Asia/Seoul")).isoformat(timespec="seconds"))
+        payload["calendar"] = mock_calendar(datetime.now(ZoneInfo("Asia/Seoul")).date(), payload)
+        payload["morning_briefing"] = dashboard.build_briefing_card(
+            payload["morning_briefing"],
+            card_type="morning",
+            generated_at=generated_at,
+            generated_label=str(payload.get("generated_label") or ""),
+        )
+        payload["briefing_index"] = write_mock_briefings(dashboard, data_path, payload)
         write_dashboard_preview(payload, dashboard)
-        (SITE / "data").mkdir(parents=True, exist_ok=True)
-        (SITE / "data" / "dashboard.mock.json").write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        long_history = mock_long_history(payload)
+        market_gauges_history = mock_market_gauge_history(payload)
+        signal_log = mock_signal_log(payload)
+
+        for filename in ("dashboard.mock.json", "dashboard.json"):
+            (data_path / filename).write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        (data_path / "calendar.json").write_text(json.dumps(payload["calendar"], ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        (data_path / "long_history.json").write_text(json.dumps(long_history, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        (data_path / "market_gauges_history.json").write_text(
+            json.dumps(market_gauges_history, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        (data_path / "signal_log.json").write_text(json.dumps(signal_log, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         print("[dev] mock render: regenerated site/index.html from dummy data")
         return True
     except Exception as exc:  # noqa: BLE001 - keep the dev server alive.
@@ -398,7 +776,7 @@ def start_server(host: str, port: int) -> ReloadServer:
 
 
 def watch_loop(args: argparse.Namespace, server: ReloadServer) -> None:
-    fast_paths = [DASHBOARD_SOURCE, ASSETS]
+    fast_paths = [DASHBOARD_SOURCE, DASHBOARD_TEMPLATE, ASSETS]
     full_paths = [Path(args.config)]
     fast_stamp = newest_mtime(fast_paths)
     full_stamp = newest_mtime(full_paths)

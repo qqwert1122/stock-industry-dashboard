@@ -2,9 +2,11 @@ name: Intraday Price Refresh
 
 on:
   schedule:
-    # 00:30-14:30 UTC 2시간 간격, 평일 = 09:30-23:30 KST
-    # 한국장(09:00-15:30)과 미국장 개장 초반(23:30 KST)까지 커버합니다.
-    - cron: "30 0-14/2 * * 1-5"
+    # 한국장 09:00-15:59 KST, 평일 15분 간격
+    - cron: "*/15 0-6 * * 1-5"
+    # 미국장 23:00-05:59 KST, 평일 30분 간격
+    - cron: "*/30 14-20 * * 1-5"
+    # 롤백용 30분 간격: "*/30 0-6,14-20 * * 1-5"
   workflow_dispatch:
 
 permissions:
@@ -22,21 +24,26 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: pip
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
 
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install -e .
+        run: uv pip install --system -e .
 
       - name: Restore previous dashboard data
         run: |
           mkdir -p site/data
+          # KRX flow raw snapshots live under data/history/krx-flow-raw-*.json.
+          # They are restored by actions/checkout and committed by `git add data` below.
+          mkdir -p data/history
           if [ -f data/last_dashboard.json ]; then
             cp data/last_dashboard.json site/data/dashboard.json
           else
@@ -49,12 +56,45 @@ jobs:
             curl -fsSL https://qqwert1122.github.io/stock-industry-dashboard/data/market_gauges_history.json \
               -o site/data/market_gauges_history.json || true
           fi
+          if [ -f data/fetch_log_history.json ]; then
+            cp data/fetch_log_history.json site/data/fetch_log_history.json
+          else
+            curl -fsSL https://qqwert1122.github.io/stock-industry-dashboard/data/fetch_log_history.json \
+              -o site/data/fetch_log_history.json || true
+          fi
+          if [ -f data/signal_log.json ]; then
+            cp data/signal_log.json site/data/signal_log.json
+          else
+            curl -fsSL https://qqwert1122.github.io/stock-industry-dashboard/data/signal_log.json \
+              -o site/data/signal_log.json || true
+          fi
+          if [ -f data/calendar.json ]; then
+            cp data/calendar.json site/data/calendar.json
+          else
+            curl -fsSL https://qqwert1122.github.io/stock-industry-dashboard/data/calendar.json \
+              -o site/data/calendar.json || true
+          fi
+          if [ -f data/intraday_track.json ]; then
+            cp data/intraday_track.json site/data/intraday_track.json
+          else
+            curl -fsSL https://qqwert1122.github.io/stock-industry-dashboard/data/intraday_track.json \
+              -o site/data/intraday_track.json || true
+          fi
+          if [ -d data/briefings ]; then
+            mkdir -p site/data/briefings
+            cp -R data/briefings/. site/data/briefings/
+          fi
 
       - name: Refresh price metrics
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: industry-dashboard --config config.yaml --out site --prices-only
+
+      - name: Build intraday briefing card
+        env:
+          GEMINI_BRIEFING_ENABLED: "0"
+        run: industry-dashboard --config config.yaml --out site --briefing-only intraday
 
       - name: Commit data cache back to repository
         run: |
@@ -63,6 +103,24 @@ jobs:
           if [ -f site/data/market_gauges_history.json ]; then
             cp site/data/market_gauges_history.json data/market_gauges_history.json
           fi
+          if [ -f site/data/fetch_log_history.json ]; then
+            cp site/data/fetch_log_history.json data/fetch_log_history.json
+          fi
+          if [ -f site/data/signal_log.json ]; then
+            cp site/data/signal_log.json data/signal_log.json
+          fi
+          if [ -f site/data/calendar.json ]; then
+            cp site/data/calendar.json data/calendar.json
+          fi
+          if [ -f site/data/intraday_track.json ]; then
+            cp site/data/intraday_track.json data/intraday_track.json
+          fi
+          if [ -d site/data/briefings ]; then
+            rm -rf data/briefings
+            mkdir -p data
+            cp -R site/data/briefings data/briefings
+          fi
+          # Includes data/history/krx-flow-raw-*.json if a run produced or updated them.
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data

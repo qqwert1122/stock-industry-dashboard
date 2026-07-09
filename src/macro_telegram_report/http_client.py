@@ -29,6 +29,8 @@ HOST_MIN_INTERVALS = {
     "api.fda.gov": 0.5,
     "clinicaltrials.gov": 0.5,
     "ll.thespacedevs.com": 5.0,
+    "api.upbit.com": 0.5,
+    "publicreporting.cftc.gov": 1.0,
 }
 RATE_LIMIT_STATUSES = {429, 503}
 MAX_RATE_LIMIT_RETRIES = 2
