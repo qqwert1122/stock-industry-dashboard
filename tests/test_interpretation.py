@@ -219,6 +219,52 @@ class InterpretationTest(unittest.TestCase):
         self.assertIn("외국인 5거래일 연속 순매수", interpretation["headline"])
         self.assertIn("수급이 지수를 받치는 구간", interpretation["headline"])
 
+    def test_us_liquidity_interpretation_uses_trend_not_threshold(self):
+        points = [
+            {"date": "2026-01-31", "value": 5200.0},
+            {"date": "2026-02-28", "value": 5300.0},
+            {"date": "2026-03-31", "value": 5400.0},
+            {"date": "2026-04-30", "value": 5500.0},
+            {"date": "2026-05-31", "value": 5600.0},
+        ]
+        metric = make_metric(
+            industry="매크로",
+            name="미국 순유동성",
+            source="FRED/FiscalData",
+            source_url="https://api.fiscaldata.treasury.gov/",
+            frequency="일간",
+            automation="자동",
+            status="ok",
+            value=5600.0,
+            unit="$B",
+            observed_at="2026-05-31",
+            previous_value=5500.0,
+            history=[(date.fromisoformat(item["date"]), item["value"]) for item in points],
+            group="미국 유동성",
+            meaning="미국 순유동성입니다.",
+            history_key="us-net-liquidity",
+        )
+        metric["_analysis_history"] = points
+        config = {
+            "interpretation": {
+                "rules": [
+                    {
+                        "match": {"history_key": "us-net-liquidity"},
+                        "polarity": "higher_is_better",
+                        "template": "us_liquidity_trend",
+                    }
+                ]
+            }
+        }
+
+        interpretation = build_interpretation(metric, config)
+
+        self.assertEqual(interpretation["source"], "liquidity_trend")
+        self.assertEqual(interpretation["zone"], "good")
+        self.assertIn("4개월 연속 증가", interpretation["headline"])
+        self.assertIn("최근 1년 고점", interpretation["detail_text"])
+        self.assertNotIn("기준", interpretation["text"])
+
     def interpret(self, name, value, config, *, history_key=""):
         points = [(date(2025, 1, 1) + timedelta(days=i), value) for i in range(3)]
         metric = make_metric(

@@ -8,8 +8,13 @@ from unittest.mock import patch
 from macro_telegram_report.alerts import process_alerts
 from macro_telegram_report.dashboard import (
     assign_market_navigation_fields,
+    calculate_us_net_liquidity,
+    collect_global_liquidity_metrics,
+    collect_us_liquidity_metrics,
     flow_metrics_from_raw_document,
     make_metric,
+    parse_boj_points,
+    parse_ecb_csv_points,
     update_market_gauge_history,
     visible_dashboard_metrics,
 )
@@ -31,8 +36,9 @@ from macro_telegram_report.market_flows import load_raw_flow_snapshot, merge_raw
 
 
 class FakeResponse:
-    def __init__(self, payload):
+    def __init__(self, payload=None, text=""):
         self.payload = payload
+        self.text = text
 
     def raise_for_status(self):
         return None
@@ -53,6 +59,102 @@ class FakeKrxSession:
         self.headers = kwargs.get("headers", {})
         self.params = kwargs.get("params", {})
         return FakeResponse(self.payload)
+
+
+class FakeLiquiditySession:
+    def get(self, url, params=None, **kwargs):
+        params = params or {}
+        if "fiscaldata.treasury.gov" in url:
+            return FakeResponse(
+                {
+                    "data": [
+                        {
+                            "record_date": "2024-01-02",
+                            "account_type": "Treasury General Account (TGA) Closing Balance",
+                            "open_today_bal": "800000",
+                        },
+                        {
+                            "record_date": "2024-01-04",
+                            "account_type": "Treasury General Account (TGA) Closing Balance",
+                            "open_today_bal": "900000",
+                        },
+                    ]
+                }
+            )
+        if params.get("series_id") == "RRPONTSYD":
+            return FakeResponse(
+                {
+                    "observations": [
+                        {"date": "2024-01-02", "value": "500000"},
+                        {"date": "2024-01-05", "value": "400000"},
+                    ]
+                }
+            )
+        raise AssertionError(f"unexpected request: {url} {params}")
+
+
+class FakeGlobalLiquiditySession:
+    def get(self, url, params=None, **kwargs):
+        params = params or {}
+        if "ecos.bok.or.kr" in url:
+            parts = url.split("/")
+            stat_code = parts[10]
+            item_code = parts[14]
+            value = {
+                ("103Y002", "BCAA1"): "650000",
+                ("102Y004", "ABA1"): "305000",
+                ("161Y005", "BBHS00"): "4160000",
+                ("171Y003", "LAS0000"): "5750000",
+                ("172Y001", "XS00000"): "7350000",
+            }[(stat_code, item_code)]
+            return FakeResponse(
+                {
+                    "StatisticSearch": {
+                        "row": [
+                            {"TIME": "202401", "DATA_VALUE": str(float(value) - 1000)},
+                            {"TIME": "202402", "DATA_VALUE": value},
+                        ]
+                    }
+                }
+            )
+        if "stat-search.boj.or.jp" in url:
+            code = params.get("code")
+            value = {
+                "MABJMTA": 7600000,
+                "MABS1AN11": 6700000,
+                "MAM1NAM2M2MO": 12600000,
+                "MACAB2201": 5550000,
+            }[code]
+            return FakeResponse(
+                {
+                    "STATUS": 200,
+                    "RESULTSET": [
+                        {
+                            "SERIES_CODE": code,
+                            "VALUES": {
+                                "SURVEY_DATES": [202401, 202402],
+                                "VALUES": [value - 1000, value],
+                            },
+                        }
+                    ],
+                }
+            )
+        if "data-api.ecb.europa.eu" in url:
+            key = url.rsplit("/", 1)[-1]
+            value = {
+                "D.U2.C.EXLIQ.U2.EUR": 2440000,
+                "M.U2.N.C.T00.A.1.Z5.0000.Z01.E": 9800000,
+                "M.U2.Y.V.M30.X.1.U2.2300.Z01.E": 16900000,
+                "M.U2.C.LT00001.Z5.EUR": 4450000,
+            }[key]
+            return FakeResponse(
+                text=(
+                    "KEY,TIME_PERIOD,OBS_VALUE\n"
+                    f"ECB.{key},2024-01,{value - 1000}\n"
+                    f"ECB.{key},2024-02,{value}\n"
+                )
+            )
+        raise AssertionError(f"unexpected request: {url} {params}")
 
 
 class MarketExtensionsTest(unittest.TestCase):
@@ -177,6 +279,99 @@ class MarketExtensionsTest(unittest.TestCase):
         self.assertEqual(kospi["market_category"], "종합")
         self.assertNotEqual(rate.get("section"), "market")
         self.assertEqual(rate["also_market_category"], ["금리·채권"])
+
+    def test_us_net_liquidity_aligns_components_as_of_each_day(self):
+        walcl = [(date(2024, 1, 1), 7000.0), (date(2024, 1, 3), 7100.0)]
+        tga = [(date(2024, 1, 2), 800.0), (date(2024, 1, 4), 900.0)]
+        rrp = [(date(2024, 1, 2), 500.0), (date(2024, 1, 5), 400.0)]
+
+        points = calculate_us_net_liquidity(walcl, tga, rrp)
+
+        self.assertEqual(points[0], (date(2024, 1, 2), 5700.0))
+        self.assertEqual(points[1], (date(2024, 1, 3), 5800.0))
+        self.assertEqual(points[2], (date(2024, 1, 4), 5700.0))
+        self.assertEqual(points[-1], (date(2024, 1, 5), 5800.0))
+
+    def test_official_liquidity_parsers_read_boj_and_ecb_shapes(self):
+        boj_points = parse_boj_points(
+            {
+                "STATUS": 200,
+                "RESULTSET": [
+                    {
+                        "VALUES": {
+                            "SURVEY_DATES": [202401, 202402],
+                            "VALUES": [1000, 1100],
+                        }
+                    }
+                ],
+            }
+        )
+        ecb_points = parse_ecb_csv_points(
+            "KEY,TIME_PERIOD,OBS_VALUE\n"
+            "ILM.D.U2.C.EXLIQ.U2.EUR,2024-01-02,2000\n"
+            "ILM.D.U2.C.EXLIQ.U2.EUR,2024-01-03,2100\n"
+        )
+
+        self.assertEqual(boj_points, [(date(2024, 1, 1), 1000.0), (date(2024, 2, 1), 1100.0)])
+        self.assertEqual(ecb_points, [(date(2024, 1, 2), 2000.0), (date(2024, 1, 3), 2100.0)])
+
+    @patch.dict("os.environ", {"FRED_API_KEY": "test-key"})
+    def test_us_liquidity_collector_builds_market_group_in_display_order(self):
+        walcl = make_metric(
+            industry="매크로",
+            name="미국 연준 총자산",
+            source="FRED API",
+            source_url="https://fred.stlouisfed.org/series/WALCL",
+            frequency="주간",
+            automation="자동",
+            status="ok",
+            value=7100,
+            unit="$B",
+            observed_at="2024-01-03",
+            previous_value=7000,
+            history=[(date(2024, 1, 1), 7000.0), (date(2024, 1, 3), 7100.0)],
+            group="유동성",
+            history_key="fred-WALCL",
+        )
+
+        metrics = collect_us_liquidity_metrics(
+            {"history": {"enabled": False}},
+            FakeLiquiditySession(),
+            date(2024, 1, 5),
+            [walcl],
+        )
+
+        self.assertEqual([metric["name"] for metric in metrics], ["미국 순유동성", "미국 연준 총자산", "미국 TGA", "미국 역레포"])
+        self.assertTrue(all(metric["group"] == "미국 유동성" for metric in metrics))
+        self.assertTrue(all(metric["section"] == "market" for metric in metrics))
+        self.assertTrue(all(metric["market_category"] == "유동성" for metric in metrics))
+        self.assertEqual(metrics[0]["value"], 5800.0)
+        self.assertIn("가장 최근 값을 사용", metrics[0]["meaning"])
+        self.assertEqual(metrics[2]["frequency"], "일간")
+        self.assertEqual(metrics[2]["history_key"], "fiscaldata-tga")
+
+    @patch.dict("os.environ", {"ECOS_API_KEY": "test-key"})
+    def test_global_liquidity_collector_builds_region_groups(self):
+        metrics = collect_global_liquidity_metrics(
+            {"history": {"enabled": False}},
+            FakeGlobalLiquiditySession(),
+            date(2024, 2, 29),
+        )
+
+        by_name = {metric["name"]: metric for metric in metrics}
+        self.assertEqual(len(metrics), 13)
+        self.assertEqual(by_name["한국 M2"]["value"], 4160.0)
+        self.assertEqual(by_name["한국 M2"]["unit"], "조원")
+        self.assertEqual(by_name["일본 BOJ 총자산"]["value"], 760.0)
+        self.assertEqual(by_name["일본 BOJ 총자산"]["unit"], "¥T")
+        self.assertEqual(by_name["유럽 초과유동성"]["value"], 2440.0)
+        self.assertEqual(by_name["유럽 초과유동성"]["frequency"], "일간")
+        self.assertTrue(all(metric["section"] == "market" for metric in metrics))
+        self.assertTrue(all(metric["market_category"] == "유동성" for metric in metrics))
+        self.assertEqual(
+            [metric["group"] for metric in metrics[:5]],
+            ["한국 유동성", "한국 유동성", "한국 유동성", "한국 유동성", "한국 유동성"],
+        )
 
     def test_flow_metrics_from_raw_document_generates_gross_and_net_metrics(self):
         rows = json.loads((Path(__file__).resolve().parent / "fixtures" / "krx_flow_stock_rows.json").read_text(encoding="utf-8"))

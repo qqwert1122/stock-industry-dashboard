@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 import hashlib
 import json
 import os
@@ -8,7 +9,7 @@ import shutil
 import time
 from collections import defaultdict
 from datetime import date, datetime, timedelta, timezone
-from io import BytesIO
+from io import BytesIO, StringIO
 from pathlib import Path
 from typing import Any
 from urllib.parse import urljoin
@@ -84,6 +85,10 @@ from .utils import add_months, fmt_number, fmt_pct, fmt_signed, month_key, pct_c
 from .wsts import find_wsts_xlsx_url, parse_wsts_sheet
 
 FRED_OBSERVATIONS_URL = "https://api.stlouisfed.org/fred/series/observations"
+FISCALDATA_TGA_URL = (
+    "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/"
+    "v1/accounting/dts/operating_cash_balance"
+)
 GEMINI_DEFAULT_MODEL = "gemini-3.1-flash-lite"
 GEMINI_GENERATE_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 GEMINI_DAILY_CALL_LIMIT = 400
@@ -94,6 +99,8 @@ FETCH_LOG_FILENAME = "fetch_log.json"
 FETCH_SOURCE_ENDPOINTS = {
     "WSTS": "https://www.wsts.org/76/Recent-News-Release",
     "FRED": FRED_OBSERVATIONS_URL,
+    "미국 재무부 DTS": FISCALDATA_TGA_URL,
+    "미국 유동성": FRED_OBSERVATIONS_URL,
     "ECOS 신용스프레드": "https://ecos.bok.or.kr/api/",
     "ECOS 매크로": "https://ecos.bok.or.kr/api/",
     "대표주가/시장지수": "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}",
@@ -251,6 +258,11 @@ EN_GROUP_LABELS = {
     "대표주가/시장지수": "Representative Stocks/Market Indexes",
     "신용 스프레드": "Credit Spreads",
     "시장지수": "Market Indexes",
+    "미국 유동성": "US Liquidity",
+    "한국 유동성": "Korea Liquidity",
+    "일본 유동성": "Japan Liquidity",
+    "유럽 유동성": "Europe Liquidity",
+    "국제 유동성": "Global Liquidity",
 }
 EN_DEPTH_LABELS = {
     "전체 업황": "Overall Cycle",
@@ -274,10 +286,14 @@ EN_FREQUENCY_LABELS = {
 }
 EN_UNIT_LABELS = {
     "$": "USD",
+    "$B": "$B",
     "$/mt": "USD/mt",
     "$/mmbtu": "USD/mmbtu",
     "$/gal": "USD/gal",
     "원": "KRW",
+    "조원": "tn KRW",
+    "€B": "€B",
+    "¥T": "¥T",
     "지수": "Index",
     "천건": "k",
     "백만대": "M units",
@@ -363,6 +379,23 @@ EN_METRIC_NAME_LABELS = {
     "미국 생물학적 제제 PPI": "US Biological Products PPI",
     "미국 체외진단 물질 PPI": "US In-vitro Diagnostics PPI",
     "미국 저장 배터리 제조 PPI": "US Storage Battery Manufacturing PPI",
+    "미국 순유동성": "US Net Liquidity",
+    "미국 역레포": "US Reverse Repo",
+    "미국 TGA": "US Treasury General Account",
+    "미국 연준 총자산": "Fed Total Assets",
+    "한국은행 총자산": "Bank of Korea Total Assets",
+    "한국 본원통화": "Korea Monetary Base",
+    "한국 M2": "Korea M2",
+    "한국 Lf": "Korea Lf",
+    "한국 L": "Korea L",
+    "일본 BOJ 총자산": "BOJ Total Assets",
+    "일본 본원통화": "Japan Monetary Base",
+    "일본 M2": "Japan M2",
+    "일본 BOJ 당좌예금": "BOJ Current Account Balances",
+    "유럽 초과유동성": "Europe Excess Liquidity",
+    "유럽 유로시스템 총자산": "Eurosystem Total Assets",
+    "유럽 M3": "Europe M3",
+    "유럽 본원통화": "Europe Base Money",
     "원/달러 환율": "USD/KRW Exchange Rate",
     "코스피": "KOSPI",
     "코스닥": "KOSDAQ",
@@ -519,6 +552,22 @@ EN_MEANING_LABELS = {
     "바이오 의약품 제조 가격 흐름으로 바이오 업황의 가격 사이클을 확인합니다.": "Tracks biologics manufacturing prices to read the biotech pricing cycle.",
     "진단 제품의 생산자 가격입니다. 진단 장비와 검사 제품 가격이 오르는지 내리는지 볼 때 참고합니다.": "Diagnostics producer prices help show whether diagnostic equipment and test-product prices are rising or falling.",
     "저장 배터리 제조 가격입니다. 배터리 셀 업체의 원가 부담과 판매 가격 흐름을 볼 때 참고합니다.": "Storage battery manufacturing prices help show battery-cell cost pressure and selling-price trends.",
+    "연준이 공급한 돈에서 재무부 금고(TGA)와 역레포에 잠긴 돈을 뺀, 실제로 금융시장에 돌고 있는 달러 유동성입니다. 증가하면 위험자산에 우호적, 감소하면 부담이 되는 흐름으로 해석합니다. 계산은 WALCL, TGA, 역레포의 관측일이 다를 때 각 날짜 이전의 가장 최근 값을 사용합니다.": "US net liquidity subtracts cash locked in the Treasury General Account (TGA) and reverse repos from the money supplied by the Fed, approximating dollar liquidity circulating in financial markets. Rising liquidity is usually supportive for risk assets, while falling liquidity is a headwind. The calculation aligns WALCL, TGA, and reverse repo by using the latest observation available on or before each date.",
+    "재무부가 연준에 맡겨둔 현금입니다. TGA가 늘면 시중 유동성이 흡수되고, 줄면 방출됩니다. 부채한도 협상 국면에서 크게 출렁입니다.": "Cash the US Treasury keeps at the Fed. When the TGA rises, liquidity is absorbed from the market; when it falls, liquidity is released. It can swing sharply around debt-ceiling episodes.",
+    "시중 자금이 연준에 하루짜리로 파킹된 규모입니다. 줄어들면 그만큼 시장에 유동성이 풀려나오는 효과가 있습니다.": "Cash parked overnight at the Fed through reverse repos. When it falls, that cash is effectively released back toward markets.",
+    "한국은행 대차대조표의 자산 총액입니다. 중앙은행이 시장에 공급한 유동성의 큰 방향을 볼 때 기준으로 씁니다.": "Total assets on the Bank of Korea balance sheet. It is a baseline for the broad direction of central-bank liquidity supplied to markets.",
+    "현금통화와 금융기관의 중앙은행 예치금을 합친 돈의 바탕입니다. 은행 시스템에 공급된 기본 유동성이 늘고 줄어드는지 확인합니다.": "The base layer of money, combining currency in circulation and financial-institution deposits at the central bank. It shows whether basic liquidity in the banking system is expanding or contracting.",
+    "현금, 요구불예금, 수시입출식 예금 등 비교적 바로 쓸 수 있는 돈을 넓게 묶은 통화량입니다. 가계와 기업의 자금 여유를 볼 때 핵심으로 봅니다.": "Broad money covering cash, demand deposits, and liquid savings deposits. It is a key gauge of household and corporate cash availability.",
+    "M2보다 더 넓게 금융기관이 공급한 유동성을 보는 지표입니다. 은행권 밖까지 포함한 자금 여건의 폭을 확인합니다.": "A broader liquidity measure than M2 that captures financial-institution liquidity beyond the banking core.",
+    "국채, 회사채 같은 시장성 금융상품까지 포함한 가장 넓은 유동성 지표입니다. 한국 경제 전체의 돈의 양이 얼마나 넓게 풀려 있는지 볼 때 씁니다.": "The broadest Korean liquidity measure, including marketable instruments such as government and corporate bonds. It shows how widely money is available across the economy.",
+    "일본은행 대차대조표의 자산 총액입니다. 일본 중앙은행이 시장에 공급한 유동성의 큰 물줄기를 보여줍니다.": "Total assets on the Bank of Japan balance sheet. It shows the broad flow of central-bank liquidity supplied to Japanese markets.",
+    "일본의 현금통화와 일본은행 당좌예금 등을 합친 기본 통화량입니다. BOJ 정책이 실제 유동성으로 얼마나 남아 있는지 볼 때 봅니다.": "Japan's base money, including currency in circulation and BOJ current account balances. It helps show how much BOJ policy remains as actual liquidity.",
+    "일본 경제 안에서 가계와 기업이 비교적 쉽게 쓸 수 있는 돈의 규모입니다. 민간 유동성이 늘고 줄어드는지 확인합니다.": "Money that households and companies in Japan can use relatively easily. It tracks whether private-sector liquidity is expanding or contracting.",
+    "금융기관이 일본은행에 맡겨둔 당좌예금 잔액입니다. 은행 시스템 안에 남아 있는 초과 유동성의 크기를 볼 때 참고합니다.": "Current account balances that financial institutions hold at the Bank of Japan. It is a useful gauge of excess liquidity inside the banking system.",
+    "유로존 은행 시스템에 필요한 지급준비를 넘어서 남아 있는 유동성입니다. 숫자가 클수록 은행권에 여유자금이 많이 남아 있다는 뜻입니다.": "Liquidity remaining in the euro-area banking system above required reserves. A larger reading means more surplus cash is left in banks.",
+    "ECB와 유로존 중앙은행들의 총자산입니다. 양적완화와 긴축으로 중앙은행 유동성이 커지는지 줄어드는지 보여줍니다.": "Total assets of the ECB and euro-area national central banks. It shows whether central-bank liquidity is expanding or shrinking through QE or tightening.",
+    "유로존의 넓은 통화량입니다. 가계와 기업, 금융기관에 풀린 돈의 규모와 민간 유동성 흐름을 볼 때 씁니다.": "Broad euro-area money supply used to read the amount of money available to households, companies, and financial institutions.",
+    "유로존의 현금과 중앙은행 예치금을 합친 기본 통화량입니다. ECB 정책이 은행 시스템 안의 돈의 바탕을 얼마나 크게 만들고 있는지 보여줍니다.": "Euro-area base money, combining currency and central-bank deposits. It shows how large the foundation of money in the banking system is under ECB policy.",
     "미국 국방부가 실제로 계약에 배정한 금액입니다. 방산 예산이 어느 분야로 흘러가는지 볼 때 중요합니다.": "US DoD contract obligations show where defense budget dollars are actually being committed.",
     "미국 연방 방산/항공우주 제조업 계약 의무액으로 방산 제조 밸류체인의 수주 모멘텀을 확인합니다.": "Uses US federal defense/aerospace manufacturing obligations to read order momentum across the defense manufacturing value chain.",
     "NASA 계약 의무액은 미국 정부가 우주 장비와 서비스에 실제로 얼마나 돈을 쓰고 있는지 보여줍니다.": "NASA contract obligations show how much the US government is actually spending on space equipment and services.",
@@ -1193,6 +1242,14 @@ def enrich_metrics_with_history(
         stats = percentile_stats(full, to_float(metric.get("value")))
         if stats:
             metric["percentiles"] = stats
+
+        if key == US_NET_LIQUIDITY_KEY:
+            analysis_cutoff = full[-1][0] - timedelta(days=370)
+            metric["_analysis_history"] = [
+                {"date": point_date.isoformat(), "value": value}
+                for point_date, value in full
+                if point_date >= analysis_cutoff
+            ]
 
         if metric.get("yoy_pct") is None and metric.get("value") is not None:
             yoy_value = find_yoy_value(full, full[-1][0])
@@ -2279,6 +2336,98 @@ def build_dashboard_payload(
     logger = current_logger()
     started_at, started_monotonic = logger.source_started() if logger else (fetched_at, time.monotonic())
     try:
+        source_metrics = collect_us_liquidity_metrics(config, session, now.date(), metrics)
+        metrics.extend(source_metrics)
+        ok_count = sum(1 for item in source_metrics if item.get("status") == "ok")
+        message = f"{ok_count}/{len(source_metrics)}개 지표 자동 수집"
+        issue_summary = metric_issue_summary(source_metrics)
+        if issue_summary:
+            message = f"{message} ({issue_summary})"
+        source_status.append(
+            {
+                "name": "미국 유동성",
+                "status": "ok" if source_metrics and ok_count == len(source_metrics) else "partial",
+                "message": sanitize_message(message),
+            }
+        )
+        record_fetch_result(
+            "미국 유동성",
+            source_metrics,
+            previous_by_key,
+            started_at,
+            started_monotonic,
+            message,
+        )
+    except Exception as exc:  # noqa: BLE001 - liquidity failure should not block the dashboard.
+        source_status.append({"name": "미국 유동성", "status": "error", "message": sanitize_message(str(exc))})
+        record_fetch_failure("미국 유동성", started_at, started_monotonic, exc)
+        if len(metrics) == before:
+            metrics.append(
+                make_metric(
+                    industry="매크로",
+                    name="미국 유동성 수집 상태",
+                    source="미국 유동성",
+                    source_url="",
+                    frequency="",
+                    automation="무료로 안정적으로 자동화 가능",
+                    status="error",
+                    note=str(exc),
+                    group="미국 유동성",
+                    section="market",
+                    market_category=US_LIQUIDITY_CATEGORY,
+                )
+            )
+
+    before = len(metrics)
+    logger = current_logger()
+    started_at, started_monotonic = logger.source_started() if logger else (fetched_at, time.monotonic())
+    try:
+        source_metrics = collect_global_liquidity_metrics(config, session, now.date())
+        metrics.extend(source_metrics)
+        ok_count = sum(1 for item in source_metrics if item.get("status") == "ok")
+        message = f"{ok_count}/{len(source_metrics)}개 지표 자동 수집"
+        issue_summary = metric_issue_summary(source_metrics)
+        if issue_summary:
+            message = f"{message} ({issue_summary})"
+        source_status.append(
+            {
+                "name": GLOBAL_LIQUIDITY_SOURCE_NAME,
+                "status": "ok" if source_metrics and ok_count == len(source_metrics) else "partial",
+                "message": sanitize_message(message),
+            }
+        )
+        record_fetch_result(
+            GLOBAL_LIQUIDITY_SOURCE_NAME,
+            source_metrics,
+            previous_by_key,
+            started_at,
+            started_monotonic,
+            message,
+        )
+    except Exception as exc:  # noqa: BLE001 - global liquidity failure should not block the dashboard.
+        source_status.append({"name": GLOBAL_LIQUIDITY_SOURCE_NAME, "status": "error", "message": sanitize_message(str(exc))})
+        record_fetch_failure(GLOBAL_LIQUIDITY_SOURCE_NAME, started_at, started_monotonic, exc)
+        if len(metrics) == before:
+            metrics.append(
+                make_metric(
+                    industry="매크로",
+                    name="국제 유동성 수집 상태",
+                    source=GLOBAL_LIQUIDITY_SOURCE_NAME,
+                    source_url="",
+                    frequency="",
+                    automation="무료 공식 API 자동 수집",
+                    status="error",
+                    note=str(exc),
+                    group=GLOBAL_LIQUIDITY_SOURCE_NAME,
+                    section="market",
+                    market_category=US_LIQUIDITY_CATEGORY,
+                )
+            )
+
+    before = len(metrics)
+    logger = current_logger()
+    started_at, started_monotonic = logger.source_started() if logger else (fetched_at, time.monotonic())
+    try:
         source_metrics = collect_market_sentiment_metrics(config, session, now.date(), metrics)
         metrics.extend(source_metrics)
         ok_count = sum(1 for item in source_metrics if item.get("status") == "ok")
@@ -2543,6 +2692,953 @@ def fetch_fred_history(
         points.append((date.fromisoformat(str(item["date"])), value))
     points.sort(key=lambda point: point[0])
     return points, "FRED API"
+
+
+US_LIQUIDITY_GROUP = "미국 유동성"
+US_LIQUIDITY_CATEGORY = "유동성"
+US_NET_LIQUIDITY_KEY = "us-net-liquidity"
+US_TGA_DAILY_KEY = "fiscaldata-tga"
+US_RRP_KEY = "fred-RRPONTSYD"
+
+
+def collect_us_liquidity_metrics(
+    config: dict[str, Any],
+    session: requests.Session,
+    today: date,
+    existing_metrics: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    liquidity_config = config.get("us_liquidity", {}) or {}
+    if liquidity_config.get("enabled", True) is False:
+        return []
+
+    api_key = os.getenv("FRED_API_KEY", "").strip()
+    walcl_points = component_points_from_metric_or_store(config, existing_metrics, "fred-WALCL")
+    walcl_metric = metric_by_history_key(existing_metrics, "fred-WALCL")
+    if not walcl_points and api_key:
+        walcl_points, _ = fetch_scaled_fred_component(
+            config=config,
+            session=session,
+            series_id="WALCL",
+            api_key=api_key,
+            history_key="fred-WALCL",
+            scale=0.001,
+        )
+
+    tga_metric, tga_points = collect_tga_component_metric(config, session, api_key, today)
+    rrp_metric, rrp_points = collect_rrp_component_metric(config, session, api_key)
+    net_metric = build_net_liquidity_metric(walcl_points, tga_points, rrp_points)
+    walcl_market_metric = build_walcl_market_metric(walcl_metric, walcl_points)
+
+    ordered = [net_metric, walcl_market_metric, tga_metric, rrp_metric]
+    return [metric for metric in ordered if metric]
+
+
+def metric_by_history_key(
+    metrics: list[dict[str, Any]], history_key: str
+) -> dict[str, Any] | None:
+    for metric in metrics:
+        if isinstance(metric, dict) and str(metric.get("history_key") or "") == history_key:
+            return metric
+    return None
+
+
+def component_points_from_metric_or_store(
+    config: dict[str, Any],
+    metrics: list[dict[str, Any]],
+    history_key: str,
+) -> list[tuple[date, float]]:
+    metric = metric_by_history_key(metrics, history_key)
+    incoming = parse_stored_points(metric.get("history") if isinstance(metric, dict) else None)
+    return merged_component_points(config, history_key, incoming)
+
+
+def merged_component_points(
+    config: dict[str, Any],
+    history_key: str,
+    incoming: list[tuple[date, float]],
+) -> list[tuple[date, float]]:
+    merged: dict[date, float] = {}
+    store = attach_history_store(config)
+    if store is not None:
+        for point_date, value in store.series(history_key):
+            merged[point_date] = value
+    for point_date, value in incoming:
+        merged[point_date] = value
+    return sorted(merged.items(), key=lambda item: item[0])
+
+
+def fetch_scaled_fred_component(
+    *,
+    config: dict[str, Any],
+    session: requests.Session,
+    series_id: str,
+    api_key: str,
+    history_key: str,
+    scale: float = 1.0,
+) -> tuple[list[tuple[date, float]], str]:
+    cached_last = cached_history_last_date(config, history_key)
+    observation_start = (cached_last - timedelta(days=450)).isoformat() if cached_last else ""
+    incoming, source_label = fetch_fred_history(
+        session=session,
+        series_id=series_id,
+        api_key=api_key,
+        observation_start=observation_start,
+    )
+    if scale != 1.0:
+        incoming = [(point_date, value * scale) for point_date, value in incoming]
+    return merged_component_points(config, history_key, incoming), source_label
+
+
+def collect_rrp_component_metric(
+    config: dict[str, Any],
+    session: requests.Session,
+    api_key: str,
+) -> tuple[dict[str, Any], list[tuple[date, float]]]:
+    name = "미국 역레포"
+    source_url = "https://fred.stlouisfed.org/series/RRPONTSYD"
+    if not api_key:
+        return (
+            make_metric(
+                industry="매크로",
+                name=name,
+                source="FRED API",
+                source_url=source_url,
+                frequency="일간",
+                automation="무료로 안정적으로 자동화 가능",
+                status="needs_key",
+                note="GitHub Secrets에 FRED_API_KEY 등록 필요",
+                group=US_LIQUIDITY_GROUP,
+                meaning=US_RRP_MEANING,
+                metric_id="us-rrp",
+                section="market",
+                market_category=US_LIQUIDITY_CATEGORY,
+                history_key=US_RRP_KEY,
+            ),
+            [],
+        )
+    try:
+        points, source_label = fetch_scaled_fred_component(
+            config=config,
+            session=session,
+            series_id="RRPONTSYD",
+            api_key=api_key,
+            history_key=US_RRP_KEY,
+            scale=0.001,
+        )
+        if not points:
+            raise ValueError("관측값 없음")
+        latest_date, latest_value = points[-1]
+        previous_value = points[-2][1] if len(points) > 1 else None
+        yoy_value = find_yoy_value(points, latest_date)
+        return (
+            make_metric(
+                industry="매크로",
+                name=name,
+                source=source_label,
+                source_url=source_url,
+                frequency="일간",
+                automation="무료로 안정적으로 자동화 가능",
+                status="ok",
+                value=latest_value,
+                unit="$B",
+                observed_at=latest_date.isoformat(),
+                previous_value=previous_value,
+                yoy_value=yoy_value,
+                history=points,
+                group=US_LIQUIDITY_GROUP,
+                meaning=US_RRP_MEANING,
+                metric_id="us-rrp",
+                section="market",
+                market_category=US_LIQUIDITY_CATEGORY,
+                history_key=US_RRP_KEY,
+            ),
+            points,
+        )
+    except Exception as exc:  # noqa: BLE001
+        return (
+            make_metric(
+                industry="매크로",
+                name=name,
+                source="FRED",
+                source_url=source_url,
+                frequency="일간",
+                automation="무료로 안정적으로 자동화 가능",
+                status="error",
+                note=str(exc),
+                group=US_LIQUIDITY_GROUP,
+                meaning=US_RRP_MEANING,
+                metric_id="us-rrp",
+                section="market",
+                market_category=US_LIQUIDITY_CATEGORY,
+                history_key=US_RRP_KEY,
+            ),
+            [],
+        )
+
+
+US_NET_LIQUIDITY_MEANING = (
+    "연준이 공급한 돈에서 재무부 금고(TGA)와 역레포에 잠긴 돈을 뺀, 실제로 금융시장에 돌고 있는 달러 "
+    "유동성입니다. 증가하면 위험자산에 우호적, 감소하면 부담이 되는 흐름으로 해석합니다. 계산은 WALCL, "
+    "TGA, 역레포의 관측일이 다를 때 각 날짜 이전의 가장 최근 값을 사용합니다."
+)
+US_TGA_MEANING = (
+    "재무부가 연준에 맡겨둔 현금입니다. TGA가 늘면 시중 유동성이 흡수되고, 줄면 방출됩니다. "
+    "부채한도 협상 국면에서 크게 출렁입니다."
+)
+US_RRP_MEANING = (
+    "시중 자금이 연준에 하루짜리로 파킹된 규모입니다. 줄어들면 그만큼 시장에 유동성이 풀려나오는 효과가 있습니다."
+)
+
+
+def collect_tga_component_metric(
+    config: dict[str, Any],
+    session: requests.Session,
+    api_key: str,
+    today: date,
+) -> tuple[dict[str, Any], list[tuple[date, float]]]:
+    try:
+        points = fetch_fiscaldata_tga_history(config, session)
+        if not points:
+            raise ValueError("FiscalData TGA 관측값 없음")
+        return build_tga_metric(
+            points,
+            source="FiscalData DTS API",
+            source_url=FISCALDATA_TGA_URL,
+            frequency="일간",
+            history_key=US_TGA_DAILY_KEY,
+            note="",
+        ), points
+    except Exception as fiscal_exc:  # noqa: BLE001 - fallback to weekly FRED TGA.
+        if not api_key:
+            return (
+                make_metric(
+                    industry="매크로",
+                    name="미국 TGA",
+                    source="FiscalData DTS API",
+                    source_url=FISCALDATA_TGA_URL,
+                    frequency="일간",
+                    automation="무료로 안정적으로 자동화 가능",
+                    status="error",
+                    note=f"FiscalData 실패: {fiscal_exc}",
+                    group=US_LIQUIDITY_GROUP,
+                    meaning=US_TGA_MEANING,
+                    metric_id="us-tga",
+                    section="market",
+                    market_category=US_LIQUIDITY_CATEGORY,
+                    history_key=US_TGA_DAILY_KEY,
+                ),
+                [],
+            )
+        try:
+            points, source_label = fetch_scaled_fred_component(
+                config=config,
+                session=session,
+                series_id="WTREGEN",
+                api_key=api_key,
+                history_key="fred-WTREGEN",
+                scale=0.001,
+            )
+            if not points:
+                raise ValueError("FRED WTREGEN 관측값 없음")
+            return build_tga_metric(
+                points,
+                source=source_label,
+                source_url="https://fred.stlouisfed.org/series/WTREGEN",
+                frequency="주간",
+                history_key="fred-WTREGEN",
+                note=f"FiscalData 일간 TGA 실패로 FRED WTREGEN 주간값 사용: {fiscal_exc}",
+            ), points
+        except Exception as fred_exc:  # noqa: BLE001
+            return (
+                make_metric(
+                    industry="매크로",
+                    name="미국 TGA",
+                    source="FiscalData/FRED",
+                    source_url=FISCALDATA_TGA_URL,
+                    frequency="일간/주간",
+                    automation="무료로 안정적으로 자동화 가능",
+                    status="error",
+                    note=f"FiscalData 실패: {fiscal_exc}; FRED 실패: {fred_exc}",
+                    group=US_LIQUIDITY_GROUP,
+                    meaning=US_TGA_MEANING,
+                    metric_id="us-tga",
+                    section="market",
+                    market_category=US_LIQUIDITY_CATEGORY,
+                    history_key=US_TGA_DAILY_KEY,
+                ),
+                [],
+            )
+
+
+def fetch_fiscaldata_tga_history(
+    config: dict[str, Any],
+    session: requests.Session,
+) -> list[tuple[date, float]]:
+    cached_last = cached_history_last_date(config, US_TGA_DAILY_KEY)
+    params: dict[str, str] = {
+        "fields": "record_date,account_type,open_today_bal",
+        "filter": "account_type:eq:Treasury General Account (TGA) Closing Balance",
+        "sort": "record_date",
+        "page[size]": "10000",
+    }
+    if cached_last:
+        start = (cached_last - timedelta(days=45)).isoformat()
+        params["filter"] = (
+            "account_type:eq:Treasury General Account (TGA) Closing Balance,"
+            f"record_date:gte:{start}"
+        )
+    response = session.get(FISCALDATA_TGA_URL, params=params, timeout=(10, 45))
+    response.raise_for_status()
+    payload = response.json()
+    incoming: list[tuple[date, float]] = []
+    for item in payload.get("data", []):
+        if not isinstance(item, dict):
+            continue
+        point_date_text = str(item.get("record_date") or "")
+        value = to_float(item.get("open_today_bal"))
+        if value is None:
+            continue
+        try:
+            point_date = date.fromisoformat(point_date_text)
+        except ValueError:
+            continue
+        # FiscalData DTS balances are reported in millions of dollars.
+        incoming.append((point_date, value / 1000.0))
+    incoming.sort(key=lambda point: point[0])
+    return merged_component_points(config, US_TGA_DAILY_KEY, incoming)
+
+
+def build_tga_metric(
+    points: list[tuple[date, float]],
+    *,
+    source: str,
+    source_url: str,
+    frequency: str,
+    history_key: str,
+    note: str,
+) -> dict[str, Any]:
+    latest_date, latest_value = points[-1]
+    previous_value = points[-2][1] if len(points) > 1 else None
+    yoy_value = find_yoy_value(points, latest_date)
+    return make_metric(
+        industry="매크로",
+        name="미국 TGA",
+        source=source,
+        source_url=source_url,
+        frequency=frequency,
+        automation="무료로 안정적으로 자동화 가능",
+        status="ok",
+        value=latest_value,
+        unit="$B",
+        observed_at=latest_date.isoformat(),
+        previous_value=previous_value,
+        yoy_value=yoy_value,
+        history=points,
+        note=note,
+        group=US_LIQUIDITY_GROUP,
+        meaning=US_TGA_MEANING,
+        metric_id="us-tga",
+        section="market",
+        market_category=US_LIQUIDITY_CATEGORY,
+        history_key=history_key,
+    )
+
+
+def build_walcl_market_metric(
+    walcl_metric: dict[str, Any] | None,
+    walcl_points: list[tuple[date, float]],
+) -> dict[str, Any] | None:
+    if not walcl_points:
+        return None
+    latest_date, latest_value = walcl_points[-1]
+    previous_value = walcl_points[-2][1] if len(walcl_points) > 1 else None
+    yoy_value = find_yoy_value(walcl_points, latest_date)
+    source = str((walcl_metric or {}).get("source") or "FRED API")
+    meaning = str((walcl_metric or {}).get("meaning") or "")
+    if not meaning:
+        meaning = "연준 대차대조표 규모로 양적완화/긴축 방향을 보여줍니다. 글로벌 유동성의 큰 물줄기를 확인하는 지표입니다."
+    return make_metric(
+        industry="매크로",
+        name="미국 연준 총자산",
+        source=source,
+        source_url="https://fred.stlouisfed.org/series/WALCL",
+        frequency="주간",
+        automation="무료로 안정적으로 자동화 가능",
+        status="ok",
+        value=latest_value,
+        unit="$B",
+        observed_at=latest_date.isoformat(),
+        previous_value=previous_value,
+        yoy_value=yoy_value,
+        history=walcl_points,
+        group=US_LIQUIDITY_GROUP,
+        meaning=meaning,
+        history_key="fred-WALCL",
+        metric_id="us-liquidity-walcl",
+        section="market",
+        market_category=US_LIQUIDITY_CATEGORY,
+    )
+
+
+def build_net_liquidity_metric(
+    walcl_points: list[tuple[date, float]],
+    tga_points: list[tuple[date, float]],
+    rrp_points: list[tuple[date, float]],
+) -> dict[str, Any] | None:
+    net_points = calculate_us_net_liquidity(walcl_points, tga_points, rrp_points)
+    if not net_points:
+        return make_metric(
+            industry="매크로",
+            name="미국 순유동성",
+            source="FRED/FiscalData",
+            source_url=FISCALDATA_TGA_URL,
+            frequency="일간",
+            automation="무료로 안정적으로 자동화 가능",
+            status="error",
+            note="WALCL, TGA, 역레포 중 계산에 필요한 시계열이 부족합니다.",
+            group=US_LIQUIDITY_GROUP,
+            meaning=US_NET_LIQUIDITY_MEANING,
+            history_key=US_NET_LIQUIDITY_KEY,
+            metric_id="us-net-liquidity",
+            section="market",
+            market_category=US_LIQUIDITY_CATEGORY,
+        )
+    latest_date, latest_value = net_points[-1]
+    previous_value = net_points[-2][1] if len(net_points) > 1 else None
+    yoy_value = find_yoy_value(net_points, latest_date)
+    return make_metric(
+        industry="매크로",
+        name="미국 순유동성",
+        source="FRED/FiscalData",
+        source_url=FISCALDATA_TGA_URL,
+        frequency="일간",
+        automation="무료로 안정적으로 자동화 가능",
+        status="ok",
+        value=latest_value,
+        unit="$B",
+        observed_at=latest_date.isoformat(),
+        previous_value=previous_value,
+        yoy_value=yoy_value,
+        history=net_points,
+        group=US_LIQUIDITY_GROUP,
+        meaning=US_NET_LIQUIDITY_MEANING,
+        history_key=US_NET_LIQUIDITY_KEY,
+        metric_id="us-net-liquidity",
+        section="market",
+        market_category=US_LIQUIDITY_CATEGORY,
+    )
+
+
+def calculate_us_net_liquidity(
+    walcl_points: list[tuple[date, float]],
+    tga_points: list[tuple[date, float]],
+    rrp_points: list[tuple[date, float]],
+) -> list[tuple[date, float]]:
+    components = [walcl_points, tga_points, rrp_points]
+    if any(not points for points in components):
+        return []
+    start = max(points[0][0] for points in components)
+    end = max(points[-1][0] for points in components)
+    if start > end:
+        return []
+
+    aligned: list[tuple[date, float]] = []
+    indexes = [0, 0, 0]
+    current = start
+    while current <= end:
+        values: list[float] = []
+        for component_index, points in enumerate(components):
+            while indexes[component_index] + 1 < len(points) and points[indexes[component_index] + 1][0] <= current:
+                indexes[component_index] += 1
+            if points[indexes[component_index]][0] > current:
+                values = []
+                break
+            values.append(points[indexes[component_index]][1])
+        if len(values) == 3:
+            walcl, tga, rrp = values
+            aligned.append((current, walcl - tga - rrp))
+        current += timedelta(days=1)
+    return aligned
+
+
+BOJ_DATA_CODE_URL = "https://www.stat-search.boj.or.jp/api/v1/getDataCode"
+ECB_DATA_API_BASE = "https://data-api.ecb.europa.eu/service/data"
+GLOBAL_LIQUIDITY_SOURCE_NAME = "국제 유동성"
+
+KOREA_LIQUIDITY_ITEMS: list[dict[str, Any]] = [
+    {
+        "name": "한국은행 총자산",
+        "group": "한국 유동성",
+        "stat_code": "103Y002",
+        "item_code": "BCAA1",
+        "history_key": "ecos-liquidity-103Y002-BCAA1",
+        "metric_id": "korea-liquidity-bok-assets",
+        "meaning": "한국은행 대차대조표의 자산 총액입니다. 중앙은행이 시장에 공급한 유동성의 큰 방향을 볼 때 기준으로 씁니다.",
+    },
+    {
+        "name": "한국 본원통화",
+        "group": "한국 유동성",
+        "stat_code": "102Y004",
+        "item_code": "ABA1",
+        "history_key": "ecos-liquidity-102Y004-ABA1",
+        "metric_id": "korea-liquidity-monetary-base",
+        "meaning": "현금통화와 금융기관의 중앙은행 예치금을 합친 돈의 바탕입니다. 은행 시스템에 공급된 기본 유동성이 늘고 줄어드는지 확인합니다.",
+    },
+    {
+        "name": "한국 M2",
+        "group": "한국 유동성",
+        "stat_code": "161Y005",
+        "item_code": "BBHS00",
+        "history_key": "ecos-liquidity-161Y005-BBHS00",
+        "metric_id": "korea-liquidity-m2",
+        "meaning": "현금, 요구불예금, 수시입출식 예금 등 비교적 바로 쓸 수 있는 돈을 넓게 묶은 통화량입니다. 가계와 기업의 자금 여유를 볼 때 핵심으로 봅니다.",
+    },
+    {
+        "name": "한국 Lf",
+        "group": "한국 유동성",
+        "stat_code": "171Y003",
+        "item_code": "LAS0000",
+        "history_key": "ecos-liquidity-171Y003-LAS0000",
+        "metric_id": "korea-liquidity-lf",
+        "meaning": "M2보다 더 넓게 금융기관이 공급한 유동성을 보는 지표입니다. 은행권 밖까지 포함한 자금 여건의 폭을 확인합니다.",
+    },
+    {
+        "name": "한국 L",
+        "group": "한국 유동성",
+        "stat_code": "172Y001",
+        "item_code": "XS00000",
+        "history_key": "ecos-liquidity-172Y001-XS00000",
+        "metric_id": "korea-liquidity-l",
+        "meaning": "국채, 회사채 같은 시장성 금융상품까지 포함한 가장 넓은 유동성 지표입니다. 한국 경제 전체의 돈의 양이 얼마나 넓게 풀려 있는지 볼 때 씁니다.",
+    },
+]
+
+JAPAN_LIQUIDITY_ITEMS: list[dict[str, Any]] = [
+    {
+        "name": "일본 BOJ 총자산",
+        "group": "일본 유동성",
+        "db": "BS01",
+        "code": "MABJMTA",
+        "history_key": "boj-BS01-MABJMTA",
+        "metric_id": "japan-liquidity-boj-assets",
+        "meaning": "일본은행 대차대조표의 자산 총액입니다. 일본 중앙은행이 시장에 공급한 유동성의 큰 물줄기를 보여줍니다.",
+    },
+    {
+        "name": "일본 본원통화",
+        "group": "일본 유동성",
+        "db": "MD01",
+        "code": "MABS1AN11",
+        "history_key": "boj-MD01-MABS1AN11",
+        "metric_id": "japan-liquidity-monetary-base",
+        "meaning": "일본의 현금통화와 일본은행 당좌예금 등을 합친 기본 통화량입니다. BOJ 정책이 실제 유동성으로 얼마나 남아 있는지 볼 때 봅니다.",
+    },
+    {
+        "name": "일본 M2",
+        "group": "일본 유동성",
+        "db": "MD02",
+        "code": "MAM1NAM2M2MO",
+        "history_key": "boj-MD02-MAM1NAM2M2MO",
+        "metric_id": "japan-liquidity-m2",
+        "meaning": "일본 경제 안에서 가계와 기업이 비교적 쉽게 쓸 수 있는 돈의 규모입니다. 민간 유동성이 늘고 줄어드는지 확인합니다.",
+    },
+    {
+        "name": "일본 BOJ 당좌예금",
+        "group": "일본 유동성",
+        "db": "MD08",
+        "code": "MACAB2201",
+        "history_key": "boj-MD08-MACAB2201",
+        "metric_id": "japan-liquidity-current-account",
+        "meaning": "금융기관이 일본은행에 맡겨둔 당좌예금 잔액입니다. 은행 시스템 안에 남아 있는 초과 유동성의 크기를 볼 때 참고합니다.",
+    },
+]
+
+EUROPE_LIQUIDITY_ITEMS: list[dict[str, Any]] = [
+    {
+        "name": "유럽 초과유동성",
+        "group": "유럽 유동성",
+        "series_key": "ILM.D.U2.C.EXLIQ.U2.EUR",
+        "history_key": "ecb-ILM-D-U2-C-EXLIQ-U2-EUR",
+        "metric_id": "europe-liquidity-excess",
+        "frequency": "일간",
+        "meaning": "유로존 은행 시스템에 필요한 지급준비를 넘어서 남아 있는 유동성입니다. 숫자가 클수록 은행권에 여유자금이 많이 남아 있다는 뜻입니다.",
+    },
+    {
+        "name": "유럽 유로시스템 총자산",
+        "group": "유럽 유동성",
+        "series_key": "BSI.M.U2.N.C.T00.A.1.Z5.0000.Z01.E",
+        "history_key": "ecb-BSI-M-U2-N-C-T00-A-1-Z5-0000-Z01-E",
+        "metric_id": "europe-liquidity-eurosystem-assets",
+        "frequency": "월간",
+        "meaning": "ECB와 유로존 중앙은행들의 총자산입니다. 양적완화와 긴축으로 중앙은행 유동성이 커지는지 줄어드는지 보여줍니다.",
+    },
+    {
+        "name": "유럽 M3",
+        "group": "유럽 유동성",
+        "series_key": "BSI.M.U2.Y.V.M30.X.1.U2.2300.Z01.E",
+        "history_key": "ecb-BSI-M-U2-Y-V-M30-X-1-U2-2300-Z01-E",
+        "metric_id": "europe-liquidity-m3",
+        "frequency": "월간",
+        "meaning": "유로존의 넓은 통화량입니다. 가계와 기업, 금융기관에 풀린 돈의 규모와 민간 유동성 흐름을 볼 때 씁니다.",
+    },
+    {
+        "name": "유럽 본원통화",
+        "group": "유럽 유동성",
+        "series_key": "ILM.M.U2.C.LT00001.Z5.EUR",
+        "history_key": "ecb-ILM-M-U2-C-LT00001-Z5-EUR",
+        "metric_id": "europe-liquidity-base-money",
+        "frequency": "월간",
+        "meaning": "유로존의 현금과 중앙은행 예치금을 합친 기본 통화량입니다. ECB 정책이 은행 시스템 안의 돈의 바탕을 얼마나 크게 만들고 있는지 보여줍니다.",
+    },
+]
+
+
+def collect_global_liquidity_metrics(
+    config: dict[str, Any],
+    session: requests.Session,
+    today: date,
+) -> list[dict[str, Any]]:
+    liquidity_config = config.get("global_liquidity", {}) or {}
+    if liquidity_config.get("enabled", True) is False:
+        return []
+
+    metrics: list[dict[str, Any]] = []
+    metrics.extend(collect_korea_liquidity_metrics(config, session, today))
+    metrics.extend(collect_japan_liquidity_metrics(config, session, today))
+    metrics.extend(collect_europe_liquidity_metrics(config, session, today))
+    return metrics
+
+
+def collect_korea_liquidity_metrics(
+    config: dict[str, Any],
+    session: requests.Session,
+    today: date,
+) -> list[dict[str, Any]]:
+    ecos_config = config.get("ecos", {}) or {}
+    api_key = os.getenv("ECOS_API_KEY", "").strip()
+    source_url = str(ecos_config.get("source_url") or "https://ecos.bok.or.kr/api/")
+    if not api_key:
+        return [
+            liquidity_placeholder_metric(
+                item,
+                source="한국은행 ECOS API",
+                source_url=source_url,
+                note="GitHub Secrets에 ECOS_API_KEY 등록 필요",
+                status="needs_key",
+                unit="조원",
+            )
+            for item in KOREA_LIQUIDITY_ITEMS
+        ]
+
+    metrics: list[dict[str, Any]] = []
+    fetch_days = int(ecos_config.get("series_fetch_days", 1100))
+    backfill_days = int(ecos_config.get("backfill_days", 9200))
+    base_url = str(ecos_config.get("endpoint") or "https://ecos.bok.or.kr/api")
+    for item in KOREA_LIQUIDITY_ITEMS:
+        history_key = str(item["history_key"])
+        start = today - timedelta(days=backfill_days if cached_history_last_date(config, history_key) is None else fetch_days)
+        try:
+            points = fetch_ecos_points(
+                session=session,
+                base_url=base_url,
+                api_key=api_key,
+                stat_code=str(item["stat_code"]),
+                period="M",
+                start=start,
+                end=today,
+                item_code=str(item["item_code"]),
+                row_count=20000 if cached_history_last_date(config, history_key) is None else 2000,
+            )
+            # ECOS liquidity series used here are reported in billion KRW.
+            points = [(point_date, value * 0.001) for point_date, value in points]
+            points = merged_component_points(config, history_key, points)
+            metrics.append(
+                build_liquidity_metric(
+                    item,
+                    points,
+                    source="한국은행 ECOS API",
+                    source_url=source_url,
+                    frequency="월간",
+                    unit="조원",
+                )
+            )
+        except Exception as exc:  # noqa: BLE001
+            metrics.append(
+                liquidity_placeholder_metric(
+                    item,
+                    source="한국은행 ECOS API",
+                    source_url=source_url,
+                    note=str(exc),
+                    status="error",
+                    unit="조원",
+                )
+            )
+    return metrics
+
+
+def collect_japan_liquidity_metrics(
+    config: dict[str, Any],
+    session: requests.Session,
+    today: date,
+) -> list[dict[str, Any]]:
+    metrics: list[dict[str, Any]] = []
+    for item in JAPAN_LIQUIDITY_ITEMS:
+        history_key = str(item["history_key"])
+        try:
+            points = fetch_boj_points(
+                config=config,
+                session=session,
+                db=str(item["db"]),
+                code=str(item["code"]),
+                history_key=history_key,
+            )
+            # BOJ series used here are reported in 100 million yen; convert to trillion yen.
+            points = [(point_date, value * 0.0001) for point_date, value in points]
+            points = merged_component_points(config, history_key, points)
+            metrics.append(
+                build_liquidity_metric(
+                    item,
+                    points,
+                    source="Bank of Japan API",
+                    source_url=BOJ_DATA_CODE_URL,
+                    frequency="월간",
+                    unit="¥T",
+                )
+            )
+        except Exception as exc:  # noqa: BLE001
+            metrics.append(
+                liquidity_placeholder_metric(
+                    item,
+                    source="Bank of Japan API",
+                    source_url=BOJ_DATA_CODE_URL,
+                    note=str(exc),
+                    status="error",
+                    unit="¥T",
+                )
+            )
+    return metrics
+
+
+def collect_europe_liquidity_metrics(
+    config: dict[str, Any],
+    session: requests.Session,
+    today: date,
+) -> list[dict[str, Any]]:
+    metrics: list[dict[str, Any]] = []
+    for item in EUROPE_LIQUIDITY_ITEMS:
+        history_key = str(item["history_key"])
+        try:
+            points = fetch_ecb_points(
+                config=config,
+                session=session,
+                series_key=str(item["series_key"]),
+                history_key=history_key,
+            )
+            # ECB BSI/ILM stock series used here are reported in million euro.
+            points = [(point_date, value / 1000.0) for point_date, value in points]
+            points = merged_component_points(config, history_key, points)
+            metrics.append(
+                build_liquidity_metric(
+                    item,
+                    points,
+                    source="ECB Data Portal API",
+                    source_url=ecb_series_url(str(item["series_key"])),
+                    frequency=str(item.get("frequency") or "월간"),
+                    unit="€B",
+                )
+            )
+        except Exception as exc:  # noqa: BLE001
+            metrics.append(
+                liquidity_placeholder_metric(
+                    item,
+                    source="ECB Data Portal API",
+                    source_url=ecb_series_url(str(item["series_key"])),
+                    note=str(exc),
+                    status="error",
+                    unit="€B",
+                )
+            )
+    return metrics
+
+
+def liquidity_placeholder_metric(
+    item: dict[str, Any],
+    *,
+    source: str,
+    source_url: str,
+    note: str,
+    status: str,
+    unit: str,
+) -> dict[str, Any]:
+    return make_metric(
+        industry="매크로",
+        name=str(item.get("name") or "유동성 지표"),
+        source=source,
+        source_url=source_url,
+        frequency=str(item.get("frequency") or "월간"),
+        automation="무료 공식 API 자동 수집",
+        status=status,
+        unit=unit,
+        note=note,
+        group=str(item.get("group") or GLOBAL_LIQUIDITY_SOURCE_NAME),
+        meaning=str(item.get("meaning") or ""),
+        history_key=str(item.get("history_key") or ""),
+        metric_id=str(item.get("metric_id") or ""),
+        section="market",
+        market_category=US_LIQUIDITY_CATEGORY,
+    )
+
+
+def build_liquidity_metric(
+    item: dict[str, Any],
+    points: list[tuple[date, float]],
+    *,
+    source: str,
+    source_url: str,
+    frequency: str,
+    unit: str,
+) -> dict[str, Any]:
+    if not points:
+        return liquidity_placeholder_metric(
+            item,
+            source=source,
+            source_url=source_url,
+            note="관측값 없음",
+            status="error",
+            unit=unit,
+        )
+    latest_date, latest_value = points[-1]
+    previous_value = points[-2][1] if len(points) > 1 else None
+    yoy_value = find_yoy_value(points, latest_date)
+    return make_metric(
+        industry="매크로",
+        name=str(item.get("name") or "유동성 지표"),
+        source=source,
+        source_url=source_url,
+        frequency=frequency,
+        automation="무료 공식 API 자동 수집",
+        status="ok",
+        value=latest_value,
+        unit=unit,
+        observed_at=latest_date.isoformat(),
+        previous_value=previous_value,
+        yoy_value=yoy_value,
+        history=points,
+        group=str(item.get("group") or GLOBAL_LIQUIDITY_SOURCE_NAME),
+        meaning=str(item.get("meaning") or ""),
+        history_key=str(item.get("history_key") or ""),
+        metric_id=str(item.get("metric_id") or ""),
+        section="market",
+        market_category=US_LIQUIDITY_CATEGORY,
+    )
+
+
+def fetch_boj_points(
+    *,
+    config: dict[str, Any],
+    session: requests.Session,
+    db: str,
+    code: str,
+    history_key: str,
+) -> list[tuple[date, float]]:
+    params: dict[str, str] = {"format": "json", "lang": "en", "db": db, "code": code}
+    cached_last = cached_history_last_date(config, history_key)
+    if cached_last is not None:
+        params["startDate"] = (cached_last - timedelta(days=450)).strftime("%Y%m")
+    response = session.get(BOJ_DATA_CODE_URL, params=params, timeout=(10, 45))
+    response.raise_for_status()
+    return parse_boj_points(response.json())
+
+
+def parse_boj_points(payload: dict[str, Any]) -> list[tuple[date, float]]:
+    if int(payload.get("STATUS") or 0) != 200:
+        raise ValueError(str(payload.get("MESSAGE") or payload.get("MESSAGEID") or "BOJ API error"))
+    resultset = payload.get("RESULTSET") or []
+    points: list[tuple[date, float]] = []
+    for result in resultset:
+        values = (result or {}).get("VALUES") or {}
+        dates = values.get("SURVEY_DATES") or []
+        observations = values.get("VALUES") or []
+        for raw_date, raw_value in zip(dates, observations):
+            point_date = parse_api_period(str(raw_date))
+            value = to_float(raw_value)
+            if point_date is not None and value is not None:
+                points.append((point_date, value))
+    points.sort(key=lambda point: point[0])
+    return points
+
+
+def fetch_ecb_points(
+    *,
+    config: dict[str, Any],
+    session: requests.Session,
+    series_key: str,
+    history_key: str,
+) -> list[tuple[date, float]]:
+    params: dict[str, str] = {"detail": "dataonly"}
+    cached_last = cached_history_last_date(config, history_key)
+    frequency = ecb_frequency_from_key(series_key)
+    if cached_last is not None:
+        start = cached_last - timedelta(days=450)
+        params["startPeriod"] = start.strftime("%Y-%m") if frequency == "M" else start.isoformat()
+    response = session.get(
+        ecb_series_url(series_key),
+        params=params,
+        headers={"Accept": "text/csv"},
+        timeout=(10, 45),
+    )
+    response.raise_for_status()
+    return parse_ecb_csv_points(response.text)
+
+
+def ecb_series_url(series_key: str) -> str:
+    parts = series_key.split(".", 1)
+    if len(parts) != 2:
+        raise ValueError(f"ECB series_key 형식 오류: {series_key}")
+    flow, key = parts
+    return f"{ECB_DATA_API_BASE}/{flow}/{key}"
+
+
+def ecb_frequency_from_key(series_key: str) -> str:
+    parts = series_key.split(".")
+    return parts[1].upper() if len(parts) > 1 else ""
+
+
+def parse_ecb_csv_points(text: str) -> list[tuple[date, float]]:
+    rows = csv.DictReader(StringIO(text))
+    points: list[tuple[date, float]] = []
+    for row in rows:
+        point_date = parse_api_period(str(row.get("TIME_PERIOD") or ""))
+        value = to_float(row.get("OBS_VALUE"))
+        if point_date is not None and value is not None:
+            points.append((point_date, value))
+    points.sort(key=lambda point: point[0])
+    return points
+
+
+def parse_api_period(value: str) -> date | None:
+    text = value.strip()
+    if not text:
+        return None
+    try:
+        if "-W" in text:
+            year_text, week_text = text.split("-W", 1)
+            return date.fromisocalendar(int(year_text), int(week_text[:2]), 5)
+        if len(text) >= 10 and text[4] == "-" and text[7] == "-":
+            return date.fromisoformat(text[:10])
+        if len(text) >= 7 and text[4] == "-":
+            return date(int(text[:4]), int(text[5:7]), 1)
+        if "Q" in text.upper():
+            year_text, quarter_text = text.upper().split("Q", 1)
+            return date(int(year_text), (int(quarter_text[:1]) - 1) * 3 + 1, 1)
+        if len(text) >= 8 and text[:8].isdigit():
+            return date(int(text[:4]), int(text[4:6]), int(text[6:8]))
+        if len(text) >= 6 and text[:6].isdigit():
+            return date(int(text[:4]), int(text[4:6]), 1)
+        if len(text) >= 4 and text[:4].isdigit():
+            return date(int(text[:4]), 1, 1)
+    except ValueError:
+        return None
+    return None
 
 
 def collect_ecos_credit_spread_metrics(
@@ -6116,6 +7212,7 @@ EN_PHRASE_FALLBACKS = {
     "수급": "Flows",
     "신용·예탁금": "Credit/Cash",
     "금리·채권": "Rates/Bonds",
+    "유동성": "Liquidity",
     "원자재·크립토": "Commodities/Crypto",
     "심리·변동성": "Sentiment/Volatility",
     "밸류에이션": "Valuation",

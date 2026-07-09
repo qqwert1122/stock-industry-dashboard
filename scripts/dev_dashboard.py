@@ -265,12 +265,38 @@ def mock_metric(
 
 
 def add_mock_percentile(metric: dict[str, Any], percentile: float) -> dict[str, Any]:
+    values = sorted(
+        float(point["value"])
+        for point in metric.get("history") or []
+        if isinstance(point, dict) and isinstance(point.get("value"), (int, float))
+    )
+    if not values:
+        values = [float(metric.get("value") or 0)]
     metric["percentiles"] = {
         "y10": {
             "pct": percentile,
+            "p20": mock_quantile(values, 0.2),
+            "median": mock_quantile(values, 0.5),
+            "p80": mock_quantile(values, 0.8),
+            "min": values[0],
+            "max": values[-1],
+            "from": str((metric.get("history") or [{}])[0].get("date") or ""),
+            "to": str((metric.get("history") or [{}])[-1].get("date") or ""),
         }
     }
     return metric
+
+
+def mock_quantile(values: list[float], ratio: float) -> float:
+    if not values:
+        return 0.0
+    if len(values) == 1:
+        return values[0]
+    position = (len(values) - 1) * ratio
+    lower = int(position)
+    upper = min(lower + 1, len(values) - 1)
+    weight = position - lower
+    return values[lower] * (1 - weight) + values[upper] * weight
 
 
 def previous_mock_metric(metric: dict[str, Any], dashboard: Any, *, updated: bool) -> dict[str, Any]:
@@ -545,6 +571,7 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
         count: int = 90,
         chart_style: str = "",
         metric_id: str = "",
+        history_key: str = "",
         meaning: str = "",
     ) -> dict[str, Any]:
         history = mock_days(now.date(), count, start, step, wave)
@@ -562,6 +589,7 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
             market_category=category,
             chart_style=chart_style,
             metric_id=metric_id,
+            history_key=history_key,
         )
         metrics.append(metric)
         return metric
@@ -665,6 +693,83 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
     add_market("한국 기준금리", "금리·채권", "금리", "%", 2.75, 0, 0.02)
     add_market("미국 10Y-3M 금리차", "금리·채권", "경기침체", "%p", -1.4, 0.01, 0.03)
     add_market("미국 하이일드 회사채 OAS", "금리·채권", "신용", "%", 4.3, 0.008, 0.06)
+    add_market(
+        "미국 순유동성",
+        "유동성",
+        "미국 유동성",
+        "$B",
+        5400,
+        5.2,
+        24,
+        metric_id="us-net-liquidity",
+        history_key="us-net-liquidity",
+        meaning=dashboard.US_NET_LIQUIDITY_MEANING,
+    )
+    add_market(
+        "미국 연준 총자산",
+        "유동성",
+        "미국 유동성",
+        "$B",
+        6650,
+        -1.2,
+        10,
+        metric_id="us-liquidity-walcl",
+        history_key="fred-WALCL",
+        meaning="연준 대차대조표 규모로 양적완화/긴축 방향을 보여줍니다. 글로벌 유동성의 큰 물줄기를 확인하는 지표입니다.",
+    )
+    add_market(
+        "미국 TGA",
+        "유동성",
+        "미국 유동성",
+        "$B",
+        720,
+        1.4,
+        18,
+        metric_id="us-tga",
+        history_key="fiscaldata-tga",
+        meaning=dashboard.US_TGA_MEANING,
+    )
+    add_market(
+        "미국 역레포",
+        "유동성",
+        "미국 유동성",
+        "$B",
+        210,
+        -2.1,
+        14,
+        metric_id="us-rrp",
+        history_key="fred-RRPONTSYD",
+        meaning=dashboard.US_RRP_MEANING,
+    )
+    liquidity_mock_values = {
+        "한국은행 총자산": ("조원", 650, 1.8, 4.5),
+        "한국 본원통화": ("조원", 305, -0.9, 2.8),
+        "한국 M2": ("조원", 4160, 12.5, 22),
+        "한국 Lf": ("조원", 5750, 9.4, 18),
+        "한국 L": ("조원", 7350, 14.2, 26),
+        "일본 BOJ 총자산": ("¥T", 760, -1.5, 4.8),
+        "일본 본원통화": ("¥T", 670, 2.4, 6.2),
+        "일본 M2": ("¥T", 1260, 4.5, 8.2),
+        "일본 BOJ 당좌예금": ("¥T", 555, 1.2, 5.4),
+        "유럽 초과유동성": ("€B", 2440, -12.0, 35),
+        "유럽 유로시스템 총자산": ("€B", 9800, -35.0, 70),
+        "유럽 M3": ("€B", 16900, 42.0, 110),
+        "유럽 본원통화": ("€B", 4450, -18.0, 42),
+    }
+    for item in dashboard.KOREA_LIQUIDITY_ITEMS + dashboard.JAPAN_LIQUIDITY_ITEMS + dashboard.EUROPE_LIQUIDITY_ITEMS:
+        unit, value, step, wave = liquidity_mock_values[str(item["name"])]
+        add_market(
+            str(item["name"]),
+            "유동성",
+            str(item["group"]),
+            unit,
+            value,
+            step,
+            wave,
+            metric_id=str(item["metric_id"]),
+            history_key=str(item["history_key"]),
+            meaning=str(item["meaning"]),
+        )
     add_market("원/달러 환율", "원자재·크립토", "환율", "원", 1360, 0.8, 12)
     add_market("비트코인", "원자재·크립토", "크립토", "$", 96000, 110, 2100)
     add_market("김치프리미엄", "원자재·크립토", "크립토", "%", 3.2, 0.04, 0.25)
@@ -688,8 +793,19 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
     }
     for metric in metrics:
         percentile = mock_percentiles.get(str(metric.get("name") or ""))
-        if percentile is not None:
-            add_mock_percentile(metric, percentile)
+        if percentile is None:
+            values = [
+                float(point["value"])
+                for point in metric.get("history") or []
+                if isinstance(point, dict) and isinstance(point.get("value"), (int, float))
+            ]
+            current = float(metric.get("value") or 0)
+            if values:
+                lower_or_equal = sum(1 for value in values if value <= current)
+                percentile = max(1.0, min(99.0, lower_or_equal / len(values) * 100))
+            else:
+                percentile = 50.0
+        add_mock_percentile(metric, percentile)
 
     dashboard.apply_interpretations(metrics, load_mock_config())
 

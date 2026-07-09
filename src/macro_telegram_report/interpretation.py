@@ -155,6 +155,21 @@ def history_values(metric: dict[str, Any]) -> list[float]:
     ]
 
 
+def history_points(metric: dict[str, Any]) -> list[tuple[str, float]]:
+    raw_history = metric.get("_analysis_history") or metric.get("history")
+    if not isinstance(raw_history, list):
+        return []
+    points: list[tuple[str, float]] = []
+    for point in raw_history:
+        if not isinstance(point, dict) or not isinstance(point.get("value"), (int, float)):
+            continue
+        point_date = str(point.get("date") or "")
+        if point_date:
+            points.append((point_date, float(point["value"])))
+    points.sort(key=lambda item: item[0])
+    return points
+
+
 def flow_streak(values: list[float]) -> tuple[int, int]:
     if not values:
         return 0, 0
@@ -205,6 +220,83 @@ def build_flow_interpretation(metric: dict[str, Any]) -> dict[str, Any]:
         "text": " ".join(part for part in (headline, detail) if part),
         "caption": "계산 기반 해석",
         "source": "flow",
+    }
+
+
+def monthly_last_values(points: list[tuple[str, float]]) -> list[tuple[str, float]]:
+    monthly: dict[str, tuple[str, float]] = {}
+    for point_date, value in points:
+        month_key = point_date[:7]
+        monthly[month_key] = (point_date, value)
+    return [(month, value) for month, (_, value) in sorted(monthly.items())]
+
+
+def consecutive_monthly_direction(monthly: list[tuple[str, float]]) -> tuple[int, int]:
+    if len(monthly) < 2:
+        return 0, 0
+    direction = 0
+    streak = 0
+    values = [value for _, value in monthly]
+    for previous, current in zip(reversed(values[:-1]), reversed(values[1:])):
+        step = 1 if current > previous else -1 if current < previous else 0
+        if step == 0:
+            break
+        if direction == 0:
+            direction = step
+        if step != direction:
+            break
+        streak += 1
+    return direction, streak
+
+
+def percent_text(value: float) -> str:
+    sign = "+" if value > 0 else ""
+    return f"{sign}{value:.1f}%"
+
+
+def build_us_liquidity_interpretation(metric: dict[str, Any]) -> dict[str, Any]:
+    points = history_points(metric)
+    if not points:
+        return {}
+    monthly = monthly_last_values(points)
+    if len(monthly) < 4:
+        return {}
+    latest = points[-1][1]
+    direction, streak = consecutive_monthly_direction(monthly)
+
+    trailing_year = points[-366:] if len(points) > 366 else points
+    year_high = max(value for _, value in trailing_year)
+    drawdown_pct = (latest / year_high - 1.0) * 100.0 if year_high else 0.0
+    if drawdown_pct < -0.05:
+        high_text = f"최근 1년 고점 대비 {percent_text(drawdown_pct)} 낮습니다."
+    else:
+        high_text = "최근 1년 고점 부근입니다."
+
+    zone = "neutral"
+    if direction > 0 and streak >= 3:
+        zone = "good"
+        headline = f"미국 순유동성이 최근 {streak}개월 연속 증가해 위험자산에 우호적인 유동성 흐름입니다."
+        level_label = "유동성 증가"
+    elif direction < 0 and streak >= 3:
+        zone = "bad"
+        headline = f"미국 순유동성이 최근 {streak}개월 연속 감소해 위험자산에는 부담이 되는 유동성 흐름입니다."
+        level_label = "유동성 감소"
+    else:
+        three_month_ago = monthly[-4][1] if len(monthly) >= 4 else monthly[0][1]
+        change_pct = (latest / three_month_ago - 1.0) * 100.0 if three_month_ago else 0.0
+        headline = f"미국 순유동성은 최근 3개월 {percent_text(change_pct)}로 뚜렷한 연속 방향성은 약합니다."
+        level_label = "추세 중립"
+
+    detail_text = high_text
+    return {
+        "zone": zone,
+        "level_label": level_label,
+        "headline": headline,
+        "detail_text": detail_text,
+        "trend_label": headline,
+        "text": " ".join(part for part in (headline, detail_text) if part),
+        "caption": "계산 기반 해석",
+        "source": "liquidity_trend",
     }
 
 
@@ -334,6 +426,11 @@ def build_interpretation(metric: dict[str, Any], config: dict[str, Any]) -> dict
         if flow:
             return flow
 
+    if str(rule.get("template") or "") == "us_liquidity_trend":
+        liquidity = build_us_liquidity_interpretation(metric)
+        if liquidity:
+            return liquidity
+
     pct, window_label = window_percentile(metric)
     threshold = threshold_interpretation(metric, rule, pct, window_label)
     if threshold:
@@ -369,7 +466,10 @@ def build_interpretation(metric: dict[str, Any], config: dict[str, Any]) -> dict
 def apply_interpretations(metrics: list[dict[str, Any]], config: dict[str, Any]) -> None:
     for metric in metrics:
         if not isinstance(metric, dict) or metric.get("status") != "ok":
+            if isinstance(metric, dict):
+                metric.pop("_analysis_history", None)
             continue
         interpretation = build_interpretation(metric, config)
         if interpretation:
             metric["interpretation"] = interpretation
+        metric.pop("_analysis_history", None)

@@ -2211,6 +2211,7 @@
       width: min(100%, 280px);
       min-width: 0;
       display: grid;
+      align-content: start;
       gap: 12px;
       margin: 0 0 16px;
       padding: 14px 16px 15px;
@@ -2366,7 +2367,7 @@
     .recent-alert-row {
       min-width: 0;
       display: grid;
-      grid-template-columns: 8px 42px minmax(0, 1fr);
+      grid-template-columns: 8px max-content minmax(0, 1fr);
       align-items: center;
       gap: 8px;
       border: 0;
@@ -2813,6 +2814,10 @@
       padding: 24px 0 18px;
       border-bottom: 0;
       background: transparent;
+    }
+
+    .industry[data-market-section] .industry-head {
+      grid-template-columns: minmax(0, 1fr);
     }
 
     .industry-icon-wrap {
@@ -3471,6 +3476,13 @@
     .detail-reference-dot.max { background: var(--chart-down); }
     .detail-reference-dot.current { background: var(--text); }
     .detail-reference-dot.min { background: var(--chart-up); }
+    .detail-reference-dot.band {
+      position: relative;
+      background: rgba(59, 130, 246, 0.16);
+    }
+    body.theme-dark .detail-reference-dot.band {
+      background: rgba(96, 165, 250, 0.2);
+    }
 
     .detail-meta-strip {
       display: flex;
@@ -4342,7 +4354,7 @@
       background: transparent;
       color: var(--muted);
       font: inherit;
-      font-weight: 650;
+      font-weight: 500;
       cursor: pointer;
       transition: color 160ms ease;
     }
@@ -4352,17 +4364,15 @@
     }
 
     .chart-band-swatch {
-      width: 18px;
-      height: 18px;
-      flex: 0 0 18px;
-      border-radius: 4px;
+      width: 16px;
+      height: 16px;
+      flex: 0 0 16px;
+      border-radius: 6px;
       background: rgba(59, 130, 246, 0.2);
-      border: 1px solid rgba(59, 130, 246, 0.32);
     }
 
     body.theme-dark .chart-band-swatch {
       background: rgba(96, 165, 250, 0.22);
-      border-color: rgba(147, 197, 253, 0.34);
     }
 
     .chart-band-switch {
@@ -5757,11 +5767,10 @@
       background: transparent;
     }
     .market-diagnosis .fear-greed-gauge-list {
-      max-height: 96px;
-      overflow-y: auto;
-      padding-right: 4px;
-      scrollbar-width: thin;
-      scrollbar-color: color-mix(in srgb, var(--muted) 28%, transparent) transparent;
+      max-height: none;
+      overflow: visible;
+      padding-right: 0;
+      scrollbar-width: auto;
     }
     .fear-greed-gauge-item {
       width: 100%;
@@ -6030,6 +6039,66 @@
       color: var(--muted);
     }
     .detail-range-toggle button.is-active { background: var(--menu-active); color: var(--text); font-weight: 500; }
+
+    @media (max-width: 760px) {
+      body {
+        font-size: 16px;
+      }
+
+      .schedule-alerts-head h2,
+      .market-diagnosis-head h2,
+      .favorite-metrics .favorite-metrics-head h2,
+      .daily-heatmap-head h2 {
+        font-size: 19px;
+      }
+
+      .event-snapshot-title,
+      .gauge-card-head h3,
+      .fear-greed-name,
+      .gauge-component-name,
+      .daily-update-title,
+      .metric-name {
+        font-size: 14.5px;
+      }
+
+      .event-snapshot-copy,
+      .event-snapshot-name,
+      .recent-alert-title,
+      .recent-alert-empty,
+      .briefing-summary,
+      .briefing-bullet-body,
+      .daily-update-summary,
+      .metric-current-value,
+      .metric-mobile-description,
+      .gauge-component-value,
+      .signal-chip .signal-value {
+        font-size: 13.5px;
+      }
+
+      .event-snapshot-date,
+      .recent-alert-time,
+      .gauge-status-badge,
+      .thermometer-score,
+      .fear-greed-score,
+      .fear-greed-label,
+      .gauge-component-change,
+      .daily-update-meta,
+      .daily-update-value,
+      .daily-update-change,
+      .detail-updated-at,
+      .detail-meta-value,
+      .detail-chart-legend {
+        font-size: 12.5px;
+      }
+
+      .metric-table th[data-mobile-label]::after,
+      .detail-label,
+      .gauge-component-heat,
+      .metric-change-badge,
+      .metric-stale-badge {
+        font-size: 11.5px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -6396,6 +6465,7 @@
         marketFlows: "수급",
         marketCredit: "신용·예탁금",
         marketRates: "금리·채권",
+        marketLiquidity: "유동성",
         marketAssets: "원자재·크립토",
         marketSentiment: "심리·변동성",
         marketValuation: "밸류에이션",
@@ -6587,6 +6657,7 @@
         marketFlows: "Flows",
         marketCredit: "Credit/Cash",
         marketRates: "Rates/Bonds",
+        marketLiquidity: "Liquidity",
         marketAssets: "Commodities/Crypto",
         marketSentiment: "Sentiment/Volatility",
         marketValuation: "Valuation",
@@ -6649,6 +6720,7 @@
       { key: "수급", labelKey: "marketFlows" },
       { key: "신용·예탁금", labelKey: "marketCredit" },
       { key: "금리·채권", labelKey: "marketRates" },
+      { key: "유동성", labelKey: "marketLiquidity" },
       { key: "원자재·크립토", labelKey: "marketAssets" },
       { key: "심리·변동성", labelKey: "marketSentiment" },
       { key: "밸류에이션", labelKey: "marketValuation" },
@@ -6732,7 +6804,12 @@
       "전력": "Power",
       "활동성": "Activity",
       "파이프라인": "Pipeline",
-      "CAPEX": "CAPEX"
+      "CAPEX": "CAPEX",
+      "미국 유동성": "US Liquidity",
+      "한국 유동성": "Korea Liquidity",
+      "일본 유동성": "Japan Liquidity",
+      "유럽 유동성": "Europe Liquidity",
+      "국제 유동성": "Global Liquidity"
     };
     const englishDepthFallbacks = {
       "전체 업황": "Overall Cycle",
@@ -6762,6 +6839,8 @@
       "원": "KRW",
       "억원": "KRW 100mn",
       "조원": "tn KRW",
+      "€B": "€B",
+      "¥T": "¥T",
       "점": "pts",
       "배": "x",
       "건": "events",
@@ -6822,7 +6901,20 @@
       "미국 하이일드 스프레드": "US High Yield Spread",
       "하이일드 스프레드": "High Yield Spread",
       "Sahm Rule": "Sahm Rule",
-      "미국 CNN": "US CNN"
+      "미국 CNN": "US CNN",
+      "한국은행 총자산": "Bank of Korea Total Assets",
+      "한국 본원통화": "Korea Monetary Base",
+      "한국 M2": "Korea M2",
+      "한국 Lf": "Korea Lf",
+      "한국 L": "Korea L",
+      "일본 BOJ 총자산": "BOJ Total Assets",
+      "일본 본원통화": "Japan Monetary Base",
+      "일본 M2": "Japan M2",
+      "일본 BOJ 당좌예금": "BOJ Current Account Balances",
+      "유럽 초과유동성": "Europe Excess Liquidity",
+      "유럽 유로시스템 총자산": "Eurosystem Total Assets",
+      "유럽 M3": "Europe M3",
+      "유럽 본원통화": "Europe Base Money"
     };
     const englishMeaningFallbacks = {
       "전 세계 반도체 판매액입니다. 메모리와 비메모리를 모두 합친 시장 전체의 매출 흐름이라, 반도체 업황이 커지는지 줄어드는지 볼 때 기준으로 씁니다.": "Worldwide semiconductor sales show total global semiconductor revenue across memory and non-memory. They are the baseline for whether the semiconductor cycle is expanding or slowing.",
@@ -6956,6 +7048,7 @@
       ["수급", "Flows"],
       ["신용·예탁금", "Credit/Cash"],
       ["금리·채권", "Rates/Bonds"],
+      ["유동성", "Liquidity"],
       ["원자재·크립토", "Commodities/Crypto"],
       ["심리·변동성", "Sentiment/Volatility"],
       ["밸류에이션", "Valuation"],
@@ -8500,13 +8593,6 @@
           data-band-p20="${band.p20}" data-band-p80="${band.p80}"></rect>
         <line x1="${left}" y1="${yFor(band.median).toFixed(1)}" x2="${right}" y2="${yFor(band.median).toFixed(1)}" class="pct-band-median"
           data-band-median="${band.median}"></line>` : "";
-      const bandLegendMarkup = band ? `<div class="detail-chart-legend">
-        <button type="button" class="chart-band-toggle" data-band-toggle aria-pressed="true">
-          <span class="chart-band-swatch" aria-hidden="true"></span>
-          <span class="chart-band-legend-text">${escapeHtml(t("percentileBandLegend"))}</span>
-          <span class="chart-band-switch" aria-hidden="true"></span>
-        </button>
-      </div>` : "";
       const points = displayPoints.map((point, index) => {
         const x = xFor(point, index);
         const y = yFor(point.value);
@@ -8601,7 +8687,6 @@
             ${pointHits}
           </svg>
         </div>
-        ${bandLegendMarkup}
         <div class="detail-chart-tooltip" role="status" aria-live="polite"></div>
       </div>`;
     }
@@ -8860,11 +8945,19 @@
       </span>`;
     }
 
-    function detailReferenceLegend() {
+    function detailReferenceLegend(metric = null) {
+      const bandItem = detailBandStats(metric)
+        ? `<button type="button" class="detail-reference-item chart-band-toggle" data-band-toggle aria-pressed="true">
+          <span class="detail-reference-dot band" aria-hidden="true"></span>
+          <span class="chart-band-legend-text">${escapeHtml(t("percentileBandLegend"))}</span>
+          <span class="chart-band-switch" aria-hidden="true"></span>
+        </button>`
+        : "";
       return `<div class="detail-reference-legend" aria-label="${escapeHtml(t("chart"))}">
         <span class="detail-reference-item"><span class="detail-reference-dot max" aria-hidden="true"></span>${escapeHtml(t("detailReferenceMax"))}</span>
         <span class="detail-reference-item"><span class="detail-reference-dot current" aria-hidden="true"></span>${escapeHtml(t("detailReferenceCurrent"))}</span>
         <span class="detail-reference-item"><span class="detail-reference-dot min" aria-hidden="true"></span>${escapeHtml(t("detailReferenceMin"))}</span>
+        ${bandItem}
       </div>`;
     }
 
@@ -8879,7 +8972,7 @@
             ${detailDelta(t("yoy"), metric.yoy_pct_label, metric.yoy_pct)}
           </div>
         </div>
-        ${detailReferenceLegend()}
+        ${detailReferenceLegend(metric)}
       </div>`;
     }
 
@@ -9493,7 +9586,7 @@
           <div class="detail-chart-section">
             <div class="detail-chart-host" data-chart-host="${escapeHtml(metric.id)}">${detailChartForMetric(metric)}</div>
             <div class="detail-period-row">
-              ${detailReferenceLegend()}
+              ${detailReferenceLegend(metric)}
               <div class="detail-range-toggle" data-range-toggle="${escapeHtml(metric.id)}" hidden>
                 <button type="button" class="is-active" data-range="recent">${escapeHtml(t("rangeRecent"))}</button>
                 <button type="button" data-range="full">${escapeHtml(t("rangeFull"))}</button>
@@ -11404,8 +11497,27 @@
     function recentAlertTimeText(event) {
       const source = event.ts || event.observed_at || "";
       const time = timeOnlyText(source);
-      if (time) return time;
-      return dateText(event.observed_at || source);
+      const dateSource = source || event.observed_at || "";
+      const dateKey = zonedDateKey(dateSource);
+      const dateDay = calendarDayNumber(dateKey);
+      const todayDay = calendarDayNumber(dashboardTodayKey());
+      let dateLabel = "";
+      if (Number.isFinite(dateDay) && Number.isFinite(todayDay)) {
+        const diff = dateDay - todayDay;
+        if (diff === 0) dateLabel = state.language === "en" ? "Today" : "오늘";
+        else if (diff === -1) dateLabel = state.language === "en" ? "Yesterday" : "어제";
+      }
+      if (!dateLabel) {
+        const parts = rawDateParts(dateKey);
+        if (parts?.month && parts?.day) {
+          dateLabel = state.language === "en"
+            ? `${Number(parts.month)}/${Number(parts.day)}`
+            : `${Number(parts.month)}/${Number(parts.day)}`;
+        }
+      }
+      if (dateLabel && time) return `${dateLabel} ${time}`;
+      if (dateLabel) return dateLabel;
+      return dateText(dateSource);
     }
 
     function recentAlertTitle(event) {
@@ -12125,7 +12237,9 @@
       root.querySelectorAll("[data-band-toggle]").forEach((button) => {
         button.addEventListener("click", (event) => {
           event.stopPropagation();
-          const chart = button.closest(".detail-chart");
+          const chart = button.closest(".detail-chart")
+            || button.closest(".detail-chart-section")?.querySelector(".detail-chart")
+            || button.closest(".metric-detail-panel")?.querySelector(".detail-chart");
           if (!chart) return;
           const enabled = button.getAttribute("aria-pressed") !== "true";
           button.setAttribute("aria-pressed", String(enabled));

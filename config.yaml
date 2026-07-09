@@ -71,6 +71,20 @@ search_aliases:
   이더리움: [ETH, ethereum]
   김치프리미엄: [김프, kimchi premium, 업비트]
   WSTS: [반도체판매, 반도체매출, 세계반도체]
+  미국 순유동성: [미국 유동성, 순유동성, net liquidity, liquidity, TGA, RRP, 역레포]
+  한국 M2: [한국 유동성, 통화량, 광의통화, M2, ECOS]
+  한국은행 총자산: [한국은행, BOK, 중앙은행 자산, 한국 유동성]
+  한국 본원통화: [본원통화, monetary base, 한국 유동성]
+  한국 Lf: [금융기관 유동성, Lf, 한국 유동성]
+  한국 L: [광의유동성, broad liquidity, 한국 유동성]
+  일본 BOJ 총자산: [일본 유동성, BOJ, 일본은행, 중앙은행 자산]
+  일본 본원통화: [일본 유동성, monetary base, BOJ]
+  일본 M2: [일본 유동성, 통화량, M2, BOJ]
+  일본 BOJ 당좌예금: [일본 유동성, 당좌예금, current account, BOJ]
+  유럽 초과유동성: [유럽 유동성, ECB, excess liquidity, euro liquidity]
+  유럽 유로시스템 총자산: [유럽 유동성, ECB 총자산, Eurosystem, 중앙은행 자산]
+  유럽 M3: [유럽 유동성, 통화량, M3, ECB]
+  유럽 본원통화: [유럽 유동성, base money, ECB]
 
 interpretation:
   defaults:
@@ -243,6 +257,12 @@ interpretation:
         neutral: 역사적 중간 구간
         cool: 역사적 저평가
         cold: 역사적 극단 저평가
+
+    # Source: dashboard calculation from FRED WALCL/RRPONTSYD and Treasury FiscalData TGA.
+    # No absolute valuation threshold is used; higher net liquidity is generally friendlier to risk assets.
+    - match: { history_key: us-net-liquidity, name: 미국 순유동성 }
+      polarity: higher_is_better
+      template: us_liquidity_trend
 
 dashboard:
   title: 산업별 핵심 지표 대시보드
