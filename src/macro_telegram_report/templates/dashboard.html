@@ -3478,7 +3478,6 @@
     .detail-reference-dot.band {
       position: relative;
       background: rgba(59, 130, 246, 0.16);
-      border: 1px solid rgba(59, 130, 246, 0.32);
     }
     .detail-reference-dot.band::after {
       content: "";
@@ -3491,7 +3490,6 @@
     }
     body.theme-dark .detail-reference-dot.band {
       background: rgba(96, 165, 250, 0.2);
-      border-color: rgba(147, 197, 253, 0.36);
     }
 
     .detail-meta-strip {
@@ -4364,7 +4362,7 @@
       background: transparent;
       color: var(--muted);
       font: inherit;
-      font-weight: 650;
+      font-weight: 500;
       cursor: pointer;
       transition: color 160ms ease;
     }
@@ -4374,17 +4372,15 @@
     }
 
     .chart-band-swatch {
-      width: 18px;
-      height: 18px;
-      flex: 0 0 18px;
-      border-radius: 4px;
+      width: 16px;
+      height: 16px;
+      flex: 0 0 16px;
+      border-radius: 6px;
       background: rgba(59, 130, 246, 0.2);
-      border: 1px solid rgba(59, 130, 246, 0.32);
     }
 
     body.theme-dark .chart-band-swatch {
       background: rgba(96, 165, 250, 0.22);
-      border-color: rgba(147, 197, 253, 0.34);
     }
 
     .chart-band-switch {
@@ -8900,7 +8896,11 @@
 
     function detailReferenceLegend(metric = null) {
       const bandItem = detailBandStats(metric)
-        ? `<span class="detail-reference-item"><span class="detail-reference-dot band" aria-hidden="true"></span>${escapeHtml(t("percentileBandLegend"))}</span>`
+        ? `<button type="button" class="detail-reference-item chart-band-toggle" data-band-toggle aria-pressed="true">
+          <span class="detail-reference-dot band" aria-hidden="true"></span>
+          <span class="chart-band-legend-text">${escapeHtml(t("percentileBandLegend"))}</span>
+          <span class="chart-band-switch" aria-hidden="true"></span>
+        </button>`
         : "";
       return `<div class="detail-reference-legend" aria-label="${escapeHtml(t("chart"))}">
         <span class="detail-reference-item"><span class="detail-reference-dot max" aria-hidden="true"></span>${escapeHtml(t("detailReferenceMax"))}</span>
@@ -12167,7 +12167,9 @@
       root.querySelectorAll("[data-band-toggle]").forEach((button) => {
         button.addEventListener("click", (event) => {
           event.stopPropagation();
-          const chart = button.closest(".detail-chart");
+          const chart = button.closest(".detail-chart")
+            || button.closest(".detail-chart-section")?.querySelector(".detail-chart")
+            || button.closest(".metric-detail-panel")?.querySelector(".detail-chart");
           if (!chart) return;
           const enabled = button.getAttribute("aria-pressed") !== "true";
           button.setAttribute("aria-pressed", String(enabled));
