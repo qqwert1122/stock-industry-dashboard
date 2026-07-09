@@ -3215,24 +3215,40 @@
     .metric-detail-inner {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 12px;
       padding: 18px 0 20px;
     }
 
     .detail-title-block {
       display: grid;
-      gap: 9px;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .detail-title-row {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 6px 9px;
       min-width: 0;
     }
 
     .detail-title {
       margin: 0;
       color: var(--text);
-      font-size: 36px;
-      line-height: 1.08;
+      font-size: 16px;
+      line-height: 1.25;
       font-weight: 400;
       letter-spacing: 0;
       overflow-wrap: anywhere;
+    }
+
+    .detail-updated-at {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.25;
+      font-weight: 400;
+      white-space: nowrap;
     }
 
     .detail-description {
@@ -3240,54 +3256,55 @@
       max-width: 880px;
       color: var(--muted);
       font-size: 14px;
-      line-height: 1.62;
-      font-weight: 500;
+      line-height: 1.5;
+      font-weight: 400;
     }
 
     .detail-interpretation-row {
       display: grid;
-      grid-template-columns: 64px minmax(0, 1fr);
-      gap: 14px;
-      align-items: start;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 7px;
+      align-items: baseline;
+      margin-top: 2px;
       padding: 0;
     }
 
     .detail-interpretation-label {
       color: var(--muted);
-      font-size: 13px;
-      line-height: 1.55;
-      font-weight: 700;
+      font-size: 12px;
+      line-height: 1.35;
+      font-weight: 400;
     }
 
     .detail-interpretation-content {
-      display: flex;
-      align-items: flex-start;
-      flex-wrap: wrap;
-      gap: 7px 10px;
       min-width: 0;
       color: var(--text);
-      font-size: 14px;
-      line-height: 1.62;
-      font-weight: 520;
+      font-size: 12px;
+      line-height: 1.35;
+      font-weight: 400;
     }
 
     .detail-interpretation-text {
+      display: block;
       min-width: 0;
-      overflow-wrap: anywhere;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .detail-measurements {
-      display: grid;
-      grid-template-columns: minmax(150px, 0.82fr) minmax(0, 1fr);
-      gap: 14px 20px;
-      align-items: start;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 7px 18px;
     }
 
     .detail-value-card,
     .detail-change-card {
       min-width: 0;
-      display: grid;
-      gap: 8px;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 7px;
     }
 
     .detail-field-label {
@@ -3298,9 +3315,10 @@
     }
 
     .detail-change-list {
-      display: flex;
+      display: inline-flex;
+      align-items: baseline;
       flex-wrap: wrap;
-      gap: 10px 22px;
+      gap: 7px 18px;
       min-width: 0;
     }
 
@@ -3322,23 +3340,7 @@
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .detail-period-chip {
-      display: inline-flex;
-      align-items: center;
-      min-height: 28px;
-      max-width: 100%;
-      padding: 0 12px;
-      border: 1px solid var(--line);
-      border-radius: var(--chip-radius);
-      background: var(--menu);
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.2;
-      font-weight: 700;
-      overflow-wrap: anywhere;
+      gap: 8px 14px;
     }
 
     .detail-stats {
@@ -3384,8 +3386,8 @@
       align-items: baseline;
       min-width: 0;
       color: var(--text);
-      font-size: clamp(30px, 4vw, 42px);
-      line-height: 1;
+      font-size: 22px;
+      line-height: 1.1;
       font-weight: 760;
       letter-spacing: 0;
       overflow-wrap: anywhere;
@@ -3442,10 +3444,11 @@
     .detail-reference-legend {
       display: flex;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: flex-start;
       flex-wrap: wrap;
       gap: 12px 18px;
-      padding-top: 4px;
+      margin: 0;
+      padding-top: 0;
       color: var(--muted);
       font-size: 12px;
       line-height: 1.2;
@@ -5335,28 +5338,32 @@
       }
 
       .metric-detail-inner {
-        gap: 13px;
+        gap: 11px;
         padding: 13px 0 15px;
       }
 
       .detail-title-block {
-        gap: 7px;
+        gap: 5px;
       }
 
       .detail-title {
-        font-size: 36px;
-        line-height: 1.04;
+        font-size: 16px;
+        line-height: 1.24;
+      }
+
+      .detail-updated-at {
+        font-size: 12px;
       }
 
       .detail-description,
       .detail-interpretation-content {
-        font-size: 13px;
-        line-height: 1.5;
+        font-size: 12px;
+        line-height: 1.4;
       }
 
       .detail-interpretation-row {
-        grid-template-columns: 46px minmax(0, 1fr);
-        gap: 10px;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 7px;
       }
 
       .detail-interpretation-label {
@@ -5364,14 +5371,13 @@
       }
 
       .detail-measurements {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 12px;
+        display: flex;
+        gap: 7px 14px;
       }
 
       .detail-change-list {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 10px;
+        display: inline-flex;
+        gap: 7px 13px;
       }
 
       .detail-actions-row {
@@ -5417,7 +5423,7 @@
       }
 
       .detail-current-value {
-        font-size: 31px;
+        font-size: 22px;
       }
 
       .detail-deltas {
@@ -5446,16 +5452,6 @@
       }
 
       .detail-meta-value {
-        font-size: 11.5px;
-      }
-
-      .detail-period-row {
-        gap: 7px;
-      }
-
-      .detail-period-chip {
-        min-height: 26px;
-        padding: 0 10px;
         font-size: 11.5px;
       }
 
@@ -8892,8 +8888,8 @@
       </div>`;
     }
 
-    function detailMetaItem(label, value, className = "") {
-      return `<div class="detail-meta-item">
+    function detailMetaItem(label, value, className = "", attributes = "") {
+      return `<div class="detail-meta-item"${attributes ? ` ${attributes}` : ""}>
         <span class="detail-meta-label">${escapeHtml(label)}</span>
         <strong class="detail-meta-value ${className}">${escapeHtml(value || "n/a")}</strong>
       </div>`;
@@ -8901,6 +8897,7 @@
 
     function detailMetaStrip(metric) {
       return `<div class="detail-meta-strip">
+        ${detailMetaItem(t("visiblePeriod"), displayPeriodLabel(metric), "", `data-period-meta="${escapeHtml(metric.id)}"`)}
         ${detailMetaItem(t("dataAsOf"), dateText(metric.observed_label || metric.observed_at, metric))}
         ${detailMetaItem(t("lastChecked"), lastCheckedText(metric), metric.fetch_status === "failed" ? "negative" : "")}
         ${detailMetaItem(t("nextUpdate"), dateText(metric.next_update_label, metric))}
@@ -8922,10 +8919,6 @@
       return displayPointsPeriodLabel(metric?.history, metric);
     }
 
-    function detailPeriodChip(metric) {
-      return `<div class="detail-period-chip" data-period-chip="${escapeHtml(metric.id)}">${escapeHtml(displayPeriodLabel(metric))}</div>`;
-    }
-
     function fetchStatusText(metric) {
       if (metric?.fetch_status === "success") return t("fetchUpdated");
       if (metric?.fetch_status === "failed") return t("fetchFailed");
@@ -8941,6 +8934,13 @@
       const label = fetchedAtText(metric?.fetched_at || DASHBOARD_DATA.generated_at || "");
       const status = fetchStatusText(metric);
       return label ? `${label} · ${status}` : status;
+    }
+
+    function metricUpdatedAtText(metric) {
+      const source = metric?.fetched_at || DASHBOARD_DATA.generated_at || DASHBOARD_DATA.generated_label || metric?.observed_at || "";
+      const parts = zonedDateTimeParts(source);
+      if (!parts) return `${dateText(source, metric)} 업데이트`;
+      return `${Number(parts.year)}년 ${Number(parts.month)}월 ${Number(parts.day)}일 ${parts.hour}:${parts.minute}:${parts.second || "00"} 업데이트`;
     }
 
     function metricStatusMarkup(metric) {
@@ -9406,16 +9406,14 @@
     function interpretationMarkup(metric) {
       const item = metric?.interpretation;
       if (!item || !item.text) return "";
-      const zone = String(item.zone || "neutral");
       const headline = item.headline || item.meaning_text || item.text || "";
-      const level = item.level_label || zone;
       const detail = item.detail_text || item.trend_label || "";
       const secondary = detail && detail !== headline && detail !== item.text ? detail : "";
+      const text = `${localizedText(headline || item.text)}${secondary ? ` ${localizedText(secondary)}` : ""}`;
       return `<div class="detail-interpretation-row">
         <span class="detail-interpretation-label">${escapeHtml(t("interpretationColumnSignal"))}</span>
         <div class="detail-interpretation-content">
-          <span class="interpretation-zone ${escapeHtml(zone)}">${escapeHtml(localizedText(level))}</span>
-          <span class="detail-interpretation-text">${escapeHtml(localizedText(headline || item.text))}${secondary ? ` ${escapeHtml(localizedText(secondary))}` : ""}</span>
+          <span class="detail-interpretation-text" title="${escapeHtml(text)}">${escapeHtml(text)}</span>
         </div>
       </div>`;
     }
@@ -9441,7 +9439,10 @@
       return `<div class="metric-detail-panel">
         <div class="metric-detail-inner">
           <div class="detail-title-block">
-            <h3 class="detail-title">${escapeHtml(localizedField(metric, "name"))}</h3>
+            <div class="detail-title-row">
+              <h3 class="detail-title">${escapeHtml(localizedField(metric, "name"))}</h3>
+              <span class="detail-updated-at">${escapeHtml(metricUpdatedAtText(metric))}</span>
+            </div>
             <p class="detail-description">${escapeHtml(localizedField(metric, "meaning") || "")}</p>
           </div>
           ${interpretationMarkup(metric)}
@@ -9466,7 +9467,7 @@
           <div class="detail-chart-section">
             <div class="detail-chart-host" data-chart-host="${escapeHtml(metric.id)}">${detailChartForMetric(metric)}</div>
             <div class="detail-period-row">
-              ${detailPeriodChip(metric)}
+              ${detailReferenceLegend()}
               <div class="detail-range-toggle" data-range-toggle="${escapeHtml(metric.id)}" hidden>
                 <button type="button" class="is-active" data-range="recent">${escapeHtml(t("rangeRecent"))}</button>
                 <button type="button" data-range="full">${escapeHtml(t("rangeFull"))}</button>
@@ -10686,8 +10687,8 @@
             const useFull = button.dataset.range === "full";
             const points = useFull ? longHistoryPoints(entry) : metric.history;
             host.innerHTML = detailChart(points, metric);
-            const periodChip = detail.querySelector("[data-period-chip]");
-            if (periodChip) periodChip.textContent = displayPointsPeriodLabel(points, metric);
+            const periodMeta = detail.querySelector("[data-period-meta] .detail-meta-value");
+            if (periodMeta) periodMeta.textContent = displayPointsPeriodLabel(points, metric);
             bindDetailTooltipsWithin(host);
           });
         });
