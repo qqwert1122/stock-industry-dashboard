@@ -2211,6 +2211,7 @@
       width: min(100%, 280px);
       min-width: 0;
       display: grid;
+      align-content: start;
       gap: 12px;
       margin: 0 0 16px;
       padding: 14px 16px 15px;
@@ -2366,7 +2367,7 @@
     .recent-alert-row {
       min-width: 0;
       display: grid;
-      grid-template-columns: 8px 42px minmax(0, 1fr);
+      grid-template-columns: 8px max-content minmax(0, 1fr);
       align-items: center;
       gap: 8px;
       border: 0;
@@ -5766,11 +5767,10 @@
       background: transparent;
     }
     .market-diagnosis .fear-greed-gauge-list {
-      max-height: 96px;
-      overflow-y: auto;
-      padding-right: 4px;
-      scrollbar-width: thin;
-      scrollbar-color: color-mix(in srgb, var(--muted) 28%, transparent) transparent;
+      max-height: none;
+      overflow: visible;
+      padding-right: 0;
+      scrollbar-width: auto;
     }
     .fear-greed-gauge-item {
       width: 100%;
@@ -6039,6 +6039,66 @@
       color: var(--muted);
     }
     .detail-range-toggle button.is-active { background: var(--menu-active); color: var(--text); font-weight: 500; }
+
+    @media (max-width: 760px) {
+      body {
+        font-size: 16px;
+      }
+
+      .schedule-alerts-head h2,
+      .market-diagnosis-head h2,
+      .favorite-metrics .favorite-metrics-head h2,
+      .daily-heatmap-head h2 {
+        font-size: 19px;
+      }
+
+      .event-snapshot-title,
+      .gauge-card-head h3,
+      .fear-greed-name,
+      .gauge-component-name,
+      .daily-update-title,
+      .metric-name {
+        font-size: 14.5px;
+      }
+
+      .event-snapshot-copy,
+      .event-snapshot-name,
+      .recent-alert-title,
+      .recent-alert-empty,
+      .briefing-summary,
+      .briefing-bullet-body,
+      .daily-update-summary,
+      .metric-current-value,
+      .metric-mobile-description,
+      .gauge-component-value,
+      .signal-chip .signal-value {
+        font-size: 13.5px;
+      }
+
+      .event-snapshot-date,
+      .recent-alert-time,
+      .gauge-status-badge,
+      .thermometer-score,
+      .fear-greed-score,
+      .fear-greed-label,
+      .gauge-component-change,
+      .daily-update-meta,
+      .daily-update-value,
+      .daily-update-change,
+      .detail-updated-at,
+      .detail-meta-value,
+      .detail-chart-legend {
+        font-size: 12.5px;
+      }
+
+      .metric-table th[data-mobile-label]::after,
+      .detail-label,
+      .gauge-component-heat,
+      .metric-change-badge,
+      .metric-stale-badge {
+        font-size: 11.5px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -11437,8 +11497,27 @@
     function recentAlertTimeText(event) {
       const source = event.ts || event.observed_at || "";
       const time = timeOnlyText(source);
-      if (time) return time;
-      return dateText(event.observed_at || source);
+      const dateSource = source || event.observed_at || "";
+      const dateKey = zonedDateKey(dateSource);
+      const dateDay = calendarDayNumber(dateKey);
+      const todayDay = calendarDayNumber(dashboardTodayKey());
+      let dateLabel = "";
+      if (Number.isFinite(dateDay) && Number.isFinite(todayDay)) {
+        const diff = dateDay - todayDay;
+        if (diff === 0) dateLabel = state.language === "en" ? "Today" : "오늘";
+        else if (diff === -1) dateLabel = state.language === "en" ? "Yesterday" : "어제";
+      }
+      if (!dateLabel) {
+        const parts = rawDateParts(dateKey);
+        if (parts?.month && parts?.day) {
+          dateLabel = state.language === "en"
+            ? `${Number(parts.month)}/${Number(parts.day)}`
+            : `${Number(parts.month)}/${Number(parts.day)}`;
+        }
+      }
+      if (dateLabel && time) return `${dateLabel} ${time}`;
+      if (dateLabel) return dateLabel;
+      return dateText(dateSource);
     }
 
     function recentAlertTitle(event) {
