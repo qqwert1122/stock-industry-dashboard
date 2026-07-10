@@ -1460,26 +1460,12 @@ ecos:
       frequency: 분기
       group: 한국 경기
       meaning: 가계부채 총량입니다. 소득 대비 증가 속도가 빨라지면 소비 여력과 금융 안정에 부담이 됩니다.
-    - name: 한국 신용융자 잔고
-      stat_code: 901Y056
-      period: M
-      item_code: S23E
-      industry: 매크로
-      unit: 조원
-      scale: 0.000000000001
-      frequency: 월간
-      group: 수급 과열
-      meaning: 개인투자자가 빚내서 산 주식 규모입니다. 역사적 고점 부근이면 과열, 급감하면 반대매매 국면일 수 있어 장기 매수 타이밍 판단에 씁니다.
-    - name: 한국 투자자예탁금
-      stat_code: 901Y056
-      period: M
-      item_code: S23A
-      industry: 매크로
-      unit: 조원
-      scale: 0.000000000001
-      frequency: 월간
-      group: 수급 과열
-      meaning: 증권계좌에 대기 중인 현금입니다. 늘어나면 증시 대기 자금이 풍부하다는 뜻으로 수급 여력을 보여줍니다.
+
+kofia:
+  enabled: true
+  endpoint: https://apis.data.go.kr/1160100/service/GetKofiaStatisticsInfoService
+  source_url: https://www.data.go.kr/data/15094809/openapi.do
+  num_rows: 10000
 
 # 텔레그램 알림 (TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID 시크릿 필요)
 # 임계값을 새로 돌파했을 때 1회 발송하고, 다시 벗어났다 재돌파하면 재발송합니다.

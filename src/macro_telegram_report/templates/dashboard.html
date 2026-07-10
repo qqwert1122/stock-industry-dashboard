@@ -287,7 +287,7 @@
       padding: 0 12px;
       text-align: left;
       font-size: 14px;
-      font-weight: 720;
+      font-weight: 600;
       cursor: pointer;
     }
 
@@ -326,7 +326,7 @@
       padding: 0 10px;
       color: color-mix(in srgb, var(--muted) 72%, transparent);
       font-size: 12.5px;
-      font-weight: 500;
+      font-weight: 600;
     }
 
     .side-menu .menu-depth-button[aria-current="true"] {
@@ -621,10 +621,20 @@
     .metric-detail-drawer-head {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-start;
       gap: 10px;
       flex: 0 0 auto;
       margin-bottom: 14px;
+    }
+
+    .signal-drawer-head strong,
+    .metric-detail-drawer-head strong {
+      min-width: 0;
+    }
+
+    .signal-drawer-close,
+    .metric-detail-drawer-close {
+      margin-left: auto;
     }
 
     .signal-drawer-body,
@@ -723,7 +733,7 @@
       padding: 0 15px;
       font-size: 12px;
       line-height: 1;
-      font-weight: 650;
+      font-weight: 400;
       cursor: pointer;
     }
 
@@ -1405,7 +1415,7 @@
       color: var(--text);
       font-size: 13px;
       line-height: 1.3;
-      font-weight: 700;
+      font-weight: 400;
     }
 
     .data-freshness-meta {
@@ -1458,7 +1468,7 @@
 
     .data-freshness-sources {
       display: grid;
-      gap: 0;
+      gap: 6px;
       max-height: 300px;
       overflow-y: auto;
       overscroll-behavior: contain;
@@ -1470,10 +1480,17 @@
       align-items: center;
       gap: 12px;
       min-height: 42px;
-      border-top: 1px solid var(--line);
+      border-top: 0;
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--surface) 82%, #f8fafc);
+      padding: 0 10px;
       color: var(--muted);
       font-size: 11px;
       line-height: 1.3;
+    }
+
+    body.theme-dark .data-freshness-source {
+      background: color-mix(in srgb, var(--surface) 84%, #ffffff 4%);
     }
 
     .data-freshness-source-name {
@@ -1537,7 +1554,7 @@
       width: 100%;
       min-width: 0;
       overflow: hidden;
-      padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
+      padding: 3px 0 calc(3px + env(safe-area-inset-bottom));
       -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
       mask-image: linear-gradient(90deg, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
     }
@@ -1559,8 +1576,8 @@
       flex: 0 0 auto;
       display: inline-flex;
       align-items: center;
-      gap: 24px;
-      padding-right: 24px;
+      gap: 18px;
+      padding-right: 18px;
     }
 
     .mover-ticker-item {
@@ -1569,13 +1586,13 @@
       align-items: baseline;
       gap: 6px;
       min-width: 0;
-      height: 22px;
+      height: 18px;
       border: 0;
       background: transparent;
       color: var(--text);
       padding: 0;
       font: inherit;
-      font-size: 12px;
+      font-size: 11.5px;
       line-height: 1;
       font-weight: 400;
       white-space: nowrap;
@@ -3081,20 +3098,7 @@
       margin-left: 22px;
     }
 
-    .future-track-entry {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-left: 22px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.4;
-      font-weight: 400;
-    }
-
-    .future-track-link,
-    .future-back-link {
+    .future-track-link {
       display: inline-flex;
       align-items: center;
       gap: 7px;
@@ -3111,7 +3115,6 @@
     }
 
     .future-track-link:hover,
-    .future-back-link:hover,
     .future-source-score:hover {
       background: var(--menu-active);
     }
@@ -6869,15 +6872,10 @@
         margin-left: 0;
       }
 
-      .future-track-entry,
       .track-score-grid,
       .track-record-toolbar,
       .track-record-list {
         margin-left: 0;
-      }
-
-      .future-track-entry {
-        gap: 7px;
       }
 
       .track-score-grid {
@@ -8010,9 +8008,15 @@
     }
     .detail-range-toggle button.is-active { background: var(--menu-active); color: var(--text); font-weight: 500; }
 
+    .metric-detail-drawer .detail-range-toggle button,
+    .metric-detail-drawer .compare-chip,
+    .metric-detail-drawer .compare-chip-remove {
+      font-weight: 400;
+    }
+
     @media (max-width: 760px) {
       body {
-        font-size: 16px;
+        font-size: 17px;
       }
 
       .schedule-alerts-head h2,
@@ -8027,7 +8031,7 @@
       .gauge-component-name,
       .daily-update-title,
       .metric-name {
-        font-size: 14.5px;
+        font-size: 15.5px;
       }
 
       .event-snapshot-copy,
@@ -8041,7 +8045,7 @@
       .metric-mobile-description,
       .gauge-component-value,
       .signal-chip .signal-value {
-        font-size: 13.5px;
+        font-size: 14.5px;
       }
 
       .event-snapshot-date,
@@ -8057,7 +8061,7 @@
       .detail-updated-at,
       .detail-meta-value,
       .detail-chart-legend {
-        font-size: 12.5px;
+        font-size: 13px;
       }
 
       .metric-table th[data-mobile-label]::after,
@@ -8065,7 +8069,29 @@
       .gauge-component-heat,
       .metric-change-badge,
       .metric-stale-badge {
-        font-size: 11.5px;
+        font-size: 12px;
+      }
+
+      .metric-table td,
+      .metric-table th,
+      .calendar-agenda-table td,
+      .calendar-agenda-table th,
+      .side-menu button {
+        font-size: 15px;
+      }
+
+      .side-menu .menu-depth-button {
+        font-size: 13.5px;
+      }
+
+      .mover-ticker-viewport {
+        padding-top: 2px;
+        padding-bottom: calc(2px + env(safe-area-inset-bottom));
+      }
+
+      .mover-ticker-item {
+        height: 17px;
+        font-size: 11px;
       }
     }
   </style>
@@ -8128,6 +8154,9 @@
     <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
     <aside class="signal-drawer" id="signalDrawer" aria-hidden="true" aria-label="시그널 이력">
       <div class="signal-drawer-head">
+        <button class="drawer-close signal-drawer-back" id="signalDrawerBack" type="button" aria-label="시그널 이력 닫기">
+          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+        </button>
         <strong data-i18n="signalHistoryTitle">주요 시그널 히스토리</strong>
         <button class="drawer-close signal-drawer-close" id="signalDrawerClose" type="button" aria-label="시그널 이력 닫기">
           <i class="fa-solid fa-xmark" aria-hidden="true"></i>
@@ -8138,6 +8167,9 @@
     <div class="signal-drawer-backdrop" id="signalDrawerBackdrop" hidden></div>
     <aside class="metric-detail-drawer" id="metricDetailDrawer" aria-hidden="true" aria-label="지표 상세">
       <div class="metric-detail-drawer-head">
+        <button class="drawer-close metric-detail-drawer-back" id="metricDetailDrawerBack" type="button" aria-label="지표 상세 닫기">
+          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+        </button>
         <strong id="metricDetailDrawerTitle" data-i18n="metricDetailDrawerTitle">지표 상세</strong>
         <button class="drawer-close metric-detail-drawer-close" id="metricDetailDrawerClose" type="button" aria-label="지표 상세 닫기">
           <i class="fa-solid fa-xmark" aria-hidden="true"></i>
@@ -9037,7 +9069,10 @@
       "코스피 외국인 매도": "KOSPI Foreign Selling",
       "코스닥 개인 순매수": "KOSDAQ Retail Net Buying",
       "고객예탁금": "Investor Cash Deposits",
+      "한국 투자자예탁금": "Korea Investor Cash Deposits",
       "신용융자 잔고": "Margin Loan Balance",
+      "한국 신용융자 잔고": "Korea Margin Loan Balance",
+      "한국 CMA 잔고": "Korea CMA Balance",
       "미국 10년 국채금리": "US 10Y Treasury Yield",
       "한국 기준금리": "Korea Policy Rate",
       "미국 10Y-3M 금리차": "US 10Y-3M Treasury Spread",
@@ -9096,6 +9131,9 @@
       "실업률이 최근 저점보다 얼마나 높아졌는지 보는 경기침체 신호입니다. 0.5%p를 넘으면 과거에는 침체 진입 가능성이 커진 경우가 많았습니다.": "Recession signal measuring how far unemployment has risen from its recent low. Readings above 0.5pp have often coincided with elevated recession risk.",
       "애틀랜타 연은이 실시간 경제지표를 반영해 추정하는 미국 GDP 성장률 전망입니다. 경기 기대가 좋아지는지 식는지 빠르게 볼 때 씁니다.": "Atlanta Fed real-time estimate of US GDP growth, useful for quickly reading whether growth expectations are improving or cooling.",
       "미국 소비자물가 상승률입니다. 인플레이션 압력과 연준 금리 기대를 움직여 주식, 채권, 환율에 모두 영향을 줍니다.": "US consumer inflation. It moves inflation pressure and Fed rate expectations, affecting equities, bonds, and FX.",
+      "증권계좌에 대기 중인 현금입니다. 늘어나면 주식시장으로 들어올 수 있는 대기 자금이 많아졌다는 뜻으로 봅니다.": "Cash waiting in securities accounts. When it rises, there is more potential cash that could move into the stock market.",
+      "투자자가 빚을 내서 주식을 산 잔고입니다. 빠르게 늘면 과열 신호가 될 수 있고, 급감하면 반대매매 압력을 의심할 수 있습니다.": "Outstanding margin loans used by investors to buy stocks. A rapid rise can signal overheating, while a sharp drop can point to forced-selling pressure.",
+      "CMA 계좌에 머무는 단기 대기자금입니다. 증시 주변의 현금 여력과 단기자금 선호가 커지는지 확인할 때 봅니다.": "Short-term cash parked in CMA accounts. It helps read cash availability around the equity market and demand for short-term cash products.",
       "수출주 원화 환산 매출과 외국인 수급에 영향을 주는 매크로 변수입니다.": "Macro variable affecting exporters' KRW-translated revenue and foreign investor flows.",
       "대표적인 위험자산이자 크립토 유동성 지표입니다. 글로벌 유동성, 위험 선호, 크립토 시장 분위기를 빠르게 확인할 때 봅니다.": "Major risk asset and crypto liquidity gauge used to read global liquidity, risk appetite, and crypto sentiment.",
       "시장 위험 회피 심리와 변동성 확대 여부를 봅니다.": "Tracks risk-off sentiment and volatility expansion.",
@@ -13745,7 +13783,7 @@
       const selectedEvents = state.calendarSelectedDate ? (eventsByDate.get(state.calendarSelectedDate) || []) : null;
       const agendaEvents = selectedEvents || events.filter((event) => {
         const dDay = calendarEventDday(event);
-        return Number.isFinite(dDay) && dDay >= 0;
+        return Number.isFinite(dDay) && dDay >= 0 && dDay <= 30;
       }).sort((a, b) => String(a.date).localeCompare(String(b.date)));
       return `<article class="industry calendar-page" id="${marketSectionId("캘린더")}" data-market-section data-market-category="캘린더">
         <div class="industry-head">
@@ -14835,7 +14873,6 @@
       const ticks = trackRecordAxisTicks(range);
       return `<article class="future-page track-record-page" data-future-track-record>
         <div class="future-page-head">
-          <button class="future-back-link" type="button" data-future-back-timeline>← ${escapeHtml(t("futureTrackRecordBack"))}</button>
           <h2>${escapeHtml(t("futureTrackRecordTitle"))}</h2>
           <p>${escapeHtml(t("futureTrackRecordIntro"))}</p>
         </div>
@@ -14986,13 +15023,6 @@
         <div class="future-page-head">
           <h2>${escapeHtml(t("futureTimelineTitle"))}</h2>
           <p>${escapeHtml(t("futureTimelineIntro"))}</p>
-        </div>
-        <div class="future-track-entry">
-          <button class="future-track-link" type="button" data-future-track-record-link>
-            <span>${escapeHtml(t("futureTrackRecordTitle"))}</span>
-            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-          </button>
-          <span>${escapeHtml(t("futureTrackRecordEntryCopy"))}</span>
         </div>
         <div class="future-minimap" aria-label="${escapeHtml(t("futureTimelineTitle"))}">${minimap}</div>
         ${achieved.length ? `<details class="future-achieved">
@@ -16167,6 +16197,7 @@
       document.getElementById("signalHistoryToggle")?.addEventListener("click", () => {
         setSignalDrawerOpen(!document.body.classList.contains("signal-drawer-open"));
       });
+      document.getElementById("signalDrawerBack")?.addEventListener("click", () => setSignalDrawerOpen(false));
       document.getElementById("signalDrawerClose")?.addEventListener("click", () => setSignalDrawerOpen(false));
       document.getElementById("signalDrawerBackdrop")?.addEventListener("click", () => setSignalDrawerOpen(false));
       document.addEventListener("keydown", (event) => {
@@ -16175,6 +16206,7 @@
     }
 
     function initMetricDetailDrawer() {
+      document.getElementById("metricDetailDrawerBack")?.addEventListener("click", () => setMetricDetailDrawerOpen(false));
       document.getElementById("metricDetailDrawerClose")?.addEventListener("click", () => setMetricDetailDrawerOpen(false));
       document.getElementById("metricDetailDrawerBackdrop")?.addEventListener("click", () => setMetricDetailDrawerOpen(false));
       document.addEventListener("keydown", (event) => {

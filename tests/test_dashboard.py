@@ -27,10 +27,13 @@ from macro_telegram_report.dashboard import (
     market_narrative_context,
     month_date_range,
     openfda_month_range,
+    collect_kofia_capital_market_metrics,
     parse_ecos_period,
     parse_ecos_points,
     parse_eia_period,
     parse_eia_points,
+    parse_kofia_json_rows,
+    kofia_points_from_rows,
     parse_kosis_period,
     parse_kosis_points,
     parse_usaspending_monthly_amounts,
@@ -50,6 +53,7 @@ from macro_telegram_report.briefing import build_briefing_card, write_briefing_o
 class FakeResponse:
     def __init__(self, payload):
         self.payload = payload
+        self.text = payload if isinstance(payload, str) else json.dumps(payload)
 
     def raise_for_status(self):
         return None
@@ -1299,6 +1303,97 @@ class DashboardTest(unittest.TestCase):
             compute_spread_points(corporate, treasury),
             [(date(2026, 7, 1), 0.675), (date(2026, 7, 2), 0.684)],
         )
+
+    def test_parse_kofia_daily_rows(self):
+        payload = {
+            "response": {
+                "header": {"resultCode": "00", "resultMsg": "NORMAL SERVICE."},
+                "body": {
+                    "items": {
+                        "item": [
+                            {"basDt": "20260708", "invrDpsgAmt": "71000000000000"},
+                            {"basDt": "20260709", "invrDpsgAmt": "72000000000000"},
+                        ]
+                    }
+                },
+            }
+        }
+
+        rows = parse_kofia_json_rows(payload)
+
+        self.assertEqual(
+            kofia_points_from_rows(rows, "invrDpsgAmt", scale=0.000000000001),
+            [(date(2026, 7, 8), 71.0), (date(2026, 7, 9), 72.0)],
+        )
+
+    def test_kofia_cma_filters_total_rows(self):
+        rows = [
+            {"basDt": "20260709", "mngInvTgt": "RP형", "invrCtg": "합계", "actBal": "100"},
+            {"basDt": "20260709", "mngInvTgt": "합계", "invrCtg": "개인", "actBal": "200"},
+            {"basDt": "20260709", "mngInvTgt": "합계", "invrCtg": "합계", "actBal": "30000000000000"},
+        ]
+
+        self.assertEqual(
+            kofia_points_from_rows(
+                rows,
+                "actBal",
+                row_filter={"mngInvTgt": "합계", "invrCtg": "합계"},
+                scale=0.000000000001,
+            ),
+            [(date(2026, 7, 9), 30.0)],
+        )
+
+    def test_collect_kofia_capital_market_metrics_builds_daily_metrics(self):
+        payload_by_operation = {
+            "getSecuritiesMarketTotalCapitalInfo": {
+                "response": {
+                    "header": {"resultCode": "00"},
+                    "body": {"items": {"item": [
+                        {"basDt": "20260708", "invrDpsgAmt": "71000000000000"},
+                        {"basDt": "20260709", "invrDpsgAmt": "72000000000000"},
+                    ]}},
+                }
+            },
+            "getGrantingOfCreditBalanceInfo": {
+                "response": {
+                    "header": {"resultCode": "00"},
+                    "body": {"items": {"item": [
+                        {"basDt": "20260708", "crdTrFingWhl": "38000000000000"},
+                        {"basDt": "20260709", "crdTrFingWhl": "39000000000000"},
+                    ]}},
+                }
+            },
+            "getCMAStatus": {
+                "response": {
+                    "header": {"resultCode": "00"},
+                    "body": {"items": {"item": [
+                        {"basDt": "20260709", "mngInvTgt": "RP형", "invrCtg": "합계", "actBal": "1"},
+                        {"basDt": "20260708", "mngInvTgt": "합계", "invrCtg": "합계", "actBal": "30000000000000"},
+                        {"basDt": "20260709", "mngInvTgt": "합계", "invrCtg": "합계", "actBal": "31000000000000"},
+                    ]}},
+                }
+            },
+        }
+
+        class KofiaSession:
+            def get(self, url, timeout=None, **kwargs):
+                del timeout, kwargs
+                operation = url.rsplit("/", 1)[-1].split("?", 1)[0]
+                return FakeResponse(payload_by_operation[operation])
+
+        with patch.dict("os.environ", {"DATA_GO_KR_SERVICE_KEY": "test-key"}):
+            metrics = collect_kofia_capital_market_metrics(
+                {"kofia": {"enabled": True, "endpoint": "https://example.test/service"}},
+                KofiaSession(),
+                date(2026, 7, 10),
+            )
+
+        by_key = {metric["history_key"]: metric for metric in metrics}
+        self.assertEqual(by_key["kofia-securities-market-investor-deposits"]["frequency"], "일간")
+        self.assertEqual(by_key["kofia-securities-market-investor-deposits"]["value"], 72.0)
+        self.assertEqual(by_key["kofia-credit-financing-balance"]["value"], 39.0)
+        self.assertEqual(by_key["kofia-cma-balance"]["value"], 31.0)
+        self.assertTrue(all(metric["market_category"] == "신용·예탁금" for metric in metrics))
 
     def test_completed_month_helpers(self):
         self.assertEqual(
