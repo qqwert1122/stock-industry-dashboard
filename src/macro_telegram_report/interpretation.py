@@ -107,6 +107,25 @@ def display_current_value(metric: dict[str, Any]) -> str:
     return str(metric.get("display_value") or metric.get("value") or "").strip()
 
 
+def normalized_phrase(value: str) -> str:
+    return re.sub(r"[\s,.;:·\-–—()[\]{}]+", "", value or "")
+
+
+def combine_text_parts(*parts: str) -> str:
+    combined: list[str] = []
+    normalized: list[str] = []
+    for part in parts:
+        text = str(part or "").strip()
+        norm = normalized_phrase(text)
+        if not text or not norm:
+            continue
+        if any(norm == existing or norm in existing for existing in normalized):
+            continue
+        combined.append(text)
+        normalized.append(norm)
+    return " ".join(combined)
+
+
 def trend_label(metric: dict[str, Any]) -> str:
     history = metric.get("history")
     if not isinstance(history, list) or len(history) < 2:
@@ -381,14 +400,14 @@ def threshold_interpretation(
         details.append(percentile_level_label(metric, rule, pct, window_label))
     if trend:
         details.append(trend)
-    detail_text = " ".join(details)
+    detail_text = combine_text_parts(*details)
     return {
         "zone": zone,
         "level_label": level_label,
         "headline": headline,
         "detail_text": detail_text,
         "trend_label": trend,
-        "text": " ".join(part for part in (headline, detail_text) if part),
+        "text": combine_text_parts(headline, detail_text),
         "caption": "계산 기반 해석",
         "source": "threshold",
     }
@@ -441,23 +460,28 @@ def build_interpretation(metric: dict[str, Any], config: dict[str, Any]) -> dict
     zone = percentile_zone(pct)
     level_label = percentile_level_label(metric, rule, pct, window_label)
     trend = trend_label(metric)
-    meaning = str(metric.get("meaning") or "").strip()
     status = polarity_text(metric, rule, zone)
-    detail_parts = [level_label]
+    detail_parts: list[str] = []
     if trend:
         detail_parts.append(trend)
-    if rule.get("percentile_basis") and status:
-        detail_parts.append(status)
-    detail_text = " ".join(detail_parts)
-    headline = level_label if rule.get("percentile_basis") else status or meaning or level_label
-    text_parts = [headline, detail_text]
+
+    if rule.get("percentile_basis"):
+        headline = level_label
+        if status:
+            detail_parts.insert(0, status)
+    elif status:
+        headline = status
+        detail_parts.insert(0, level_label)
+    else:
+        headline = f"현재값은 {level_label}에 있습니다."
+    detail_text = combine_text_parts(*detail_parts)
     return {
         "zone": zone,
         "level_label": level_label,
         "headline": headline,
         "detail_text": detail_text,
         "trend_label": trend,
-        "text": " ".join(part for part in text_parts if part),
+        "text": combine_text_parts(headline, detail_text),
         "caption": "계산 기반 해석",
         "source": "percentile",
     }

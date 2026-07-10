@@ -8,6 +8,15 @@
 # https://www.nyse.com/markets/hours-calendars
 # 2026 KRX 연말/연초 운영: 한국거래소 공지 기반 증권사 안내
 # https://www.samsungpop.com/ux/kor/customer/notice/notice/noticeViewContent.do?MenuSeqNo=23456
+# 2026 tracked-company earnings:
+# - US/ADR dates: Nasdaq earnings calendar API, queried 2026-07-09
+# - Samsung Electronics/Oracle: company IR pages
+# - Korea-listed dates without confirmed company IR notices: public Q2 earnings calendars/Quartr/Investing.com, checked 2026-07-09
+# Future technology report seasons:
+# - Stanford AI Index: https://aiindex.stanford.edu/report/
+# - California DMV autonomous vehicle reports: https://www.dmv.ca.gov/portal/vehicle-industry-services/autonomous-vehicles/
+# - Fusion Industry Association reports: https://www.fusionindustryassociation.org/fusion-industry-reports/
+# - IFR World Robotics: https://ifr.org/worldrobotics/
 events:
   - {date: "2026-01-01", name: "NYSE 휴장", category: "holiday", country: "US", note: "New Year's Day"}
   - {date: "2026-01-01", name: "KRX 휴장", category: "holiday", country: "KR", note: "신정"}
@@ -27,6 +36,7 @@ events:
   - {date: "2026-04-03", name: "NYSE 휴장", category: "holiday", country: "US", note: "Good Friday"}
   - {date: "2026-04-10", name: "한국은행 금통위", category: "bok", country: "KR", note: "통화정책방향 결정회의"}
   - {date: "2026-04-10", name: "미국 CPI 발표", category: "us_data", country: "US", note: "2026년 3월 CPI"}
+  - {date: "2026-04-15", name: "Stanford AI Index 발표 시즌", name_en: "Stanford AI Index report season", category: "future", country: "GLOBAL", note: "AI 성능·비용·투자·도입 흐름을 연례로 확인하는 시즌", note_en: "Annual season for checking AI capability, cost, investment, and adoption trends"}
   - {date: "2026-04-29", name: "FOMC 결정", category: "fed", country: "US", note: "4월 FOMC"}
   - {date: "2026-05-01", name: "KRX 휴장", category: "holiday", country: "KR", note: "근로자의 날"}
   - {date: "2026-05-05", name: "KRX 휴장", category: "holiday", country: "KR", note: "어린이날"}
@@ -39,13 +49,60 @@ events:
   - {date: "2026-06-19", name: "NYSE 휴장", category: "holiday", country: "US", note: "Juneteenth"}
   - {date: "2026-07-03", name: "NYSE 휴장", category: "holiday", country: "US", note: "Independence Day observed"}
   - {date: "2026-07-14", name: "미국 CPI 발표", category: "us_data", country: "US", note: "2026년 6월 CPI"}
+  - {date: "2026-07-14", name: "JPMorgan Chase 실적", category: "earnings", country: "US", note: "2Q26, pre-market"}
+  - {date: "2026-07-15", name: "ASML 실적", category: "earnings", country: "NL", note: "2Q26, pre-market"}
   - {date: "2026-07-16", name: "한국은행 금통위", category: "bok", country: "KR", note: "통화정책방향 결정회의"}
+  - {date: "2026-07-16", name: "POSCO홀딩스 실적", category: "earnings", country: "KR", note: "2Q26, 국내 실적 캘린더 기준"}
+  - {date: "2026-07-16", name: "TSMC 실적", category: "earnings", country: "TW", note: "2Q26, pre-market"}
+  - {date: "2026-07-21", name: "D.R. Horton 실적", category: "earnings", country: "US", note: "2Q26, pre-market"}
+  - {date: "2026-07-22", name: "핵융합 산업 리포트 시즌", name_en: "Fusion industry report season", category: "future", country: "GLOBAL", note: "민간 핵융합 투자·공급망·상업화 목표를 점검하는 시즌", note_en: "Season for checking private fusion funding, supply chain, and commercialization targets"}
+  - {date: "2026-07-22", name: "Alphabet 실적", category: "earnings", country: "US", note: "2Q26"}
+  - {date: "2026-07-22", name: "GE Vernova 실적", category: "earnings", country: "US", note: "2Q26, pre-market"}
+  - {date: "2026-07-22", name: "삼성바이오로직스 실적", category: "earnings", country: "KR", note: "2Q26, Quartr 기준"}
+  - {date: "2026-07-22", name: "Tesla 실적", category: "earnings", country: "US", note: "2Q26, after-hours"}
+  - {date: "2026-07-23", name: "HD현대중공업 실적", category: "earnings", country: "KR", note: "2Q26, 국내 실적 캘린더 기준"}
+  - {date: "2026-07-23", name: "현대차 실적", category: "earnings", country: "KR", note: "2Q26"}
+  - {date: "2026-07-23", name: "Intel 실적", category: "earnings", country: "US", note: "2Q26, after-hours"}
+  - {date: "2026-07-23", name: "LG에너지솔루션 실적", category: "earnings", country: "KR", note: "2Q26, Investing.com/국내 실적 캘린더 기준"}
+  - {date: "2026-07-23", name: "Lockheed Martin 실적", category: "earnings", country: "US", note: "2Q26, pre-market"}
+  - {date: "2026-07-23", name: "삼성SDI 실적", category: "earnings", country: "KR", note: "2Q26, 국내 실적 캘린더 기준"}
+  - {date: "2026-07-27", name: "Nucor 실적", category: "earnings", country: "US", note: "2Q26, after-hours"}
+  - {date: "2026-07-28", name: "KB금융 실적", category: "earnings", country: "KR", note: "2Q26, 국내 실적 캘린더 기준"}
   - {date: "2026-07-29", name: "FOMC 결정", category: "fed", country: "US", note: "7월 FOMC"}
+  - {date: "2026-07-29", name: "Lam Research 실적", category: "earnings", country: "US", note: "2Q26"}
+  - {date: "2026-07-29", name: "Meta Platforms 실적", category: "earnings", country: "US", note: "2Q26"}
+  - {date: "2026-07-29", name: "Microsoft 실적", category: "earnings", country: "US", note: "2Q26"}
+  - {date: "2026-07-29", name: "SK하이닉스 실적", category: "earnings", country: "KR", note: "2Q26, 국내 실적 캘린더 기준"}
+  - {date: "2026-07-30", name: "Amazon 실적", category: "earnings", country: "US", note: "2Q26"}
+  - {date: "2026-07-30", name: "Coinbase 실적", category: "earnings", country: "US", note: "2Q26"}
+  - {date: "2026-07-30", name: "Huntington Ingalls 실적", category: "earnings", country: "US", note: "2Q26"}
+  - {date: "2026-07-30", name: "삼성전자 실적", category: "earnings", country: "KR", note: "2Q26 earnings conference call, 10:00 KST"}
+  - {date: "2026-08-04", name: "AMD 실적", category: "earnings", country: "US", note: "2Q26"}
+  - {date: "2026-08-04", name: "Teradyne 실적", category: "earnings", country: "US", note: "2Q26"}
+  - {date: "2026-08-05", name: "Albemarle 실적", category: "earnings", country: "US", note: "2Q26, after-hours"}
+  - {date: "2026-08-05", name: "Eli Lilly 실적", category: "earnings", country: "US", note: "2Q26, pre-market"}
+  - {date: "2026-08-06", name: "LG화학 실적", category: "earnings", country: "KR", note: "2Q26, Quartr 기준"}
+  - {date: "2026-08-06", name: "Rocket Lab 실적", category: "earnings", country: "US", note: "2Q26"}
+  - {date: "2026-08-06", name: "Toyota 실적", category: "earnings", country: "JP", note: "2Q26"}
+  - {date: "2026-08-07", name: "Exxon Mobil 실적", category: "earnings", country: "US", note: "2Q26"}
+  - {date: "2026-08-07", name: "한화에어로스페이스 실적", category: "earnings", country: "KR", note: "2Q26, 국내 실적 캘린더 기준"}
+  - {date: "2026-08-07", name: "한국전력 실적", category: "earnings", country: "KR", note: "2Q26, Business Insider 기준"}
+  - {date: "2026-08-07", name: "NAVER 실적", category: "earnings", country: "KR", note: "2Q26, Quartr 기준"}
+  - {date: "2026-08-07", name: "쎄트렉아이 실적", category: "earnings", country: "KR", note: "2Q26, Investing.com/국내 실적 캘린더 기준"}
+  - {date: "2026-08-11", name: "Circle 실적", category: "earnings", country: "US", note: "2Q26"}
+  - {date: "2026-08-11", name: "CoreWeave 실적", category: "earnings", country: "US", note: "2Q26"}
   - {date: "2026-08-12", name: "미국 CPI 발표", category: "us_data", country: "US", note: "2026년 7월 CPI"}
+  - {date: "2026-08-13", name: "Applied Materials 실적", category: "earnings", country: "US", note: "3Q26, after-hours"}
+  - {date: "2026-08-18", name: "현대건설 실적", category: "earnings", country: "KR", note: "2Q26, 국내 실적 캘린더 기준"}
+  - {date: "2026-08-19", name: "두산로보틱스 실적", category: "earnings", country: "KR", note: "2Q26, Investing.com/국내 실적 캘린더 기준"}
+  - {date: "2026-08-26", name: "NVIDIA 실적", category: "earnings", country: "US", note: "2Q26"}
   - {date: "2026-08-27", name: "한국은행 금통위", category: "bok", country: "KR", note: "통화정책방향 결정회의"}
   - {date: "2026-09-07", name: "NYSE 휴장", category: "holiday", country: "US", note: "Labor Day"}
+  - {date: "2026-09-08", name: "Oracle 실적", category: "earnings", country: "US", note: "1Q FY2027, estimated"}
   - {date: "2026-09-11", name: "미국 CPI 발표", category: "us_data", country: "US", note: "2026년 8월 CPI"}
   - {date: "2026-09-16", name: "FOMC 결정", category: "fed", country: "US", note: "9월 FOMC·SEP"}
+  - {date: "2026-09-23", name: "Micron 실적", category: "earnings", country: "US", note: "4Q FY2026, expected after-hours"}
+  - {date: "2026-09-24", name: "World Robotics 발표 시즌", name_en: "World Robotics report season", category: "future", country: "GLOBAL", note: "로봇 설치 대수와 지역별 자동화 수요를 확인하는 시즌", note_en: "Season for checking robot installations and regional automation demand"}
   - {date: "2026-09-24", name: "KRX 휴장", category: "holiday", country: "KR", note: "추석 연휴"}
   - {date: "2026-09-25", name: "KRX 휴장", category: "holiday", country: "KR", note: "추석 연휴"}
   - {date: "2026-10-05", name: "KRX 휴장", category: "holiday", country: "KR", note: "개천절 대체휴일"}

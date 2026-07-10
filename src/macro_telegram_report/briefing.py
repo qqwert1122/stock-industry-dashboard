@@ -110,6 +110,7 @@ def load_day_document(data_path: Path, date_key: str) -> dict[str, Any]:
 
 
 def compact_card(card: dict[str, Any]) -> dict[str, Any]:
+    narrative_topics = card.get("narrative_topics")
     return {
         "id": str(card.get("id") or ""),
         "date": briefing_date_key(str(card.get("generated_at") or "")),
@@ -122,6 +123,11 @@ def compact_card(card: dict[str, Any]) -> dict[str, Any]:
         "session_label": str((card.get("session_context") or {}).get("label") or ""),
         "gate_reason": str(card.get("gate_reason") or ""),
         "gemini_call_attempted": bool(card.get("gemini_call_attempted")),
+        "narrative_topics": [
+            str(topic)
+            for topic in (narrative_topics if isinstance(narrative_topics, list) else [])
+            if str(topic or "").strip()
+        ][:4],
     }
 
 

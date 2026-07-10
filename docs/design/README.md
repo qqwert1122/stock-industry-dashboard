@@ -5,6 +5,7 @@
 
 | 문서 | 내용 |
 |---|---|
+| [design.md](design.md) | **디자인 시스템 가이드** — 색상 토큰·타이포·컴포넌트 패턴·모션·z-index (프론트 스타일 공통 기준) |
 | [track-a-freshness-and-ai.md](track-a-freshness-and-ai.md) | **Track A — 데이터 신선도 · AI 카드 고도화 · 운영 가시성** (요구사항 2, 5, 6, 7) |
 | [track-b-market-overview.md](track-b-market-overview.md) | **Track B — '시황' 메뉴 신설(수급 중심) · 지표 해석 레이어** (요구사항 3, 4) |
 | [agent-prompts.md](agent-prompts.md) | Phase별 코딩 에이전트 실행 프롬프트 (복붙용) |
@@ -18,6 +19,11 @@
 | [feature-qol-pack.md](feature-qol-pack.md) | **Q1~Q4** — 일일 변화 히트맵 / CSV 내보내기 / PWA / 주간 아카이브(보류) + 실행 프롬프트 |
 | [feature-search-v2.md](feature-search-v2.md) | **S2** — 검색 고도화 (초성·별칭·랭킹 부스트·키보드 내비, 통합 검색은 보류) + 실행 프롬프트 |
 | [ia-consistency.md](ia-consistency.md) | **IA 정합 규칙** — 메뉴 트리 최종본·상단 스택 순서·고정 요소 좌표 (프론트 Phase 공통 우선 기준) + B1.1 해시 라우팅 |
+| [feature-future-timeline.md](feature-future-timeline.md) | **F1~F3** — '미래' 상위 메뉴 (일반인 대상 기술 타임라인, 3문 설명 레이어 + TRL 스택 + 의존 순서도 + changelog 관찰) + 실행 프롬프트 |
+| [feature-future-readings.md](feature-future-readings.md) | **F4** — '미래' 읽을거리 레이어 (기술별 리포트·뉴스레터 학습 경로, 입문→중급→심화, 링크 건강 체크) + 실행 프롬프트 |
+| [feature-future-readings-agent.md](feature-future-readings-agent.md) | **F5** — 읽을거리 큐레이션 에이전트 (분기별 웹 탐색→하드 반려만 거르고 자동 게재, 사후 감사 이슈 + removed.yaml 1줄 제거) + 실행 프롬프트 |
+| [feature-future-track-record.md](feature-future-track-record.md) | **F6** — 예측의 성적표 (과거 기술 예측 vs 실제 완성 시점 덤벨 아카이브, 주체별 스코어카드, F1 출처 배지 연동) + 실행 프롬프트 |
+| [feature-future-tech-breakdown.md](feature-future-tech-breakdown.md) | **F7** — 기술 요구사항 브레이크다운 (도메인별 능력 사다리: 자율주행 L0~L5·통신 세대·HBM 세대, 목표/현재 단·달성 기업·병목) + **저자 작성 위키 콘텐츠**(로보택시·AGI·휴머노이드) + 실행 프롬프트 |
 
 공통 제약(요구사항 1): **운영 비용 0원.** 유료 API·유료 호스팅·유료 모델 금지.
 무료 한도(GitHub Actions, Gemini free tier, 각 공공/무료 API) 안에서만 동작해야 한다.

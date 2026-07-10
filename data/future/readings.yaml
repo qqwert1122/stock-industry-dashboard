@@ -1,0 +1,380 @@
+- technology: _common
+  items:
+    - title: 기술 변화를 읽는 기본 틀
+      title_en: A Baseline Framework for Reading Technology Change
+      url: https://ourworldindata.org/technological-change
+      type: 글
+      type_en: Article
+      level: 입문
+      lang: EN
+      effort: 20분
+      effort_en: 20 min
+      why: 기술 확산은 갑자기 일어나는 사건이 아니라 비용, 성능, 채택률이 함께 움직이는 과정이라는 점을 잡아줍니다.
+      why_en: It frames technological change as a process of cost, performance, and adoption rather than a single headline event.
+      checked_at: 2026-07-10
+      curated_by: human
+    - title: TRL로 기술 성숙도 읽기
+      title_en: Reading Technology Maturity with TRL
+      url: https://www.nasa.gov/directorates/somd/space-communications-navigation-program/technology-readiness-levels/
+      type: 공식문서
+      type_en: Official
+      level: 입문
+      lang: EN
+      effort: 10분
+      effort_en: 10 min
+      why: 미래 기술을 볼 때 “아이디어”, “실험”, “제품화 직전”을 구분하는 가장 단순한 기준입니다.
+      why_en: A simple way to separate ideas, tests, and near-product technologies.
+      checked_at: 2026-07-10
+      curated_by: human
+
+- technology: agi-2029
+  items:
+    - title: AGI란 무엇인가
+      title_en: What Is Artificial General Intelligence?
+      url: https://www.ibm.com/think/topics/artificial-general-intelligence
+      type: 글
+      type_en: Article
+      level: 입문
+      lang: EN
+      effort: 10분
+      effort_en: 10 min
+      why: AGI가 일반 AI 챗봇과 무엇이 다른지, 왜 경제 전반의 생산성 논의로 이어지는지 쉽게 잡아줍니다.
+      why_en: Explains how AGI differs from narrow AI and why it matters for broad productivity debates.
+      checked_at: 2026-07-10
+      curated_by: human
+    - title: Stanford AI Index
+      title_en: Stanford AI Index
+      url: https://aiindex.stanford.edu/report/
+      type: 리포트
+      type_en: Report
+      level: 중급
+      lang: EN
+      effort: 1시간+
+      effort_en: 1h+
+      cadence: 연간
+      cadence_en: Annual
+      why: 모델 성능, 비용, 투자, 산업 도입을 한 번에 확인할 수 있어 AI 사이클의 기본 자료로 쓰기 좋습니다.
+      why_en: A broad annual reference for model capability, costs, investment, and adoption.
+      checked_at: 2026-07-10
+      curated_by: human
+    - title: Epoch AI 데이터
+      title_en: Epoch AI Data
+      url: https://epoch.ai/data
+      type: 데이터
+      type_en: Data
+      level: 심화
+      lang: EN
+      effort: 30분
+      effort_en: 30 min
+      why: 학습 컴퓨트, 모델 규모, 벤치마크 흐름을 숫자로 확인해 “AI가 얼마나 빨라지는가”를 추적할 수 있습니다.
+      why_en: Tracks compute, model scale, and benchmark trends for measuring AI progress.
+      checked_at: 2026-07-10
+      curated_by: human
+
+- technology: robotaxi
+  items:
+    - title: Waymo Safety
+      title_en: Waymo Safety
+      url: https://waymo.com/safety/
+      type: 공식문서
+      type_en: Official
+      level: 입문
+      lang: EN
+      effort: 15분
+      effort_en: 15 min
+      why: 로보택시가 어느 조건에서 실제 서비스로 작동하는지 안전성과 운영 범위 중심으로 볼 수 있습니다.
+      why_en: Shows how robotaxi service is framed around safety and operating domains.
+      checked_at: 2026-07-10
+      curated_by: human
+    - title: California DMV Autonomous Vehicle Reports
+      title_en: California DMV Autonomous Vehicle Reports
+      url: https://www.dmv.ca.gov/portal/vehicle-industry-services/autonomous-vehicles/
+      type: 공식문서
+      type_en: Official
+      level: 중급
+      lang: EN
+      effort: 30분
+      effort_en: 30 min
+      cadence: 연간
+      cadence_en: Annual
+      why: 실제 도로 테스트와 규제 보고를 같이 볼 수 있어 자율주행 기술의 현장 검증 정도를 확인하기 좋습니다.
+      why_en: Links road testing and regulatory reporting, useful for checking real-world validation.
+      checked_at: 2026-07-10
+      curated_by: human
+    - title: Waymo Research
+      title_en: Waymo Research
+      url: https://waymo.com/research/
+      type: 글
+      type_en: Article
+      level: 심화
+      lang: EN
+      effort: 30분
+      effort_en: 30 min
+      why: 로보택시의 안전성, 시뮬레이션, 도시 확장 문제를 기술 관점에서 더 깊게 볼 수 있습니다.
+      why_en: Goes deeper into safety, simulation, and city-scale deployment problems.
+      checked_at: 2026-07-10
+      curated_by: human
+
+- technology: humanoid-robots
+  items:
+    - title: IFR World Robotics
+      title_en: IFR World Robotics
+      url: https://ifr.org/worldrobotics/
+      type: 리포트
+      type_en: Report
+      level: 입문
+      lang: EN
+      effort: 20분
+      effort_en: 20 min
+      cadence: 연간
+      cadence_en: Annual
+      why: 로봇 시장을 볼 때 먼저 산업용 로봇 설치 대수와 지역별 수요 흐름을 확인할 수 있습니다.
+      why_en: A starting point for robot adoption, installation, and regional demand trends.
+      checked_at: 2026-07-10
+      curated_by: human
+    - title: Boston Dynamics Atlas
+      title_en: Boston Dynamics Atlas
+      url: https://bostondynamics.com/atlas/
+      type: 공식문서
+      type_en: Official
+      level: 중급
+      lang: EN
+      effort: 10분
+      effort_en: 10 min
+      why: 휴머노이드 로봇이 실제로 어떤 동작과 하드웨어 문제를 풀고 있는지 제품 관점에서 볼 수 있습니다.
+      why_en: A product-level view of motion, hardware, and humanoid robot engineering challenges.
+      checked_at: 2026-07-10
+      curated_by: human
+    - title: Unitree G1
+      title_en: Unitree G1
+      url: https://www.unitree.com/g1
+      type: 공식문서
+      type_en: Official
+      level: 중급
+      lang: EN
+      effort: 15분
+      effort_en: 15 min
+      why: 휴머노이드 로봇의 관절, 손 조작, 가격대가 실제 제품 형태로 어디까지 내려왔는지 확인할 수 있습니다.
+      why_en: Shows how far humanoid joints, hands, and product-level pricing have moved toward real products.
+      checked_at: 2026-07-10
+      curated_by: human
+
+- technology: longevity-escape
+  items:
+    - title: Longevity Escape Velocity 개념 논문
+      title_en: Longevity Escape Velocity Concept Paper
+      url: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6777448/
+      type: 글
+      type_en: Article
+      level: 입문
+      lang: EN
+      effort: 30분
+      effort_en: 30 min
+      why: 수명 탈출 속도가 과학적 사실이라기보다 어떤 가정 위에 놓인 개념인지 이해하는 데 좋습니다.
+      why_en: Helps separate the concept and assumptions from proven medical outcomes.
+      checked_at: 2026-07-10
+      curated_by: human
+    - title: ClinicalTrials.gov
+      title_en: ClinicalTrials.gov
+      url: https://clinicaltrials.gov/search
+      type: 데이터
+      type_en: Data
+      level: 중급
+      lang: EN
+      effort: 20분
+      effort_en: 20 min
+      why: 노화, 암, 희귀질환 관련 임상시험이 실제로 늘고 있는지 직접 확인할 수 있습니다.
+      why_en: Lets you check whether trials in aging, cancer, and rare diseases are actually expanding.
+      checked_at: 2026-07-10
+      curated_by: human
+    - title: Nature Biotechnology
+      title_en: Nature Biotechnology
+      url: https://www.nature.com/nbt/
+      type: 글
+      type_en: Article
+      level: 심화
+      lang: EN
+      effort: 30분+
+      effort_en: 30 min+
+      why: 바이오 기술이 실험실에서 산업으로 넘어가는 과정을 논문과 업계 뉴스로 함께 볼 수 있습니다.
+      why_en: Useful for tracking how biotech moves from lab work toward industrial applications.
+      checked_at: 2026-07-10
+      curated_by: human
+
+- technology: gene-therapy-mainstream
+  items:
+    - title: NCI Gene Therapy Definition
+      title_en: NCI Gene Therapy Definition
+      url: https://www.cancer.gov/publications/dictionaries/cancer-terms/def/gene-therapy
+      type: 공식문서
+      type_en: Official
+      level: 입문
+      lang: EN
+      effort: 15분
+      effort_en: 15 min
+      why: 유전자 치료가 무엇을 바꾸는 치료인지 가장 짧게 확인하고, CAR-T 같은 실제 적용 사례로 이어가기 좋습니다.
+      why_en: A short official baseline for what gene therapy changes and how it connects to real applications such as CAR-T.
+      checked_at: 2026-07-10
+      curated_by: human
+    - title: openFDA Drugs@FDA
+      title_en: openFDA Drugs@FDA
+      url: https://open.fda.gov/apis/drug/drugsfda/
+      type: 공식문서
+      type_en: Official
+      level: 중급
+      lang: EN
+      effort: 20분
+      effort_en: 20 min
+      cadence: 수시
+      cadence_en: Ongoing
+      why: FDA 승인 데이터의 구조를 확인해 신약·바이오 규제 이벤트를 데이터로 추적할 수 있습니다.
+      why_en: Shows how FDA approval records are structured so regulatory events can be tracked as data.
+      checked_at: 2026-07-10
+      curated_by: human
+    - title: ClinicalTrials.gov
+      title_en: ClinicalTrials.gov
+      url: https://clinicaltrials.gov/search
+      type: 데이터
+      type_en: Data
+      level: 심화
+      lang: EN
+      effort: 20분
+      effort_en: 20 min
+      why: 특정 치료 분야와 임상 단계별 파이프라인을 직접 검색해 기술 확산 속도를 확인할 수 있습니다.
+      why_en: Lets you search pipeline depth by disease area and trial phase.
+      checked_at: 2026-07-10
+      curated_by: human
+
+- technology: fusion-power
+  items:
+    - title: DOE Explains Nuclear Fusion Reactions
+      title_en: DOE Explains Nuclear Fusion Reactions
+      url: https://www.energy.gov/science/doe-explainsnuclear-fusion-reactions
+      type: 공식문서
+      type_en: Official
+      level: 입문
+      lang: EN
+      effort: 10분
+      effort_en: 10 min
+      why: 핵융합이 기존 원전과 무엇이 다르고 왜 상업화가 어려운지 기본 원리를 잡아줍니다.
+      why_en: A simple baseline for how fusion differs from fission and why commercialization is hard.
+      checked_at: 2026-07-10
+      curated_by: human
+    - title: Fusion Industry Association Reports
+      title_en: Fusion Industry Association Reports
+      url: https://www.fusionindustryassociation.org/fusion-industry-reports/
+      type: 리포트
+      type_en: Report
+      level: 중급
+      lang: EN
+      effort: 30분
+      effort_en: 30 min
+      cadence: 연간
+      cadence_en: Annual
+      why: 민간 핵융합 기업의 투자, 목표 일정, 기술 방식이 어떻게 움직이는지 한 번에 볼 수 있습니다.
+      why_en: Tracks private fusion funding, target timelines, and technology approaches.
+      checked_at: 2026-07-10
+      curated_by: human
+    - title: Fusion Industry Association - About Fusion
+      title_en: Fusion Industry Association - About Fusion
+      url: https://www.fusionindustryassociation.org/about-fusion/
+      type: 글
+      type_en: Article
+      level: 심화
+      lang: EN
+      effort: 20분
+      effort_en: 20 min
+      why: 핵융합 산업의 주요 방식과 병목을 더 넓은 산업 관점으로 볼 수 있습니다.
+      why_en: Adds an industry view of fusion approaches and bottlenecks.
+      checked_at: 2026-07-10
+      curated_by: human
+
+- technology: commercial-space
+  items:
+    - title: NASA Commercial Space
+      title_en: NASA Commercial Space
+      url: https://www.nasa.gov/commercial-space/
+      type: 공식문서
+      type_en: Official
+      level: 입문
+      lang: EN
+      effort: 15분
+      effort_en: 15 min
+      why: 정부 우주 프로그램이 민간 기업과 어떤 방식으로 연결되는지 큰 흐름을 잡을 수 있습니다.
+      why_en: Shows how government space programs connect with private companies.
+      checked_at: 2026-07-10
+      curated_by: human
+    - title: BryceTech Reports
+      title_en: BryceTech Reports
+      url: https://brycetech.com/reports
+      type: 리포트
+      type_en: Report
+      level: 중급
+      lang: EN
+      effort: 30분
+      effort_en: 30 min
+      cadence: 비정기
+      cadence_en: Irregular
+      why: 발사, 위성, 우주 인프라 시장을 산업 데이터 관점에서 확인할 수 있습니다.
+      why_en: Useful industry data for launch, satellite, and space infrastructure markets.
+      checked_at: 2026-07-10
+      curated_by: human
+    - title: Payload
+      title_en: Payload
+      url: https://payloadspace.com/
+      type: 뉴스레터
+      type_en: Newsletter
+      level: 중급
+      lang: EN
+      effort: 10분
+      effort_en: 10 min
+      cadence: 주간
+      cadence_en: Weekly
+      why: 민간 우주 기업의 계약, 발사 일정, 자금 조달 흐름을 빠르게 따라가기 좋습니다.
+      why_en: A quick way to follow contracts, launch schedules, and funding in commercial space.
+      checked_at: 2026-07-10
+      curated_by: human
+
+- technology: singularity-2045
+  items:
+    - title: The Singularity Is Nearer
+      title_en: The Singularity Is Nearer
+      url: https://www.penguinrandomhouse.com/books/529669/the-singularity-is-nearer-by-ray-kurzweil/
+      type: 책
+      type_en: Book
+      level: 입문
+      lang: EN
+      effort: 책
+      effort_en: Book
+      why: 특이점 논의의 대표적인 낙관 시나리오를 원문 맥락에서 볼 수 있습니다.
+      why_en: The key optimistic scenario behind many singularity discussions.
+      checked_at: 2026-07-10
+      curated_by: human
+    - title: KurzweilAI
+      title_en: KurzweilAI
+      url: https://www.kurzweilai.net/
+      type: 글
+      type_en: Article
+      level: 중급
+      lang: EN
+      effort: 15분
+      effort_en: 15 min
+      cadence: 비정기
+      cadence_en: Irregular
+      why: 특이점 논의가 어떤 기술 뉴스와 연결되어 해석되는지 흐름을 따라볼 수 있습니다.
+      why_en: Helps track how singularity arguments connect to current technology news.
+      checked_at: 2026-07-10
+      curated_by: human
+    - title: Epoch AI Trends
+      title_en: Epoch AI Trends
+      url: https://epoch.ai/trends
+      type: 데이터
+      type_en: Data
+      level: 심화
+      lang: EN
+      effort: 30분
+      effort_en: 30 min
+      why: 특이점 논의의 핵심인 컴퓨트, 모델 성능, 비용 곡선을 숫자로 확인할 수 있습니다.
+      why_en: Adds data on compute, capability, and cost curves behind singularity debates.
+      checked_at: 2026-07-10
+      curated_by: human

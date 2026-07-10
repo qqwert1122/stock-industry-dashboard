@@ -148,6 +148,32 @@ class InterpretationTest(unittest.TestCase):
 
         self.assertNotRegex(interpretation["text"], r"좋|나쁘|부담|우호|위험|과열|저평가|고평가")
 
+    def test_percentile_interpretation_does_not_reuse_metric_meaning(self):
+        points = [(date(2025, 1, 1) + timedelta(days=i), float(i)) for i in range(20)]
+        metric = make_metric(
+            industry="테스트",
+            name="설명 중복 방지 지표",
+            source="테스트",
+            source_url="https://example.com",
+            frequency="월간",
+            automation="자동",
+            status="ok",
+            value=19.0,
+            unit="지수",
+            observed_at=points[-1][0].isoformat(),
+            previous_value=18.0,
+            history=points,
+            group="기타",
+            meaning="이 문장은 지표가 무엇인지 알려주는 설명입니다.",
+        )
+        metric["percentiles"] = percentile_stats(points, 19.0)
+
+        interpretation = build_interpretation(metric, {"interpretation": {"rules": []}})
+
+        self.assertIn("현재값은", interpretation["headline"])
+        self.assertNotIn("이 문장은", interpretation["text"])
+        self.assertEqual(interpretation["text"].count(interpretation["level_label"]), 1)
+
     def test_cape_uses_1871_percentile_headline(self):
         points = [(date(2025, 1, 1) + timedelta(days=i), float(i)) for i in range(20)]
         metric = make_metric(

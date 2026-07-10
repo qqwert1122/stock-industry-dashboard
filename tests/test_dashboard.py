@@ -8,17 +8,23 @@ import json
 from macro_telegram_report.dashboard import (
     DEFAULT_INDUSTRIES,
     annotate_dashboard_updates,
+    annotate_metric_freshness,
     briefing_generation_decision,
     briefing_metric_snapshot,
     briefing_session_context,
+    build_freshness_summary,
     build_morning_briefing,
+    classify_yahoo_trading_period,
     collect_stablecoin_metrics,
+    collect_usaspending_metrics,
     completed_months,
     compute_spread_points,
     fiscal_month_to_calendar_date,
+    intraday_price_config,
     kosis_code_param,
     load_admin_template,
     make_metric,
+    market_narrative_context,
     month_date_range,
     openfda_month_range,
     parse_ecos_period,
@@ -30,8 +36,10 @@ from macro_telegram_report.dashboard import (
     parse_usaspending_monthly_amounts,
     parse_world_bank_month,
     parse_yahoo_chart_points,
+    persistent_market_events,
     render_dashboard_html,
     refresh_briefing_site,
+    rule_based_morning_briefing,
     sec_capex_points,
     narrative_context_for_briefing,
     visible_dashboard_metrics,
@@ -461,12 +469,244 @@ class DashboardTest(unittest.TestCase):
         self.assertNotIn("caveats", briefing)
         self.assertEqual(session.post_headers["x-goog-api-key"], "secret-test-key")
         self.assertIn("반도체 판매액", str(session.post_json))
-        self.assertIn("narrative_context", str(session.post_json))
+        self.assertIn("structural_lenses", str(session.post_json))
+        self.assertIn("market_narrative", str(session.post_json))
         self.assertIn("stock_market", str(session.post_json))
         self.assertIn("멀티플", str(session.post_json))
         self.assertIn("AI 서버", str(session.post_json))
         self.assertNotIn("secret-test-key", str(briefing))
         self.assertNotIn("secret-test-key", str(session.post_json))
+
+    def test_intraday_briefing_only_ranks_metrics_changed_since_previous_card(self):
+        payload = {
+            "metrics": [
+                {
+                    "id": "defense-old",
+                    "industry": "방산",
+                    "group": "대표주가",
+                    "name": "방산 대표주",
+                    "change_pct": -12.0,
+                    "change_pct_label": "-12.0%",
+                    "daily_status": "updated",
+                },
+                {
+                    "id": "semi-new",
+                    "industry": "반도체",
+                    "group": "대표주가",
+                    "name": "반도체 대표주",
+                    "change_pct": 2.1,
+                    "change_pct_label": "+2.1%",
+                },
+            ]
+        }
+
+        briefing = rule_based_morning_briefing(
+            payload,
+            {"changed_metrics": [{"id": "semi-new", "reason": "값 변화"}]},
+        )
+
+        self.assertEqual(briefing["top_movers"][0]["id"], "semi-new")
+        self.assertNotEqual(briefing["top_movers"][0]["id"], "defense-old")
+        self.assertIn("defense-old", [item["id"] for item in briefing["top_movers"]])
+
+    def test_market_narrative_prefers_current_leadership_and_penalizes_recent_topic(self):
+        def stock(metric_id, industry, change):
+            return {
+                "id": metric_id,
+                "industry": industry,
+                "group": "대표주가",
+                "history_key": f"equity-{metric_id.upper()}",
+                "name": metric_id,
+                "status": "ok",
+                "value": 100.0,
+                "display_value": "$100",
+                "change_pct": change,
+                "change_pct_label": f"{change:+.1f}%",
+            }
+
+        payload = {
+            "metrics": [
+                stock("nvda", "반도체", 3.2),
+                stock("amd", "반도체", 2.8),
+                stock("lmt", "방산", -2.1),
+                stock("hii", "방산", -2.0),
+                {
+                    "id": "spx",
+                    "name": "S&P 500",
+                    "industry": "매크로",
+                    "group": "시장지수",
+                    "status": "ok",
+                    "value": 7000.0,
+                    "change_pct": 0.5,
+                },
+            ],
+            "freshness_summary": {"status": "current"},
+        }
+        context = market_narrative_context(
+            payload,
+            {"key": "us", "benchmark_names": ["S&P 500"]},
+            [{"narrative_topics": ["산업:방산:weak"]}],
+            changed_ids={"nvda", "amd", "lmt", "hii"},
+        )
+
+        self.assertEqual(context["candidates"][0]["industry"], "반도체")
+        defense = next(item for item in context["candidates"] if item["industry"] == "방산")
+        self.assertGreater(defense["repetition_penalty"], 0)
+        self.assertEqual(context["market_breadth"]["sample_size"], 4)
+
+    def test_persistent_crash_remains_but_advances_the_story(self):
+        payload = {
+            "metrics": [
+                {
+                    "id": "defense",
+                    "industry": "방산",
+                    "group": "대표주가",
+                    "name": "방산 대표주",
+                    "status": "ok",
+                    "value": 88.0,
+                    "display_value": "$88",
+                    "change_pct": -12.0,
+                    "change_pct_label": "-12.0%",
+                }
+            ]
+        }
+        previous = {
+            "defense": {
+                "id": "defense",
+                "value": 92.0,
+                "change_pct": -8.0,
+                "observed_at": "2026-07-10",
+            }
+        }
+
+        events = persistent_market_events(
+            payload,
+            previous,
+            [{"narrative_topics": ["산업:방산:weak"]}],
+        )
+
+        self.assertEqual(events[0]["progression"], "낙폭 확대")
+        self.assertTrue(events[0]["mentioned_recently"])
+        self.assertIn("복사하지 말고", events[0]["instruction"])
+
+    def test_rule_based_briefing_keeps_persistent_crash_below_new_story(self):
+        payload = {
+            "generated_label": "2026-07-10 14:00 KST",
+            "source_status": [],
+            "metrics": [
+                {
+                    "id": "semi-new",
+                    "industry": "반도체",
+                    "group": "대표주가",
+                    "name": "NVIDIA(NVDA)",
+                    "history_key": "equity-NVDA",
+                    "status": "ok",
+                    "value": 204.0,
+                    "display_value": "$204",
+                    "change_pct": 3.0,
+                    "change_pct_label": "+3.0%",
+                },
+                {
+                    "id": "defense-old",
+                    "industry": "방산",
+                    "group": "대표주가",
+                    "name": "방산 대표주",
+                    "history_key": "equity-DEFENSE",
+                    "status": "ok",
+                    "value": 88.0,
+                    "display_value": "$88",
+                    "change_pct": -10.0,
+                    "change_pct_label": "-10.0%",
+                },
+            ],
+        }
+        context = {
+            "changed_metrics": [{"id": "semi-new"}],
+            "market_narrative": {
+                "candidates": [{"industry": "반도체", "label": "반도체 주도"}]
+            },
+            "persistent_events": [
+                {
+                    "id": "defense-old",
+                    "industry": "방산",
+                    "name": "방산 대표주",
+                    "change_pct_label": "-10.0%",
+                    "progression": "큰 움직임 지속",
+                }
+            ],
+        }
+
+        briefing = rule_based_morning_briefing(payload, context)
+
+        self.assertIn("반도체 주도", briefing["headline"])
+        self.assertEqual(briefing["bullets"][-1]["title"], "계속 볼 사건")
+        self.assertIn("큰 움직임 지속", briefing["bullets"][-1]["body"])
+
+    def test_freshness_uses_publication_lag_instead_of_calendar_age_only(self):
+        metrics = [
+            {
+                "id": "current-monthly",
+                "name": "월간 지표",
+                "source": "FRED API",
+                "frequency": "월간",
+                "status": "ok",
+                "fetch_status": "no_new_data",
+                "fetched_at": "2026-07-10T08:00:00+09:00",
+                "observed_at": "2026-05-01",
+            },
+            {
+                "id": "delayed-monthly",
+                "name": "오래된 월간 지표",
+                "source": "KOSIS OpenAPI",
+                "frequency": "월간",
+                "status": "ok",
+                "fetch_status": "no_new_data",
+                "fetched_at": "2026-07-10T08:00:00+09:00",
+                "observed_at": "2025-03-01",
+            },
+        ]
+
+        issues = annotate_metric_freshness(metrics, date(2026, 7, 10))
+        summary = build_freshness_summary(
+            metrics, "2026-07-10T08:00:00+09:00", date(2026, 7, 10)
+        )
+
+        self.assertFalse(metrics[0]["is_stale"])
+        self.assertTrue(metrics[1]["is_stale"])
+        self.assertEqual(len(issues), 1)
+        self.assertEqual(summary["current_count"], 1)
+        self.assertEqual(summary["delayed_count"], 1)
+
+    def test_intraday_price_scope_switches_markets_without_increasing_calls(self):
+        config = {
+            "equities": {
+                "items": [
+                    {"name": "한국", "symbol": "005930.KS"},
+                    {"name": "미국", "symbol": "NVDA"},
+                    {"name": "연속", "symbol": "ES=F", "refresh_scope": "intraday"},
+                ]
+            }
+        }
+        korea, _ = intraday_price_config(config, datetime.fromisoformat("2026-07-10T10:00:00+09:00"))
+        us, _ = intraday_price_config(config, datetime.fromisoformat("2026-07-10T20:00:00+09:00"))
+        off, _ = intraday_price_config(config, datetime.fromisoformat("2026-07-10T07:30:00+09:00"))
+
+        self.assertEqual([item["name"] for item in korea["equities"]["items"]], ["한국", "연속"])
+        self.assertEqual([item["name"] for item in us["equities"]["items"]], ["미국", "연속"])
+        self.assertEqual([item["name"] for item in off["equities"]["items"]], ["연속"])
+
+    def test_yahoo_trading_period_classifies_extended_sessions(self):
+        meta = {
+            "currentTradingPeriod": {
+                "pre": {"start": 100, "end": 199},
+                "regular": {"start": 200, "end": 299},
+                "post": {"start": 300, "end": 399},
+            }
+        }
+
+        self.assertEqual(classify_yahoo_trading_period(meta, 150), "premarket")
+        self.assertEqual(classify_yahoo_trading_period(meta, 250), "regular")
+        self.assertEqual(classify_yahoo_trading_period(meta, 350), "afterhours")
 
     def test_briefing_session_context_selects_session_benchmarks(self):
         korea = briefing_session_context(datetime.fromisoformat("2026-07-09T10:00:00+09:00"))
@@ -906,6 +1146,44 @@ class DashboardTest(unittest.TestCase):
 
         self.assertEqual(sec_capex_points(payload), [(date(2026, 3, 31), 44_000_000_000)])
 
+    def test_sec_capex_points_derives_quarters_from_cumulative_cash_flow(self):
+        rows = [
+            ("2025-06-01", "2025-08-31", 8_502_000_000, "2025-09-10"),
+            ("2025-06-01", "2025-11-30", 20_535_000_000, "2025-12-11"),
+            ("2025-06-01", "2026-02-28", 39_170_000_000, "2026-03-11"),
+            ("2025-06-01", "2026-05-31", 55_663_000_000, "2026-06-22"),
+        ]
+        payload = {
+            "facts": {
+                "us-gaap": {
+                    "PaymentsToAcquirePropertyPlantAndEquipment": {
+                        "units": {
+                            "USD": [
+                                {
+                                    "start": start,
+                                    "end": end,
+                                    "val": value,
+                                    "form": "10-Q" if index < 3 else "10-K",
+                                    "filed": filed,
+                                }
+                                for index, (start, end, value, filed) in enumerate(rows)
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+
+        self.assertEqual(
+            sec_capex_points(payload),
+            [
+                (date(2025, 8, 31), 8_502_000_000),
+                (date(2025, 11, 30), 12_033_000_000),
+                (date(2026, 2, 28), 18_635_000_000),
+                (date(2026, 5, 31), 16_493_000_000),
+            ],
+        )
+
     def test_usaspending_fiscal_month_conversion(self):
         self.assertEqual(fiscal_month_to_calendar_date("2025", "1"), date(2024, 10, 1))
         self.assertEqual(fiscal_month_to_calendar_date("2025", "4"), date(2025, 1, 1))
@@ -918,6 +1196,41 @@ class DashboardTest(unittest.TestCase):
             ]
         }
         self.assertEqual(parse_usaspending_monthly_amounts(payload), [(date(2025, 1, 1), 1_000_000_000)])
+
+    def test_usaspending_failure_keeps_cached_metric_and_marks_failed_attempt(self):
+        class FailingSession:
+            def post(self, *args, **kwargs):
+                raise RuntimeError("temporary timeout")
+
+        with TemporaryDirectory() as tmp:
+            history_path = Path(tmp)
+            (history_path / "usaspending-0.json").write_text(
+                json.dumps(
+                    {
+                        "version": 1,
+                        "key": "usaspending-0",
+                        "points": [["2026-05-01", 1.25], ["2026-06-01", 1.5]],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            config = {
+                "history": {"enabled": True, "dir": str(history_path)},
+                "usaspending": {
+                    "enabled": True,
+                    "items": [{"name": "미국 NASA 계약 의무액", "industry": "우주"}],
+                },
+            }
+
+            metrics = collect_usaspending_metrics(
+                config, FailingSession(), date(2026, 7, 10)
+            )
+
+        self.assertEqual(metrics[0]["status"], "ok")
+        self.assertEqual(metrics[0]["observed_at"], "2026-06-01")
+        self.assertEqual(metrics[0]["display_value"], "$1.50B")
+        self.assertTrue(metrics[0]["fetch_attempt_failed"])
+        self.assertIn("이전 저장값 표시", metrics[0]["note"])
 
     def test_parse_eia_period_and_points(self):
         self.assertEqual(parse_eia_period("2026-04"), date(2026, 4, 1))
@@ -973,6 +1286,7 @@ class DashboardTest(unittest.TestCase):
     def test_kosis_helpers(self):
         self.assertEqual(kosis_code_param(["a0", "a1"]), "a0+a1+")
         self.assertEqual(kosis_code_param("sales"), "sales+")
+        self.assertEqual(parse_kosis_period("20260629", "D"), date(2026, 6, 29))
         self.assertEqual(parse_kosis_period("202605", "M"), date(2026, 5, 1))
         self.assertEqual(parse_kosis_period("2025", "Y"), date(2025, 1, 1))
         payload = [

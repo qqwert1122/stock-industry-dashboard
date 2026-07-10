@@ -1,0 +1,296 @@
+- id: newell-simon-chess
+  name: 체스 세계챔피언 격파 AI
+  name_en: AI Defeats the World Chess Champion
+  predicted_by: 뉴웰·사이먼
+  predicted_by_en: Newell and Simon
+  by_id: newell-simon
+  predicted_in: 1958
+  predicted_for: 1968년까지
+  predicted_for_en: By 1968
+  predicted_for_year: 1968
+  actual_year: 1997
+  actual_label: IBM 딥블루가 가리 카스파로프를 표준 대국 조건의 6번기에서 이김
+  actual_label_en: IBM Deep Blue beat Garry Kasparov in a six-game match under standard tournament controls
+  status: late
+  what: 컴퓨터가 인간 체스 세계챔피언을 이길 수 있다는 예측입니다.
+  what_en: A prediction that a computer would beat the human world chess champion.
+  outcome: 방향은 맞았지만 10년이 아니라 거의 40년이 걸렸습니다.
+  outcome_en: The direction was right, but it took nearly 40 years instead of 10.
+  lesson: 규칙이 명확한 문제도 하드웨어와 탐색 기법이 충분히 싸질 때까지 시간이 필요했습니다.
+  lesson_en: Even a rule-bound problem needed enough hardware and search technique to become affordable.
+  source: https://quoteinvestigator.com/2024/04/18/ai-prediction/
+  source_label: Quote Investigator의 1958년 예측 검증
+  source_label_en: Quote Investigator on the 1958 prediction
+  actual_source: https://www.ibm.com/history/deep-blue
+  actual_source_label: IBM 딥블루 기록
+  actual_source_label_en: IBM Deep Blue history
+
+- id: clarke-comsat
+  name: 정지궤도 통신위성
+  name_en: Geostationary Communication Satellites
+  predicted_by: 아서 클라크
+  predicted_by_en: Arthur C. Clarke
+  by_id: clarke
+  predicted_in: 1945
+  predicted_for: 1960년대
+  predicted_for_en: The 1960s
+  predicted_for_year: 1965
+  actual_year: 1965
+  actual_label: 인텔샛 1호(Early Bird) 상업 통신위성 발사
+  actual_label_en: Intelsat I Early Bird commercial communications satellite launched
+  status: on_time
+  what: 지구 위 같은 자리에 떠 있는 위성으로 전 세계 통신을 중계한다는 예측입니다.
+  what_en: A prediction that satellites fixed above Earth could relay global communications.
+  outcome: 20년 뒤 실제 상업 통신위성이 같은 아이디어를 현실로 만들었습니다.
+  outcome_en: Twenty years later, a commercial satellite made the idea real.
+  lesson: 물리 법칙과 궤도 계산에 기반한 예측은 제품 수요 예측보다 시점이 잘 맞을 수 있습니다.
+  lesson_en: Predictions grounded in physics and orbital math can time better than product-demand forecasts.
+  source: https://lakdiva.org.lk/clarke/1945ww/
+  source_label: 1945년 클라크 통신위성 제안
+  source_label_en: Clarke's 1945 communications satellite proposal
+
+- id: moonshot-kennedy
+  name: 달 착륙
+  name_en: Moon Landing
+  predicted_by: 존 F. 케네디
+  predicted_by_en: John F. Kennedy
+  by_id: kennedy
+  predicted_in: 1961
+  predicted_for: 1960년대 안
+  predicted_for_en: Before the end of the 1960s
+  predicted_for_year: 1969
+  actual_year: 1969
+  actual_label: 아폴로 11호가 1969년 7월 20일 달에 착륙
+  actual_label_en: Apollo 11 landed on the Moon on July 20, 1969
+  status: on_time
+  what: 국가가 사람을 달에 보내고 무사히 지구로 돌려보내겠다는 목표였습니다.
+  what_en: A national goal to land a person on the Moon and return them safely to Earth.
+  outcome: 목표가 제시된 지 8년 뒤 아폴로 11호가 달에 착륙했습니다.
+  outcome_en: Apollo 11 landed eight years after the goal was set.
+  lesson: 명확한 목표와 막대한 예산, 단일한 지휘 체계가 있으면 어려운 기술 일정도 맞출 수 있습니다.
+  lesson_en: A clear goal, large budget, and unified command can make a hard technology schedule possible.
+  source: https://www.nasa.gov/history/the-decision-to-go-to-the-moon/
+  source_label: NASA 케네디 달 착륙 목표 기록
+  source_label_en: NASA record of Kennedy's Moon goal
+
+- id: human-genome-project
+  name: 인간 게놈 해독
+  name_en: Human Genome Sequencing
+  predicted_by: 인간 게놈 프로젝트
+  predicted_by_en: Human Genome Project
+  by_id: hgp
+  predicted_in: 1990
+  predicted_for: 2005년 말
+  predicted_for_en: End of 2005
+  predicted_for_year: 2005
+  actual_year: 2003
+  actual_label: 2003년 4월 인간 게놈 프로젝트 완료 발표
+  actual_label_en: Completion of the Human Genome Project announced in April 2003
+  status: on_time
+  what: 사람의 유전 정보를 읽어 기준 서열을 만들겠다는 국제 과학 프로젝트였습니다.
+  what_en: An international project to read human genetic information and produce a reference sequence.
+  outcome: 원래 일정인 2005년보다 2년 반가량 빨리 완료됐습니다.
+  outcome_en: It finished about two and a half years ahead of the original 2005 schedule.
+  lesson: 측정 비용이 빠르게 떨어지는 분야는 대형 프로젝트가 예상보다 빨라질 수 있습니다.
+  lesson_en: When measurement costs fall quickly, large projects can finish earlier than expected.
+  source: https://www.genome.gov/11006929/2003-release-international-consortium-completes-hgp
+  source_label: NHGRI 인간 게놈 프로젝트 완료 발표
+  source_label_en: NHGRI completion announcement
+
+- id: kurzweil-chess
+  name: 체스 챔피언 AI
+  name_en: Chess Champion AI
+  predicted_by: 레이 커즈와일
+  predicted_by_en: Ray Kurzweil
+  by_id: kurzweil
+  predicted_in: 1990
+  predicted_for: 1998년 전후
+  predicted_for_en: Around 1998
+  predicted_for_year: 1998
+  actual_year: 1997
+  actual_label: IBM 딥블루가 카스파로프와의 재대결에서 승리
+  actual_label_en: IBM Deep Blue won the rematch against Kasparov
+  status: on_time
+  what: 컴퓨터가 세계 최고 수준의 체스 실력을 보일 것이라는 예측입니다.
+  what_en: A prediction that computers would reach world-champion chess strength.
+  outcome: 딥블루의 1997년 승리로 거의 같은 시기에 현실이 됐습니다.
+  outcome_en: Deep Blue's 1997 win made it real at nearly the predicted time.
+  lesson: 닫힌 규칙과 풍부한 계산이 만나는 분야에서는 지수적 개선이 눈에 잘 보입니다.
+  lesson_en: In closed-rule domains with abundant computation, exponential improvement is easier to see.
+  source: https://www.thekurzweillibrary.com/images/How-My-Predictions-Are-Faring.pdf
+  source_label: 커즈와일 예측 검토
+  source_label_en: Kurzweil prediction review
+  actual_source: https://www.ibm.com/history/deep-blue
+  actual_source_label: IBM 딥블루 기록
+  actual_source_label_en: IBM Deep Blue history
+
+- id: kurzweil-portable-computers
+  name: 휴대용 컴퓨터 보편화
+  name_en: Portable Computers Become Common
+  predicted_by: 레이 커즈와일
+  predicted_by_en: Ray Kurzweil
+  by_id: kurzweil
+  predicted_in: 1999
+  predicted_for: 2009년
+  predicted_for_en: 2009
+  predicted_for_year: 2009
+  actual_year: 2009
+  actual_label: 노트북과 스마트폰이 개인 컴퓨팅의 중심으로 이동
+  actual_label_en: Laptops and smartphones moved to the center of personal computing
+  status: on_time
+  what: 사람들이 주로 들고 다니는 컴퓨터를 쓰게 된다는 예측입니다.
+  what_en: A prediction that people would primarily use computers they can carry.
+  outcome: 2009년에는 노트북과 스마트폰이 이미 생활 속 컴퓨터가 됐습니다.
+  outcome_en: By 2009, laptops and smartphones had already become everyday computers.
+  lesson: 이미 가격 하락과 소형화가 진행 중인 하드웨어 흐름은 비교적 예측하기 쉽습니다.
+  lesson_en: Hardware trends already moving toward lower cost and smaller size are comparatively predictable.
+  source: https://www.thekurzweillibrary.com/images/How-My-Predictions-Are-Faring.pdf
+  source_label: 커즈와일 2009년 예측 검토
+  source_label_en: Kurzweil's review of 2009 predictions
+
+- id: kurzweil-wearables
+  name: 웨어러블 컴퓨터
+  name_en: Wearable Computers
+  predicted_by: 레이 커즈와일
+  predicted_by_en: Ray Kurzweil
+  by_id: kurzweil
+  predicted_in: 1999
+  predicted_for: 2009년
+  predicted_for_en: 2009
+  predicted_for_year: 2009
+  actual_year: 2015
+  actual_label: 스마트워치와 피트니스 밴드가 대중 제품군으로 자리잡기 시작
+  actual_label_en: Smartwatches and fitness bands began to settle into mainstream product categories
+  status: late
+  what: 컴퓨터가 손목시계나 옷처럼 몸에 붙는 물건 안에 들어간다는 예측입니다.
+  what_en: A prediction that computers would be embedded in body-worn objects such as watches and clothing.
+  outcome: 기기는 있었지만 대중적 습관이 되기까지는 스마트워치 시대를 기다려야 했습니다.
+  outcome_en: The devices existed, but broad consumer habits waited for the smartwatch era.
+  lesson: 기기가 가능해지는 것과 사람들이 매일 차고 다니는 것은 서로 다른 일정입니다.
+  lesson_en: A device becoming possible and people wearing it daily are different timelines.
+  source: https://www.thekurzweillibrary.com/images/How-My-Predictions-Are-Faring.pdf
+  source_label: 커즈와일 웨어러블 예측 검토
+  source_label_en: Kurzweil wearable-computing review
+
+- id: kurzweil-speech-recognition
+  name: 모바일 음성인식
+  name_en: Mobile Speech Recognition
+  predicted_by: 레이 커즈와일
+  predicted_by_en: Ray Kurzweil
+  by_id: kurzweil
+  predicted_in: 1999
+  predicted_for: 2009년
+  predicted_for_en: 2009
+  predicted_for_year: 2009
+  actual_year: 2016
+  actual_label: 스마트폰 음성비서와 딥러닝 음성인식이 일상 기능으로 확산
+  actual_label_en: Smartphone assistants and deep-learning speech recognition spread into everyday use
+  status: late
+  what: 휴대폰에서 큰 어휘를 알아듣는 음성인식이 널리 쓰인다는 예측입니다.
+  what_en: A prediction that large-vocabulary speech recognition would be widely used on phones.
+  outcome: 초기 앱은 2009년에 나왔지만 누구나 쓰는 기능으로 자리잡은 것은 더 늦었습니다.
+  outcome_en: Early apps appeared in 2009, but everyday use arrived later.
+  lesson: 기술 데모와 습관적 사용 사이에는 정확도, 속도, UX의 문턱이 있습니다.
+  lesson_en: Accuracy, speed, and UX create a gap between a demo and a habit.
+  source: https://www.thekurzweillibrary.com/images/How-My-Predictions-Are-Faring.pdf
+  source_label: 커즈와일 음성인식 예측 검토
+  source_label_en: Kurzweil speech-recognition review
+
+- id: kurzweil-intelligent-roads
+  name: 지능형 도로 자율주행
+  name_en: Intelligent-Road Autonomous Driving
+  predicted_by: 레이 커즈와일
+  predicted_by_en: Ray Kurzweil
+  by_id: kurzweil
+  predicted_in: 1999
+  predicted_for: 2009년
+  predicted_for_en: 2009
+  predicted_for_year: 2009
+  actual_year:
+  actual_label: 장거리 고속도로에서 누구나 안심하고 맡기는 지능형 도로 방식은 아직 보편화되지 않음
+  actual_label_en: Intelligent-road systems for relaxed long-distance driving are not yet broadly available
+  status: missed
+  what: 차가 도로의 제어 신호를 따라 장거리 운전을 맡아준다는 예측입니다.
+  what_en: A prediction that cars would lock onto road control systems for long-distance driving.
+  outcome: 자율주행 시범과 일부 로보택시는 나왔지만, 예측한 인프라 방식은 일상화되지 않았습니다.
+  outcome_en: Demos and some robotaxi services exist, but the predicted infrastructure-based model has not become everyday life.
+  lesson: 자동차처럼 안전과 규제가 얽힌 분야는 알고리즘 발전만으로 일정이 결정되지 않습니다.
+  lesson_en: In cars, safety and regulation mean algorithms alone do not set the schedule.
+  source: https://www.thekurzweillibrary.com/images/How-My-Predictions-Are-Faring.pdf
+  source_label: 커즈와일 지능형 도로 예측 검토
+  source_label_en: Kurzweil intelligent-road review
+
+- id: kurzweil-ebooks
+  name: 전자책 단말기
+  name_en: E-Book Readers
+  predicted_by: 레이 커즈와일
+  predicted_by_en: Ray Kurzweil
+  by_id: kurzweil
+  predicted_in: 1993
+  predicted_for: 2010년 전후
+  predicted_for_en: Around 2010
+  predicted_for_year: 2010
+  actual_year: 2007
+  actual_label: 킨들과 전자책 생태계가 대중 시장을 열기 시작
+  actual_label_en: Kindle and the e-book ecosystem began opening a mass market
+  status: early
+  what: 책을 전용 단말기와 온라인 서점으로 읽는 흐름이 커진다는 예측입니다.
+  what_en: A prediction that dedicated devices and online bookstores would expand book reading.
+  outcome: 킨들 출시로 예상보다 조금 빠르게 소비자 시장이 열렸습니다.
+  outcome_en: Kindle opened the consumer market somewhat earlier than the representative target year.
+  lesson: 콘텐츠 유통과 기기가 함께 좋아질 때 채택 속도는 갑자기 빨라질 수 있습니다.
+  lesson_en: Adoption can accelerate when content distribution and hardware improve together.
+  source: https://www.thekurzweillibrary.com/images/How-My-Predictions-Are-Faring.pdf
+  source_label: 커즈와일 전자책 예측 검토
+  source_label_en: Kurzweil e-book prediction review
+
+- id: att-picturephone
+  name: 화상통화 보편화
+  name_en: Mainstream Video Calling
+  predicted_by: AT&T
+  predicted_by_en: AT&T
+  by_id: att
+  predicted_in: 1964
+  predicted_for: 1970년대
+  predicted_for_en: The 1970s
+  predicted_for_year: 1975
+  actual_year: 2010
+  actual_label: 스마트폰과 인터넷 기반 화상통화가 일상 커뮤니케이션으로 확산
+  actual_label_en: Smartphone and internet video calling spread into everyday communication
+  status: late
+  what: 전화가 소리뿐 아니라 얼굴까지 주고받는 방식으로 바뀐다는 예측입니다.
+  what_en: A prediction that phone calls would carry faces as well as voices.
+  outcome: 기술 시연과 유료 서비스는 빨랐지만, 대중 보급은 스마트폰과 인터넷 이후에야 왔습니다.
+  outcome_en: The demo and paid service came early, but mass adoption waited for smartphones and the internet.
+  lesson: 통신 서비스는 가능하다는 사실보다 가격, 네트워크, 상대방 보급률이 더 중요합니다.
+  lesson_en: For communication services, price, networks, and everyone else having access matter more than possibility.
+  source: https://ethw.org/Picturephone
+  source_label: Engineering and Technology History Wiki의 Picturephone 기록
+  source_label_en: ETHW Picturephone history
+
+- id: virgin-galactic-commercial-spaceflight
+  name: 상업 우주 관광
+  name_en: Commercial Space Tourism
+  predicted_by: 버진 갤럭틱
+  predicted_by_en: Virgin Galactic
+  by_id: virgin-galactic
+  predicted_in: 2005
+  predicted_for: 2008년
+  predicted_for_en: 2008
+  predicted_for_year: 2008
+  actual_year: 2023
+  actual_label: Galactic 01이 첫 상업 우주비행으로 발표됨
+  actual_label_en: Galactic 01 was announced as the first commercial spaceflight
+  status: late
+  what: 민간인이 돈을 내고 우주 가장자리까지 다녀오는 관광 서비스입니다.
+  what_en: A tourism service where paying civilians travel to the edge of space.
+  outcome: 초기 약속보다 15년 늦게 첫 상업 비행 단계에 도달했습니다.
+  outcome_en: It reached its first commercial-flight stage 15 years later than the early promise.
+  lesson: 사람을 태우는 하드웨어 사업은 사고, 인증, 재설계가 일정의 대부분을 차지할 수 있습니다.
+  lesson_en: In crewed hardware businesses, accidents, certification, and redesign can dominate the schedule.
+  source: https://www.wired.com/2005/01/branson/
+  source_label: 2005년 버진 갤럭틱 초기 일정 보도
+  source_label_en: 2005 report on Virgin Galactic's early timeline
+  actual_source: https://investors.virgingalactic.com/news/news-details/2023/Virgin-Galactic-Announces-Galactic-01-Crew-Onboard-the-First-Commercial-Spaceflight/default.aspx
+  actual_source_label: Virgin Galactic Galactic 01 발표
+  actual_source_label_en: Virgin Galactic Galactic 01 announcement

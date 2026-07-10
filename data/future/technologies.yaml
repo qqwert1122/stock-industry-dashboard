@@ -1,0 +1,199 @@
+- id: agi-2029
+  name: 범용 인공지능
+  name_en: Artificial General Intelligence
+  category: AI
+  category_en: AI
+  predicted:
+    year: 2029
+    source_label: 커즈와일 『마침내 특이점이 온다』
+    source_label_en: Ray Kurzweil, The Singularity Is Nearer
+    source: https://www.penguinrandomhouse.com/books/529669/the-singularity-is-nearer-by-ray-kurzweil/
+  status: upcoming
+  as_of: 2026-07-10
+  what: 여러 일을 사람처럼 배워서 처리하는 AI입니다. 오늘의 챗봇보다 훨씬 넓은 문제를 스스로 풀 수 있어야 합니다.
+  what_en: AI that can learn and handle many kinds of work. It would need to solve a much wider range of problems than today's chatbots.
+  why: 문서 작성, 코딩, 연구, 고객 응대 같은 지식노동의 비용과 속도가 크게 바뀔 수 있습니다.
+  why_en: It could change the cost and speed of knowledge work such as writing, coding, research, and customer support.
+  now: 뛰어난 AI 서비스는 이미 쓰이고 있지만, 장기 계획과 검증 가능한 추론에서는 아직 불안정합니다.
+  now_en: Strong AI services are already in use, but long planning and reliably checked reasoning are still uneven.
+  glossary: [agi]
+  bottleneck: "병목: HBM 공급·전력·데이터·추론 신뢰성"
+  bottleneck_en: "Bottleneck: HBM supply, power, data, and reasoning reliability"
+  metrics: [Microsoft, Amazon, Alphabet]
+  companies: [MSFT, NVDA, GOOGL, META]
+
+- id: robotaxi
+  name: 로보택시
+  name_en: Robotaxi
+  category: 로봇·모빌리티
+  category_en: Robotics/Mobility
+  predicted:
+    year: 2027
+    source_label: 커즈와일 『마침내 특이점이 온다』
+    source_label_en: Ray Kurzweil, The Singularity Is Nearer
+    source: https://www.penguinrandomhouse.com/books/529669/the-singularity-is-nearer-by-ray-kurzweil/
+  status: upcoming
+  as_of: 2026-07-10
+  what: 운전기사 없이 스스로 달리는 택시입니다. 스마트폰으로 부르면 빈 운전석의 차가 데리러 옵니다.
+  what_en: A taxi that drives itself without a human driver. You call it by phone, and an empty driver's seat arrives.
+  why: 이동 비용이 내려가고, 운전을 못 하는 사람의 행동반경이 넓어질 수 있습니다.
+  why_en: Travel costs could fall, and people who cannot drive could move around more easily.
+  now: 일부 도시는 유료 운행을 시작했지만, 사고 책임과 보험 제도가 확산 속도를 정하고 있습니다.
+  now_en: Paid service has started in some cities, but liability and insurance rules still decide how fast it spreads.
+  glossary: [l4]
+  bottleneck: "병목: 규제·보험"
+  bottleneck_en: "Bottleneck: regulation and insurance"
+  metrics: [Tesla(TSLA), Teradyne(TER), 미국 EV 충전소 수]
+  companies: [TSLA, UBER, MBLY, QCOM]
+
+- id: humanoid-robots
+  name: 휴머노이드 로봇
+  name_en: Humanoid Robots
+  category: 로봇·모빌리티
+  category_en: Robotics/Mobility
+  predicted:
+    label: 2030년대 초
+    label_en: Early 2030s
+    year: 2031
+    source_label: 커즈와일 『마침내 특이점이 온다』
+    source_label_en: Ray Kurzweil, The Singularity Is Nearer
+    source: https://www.penguinrandomhouse.com/books/529669/the-singularity-is-nearer-by-ray-kurzweil/
+  status: distant
+  as_of: 2026-07-10
+  what: 사람과 비슷한 몸으로 공장, 창고, 집안일을 돕는 로봇입니다.
+  what_en: Robots with human-like bodies that can help in factories, warehouses, and homes.
+  why: 반복 노동과 위험한 작업을 대신하면 인건비, 안전, 고령화 문제가 함께 바뀔 수 있습니다.
+  why_en: If they take over repetitive or dangerous work, labor cost, safety, and aging issues could change together.
+  now: 시제품은 빠르게 늘고 있지만, 긴 시간 일하는 손재주와 낮은 제조원가가 아직 핵심 과제입니다.
+  now_en: Prototypes are growing quickly, but durable dexterity and low manufacturing cost remain the hard parts.
+  glossary: [trl]
+  bottleneck: "병목: 손재주·배터리·가격"
+  bottleneck_en: "Bottleneck: dexterity, batteries, and cost"
+  metrics: [Teradyne(TER), NVIDIA(NVDA), 미국 전력수요]
+  companies: [TSLA, TER, NVDA, QCOM]
+
+- id: longevity-escape
+  name: 수명 탈출 속도
+  name_en: Longevity Escape Velocity
+  category: 바이오
+  category_en: Biotech
+  predicted:
+    year: 2032
+    source_label: 커즈와일 『마침내 특이점이 온다』
+    source_label_en: Ray Kurzweil, The Singularity Is Nearer
+    source: https://www.penguinrandomhouse.com/books/529669/the-singularity-is-nearer-by-ray-kurzweil/
+  status: distant
+  as_of: 2026-07-10
+  what: 의학 발전이 노화보다 빨라져 기대수명이 계속 늘어날 수 있다는 예측입니다.
+  what_en: A prediction that medicine could improve faster than aging progresses, so life expectancy keeps extending.
+  why: 치료 중심 의료가 예방과 노화 지연 중심으로 옮겨가면 보험, 의료비, 노동시장까지 달라질 수 있습니다.
+  why_en: If medicine shifts from treatment to prevention and slowing aging, insurance, health costs, and labor markets could change.
+  now: 신약과 유전자 치료는 늘고 있지만, 노화 전체를 늦췄다는 사람 대상 증거는 아직 제한적입니다.
+  now_en: New drugs and gene therapies are increasing, but human evidence for slowing overall aging is still limited.
+  glossary: [longevity]
+  bottleneck: "병목: 장기 임상 근거"
+  bottleneck_en: "Bottleneck: long-term clinical proof"
+  metrics: [FDA 의약품 승인 활동, 글로벌 Phase 3 임상 시작]
+  companies: [LLY, NVO, REGN]
+
+- id: gene-therapy-mainstream
+  name: 유전자 치료 보편화
+  name_en: Mainstream Gene Therapy
+  category: 바이오
+  category_en: Biotech
+  predicted:
+    label: 2030년대
+    label_en: 2030s
+    year: 2035
+    source_label: 커즈와일 『마침내 특이점이 온다』
+    source_label_en: Ray Kurzweil, The Singularity Is Nearer
+    source: https://www.penguinrandomhouse.com/books/529669/the-singularity-is-nearer-by-ray-kurzweil/
+  status: distant
+  as_of: 2026-07-10
+  what: 병의 원인이 되는 유전 정보를 직접 고쳐 치료하는 방식입니다.
+  what_en: A treatment approach that edits or replaces genetic instructions that cause disease.
+  why: 희귀질환과 난치병 치료 선택지가 늘고, 한 번 치료로 오래 효과가 가는 시장이 커질 수 있습니다.
+  why_en: It could expand options for rare and hard-to-treat diseases, with markets built around long-lasting treatments.
+  now: 일부 치료제는 승인됐지만, 가격과 안전성, 대량 생산이 넓은 보급의 장벽입니다.
+  now_en: Some therapies are approved, but cost, safety, and large-scale production still limit broad use.
+  glossary: [trl]
+  bottleneck: "병목: 가격·안전성"
+  bottleneck_en: "Bottleneck: cost and safety"
+  metrics: [FDA 의약품 승인 활동, 글로벌 Phase 3 임상 시작]
+  companies: [VRTX, REGN, LLY]
+
+- id: fusion-power
+  name: 핵융합 상업 발전
+  name_en: Commercial Fusion Power
+  category: 에너지
+  category_en: Energy
+  predicted:
+    label: 2030년대 후반
+    label_en: Late 2030s
+    year: 2038
+    source_label: 커즈와일 『마침내 특이점이 온다』
+    source_label_en: Ray Kurzweil, The Singularity Is Nearer
+    source: https://www.penguinrandomhouse.com/books/529669/the-singularity-is-nearer-by-ray-kurzweil/
+  status: distant
+  as_of: 2026-07-10
+  what: 태양이 에너지를 만드는 원리를 발전소에서 쓰려는 기술입니다.
+  what_en: Technology that tries to use the Sun's energy-making process inside power plants.
+  why: 성공하면 탄소 배출이 적고 연료 걱정이 작은 전기를 대규모로 만들 수 있습니다.
+  why_en: If it works, it could produce large amounts of low-carbon power with much less fuel concern.
+  now: 실험 성과는 나왔지만, 전기를 싸게 계속 생산하는 발전소 단계까지는 아직 검증이 필요합니다.
+  now_en: Experiments have improved, but cheap and continuous power-plant operation still needs proof.
+  glossary: [fusion, trl]
+  bottleneck: "병목: 순발전·경제성"
+  bottleneck_en: "Bottleneck: net power and economics"
+  metrics: [미국 전력수요, GE Vernova(GEV)]
+  companies: [GEV, OKLO]
+
+- id: commercial-space
+  name: 우주 상업화
+  name_en: Commercial Space
+  category: 우주
+  category_en: Space
+  predicted:
+    label: 진행 중
+    label_en: In progress
+    year: 2026
+    source_label: 공개 발사·위성 산업 지표
+    source_label_en: Public launch and satellite-industry data
+    source: https://thespacedevs.com/llapi
+  status: achieved
+  as_of: 2026-07-10
+  what: 정부 프로젝트 중심이던 우주 활동이 민간 발사, 위성, 통신 서비스로 넓어지는 흐름입니다.
+  what_en: The shift from government-led space projects toward private launches, satellites, and communication services.
+  why: 통신, 지구관측, 국방, 물류 데이터가 우주 인프라 위에서 더 많이 만들어질 수 있습니다.
+  why_en: Communications, Earth observation, defense, and logistics data could increasingly rely on space infrastructure.
+  now: 민간 발사는 이미 일상이 됐고, 수익성 있는 서비스와 발사 비용 안정이 다음 과제입니다.
+  now_en: Private launches are already routine; profitable services and stable launch costs are the next test.
+  glossary: [trl]
+  bottleneck: "병목: 수익성·발사 비용"
+  bottleneck_en: "Bottleneck: profitability and launch cost"
+  metrics: [글로벌 발사 건수, 글로벌 우주 발사 건수, Rocket Lab(RKLB)]
+  companies: [RKLB, LMT]
+
+- id: singularity-2045
+  name: 특이점
+  name_en: Singularity
+  category: AI
+  category_en: AI
+  predicted:
+    year: 2045
+    source_label: 커즈와일 『마침내 특이점이 온다』
+    source_label_en: Ray Kurzweil, The Singularity Is Nearer
+    source: https://www.penguinrandomhouse.com/books/529669/the-singularity-is-nearer-by-ray-kurzweil/
+  status: distant
+  as_of: 2026-07-10
+  what: AI와 기술 발전 속도가 너무 빨라져 사회 변화의 방향을 예측하기 어려워진다는 시나리오입니다.
+  what_en: A scenario where AI and technology accelerate so much that social change becomes hard to predict.
+  why: 노동, 교육, 자산, 국가 경쟁력의 기준이 지금과 크게 달라질 수 있습니다.
+  why_en: It could change the basic rules of work, education, assets, and national competitiveness.
+  now: 지금은 강한 AI와 인프라 투자가 빠르게 커지는 단계이며, 특이점 자체는 아직 먼 예측입니다.
+  now_en: Today, powerful AI and infrastructure investment are growing quickly, but the singularity itself remains a distant forecast.
+  glossary: [singularity, agi]
+  bottleneck: "병목: AGI 이후 경로의 불확실성"
+  bottleneck_en: "Bottleneck: uncertainty after AGI"
+  metrics: [Microsoft, Amazon, CoreWeave]
+  companies: [MSFT, NVDA, GOOGL, META]

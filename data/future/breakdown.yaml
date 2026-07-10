@@ -1,0 +1,325 @@
+- tech: robotaxi
+  requirements:
+    - id: autonomy-level
+      name: 자율주행 단계
+      name_en: Driving automation level
+      ladder: sae-autonomy
+      required_rung: L4
+      current_rung: L4
+      what: 기사 없이 돈을 받고 승객을 태우려면 최소 L4처럼 정해진 지역에서는 사람이 운전하지 않아도 되는 수준이 필요합니다.
+      what_en: Paid driverless passenger service needs at least L4, where no human driving is needed inside a defined operating area.
+      gap: Waymo는 일부 도시에서 이미 L4 유료 운행을 하고 있습니다. 다만 지역을 넓히는 속도가 핵심입니다.
+      gap_en: Waymo already operates paid L4 service in selected cities. The remaining question is how fast the operating area expands.
+      achieved_by:
+        - { label: Waymo, label_en: Waymo }
+        - { label: Baidu Apollo Go, label_en: Baidu Apollo Go }
+      pursuing:
+        - { label: Tesla, label_en: Tesla, symbol: TSLA }
+        - { label: Zoox, label_en: Zoox }
+        - { label: Mobileye, label_en: Mobileye, symbol: MBLY }
+      metric: 유료 로보택시 운행 도시와 주간 탑승 건수
+      metric_en: Paid robotaxi operating cities and weekly trips
+      confidence: high
+      as_of: 2026-07-10
+      source: https://waymo.com/blog/2025/05/scaling-our-fleet-through-us-manufacturing/
+      source_label: Waymo 주간 유료 운행 규모
+      source_label_en: Waymo weekly paid trip scale
+      gap_score: 0
+
+    - id: regulation-insurance
+      name: 규제·보험
+      name_en: Regulation and insurance
+      target_label: 여러 대도시에서 무인 유료 운행과 사고 책임 기준이 안정적으로 허용
+      target_label_en: Stable approval for paid driverless service and liability rules across many large cities
+      current_label: 피닉스·샌프란시스코·LA·오스틴 등 일부 지역 중심
+      current_label_en: Concentrated in selected regions such as Phoenix, San Francisco, LA, and Austin
+      what: 기술이 가능해도 사고 책임, 보험료, 운행 허가가 열리지 않으면 서비스가 빠르게 늘기 어렵습니다.
+      what_en: Even if the technology works, service cannot scale quickly without liability, insurance, and operating approvals.
+      gap: 도시별 승인과 보험 비용이 아직 확산 속도를 정하는 병목입니다.
+      gap_en: City-by-city approval and insurance cost still set the pace of expansion.
+      pursuing:
+        - { label: Waymo, label_en: Waymo }
+        - { label: Tesla, label_en: Tesla, symbol: TSLA }
+        - { label: Zoox, label_en: Zoox }
+      metric: 무인 유료 운행 허가 도시 수
+      metric_en: Cities permitting paid driverless service
+      confidence: medium
+      as_of: 2026-07-10
+      source: https://waymo.com/blog/2025/05/scaling-our-fleet-through-us-manufacturing/
+      source_label: Waymo 서비스 확장 계획
+      source_label_en: Waymo service expansion plan
+      gap_score: 3
+
+    - id: supervised-fsd-gap
+      name: 운전자 감독 제거
+      name_en: Removing driver supervision
+      ladder: sae-autonomy
+      required_rung: L4
+      current_rung: L2
+      what: 대중형 로보택시가 되려면 운전자가 계속 감시하는 기능이 아니라 차가 책임지고 운행하는 기능이어야 합니다.
+      what_en: A mass-market robotaxi needs the vehicle to take responsibility, not a feature that still requires driver supervision.
+      gap: Tesla FSD는 현재 운전자 감독이 필요한 기능으로 안내되고 있어 무인 유료 운행과는 단계 차이가 큽니다.
+      gap_en: Tesla FSD is still described as requiring active driver supervision, so it remains far from paid driverless operation.
+      pursuing:
+        - { label: Tesla, label_en: Tesla, symbol: TSLA }
+      metric_ref: Tesla(TSLA)
+      metric: Tesla(TSLA)
+      metric_en: Tesla(TSLA)
+      confidence: high
+      as_of: 2026-07-10
+      source: https://www.tesla.com/support/fsd
+      source_label: Tesla FSD 감독 안내
+      source_label_en: Tesla FSD supervision notice
+      gap_score: 2
+
+    - id: vehicle-cost
+      name: 차량 원가
+      name_en: Vehicle cost
+      target_label: 무인 택시 수익성이 나오는 차량·센서·정비 원가
+      target_label_en: Vehicle, sensor, and maintenance cost low enough for driverless taxi margins
+      current_label: 초기 전용 차량과 센서 비용은 아직 지역별 수익성 검증 단계
+      current_label_en: Dedicated vehicles and sensor stacks still need city-by-city margin proof
+      what: 로보택시는 운전자가 없어도 차량 가격, 센서, 원격관제, 정비비가 높으면 요금 인하 효과가 작아집니다.
+      what_en: Robotaxis need low vehicle, sensor, remote-ops, and maintenance cost, otherwise removing the driver does not lower fares enough.
+      gap: 원가는 회사별 공개가 제한적이라 실제 대당 경제성은 아직 낮은 확신으로 봅니다.
+      gap_en: Per-vehicle economics are still low-confidence because companies disclose limited cost detail.
+      pursuing:
+        - { label: Waymo, label_en: Waymo }
+        - { label: Tesla, label_en: Tesla, symbol: TSLA }
+        - { label: Zoox, label_en: Zoox }
+      metric: 대당 센서·차량 원가와 차량 가동률
+      metric_en: Sensor and vehicle cost per unit plus utilization
+      confidence: low
+      as_of: 2026-07-10
+      source: https://waymo.com/blog/2025/05/scaling-our-fleet-through-us-manufacturing/
+      source_label: Waymo 차량 생산 확장
+      source_label_en: Waymo fleet manufacturing scale-up
+      gap_score: 2
+
+- tech: agi-2029
+  requirements:
+    - id: accelerator-generation
+      name: AI 가속기
+      name_en: AI accelerators
+      ladder: ai-accelerator-generation
+      required_rung: Blackwell
+      current_rung: Blackwell
+      what: 더 큰 모델을 훈련·추론하려면 GPU나 전용 가속기의 세대 교체가 계속 필요합니다.
+      what_en: Larger models need continued generation upgrades in GPUs and dedicated accelerators for training and inference.
+      gap: Blackwell 세대는 진입했지만, AGI 논의에서는 성능보다 공급량과 전력까지 함께 봐야 합니다.
+      gap_en: Blackwell has arrived, but AGI tracking must watch supply volume and power alongside raw performance.
+      achieved_by:
+        - { label: NVIDIA, label_en: NVIDIA, symbol: NVDA }
+      pursuing:
+        - { label: AMD, label_en: AMD, symbol: AMD }
+        - { label: Google TPU, label_en: Google TPU, symbol: GOOGL }
+        - { label: Amazon Trainium, label_en: Amazon Trainium, symbol: AMZN }
+      metric_ref: NVIDIA(NVDA)
+      metric: NVIDIA(NVDA)
+      metric_en: NVIDIA(NVDA)
+      confidence: high
+      as_of: 2026-07-10
+      source: https://nvidianews.nvidia.com/news/nvidia-blackwell-platform-arrives-to-power-a-new-era-of-computing
+      source_label: NVIDIA Blackwell 플랫폼
+      source_label_en: NVIDIA Blackwell platform
+      gap_score: 0
+
+    - id: hbm-supply
+      name: HBM 공급
+      name_en: HBM supply
+      ladder: hbm-generation
+      required_rung: HBM3E
+      current_rung: HBM3E
+      what: AI 서버는 GPU만으로 돌아가지 않고, GPU 옆에 붙는 고대역폭 메모리 공급이 병목이 됩니다.
+      what_en: AI servers do not scale on GPUs alone; high-bandwidth memory beside the GPU can become the bottleneck.
+      gap: HBM3E는 주력 세대가 됐지만 수요가 빠르게 늘어 공급·패키징·수율이 여전히 핵심 병목입니다.
+      gap_en: HBM3E is mainstream, but fast demand growth keeps supply, packaging, and yield as core bottlenecks.
+      achieved_by:
+        - { label: SK하이닉스, label_en: SK hynix, symbol: 000660.KS }
+        - { label: 삼성전자, label_en: Samsung Electronics, symbol: 005930.KS }
+        - { label: Micron, label_en: Micron, symbol: MU }
+      pursuing:
+        - { label: TSMC CoWoS, label_en: TSMC CoWoS, symbol: TSM }
+      metric: HBM 세대 전환과 CoWoS 패키징 증설
+      metric_en: HBM generation shift and CoWoS packaging expansion
+      confidence: high
+      as_of: 2026-07-10
+      source: https://news.skhynix.com/2026-market-outlook-focus-on-the-hbm-led-memory-supercycle/
+      source_label: SK하이닉스 2026 HBM 전망
+      source_label_en: SK hynix 2026 HBM outlook
+      gap_score: 3
+
+    - id: power-datacenter
+      name: 전력·데이터센터
+      name_en: Power and data centers
+      target_label: GW급 AI 데이터센터를 안정적으로 전력망에 연결
+      target_label_en: Connect gigawatt-scale AI data centers reliably to the grid
+      current_label: 수백 MW급 증설과 장기 전력 계약 중심
+      current_label_en: Mostly hundreds-of-MW expansions and long-term power deals
+      what: 모델이 커질수록 병목은 칩뿐 아니라 전력, 냉각, 부지, 송전망으로 이동합니다.
+      what_en: As models scale, the bottleneck moves from chips alone to power, cooling, land, and transmission.
+      gap: 전력 인허가와 송전망 증설은 칩 주문보다 느리게 움직여 AGI 일정의 현실적인 제약입니다.
+      gap_en: Power permits and transmission buildouts move slower than chip orders, making them a practical constraint on AGI timelines.
+      pursuing:
+        - { label: Microsoft, label_en: Microsoft, symbol: MSFT }
+        - { label: Amazon, label_en: Amazon, symbol: AMZN }
+        - { label: Alphabet, label_en: Alphabet, symbol: GOOGL }
+        - { label: Meta, label_en: Meta, symbol: META }
+        - { label: CoreWeave, label_en: CoreWeave, symbol: CRWV }
+      metric: 빅테크 CAPEX와 미국 전력수요
+      metric_en: Big Tech capex and US power demand
+      confidence: medium
+      as_of: 2026-07-10
+      source: https://nvidianews.nvidia.com/news/nvidia-blackwell-platform-arrives-to-power-a-new-era-of-computing
+      source_label: NVIDIA AI 인프라 확장
+      source_label_en: NVIDIA AI infrastructure scaling
+      gap_score: 2
+
+    - id: reasoning-reliability
+      name: 추론 신뢰성
+      name_en: Reasoning reliability
+      target_label: 장기 계획과 중요한 답변을 반복 검증해도 안정적으로 맞힘
+      target_label_en: Stable long-horizon planning and important answers under repeated verification
+      current_label: 강한 모델은 많지만 긴 작업과 검증 가능한 추론은 아직 흔들림
+      current_label_en: Many strong models exist, but long tasks and verifiable reasoning remain uneven
+      what: AGI는 한 번 그럴듯한 답을 내는 능력보다 여러 단계의 일을 틀리지 않고 끝내는 능력이 중요합니다.
+      what_en: AGI depends less on one plausible answer and more on finishing multi-step work without drifting.
+      gap: 공개 벤치마크와 실제 업무 성과 사이의 간극이 남아 있어 예측 신뢰도를 낮춥니다.
+      gap_en: The gap between public benchmarks and real work keeps forecast confidence limited.
+      pursuing:
+        - { label: OpenAI, label_en: OpenAI }
+        - { label: Anthropic, label_en: Anthropic }
+        - { label: Google DeepMind, label_en: Google DeepMind, symbol: GOOGL }
+        - { label: xAI, label_en: xAI }
+      metric: 장기 에이전트 과제 성공률
+      metric_en: Long-horizon agent task success rate
+      confidence: medium
+      as_of: 2026-07-10
+      source: https://aiindex.stanford.edu/report/
+      source_label: Stanford AI Index
+      source_label_en: Stanford AI Index
+      gap_score: 2
+
+    - id: data-quality
+      name: 데이터 품질
+      name_en: Data quality
+      target_label: 고품질 데이터, 합성 데이터, 피드백 루프가 지속적으로 공급
+      target_label_en: Continuous supply of high-quality data, synthetic data, and feedback loops
+      current_label: 웹 텍스트만으로는 한계가 커지고, 실제 사용 데이터와 합성 데이터 비중 증가
+      current_label_en: Web text alone is increasingly limited; real-use and synthetic data matter more
+      what: 모델이 더 똑똑해지려면 단순히 데이터를 많이 넣는 것보다 질 좋은 데이터와 검증 피드백이 필요합니다.
+      what_en: Smarter models need high-quality data and verification feedback, not just more raw data.
+      gap: 데이터의 질과 권리 문제가 모델 확장의 속도와 비용을 함께 좌우합니다.
+      gap_en: Data quality and rights issues influence both the speed and cost of model scaling.
+      pursuing:
+        - { label: OpenAI, label_en: OpenAI }
+        - { label: Anthropic, label_en: Anthropic }
+        - { label: Google, label_en: Google, symbol: GOOGL }
+        - { label: Meta, label_en: Meta, symbol: META }
+      metric: 합성 데이터와 사용자 피드백 루프
+      metric_en: Synthetic data and user feedback loops
+      confidence: medium
+      as_of: 2026-07-10
+      source: https://aiindex.stanford.edu/report/
+      source_label: Stanford AI Index
+      source_label_en: Stanford AI Index
+      gap_score: 2
+
+- tech: humanoid-robots
+  requirements:
+    - id: locomotion
+      name: 보행·균형
+      name_en: Locomotion and balance
+      ladder: robot-locomotion
+      required_rung: rough-terrain
+      current_rung: dynamic
+      what: 사람 공간에서 일하려면 평평한 바닥만 걷는 수준을 넘어 예외 상황에도 넘어지지 않아야 합니다.
+      what_en: Work in human spaces requires more than walking on flat floors; the robot must handle exceptions without falling.
+      gap: Atlas 같은 제품은 동적 움직임을 보여주지만, 다양한 현장에서 장시간 버티는 단계는 아직 확산 전입니다.
+      gap_en: Products such as Atlas show dynamic movement, but all-day robustness across varied sites is still early.
+      achieved_by:
+        - { label: Boston Dynamics, label_en: Boston Dynamics }
+      pursuing:
+        - { label: Tesla Optimus, label_en: Tesla Optimus, symbol: TSLA }
+        - { label: Unitree, label_en: Unitree }
+        - { label: Figure AI, label_en: Figure AI }
+      metric: 현장 작업 시간과 넘어짐 없는 이동 거리
+      metric_en: Field work hours and fall-free distance
+      confidence: medium
+      as_of: 2026-07-10
+      source: https://bostondynamics.com/products/atlas/
+      source_label: Boston Dynamics Atlas 사양
+      source_label_en: Boston Dynamics Atlas specs
+      gap_score: 1
+
+    - id: dexterity
+      name: 손재주
+      name_en: Dexterity
+      ladder: robot-manipulation
+      required_rung: varied-objects
+      current_rung: repetitive-task
+      what: 로봇이 실제 노동을 대체하려면 물건 모양과 위치가 매번 달라도 안정적으로 잡고 놓아야 합니다.
+      what_en: To replace real labor, robots must reliably handle objects whose shapes and positions change.
+      gap: BMW 현장 기록처럼 반복 작업은 가능해지고 있지만, 여러 물체를 즉흥적으로 다루는 범용 손재주는 아직 남은 단계가 큽니다.
+      gap_en: Repetitive work is improving, as shown in BMW production records, but general handling of varied objects still has a large gap.
+      achieved_by:
+        - { label: Figure AI, label_en: Figure AI }
+      pursuing:
+        - { label: Tesla Optimus, label_en: Tesla Optimus, symbol: TSLA }
+        - { label: Boston Dynamics, label_en: Boston Dynamics }
+        - { label: Agility Robotics, label_en: Agility Robotics }
+      metric: 통제되지 않은 물체 집기 성공률
+      metric_en: Success rate for grasping uncontrolled objects
+      confidence: high
+      as_of: 2026-07-10
+      source: https://www.figure.ai/news/production-at-bmw
+      source_label: Figure 02 BMW 생산 현장 기록
+      source_label_en: Figure 02 BMW production record
+      gap_score: 3
+
+    - id: battery-runtime
+      name: 배터리·가동시간
+      name_en: Battery and runtime
+      ladder: robot-locomotion
+      required_rung: all-day
+      current_rung: dynamic
+      what: 사람 대신 일하려면 데모가 아니라 교대 시간에 맞춰 오래 움직이고 스스로 충전해야 합니다.
+      what_en: Replacing labor requires shift-length operation and autonomous charging, not short demonstrations.
+      gap: Atlas는 자체 배터리 교체와 4시간 배터리 수명을 내세우지만 하루 종일 일하는 비용 구조는 아직 검증 중입니다.
+      gap_en: Atlas highlights self-swappable batteries and 4-hour battery life, but all-day economics still need proof.
+      pursuing:
+        - { label: Boston Dynamics, label_en: Boston Dynamics }
+        - { label: Tesla Optimus, label_en: Tesla Optimus, symbol: TSLA }
+        - { label: Unitree, label_en: Unitree }
+      metric: 1회 충전 작업 시간과 자율 충전 성공률
+      metric_en: Work hours per charge and autonomous charging success rate
+      confidence: medium
+      as_of: 2026-07-10
+      source: https://bostondynamics.com/products/atlas/
+      source_label: Boston Dynamics Atlas 배터리 사양
+      source_label_en: Boston Dynamics Atlas battery specs
+      gap_score: 2
+
+    - id: robot-cost
+      name: 가격
+      name_en: Cost
+      target_label: 산업 현장에서 사람 임금과 비교 가능한 총소유비용
+      target_label_en: Total cost of ownership comparable with human labor in industrial sites
+      current_label: Unitree G1 같은 저가형 제품은 등장했지만 범용 작업 성능과 유지비는 별도 검증 필요
+      current_label_en: Lower-cost products such as Unitree G1 exist, but general task ability and maintenance cost need separate proof
+      what: 하드웨어 가격이 낮아도 유지보수, 안전 인증, 작업 성공률까지 합쳐 사람보다 싸야 확산됩니다.
+      what_en: Even if hardware is cheap, maintenance, safety certification, and task success must make total cost lower than labor.
+      gap: 제품 가격은 내려오고 있지만, 실제 현장 총소유비용은 아직 낮은 확신으로 봐야 합니다.
+      gap_en: Product prices are falling, but real field total cost of ownership remains low-confidence.
+      pursuing:
+        - { label: Unitree, label_en: Unitree }
+        - { label: Tesla Optimus, label_en: Tesla Optimus, symbol: TSLA }
+        - { label: Figure AI, label_en: Figure AI }
+      metric: 로봇 가격, 유지보수비, 시간당 작업 성공 비용
+      metric_en: Robot price, maintenance cost, and cost per successful work hour
+      confidence: low
+      as_of: 2026-07-10
+      source: https://www.unitree.com/g1
+      source_label: Unitree G1 공식 제품 페이지
+      source_label_en: Unitree G1 official product page
+      gap_score: 2

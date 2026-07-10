@@ -189,6 +189,15 @@ def render_existing_payload() -> bool:
     try:
         dashboard = load_dashboard_module()
         payload = json.loads(data_path.read_text(encoding="utf-8"))
+        payload["future"] = dashboard.build_future_timeline(
+            load_mock_config(),
+            payload.get("metrics", []),
+            today=datetime.now(ZoneInfo("Asia/Seoul")).date(),
+        )
+        (data_path.parent / "future.json").write_text(
+            json.dumps(payload["future"], ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
         write_dashboard_preview(payload, dashboard)
         print("[dev] fast render: regenerated site/index.html from existing data")
         return True
@@ -615,8 +624,11 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
     add("데이터인프라", "Amazon", "$B", "CAPEX", 16, 0.42, 0.5, meaning="AWS와 물류·서버 투자의 강도를 함께 볼 수 있는 지표입니다.")
     add("데이터인프라", "Alphabet", "$B", "CAPEX", 12, 0.31, 0.4, meaning="구글 클라우드와 AI 인프라 투자 흐름을 확인합니다.")
     add("데이터인프라", "Meta", "$B", "CAPEX", 8, 0.34, 0.45, meaning="AI 추천·광고 시스템과 데이터센터 투자 강도를 보여줍니다.")
+    add("데이터인프라", "Alphabet(GOOGL)", "$", "대표주가", 134, 0.6, 2.1, count=30)
+    add("데이터인프라", "Meta(META)", "$", "대표주가", 520, 1.4, 5.8, count=30)
     add("자동차", "미국 자동차 판매", "M대", "판매", 14.8, 0.03, 0.22)
     add("전기차", "글로벌 EV 판매", "M대", "판매", 1.0, 0.04, 0.08)
+    add("전기차", "Tesla(TSLA)", "$", "대표주가", 238, -0.4, 5.6, count=30)
     add("조선", "BDI", "", "운임", 1280, 14, 120)
     add("철강/소재", "철광석", "$", "원자재", 104, -0.15, 2.8)
     add("철강/소재", "구리", "$", "원자재", 8200, 22, 85)
@@ -628,9 +640,15 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
     add("방산", "미국 방산 제조 계약", "$B", "수주", 21, 0.22, 0.7)
     add("스테이블코인", "USDT/USDC 총 발행량", "$B", "유동성", 165, 0.9, 1.5)
     add("전력", "미국 전력수요", "TWh", "전력", 370, 0.6, 4.2)
+    add("전력", "GE Vernova(GEV)", "$", "대표주가", 180, 1.8, 4.6, count=30)
     add("로봇", "Teradyne(TER)", "$", "대표주가", 121, -0.55, 3.4, count=30)
+    add("로봇", "Uber(UBER)", "$", "대표주가", 84, 0.3, 2.0, count=30)
+    add("로봇", "Mobileye(MBLY)", "$", "대표주가", 18, -0.08, 0.9, count=30)
+    add("로봇", "Qualcomm(QCOM)", "$", "대표주가", 164, 0.2, 2.8, count=30)
     add("우주", "글로벌 발사 건수", "건", "활동성", 12, 0.08, 1.2)
+    add("우주", "Rocket Lab(RKLB)", "$", "대표주가", 28, 0.15, 1.3, count=30)
     add("바이오", "Phase 3 임상 시작", "건", "파이프라인", 18, 0.05, 1.1)
+    add("바이오", "Eli Lilly(LLY)", "$", "대표주가", 960, 2.8, 9.4, count=30)
     add("배터리", "리튬 가격", "$", "원자재", 13200, -34, 210)
 
     add_market("코스피", "종합", "시장지수", "", 2920, 4.2, 22, count=90)
@@ -809,6 +827,22 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
 
     dashboard.apply_interpretations(metrics, load_mock_config())
 
+    for index, metric in enumerate(metrics):
+        group = str(metric.get("group") or "")
+        if group == "대표주가" or group == "시장지수":
+            metric["source"] = "Yahoo Finance chart API"
+        elif group in {"수급", "프로그램", "공매도"}:
+            metric["source"] = "KRX 정보데이터시스템"
+        elif str(metric.get("frequency") or "") == "월간":
+            metric["source"] = "FRED API"
+        else:
+            metric["source"] = "Design mock"
+        metric["fetched_at"] = (now - timedelta(minutes=index % 17)).isoformat(timespec="seconds")
+        metric["fetch_status"] = "success" if index % 6 == 0 else "no_new_data"
+        metric["fetch_status_label"] = dashboard.fetch_status_label(metric["fetch_status"])
+
+    dashboard.annotate_metric_freshness(metrics, now.date())
+
     industries = [industry for industry in dashboard.DEFAULT_INDUSTRIES if any(metric["industry"] == industry for metric in metrics)]
     payload = {
         "title": "산업별 지표 대시보드",
@@ -821,6 +855,9 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
         "source_status": [{"name": "Design mock", "status": "ok", "message": "더미 데이터"}],
         "metrics": metrics,
     }
+    payload["freshness_summary"] = dashboard.build_freshness_summary(
+        metrics, str(payload["generated_at"]), now.date()
+    )
 
     updated_ids = {metric["id"] for metric in metrics if metric["name"] in {"Worldwide", "NVIDIA(NVDA)", "Microsoft", "철광석", "Teradyne(TER)"}}
     new_ids = {metric["id"] for metric in metrics if metric["name"] in {"Micron(MU)", "Phase 3 임상 시작"}}
@@ -834,6 +871,7 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
     dashboard.annotate_dashboard_updates(payload, previous)
     payload["market_gauges"] = dashboard.build_market_gauges(metrics)
     payload["morning_briefing"] = dashboard.rule_based_morning_briefing(payload)
+    payload["future"] = dashboard.build_future_timeline(load_mock_config(), metrics, today=now.date())
     return payload
 
 
@@ -860,6 +898,7 @@ def render_mock_payload() -> bool:
         for filename in ("dashboard.mock.json", "dashboard.json"):
             (data_path / filename).write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         (data_path / "calendar.json").write_text(json.dumps(payload["calendar"], ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        (data_path / "future.json").write_text(json.dumps(payload["future"], ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         (data_path / "long_history.json").write_text(json.dumps(long_history, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         (data_path / "market_gauges_history.json").write_text(
             json.dumps(market_gauges_history, ensure_ascii=False, indent=2) + "\n",
