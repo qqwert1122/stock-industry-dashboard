@@ -47,7 +47,7 @@
       --overview-title-top-gap-mobile: 38px;
       --chip-radius: 16px;
       --signal-drawer-bg: #ffffff;
-      --signal-card-bg: #ffffff;
+      --signal-card-bg: #f3f4f6;
       --signal-card-muted: #a6afbd;
       --signal-filter-active-bg: #111827;
       --signal-filter-active-text: #ffffff;
@@ -632,6 +632,7 @@
       flex: 1 1 auto;
       min-height: 0;
       display: grid;
+      align-content: start;
       gap: 12px;
       overflow-y: auto;
       overscroll-behavior: contain;
@@ -693,6 +694,7 @@
 
     .signal-section {
       display: grid;
+      align-content: start;
       gap: 12px;
     }
 
@@ -704,6 +706,7 @@
 
     .signal-filter-row {
       display: flex;
+      align-items: center;
       gap: 8px;
       overflow-x: auto;
       padding: 0 0 2px;
@@ -712,12 +715,14 @@
     .signal-filter-chip {
       flex: 0 0 auto;
       min-height: 32px;
+      height: 32px;
       border: 1px solid var(--line);
       border-radius: var(--chip-radius);
       background: var(--signal-card-bg);
       color: var(--text);
       padding: 0 15px;
       font-size: 12px;
+      line-height: 1;
       font-weight: 650;
       cursor: pointer;
     }
