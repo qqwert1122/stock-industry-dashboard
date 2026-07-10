@@ -1304,8 +1304,13 @@ def build_freshness_summary(
         # Some slow official APIs can time out while a valid cached metric is
         # still shown. Keep that visible in source_status, but do not make the
         # user-facing freshness summary look like the data disappeared.
-        cached_fallback = bool(metric.get("fetch_attempt_failed")) and metric.get("status") == "ok"
-        failed = (fetch_status == "failed" or metric.get("status") != "ok") and not cached_fallback
+        displayable_fallback = (
+            fetch_status == "failed"
+            and metric.get("status") == "ok"
+            and metric.get("value") is not None
+            and bool(metric.get("observed_at"))
+        )
+        failed = (fetch_status == "failed" or metric.get("status") != "ok") and not displayable_fallback
         delayed = bool(metric.get("is_stale")) and not failed
         if failed:
             state = "failed"

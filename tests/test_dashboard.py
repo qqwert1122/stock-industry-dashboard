@@ -686,9 +686,9 @@ class DashboardTest(unittest.TestCase):
                 "frequency": "월간",
                 "status": "ok",
                 "fetch_status": "failed",
-                "fetch_attempt_failed": True,
                 "fetched_at": "2026-07-10T08:00:00+09:00",
                 "observed_at": "2026-06-01",
+                "value": 1.5,
             }
         ]
 
