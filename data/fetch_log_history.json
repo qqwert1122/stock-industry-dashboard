@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "updated_at": "2026-07-10T12:42:31+09:00",
-  "count": 21,
+  "updated_at": "2026-07-10T16:04:49+09:00",
+  "count": 23,
   "runs": [
     {
       "run_id": "2026-07-09T13:09:06+09:00",
@@ -2515,6 +2515,56 @@
           "new_data_count": 1,
           "started_at": "2026-07-10T12:42:28+09:00",
           "duration_ms": 2124,
+          "http_status": null
+        }
+      ]
+    },
+    {
+      "run_id": "2026-07-10T16:04:19+09:00",
+      "run_type": "prices",
+      "started_at": "2026-07-10T16:04:19+09:00",
+      "finished_at": "2026-07-10T16:04:46+09:00",
+      "duration_ms": 27212,
+      "summary": {
+        "success": 1,
+        "no_new_data": 0,
+        "failed": 0
+      },
+      "records": [
+        {
+          "source": "대표주가/시장지수",
+          "endpoint": "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}",
+          "status": "success",
+          "message": "55/55개 지표 자동 수집",
+          "metric_count": 55,
+          "new_data_count": 4,
+          "started_at": "2026-07-10T16:04:19+09:00",
+          "duration_ms": 27064,
+          "http_status": null
+        }
+      ]
+    },
+    {
+      "run_id": "2026-07-10T16:04:47+09:00",
+      "run_type": "briefing-intraday",
+      "started_at": "2026-07-10T16:04:47+09:00",
+      "finished_at": "2026-07-10T16:04:49+09:00",
+      "duration_ms": 1977,
+      "summary": {
+        "success": 1,
+        "no_new_data": 0,
+        "failed": 0
+      },
+      "records": [
+        {
+          "source": "AI 요약",
+          "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent",
+          "status": "success",
+          "message": "카드 생성: 유의미한 변화: 코스피 (Gemini 호출)",
+          "metric_count": 26,
+          "new_data_count": 1,
+          "started_at": "2026-07-10T16:04:47+09:00",
+          "duration_ms": 1976,
           "http_status": null
         }
       ]
