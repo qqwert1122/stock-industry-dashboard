@@ -6683,7 +6683,7 @@
       }
 
       .morning-briefing .briefing-title-text {
-        font-size: 16px;
+        font-size: 18px;
       }
 
       .briefing-meta {
@@ -6709,7 +6709,7 @@
       }
 
       .briefing-headline {
-        font-size: 16px;
+        font-size: 20px;
       }
 
       .briefing-summary,
@@ -7208,10 +7208,13 @@
 
       .metric-table col.metric-description-cell,
       .metric-table col.metric-date-cell,
+      .metric-table col.metric-favorite-cell,
       .metric-table th:nth-child(2),
       .metric-table th:nth-child(3),
+      .metric-table th:nth-child(6),
       .metric-table td.metric-description-cell,
-      .metric-table td.metric-date-cell {
+      .metric-table td.metric-date-cell,
+      .metric-table td.metric-favorite-cell {
         display: none;
       }
 
@@ -7253,18 +7256,9 @@
         content: none;
       }
 
-      .metric-name-cell { width: 38%; }
-      .metric-value-cell { width: 22%; }
-      .metric-chart-cell { width: 18%; }
-      .metric-favorite-cell {
-        width: 70px;
-        min-width: 70px;
-      }
-
-      .metric-row td.metric-favorite-cell {
-        padding-left: 3px;
-        padding-right: 3px;
-      }
+      .metric-name-cell { width: 44%; }
+      .metric-value-cell { width: 28%; }
+      .metric-chart-cell { width: 28%; }
 
       .metric-name {
         font-size: 13.5px;
@@ -7350,6 +7344,13 @@
 
       .detail-interpretation-label {
         font-size: 14px;
+      }
+
+      .detail-interpretation-text {
+        overflow: visible;
+        text-overflow: clip;
+        white-space: normal;
+        overflow-wrap: anywhere;
       }
 
       .detail-measurements {
@@ -8023,7 +8024,7 @@
       .market-diagnosis-head h2,
       .favorite-metrics .favorite-metrics-head h2,
       .daily-heatmap-head h2 {
-        font-size: 19px;
+        font-size: 20px;
       }
 
       .event-snapshot-title,
@@ -8031,7 +8032,7 @@
       .gauge-component-name,
       .daily-update-title,
       .metric-name {
-        font-size: 15.5px;
+        font-size: 18px;
       }
 
       .event-snapshot-copy,
@@ -8045,7 +8046,7 @@
       .metric-mobile-description,
       .gauge-component-value,
       .signal-chip .signal-value {
-        font-size: 14.5px;
+        font-size: 16px;
       }
 
       .event-snapshot-date,
@@ -8092,6 +8093,52 @@
       .mover-ticker-item {
         height: 17px;
         font-size: 11px;
+      }
+
+      .briefing-summary,
+      .briefing-bullet-body {
+        font-size: 16px;
+      }
+
+      .future-page-head h2 {
+        font-size: 20px;
+      }
+
+      .future-card-title,
+      .calendar-month-title,
+      .calendar-agenda-title,
+      .calendar-section-head h3,
+      .gauge-card-head h3,
+      .favorite-card-title,
+      .signal-card-title,
+      .depth-title,
+      .depth-section .group-title,
+      .group-title {
+        font-size: 18px;
+      }
+
+      .favorite-card-value {
+        font-size: 18px;
+      }
+
+      .event-snapshot-copy,
+      .recent-alert-empty,
+      .future-copy,
+      .detail-description,
+      .detail-interpretation-content,
+      .signal-card p,
+      .calendar-empty-text {
+        font-size: 16px;
+      }
+
+      .calendar-name {
+        font-size: 16px;
+      }
+
+      .favorite-card-meta,
+      .calendar-date,
+      .calendar-note {
+        font-size: 13px;
       }
     }
   </style>
@@ -8385,8 +8432,8 @@
         lastChecked: "마지막 확인",
         nextUpdate: "다음 예정일",
         chart: "차트",
-        metricSummary: "지표명/설명",
-        metricValueShort: "지표",
+        metricSummary: "지표명",
+        metricValueShort: "지표값",
         currentValue: "현재값",
         previousChange: "전기 변화",
         previousChangePct: "전기 변화율",
@@ -8660,7 +8707,7 @@
         lastChecked: "Last checked",
         nextUpdate: "Next update",
         chart: "Chart",
-        metricSummary: "Metric/description",
+        metricSummary: "Metric",
         metricValueShort: "Value",
         currentValue: "Current",
         previousChange: "Previous change",
