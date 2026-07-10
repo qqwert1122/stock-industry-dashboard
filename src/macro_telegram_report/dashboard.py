@@ -14,6 +14,7 @@ from pathlib import Path
 from statistics import median
 from typing import Any
 from urllib.parse import urljoin
+from xml.etree import ElementTree
 from zoneinfo import ZoneInfo
 
 import requests
@@ -50,7 +51,7 @@ from .fetch_log import (
 )
 from .event_calendar import build_event_calendar, write_event_calendar
 from .future_timeline import build_future_timeline, write_future_timeline
-from .korea_exports import fetch_itemtrade_records
+from .korea_exports import build_data_go_kr_url, fetch_itemtrade_records, first_text, local_name
 from .alerts import process_alerts
 from .market_gauges import build_market_gauges
 from .market_flows import (
@@ -105,6 +106,7 @@ FETCH_SOURCE_ENDPOINTS = {
     "미국 유동성": FRED_OBSERVATIONS_URL,
     "ECOS 신용스프레드": "https://ecos.bok.or.kr/api/",
     "ECOS 매크로": "https://ecos.bok.or.kr/api/",
+    "금투협회 증시자금": "https://www.data.go.kr/data/15094809/openapi.do",
     "대표주가/시장지수": "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}",
     "스테이블코인": "https://stablecoins.llama.fi/stablecoins",
     "World Bank 원자재": "https://thedocs.worldbank.org/",
@@ -2851,6 +2853,7 @@ def build_dashboard_payload(
         ("FRED", collect_fred_metrics),
         ("ECOS 신용스프레드", collect_ecos_credit_spread_metrics),
         ("ECOS 매크로", collect_ecos_series_metrics),
+        ("금투협회 증시자금", collect_kofia_capital_market_metrics),
         ("대표주가/시장지수", collect_equity_price_metrics),
         ("스테이블코인", collect_stablecoin_metrics),
         ("World Bank 원자재", collect_world_bank_commodity_metrics),
@@ -4564,6 +4567,271 @@ def parse_ecos_period(value: str, period: str = "D") -> date | None:
     except ValueError:
         return None
     return None
+
+
+KOFIA_STATISTICS_ENDPOINT = "https://apis.data.go.kr/1160100/service/GetKofiaStatisticsInfoService"
+KOFIA_SOURCE_URL = "https://www.data.go.kr/data/15094809/openapi.do"
+
+KOFIA_DAILY_ITEMS = [
+    {
+        "name": "한국 투자자예탁금",
+        "operation": "getSecuritiesMarketTotalCapitalInfo",
+        "value_field": "invrDpsgAmt",
+        "history_key": "kofia-securities-market-investor-deposits",
+        "unit": "조원",
+        "scale": 0.000000000001,
+        "meaning": "증권계좌에 대기 중인 현금입니다. 늘어나면 주식시장으로 들어올 수 있는 대기 자금이 많아졌다는 뜻으로 봅니다.",
+    },
+    {
+        "name": "한국 신용융자 잔고",
+        "operation": "getGrantingOfCreditBalanceInfo",
+        "value_field": "crdTrFingWhl",
+        "history_key": "kofia-credit-financing-balance",
+        "unit": "조원",
+        "scale": 0.000000000001,
+        "meaning": "투자자가 빚을 내서 주식을 산 잔고입니다. 빠르게 늘면 과열 신호가 될 수 있고, 급감하면 반대매매 압력을 의심할 수 있습니다.",
+    },
+    {
+        "name": "한국 CMA 잔고",
+        "operation": "getCMAStatus",
+        "value_field": "actBal",
+        "history_key": "kofia-cma-balance",
+        "unit": "조원",
+        "scale": 0.000000000001,
+        "row_filter": {"mngInvTgt": "합계", "invrCtg": "합계"},
+        "meaning": "CMA 계좌에 머무는 단기 대기자금입니다. 증시 주변의 현금 여력과 단기자금 선호가 커지는지 확인할 때 봅니다.",
+    },
+]
+
+
+def collect_kofia_capital_market_metrics(
+    config: dict[str, Any], session: requests.Session, today: date
+) -> list[dict[str, Any]]:
+    del today
+    kofia_config = config.get("kofia", {}) or {}
+    if not kofia_config.get("enabled", True):
+        return []
+
+    service_key = os.getenv("DATA_GO_KR_SERVICE_KEY", "").strip()
+    endpoint = str(kofia_config.get("endpoint") or KOFIA_STATISTICS_ENDPOINT).rstrip("/")
+    source_url = str(kofia_config.get("source_url") or KOFIA_SOURCE_URL)
+    items = kofia_config.get("daily_items") or KOFIA_DAILY_ITEMS
+    num_rows = int(kofia_config.get("num_rows") or 10000)
+
+    if not service_key:
+        metrics: list[dict[str, Any]] = []
+        for item in items:
+            operation = str(item.get("operation") or "")
+            value_field = str(item.get("value_field") or "")
+            history_key = str(item.get("history_key") or f"kofia-{operation}-{value_field}")
+            metrics.append(
+                make_metric(
+                    industry="매크로",
+                    name=str(item.get("name") or "금투협회 증시자금"),
+                    source="금융투자협회 종합통계",
+                    source_url=source_url,
+                    frequency="일간",
+                    automation="공공데이터 API 자동 수집",
+                    status="needs_key",
+                    note="GitHub Secrets에 DATA_GO_KR_SERVICE_KEY 등록 필요",
+                    group="수급 과열",
+                    section="market",
+                    market_category="신용·예탁금",
+                    meaning=str(item.get("meaning") or ""),
+                    history_key=history_key,
+                    metric_id=history_key,
+                )
+            )
+        return metrics
+
+    metrics: list[dict[str, Any]] = []
+    for item in items:
+        name = str(item.get("name") or "금투협회 증시자금")
+        operation = str(item.get("operation") or "")
+        value_field = str(item.get("value_field") or "")
+        history_key = str(item.get("history_key") or f"kofia-{operation}-{value_field}")
+        if not operation or not value_field:
+            continue
+        try:
+            rows = fetch_kofia_rows(
+                session=session,
+                endpoint=endpoint,
+                operation=operation,
+                service_key=service_key,
+                num_rows=num_rows,
+            )
+            points = kofia_points_from_rows(
+                rows,
+                value_field=value_field,
+                row_filter=item.get("row_filter") if isinstance(item.get("row_filter"), dict) else None,
+                scale=to_float(item.get("scale")) or 1.0,
+            )
+            if not points:
+                metrics.append(
+                    make_metric(
+                        industry="매크로",
+                        name=name,
+                        source="금융투자협회 종합통계",
+                        source_url=source_url,
+                        frequency="일간",
+                        automation="공공데이터 API 자동 수집",
+                        status="error",
+                        note="관측값 없음",
+                        group="수급 과열",
+                        section="market",
+                        market_category="신용·예탁금",
+                        meaning=str(item.get("meaning") or ""),
+                    )
+                )
+                continue
+
+            latest_date, latest_value = points[-1]
+            previous_value = points[-2][1] if len(points) > 1 else None
+            metrics.append(
+                make_metric(
+                    industry="매크로",
+                    name=name,
+                    source="금융투자협회 종합통계",
+                    source_url=source_url,
+                    frequency="일간",
+                    automation="공공데이터 API 자동 수집",
+                    status="ok",
+                    value=latest_value,
+                    unit=str(item.get("unit") or "조원"),
+                    observed_at=latest_date.isoformat(),
+                    previous_value=previous_value,
+                    yoy_value=find_yoy_value(points, latest_date),
+                    history=points,
+                    group="수급 과열",
+                    section="market",
+                    market_category="신용·예탁금",
+                    meaning=str(item.get("meaning") or ""),
+                    history_key=history_key,
+                    metric_id=history_key,
+                )
+            )
+        except Exception as exc:  # noqa: BLE001 - 무료 공공 API 장애는 소스 단위 soft-fail.
+            metrics.append(
+                make_metric(
+                    industry="매크로",
+                    name=name,
+                    source="금융투자협회 종합통계",
+                    source_url=source_url,
+                    frequency="일간",
+                    automation="공공데이터 API 자동 수집",
+                    status="error",
+                    note=f"금투협회 API 응답 실패: {exc}",
+                    group="수급 과열",
+                    section="market",
+                    market_category="신용·예탁금",
+                    meaning=str(item.get("meaning") or ""),
+                    history_key=history_key,
+                    metric_id=history_key,
+                )
+            )
+    return metrics
+
+
+def fetch_kofia_rows(
+    session: requests.Session,
+    endpoint: str,
+    operation: str,
+    service_key: str,
+    num_rows: int = 10000,
+) -> list[dict[str, Any]]:
+    url = build_data_go_kr_url(
+        f"{endpoint.rstrip('/')}/{operation}",
+        service_key,
+        {
+            "pageNo": "1",
+            "numOfRows": str(num_rows),
+            "_type": "json",
+            "resultType": "json",
+        },
+    )
+    response = session.get(url, timeout=30)
+    response.raise_for_status()
+    text = response.text.strip()
+    if text.startswith("{") or text.startswith("["):
+        return parse_kofia_json_rows(response.json())
+    return parse_kofia_xml_rows(text)
+
+
+def parse_kofia_json_rows(payload: object) -> list[dict[str, Any]]:
+    if not isinstance(payload, dict):
+        return []
+    response = payload.get("response", payload)
+    if not isinstance(response, dict):
+        return []
+    header = response.get("header")
+    if isinstance(header, dict):
+        result_code = str(header.get("resultCode") or header.get("returnReasonCode") or "")
+        result_msg = str(header.get("resultMsg") or header.get("returnAuthMsg") or "")
+        if result_code and result_code not in {"00", "0", "NORMAL_CODE"}:
+            raise ValueError(f"공공데이터 API 오류 {result_code}: {result_msg or 'unknown'}")
+    body = response.get("body", response)
+    if not isinstance(body, dict):
+        return []
+    items = body.get("items", [])
+    if isinstance(items, dict):
+        items = items.get("item", [])
+    if isinstance(items, dict):
+        items = [items]
+    if not isinstance(items, list):
+        return []
+    return [item for item in items if isinstance(item, dict)]
+
+
+def parse_kofia_xml_rows(xml_text: str) -> list[dict[str, Any]]:
+    root = ElementTree.fromstring(xml_text)
+    result_code = first_text(root, "resultCode") or first_text(root, "returnReasonCode")
+    result_message = (
+        first_text(root, "resultMsg")
+        or first_text(root, "returnAuthMsg")
+        or first_text(root, "errMsg")
+    )
+    if result_code and result_code not in {"00", "0", "NORMAL_CODE"}:
+        raise ValueError(f"공공데이터 API 오류 {result_code}: {result_message or 'unknown'}")
+    rows: list[dict[str, Any]] = []
+    for item in root.iter():
+        if local_name(item.tag) != "item":
+            continue
+        row = {
+            local_name(child.tag): (child.text or "").strip()
+            for child in list(item)
+            if child.text is not None
+        }
+        if row:
+            rows.append(row)
+    return rows
+
+
+def kofia_points_from_rows(
+    rows: list[dict[str, Any]],
+    value_field: str,
+    row_filter: dict[str, Any] | None = None,
+    scale: float = 1.0,
+) -> list[tuple[date, float]]:
+    by_date: dict[date, float] = {}
+    for row in rows:
+        if row_filter and any(str(row.get(key) or "").strip() != str(value).strip() for key, value in row_filter.items()):
+            continue
+        observed_at = parse_kofia_date(row.get("basDt"))
+        value = to_float(row.get(value_field))
+        if observed_at is None or value is None:
+            continue
+        by_date[observed_at] = value * scale
+    return sorted(by_date.items())
+
+
+def parse_kofia_date(value: object) -> date | None:
+    text = str(value or "").strip().replace("-", "")
+    if not re.fullmatch(r"\d{8}", text):
+        return parse_iso_date(value)
+    try:
+        return date(int(text[:4]), int(text[4:6]), int(text[6:8]))
+    except ValueError:
+        return None
 
 
 def compute_spread_points(
