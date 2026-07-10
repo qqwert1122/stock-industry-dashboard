@@ -12621,6 +12621,14 @@
         datePicker.focus();
         datePicker.click();
       });
+      datePicker?.addEventListener("click", () => {
+        if (typeof datePicker.showPicker !== "function") return;
+        try {
+          datePicker.showPicker();
+        } catch (error) {
+          datePicker.focus();
+        }
+      });
       datePicker?.addEventListener("change", (event) => {
         const date = event.target.value;
         const cards = briefingCards().filter((card) => card.date === date);
