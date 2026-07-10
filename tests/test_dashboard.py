@@ -677,6 +677,31 @@ class DashboardTest(unittest.TestCase):
         self.assertEqual(summary["current_count"], 1)
         self.assertEqual(summary["delayed_count"], 1)
 
+    def test_freshness_summary_treats_cached_fallback_as_displayable_data(self):
+        metrics = [
+            {
+                "id": "cached-contracts",
+                "name": "미국 방산 계약",
+                "source": "USAspending API",
+                "frequency": "월간",
+                "status": "ok",
+                "fetch_status": "failed",
+                "fetch_attempt_failed": True,
+                "fetched_at": "2026-07-10T08:00:00+09:00",
+                "observed_at": "2026-06-01",
+            }
+        ]
+
+        annotate_metric_freshness(metrics, date(2026, 7, 10))
+        summary = build_freshness_summary(
+            metrics, "2026-07-10T08:00:00+09:00", date(2026, 7, 10)
+        )
+
+        self.assertEqual(summary["status"], "current")
+        self.assertEqual(summary["failed_count"], 0)
+        self.assertEqual(summary["current_count"], 1)
+        self.assertEqual(summary["sources"][0]["failed_count"], 0)
+
     def test_intraday_price_scope_switches_markets_without_increasing_calls(self):
         config = {
             "equities": {
