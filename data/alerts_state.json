@@ -2,15 +2,15 @@
   "rules": {
     "S&P 500 Shiller CAPE|pct_above=95": {
       "triggered": true,
-      "value": 41.64,
+      "value": 42.0,
       "observed_at": "2026-07-01",
       "metric_id": "b0b6e0910209",
       "metric_name": "S&P 500 Shiller CAPE"
     },
     "하이일드 회사채 OAS|above=5.0": {
       "triggered": false,
-      "value": 2.67,
-      "observed_at": "2026-07-07",
+      "value": 2.7,
+      "observed_at": "2026-07-08",
       "metric_id": "1dbb497f2b22",
       "metric_name": "미국 하이일드 회사채 OAS"
     },
@@ -23,23 +23,23 @@
     },
     "10Y-3M 금리차|below=0": {
       "triggered": false,
-      "value": 0.69,
-      "observed_at": "2026-07-08",
+      "value": 0.71,
+      "observed_at": "2026-07-09",
       "metric_id": "0f9e337e8716",
       "metric_name": "미국 10Y-3M 금리차"
     },
     "VIX|above=40": {
       "triggered": false,
-      "value": 16.13,
-      "observed_at": "2026-07-07",
-      "metric_id": "d52ec106cae6",
+      "value": 15.569999694824219,
+      "observed_at": "2026-07-10",
+      "metric_id": "44ec20f58987",
       "metric_name": "VIX"
     },
     "원/달러 환율|above=1500": {
       "triggered": true,
-      "value": 1538.05,
-      "observed_at": "2026-07-02",
-      "metric_id": "732a4ca71e22",
+      "value": 1500.8599853515625,
+      "observed_at": "2026-07-10",
+      "metric_id": "c0e679b6845a",
       "metric_name": "원/달러 환율"
     }
   },

@@ -65,43 +65,70 @@
       font-size: 13px;
       cursor: pointer;
     }
-    .layout {
+    .admin-stack {
       display: grid;
-      grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
       gap: 16px;
-      align-items: start;
     }
-    .run-list,
+    .admin-section,
     .record-panel {
       border: 1px solid var(--line);
       background: var(--panel);
       border-radius: 18px;
       overflow: hidden;
     }
-    .run-list {
-      display: grid;
-      gap: 0;
+    .section-head,
+    .record-head {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 12px;
     }
-    .run-button {
+    .section-title,
+    .record-title {
+      font-size: 15px;
+      font-weight: 750;
+    }
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    .summary-card {
+      min-width: 0;
+      border-radius: 14px;
+      background: rgba(127, 127, 127, 0.08);
+      padding: 10px 12px;
+    }
+    .summary-card strong {
+      display: block;
+      font-size: 18px;
+      line-height: 1.1;
+      margin-bottom: 5px;
+    }
+    .summary-card span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+    }
+    .run-select-button {
       width: 100%;
       border: 0;
-      border-bottom: 1px solid var(--line);
       background: transparent;
       color: var(--text);
-      padding: 13px 14px;
+      padding: 0;
       text-align: left;
       cursor: pointer;
+      font: inherit;
     }
-    .run-button:last-child { border-bottom: 0; }
-    .run-button.is-active { background: rgba(127, 127, 127, 0.10); }
-    .run-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 7px;
-      font-weight: 700;
-      font-size: 13px;
-    }
+    tr.is-active td { background: rgba(127, 127, 127, 0.10); }
     .badges {
       display: flex;
       flex-wrap: wrap;
@@ -120,14 +147,34 @@
     .success { color: var(--ok); background: var(--ok-bg); }
     .no_new_data { color: var(--warn); background: var(--warn-bg); }
     .failed { color: var(--bad); background: var(--bad-bg); }
-    .record-head {
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--line);
+    .pager {
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
+      padding: 12px 16px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
     }
-    .record-title { font-size: 15px; font-weight: 750; }
+    .pager-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .pager button {
+      min-width: 34px;
+      height: 30px;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(127, 127, 127, 0.10);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .pager button:disabled {
+      cursor: default;
+      opacity: 0.35;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -159,7 +206,7 @@
     }
     @media (max-width: 820px) {
       header { display: grid; align-items: start; }
-      .layout { grid-template-columns: 1fr; }
+      .summary-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .record-panel { overflow-x: auto; }
       table { min-width: 760px; }
     }
@@ -177,13 +224,24 @@
     <div class="toolbar">
       <label><input type="checkbox" id="failedOnly"> 실패만 보기</label>
     </div>
-    <section class="layout">
-      <div class="run-list" id="runList"></div>
+    <section class="admin-stack">
+      <div class="admin-section" id="freshnessPanel"></div>
+      <div class="admin-section" id="runList"></div>
       <div class="record-panel" id="recordPanel"></div>
     </section>
   </main>
   <script>
-    const state = { history: null, selectedRunId: "", failedOnly: false };
+    const pageSize = 10;
+    const recordPageSize = 15;
+    const state = {
+      history: null,
+      dashboard: null,
+      selectedRunId: "",
+      failedOnly: false,
+      runPage: 0,
+      recordPage: 0,
+      freshnessPage: 0,
+    };
     const statusLabels = {
       success: "업데이트",
       no_new_data: "신규 없음",
@@ -222,6 +280,114 @@
       }).join("");
     }
 
+    function pageCount(total, size) {
+      return Math.max(1, Math.ceil(Number(total || 0) / size));
+    }
+
+    function clampPage(value, total, size) {
+      return Math.min(Math.max(0, Number(value) || 0), pageCount(total, size) - 1);
+    }
+
+    function pageSlice(items, page, size) {
+      return items.slice(page * size, (page + 1) * size);
+    }
+
+    function pagerMarkup(kind, page, total, size) {
+      if (total <= size) return "";
+      const pages = pageCount(total, size);
+      return `<div class="pager">
+        <span>${(page * size) + 1}-${Math.min(total, (page + 1) * size)} / ${total}</span>
+        <span class="pager-actions">
+          <button type="button" data-page-kind="${escapeHtml(kind)}" data-page="${page - 1}" ${page <= 0 ? "disabled" : ""} aria-label="이전">‹</button>
+          <button type="button" data-page-kind="${escapeHtml(kind)}" data-page="${page + 1}" ${page >= pages - 1 ? "disabled" : ""} aria-label="다음">›</button>
+        </span>
+      </div>`;
+    }
+
+    function initPagerButtons(root = document) {
+      root.querySelectorAll("[data-page-kind]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (button.disabled) return;
+          const page = Number(button.dataset.page) || 0;
+          if (button.dataset.pageKind === "runs") {
+            state.runPage = page;
+            renderRuns();
+          } else if (button.dataset.pageKind === "records") {
+            state.recordPage = page;
+            renderRecords();
+          } else if (button.dataset.pageKind === "freshness") {
+            state.freshnessPage = page;
+            renderFreshness();
+          }
+        });
+      });
+    }
+
+    function freshnessSourceState(source) {
+      if (Number(source.failed_count || 0) > 0) return "failed";
+      if (Number(source.delayed_count || 0) > 0) return "no_new_data";
+      return "success";
+    }
+
+    function renderFreshness() {
+      const panel = document.getElementById("freshnessPanel");
+      const summary = state.dashboard?.freshness_summary || {};
+      const sources = Array.isArray(summary.sources) ? summary.sources : [];
+      const total = Number(summary.total_count || 0);
+      if (!total) {
+        panel.innerHTML = `<div class="section-head"><div><div class="section-title">데이터 업데이트 현황</div><div class="muted">표시할 업데이트 현황이 없습니다.</div></div></div>`;
+        return;
+      }
+      state.freshnessPage = clampPage(state.freshnessPage, sources.length, pageSize);
+      const rows = pageSlice(sources, state.freshnessPage, pageSize).map((source) => {
+        const status = freshnessSourceState(source);
+        return `<tr>
+          <td><span class="badge ${status}">${escapeHtml(statusLabels[status] || status)}</span></td>
+          <td>${escapeHtml(source.name || "")}</td>
+          <td>${Number(source.total_count || 0)}</td>
+          <td>${Number(source.current_count || 0)}</td>
+          <td>${Number(source.updated_count || 0)}</td>
+          <td>${Number(source.waiting_count || 0)}</td>
+          <td>${Number(source.delayed_count || 0)}</td>
+          <td>${Number(source.failed_count || 0)}</td>
+          <td>${escapeHtml(formatDate(source.last_checked_at))}</td>
+          <td>${escapeHtml(source.latest_observed_at || "")}</td>
+        </tr>`;
+      }).join("");
+      panel.innerHTML = `<div class="section-head">
+          <div>
+            <div class="section-title">데이터 업데이트 현황</div>
+            <div class="muted">마지막 확인 ${escapeHtml(formatDate(summary.last_checked_at || summary.generated_at))} · 최신 관측 ${escapeHtml(summary.latest_observed_at || "-")}</div>
+          </div>
+          <span class="badge ${escapeHtml(summary.status === "failed" ? "failed" : summary.status === "delayed" ? "no_new_data" : "success")}">${escapeHtml(total)}개 중 ${escapeHtml(summary.current_count || 0)}개 정상</span>
+        </div>
+        <div class="summary-cards">
+          <div class="summary-card"><strong>${Number(summary.current_count || 0)}</strong><span>정상</span></div>
+          <div class="summary-card"><strong>${Number(summary.updated_count || 0)}</strong><span>새 값 반영</span></div>
+          <div class="summary-card"><strong>${Number(summary.waiting_count || 0)}</strong><span>발표 대기</span></div>
+          <div class="summary-card"><strong>${Number(summary.delayed_count || 0)}</strong><span>갱신 지연</span></div>
+          <div class="summary-card"><strong>${Number(summary.failed_count || 0)}</strong><span>수집 실패</span></div>
+        </div>
+        ${rows ? `<div class="table-wrap"><table>
+          <thead>
+            <tr>
+              <th>상태</th>
+              <th>소스</th>
+              <th>전체</th>
+              <th>정상</th>
+              <th>업데이트</th>
+              <th>대기</th>
+              <th>지연</th>
+              <th>실패</th>
+              <th>마지막 확인</th>
+              <th>최신 관측</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table></div>${pagerMarkup("freshness", state.freshnessPage, sources.length, pageSize)}` : `<div class="empty">소스별 현황이 없습니다.</div>`}`;
+      initPagerButtons(panel);
+    }
+
     function renderRuns() {
       const runs = [...(state.history?.runs || [])].reverse();
       const list = document.getElementById("runList");
@@ -230,23 +396,45 @@
         return;
       }
       if (!state.selectedRunId) state.selectedRunId = String(runs[0].run_id || "");
-      list.innerHTML = runs.map((run) => {
+      state.runPage = clampPage(state.runPage, runs.length, pageSize);
+      const rows = pageSlice(runs, state.runPage, pageSize).map((run) => {
         const id = String(run.run_id || "");
-        return `<button class="run-button${id === state.selectedRunId ? " is-active" : ""}" type="button" data-run-id="${escapeHtml(id)}">
-          <span class="run-top">
-            <span>${escapeHtml(run.run_type || "run")}</span>
-            <span>${escapeHtml(formatDate(run.started_at))}</span>
-          </span>
-          <span class="badges">${runSummary(run)}</span>
-        </button>`;
+        return `<tr class="${id === state.selectedRunId ? "is-active" : ""}">
+          <td><button class="run-select-button" type="button" data-run-id="${escapeHtml(id)}">${escapeHtml(run.run_type || "run")}</button></td>
+          <td>${escapeHtml(formatDate(run.started_at))}</td>
+          <td>${escapeHtml(formatDate(run.finished_at))}</td>
+          <td>${Number(run.duration_ms || 0).toLocaleString("ko-KR")}</td>
+          <td><span class="badges">${runSummary(run)}</span></td>
+        </tr>`;
       }).join("");
+      list.innerHTML = `<div class="section-head">
+          <div>
+            <div class="section-title">수집 실행 목록</div>
+            <div class="muted">${runs.length}개 실행 기록</div>
+          </div>
+        </div>
+        <div class="table-wrap"><table>
+          <thead>
+            <tr>
+              <th>유형</th>
+              <th>시작</th>
+              <th>종료</th>
+              <th>ms</th>
+              <th>결과</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table></div>
+        ${pagerMarkup("runs", state.runPage, runs.length, pageSize)}`;
       list.querySelectorAll("[data-run-id]").forEach((button) => {
         button.addEventListener("click", () => {
           state.selectedRunId = button.dataset.runId || "";
+          state.recordPage = 0;
           renderRuns();
           renderRecords();
         });
       });
+      initPagerButtons(list);
     }
 
     function selectedRun() {
@@ -261,7 +449,8 @@
         return;
       }
       const records = (run.records || []).filter((record) => !state.failedOnly || record.status === "failed");
-      const rows = records.map((record) => `<tr>
+      state.recordPage = clampPage(state.recordPage, records.length, recordPageSize);
+      const rows = pageSlice(records, state.recordPage, recordPageSize).map((record) => `<tr>
         <td><span class="badge ${escapeHtml(record.status)}">${escapeHtml(statusLabels[record.status] || record.status)}</span></td>
         <td>${escapeHtml(record.source)}</td>
         <td>${escapeHtml(record.message)}</td>
@@ -278,7 +467,7 @@
           </div>
           <div class="badges">${runSummary(run)}</div>
         </div>
-        ${rows ? `<table>
+        ${rows ? `<div class="table-wrap"><table>
           <thead>
             <tr>
               <th>상태</th>
@@ -292,25 +481,37 @@
             </tr>
           </thead>
           <tbody>${rows}</tbody>
-        </table>` : `<div class="empty">표시할 기록이 없습니다.</div>`}`;
+        </table></div>${pagerMarkup("records", state.recordPage, records.length, recordPageSize)}` : `<div class="empty">표시할 기록이 없습니다.</div>`}`;
+      initPagerButtons(panel);
     }
 
     async function load() {
       try {
-        const response = await fetch("../data/fetch_log.json", { cache: "no-store" });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        state.history = await response.json();
+        const [logResponse, dashboardResponse] = await Promise.all([
+          fetch("../data/fetch_log.json", { cache: "no-store" }),
+          fetch("../data/dashboard.json", { cache: "no-store" }),
+        ]);
+        if (!logResponse.ok) throw new Error(`fetch_log HTTP ${logResponse.status}`);
+        state.history = await logResponse.json();
+        if (dashboardResponse.ok) {
+          state.dashboard = await dashboardResponse.json();
+        } else {
+          state.dashboard = {};
+        }
         document.getElementById("updatedAt").textContent = `최근 갱신: ${formatDate(state.history.updated_at)}`;
       } catch (error) {
         state.history = { runs: [] };
+        state.dashboard = {};
         document.getElementById("updatedAt").textContent = `수집 로그를 불러오지 못했습니다: ${error.message}`;
       }
+      renderFreshness();
       renderRuns();
       renderRecords();
     }
 
     document.getElementById("failedOnly").addEventListener("change", (event) => {
       state.failedOnly = event.target.checked;
+      state.recordPage = 0;
       renderRecords();
     });
     load();

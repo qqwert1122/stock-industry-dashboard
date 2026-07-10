@@ -1296,6 +1296,7 @@ def build_future_timeline(
                 "why_en": str(raw.get("why_en") or raw.get("why") or ""),
                 "now": str(raw.get("now") or ""),
                 "now_en": str(raw.get("now_en") or raw.get("now") or ""),
+                "image": str(raw.get("image") or ""),
                 "bottleneck": str(raw.get("bottleneck") or ""),
                 "bottleneck_en": str(raw.get("bottleneck_en") or raw.get("bottleneck") or ""),
                 "glossary": [str(item) for item in (raw.get("glossary") or []) if str(item) in glossary][:3],

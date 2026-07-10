@@ -2805,9 +2805,11 @@ def copy_dashboard_assets(output_path: Path) -> None:
     if assets_source is None:
         return
 
-    source = assets_source / "industry-icons"
-    target = output_path / "assets" / "industry-icons"
-    if source.exists():
+    for directory in ("industry-icons", "future-images"):
+        source = assets_source / directory
+        target = output_path / "assets" / directory
+        if not source.exists():
+            continue
         if target.exists():
             shutil.rmtree(target, ignore_errors=True)
         shutil.copytree(source, target, dirs_exist_ok=True)
