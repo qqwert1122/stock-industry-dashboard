@@ -1718,9 +1718,8 @@
       width: 100%;
       height: 100%;
       opacity: 0;
-      z-index: 2;
       cursor: pointer;
-      pointer-events: auto;
+      pointer-events: none;
     }
 
     .briefing-date-display {
@@ -6694,6 +6693,11 @@
 
       .briefing-date-display {
         padding: 0 10px;
+      }
+
+      .briefing-date-picker {
+        z-index: 2;
+        pointer-events: auto;
       }
 
       .briefing-selected-time {
