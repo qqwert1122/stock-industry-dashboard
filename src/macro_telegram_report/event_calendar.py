@@ -130,6 +130,10 @@ def compact_event(item: dict[str, Any], today: date) -> dict[str, Any]:
     }
     if item.get("metric_id"):
         result["metric_id"] = item.get("metric_id")
+    if item.get("name_en"):
+        result["name_en"] = str(item.get("name_en") or "")
+    if item.get("note_en"):
+        result["note_en"] = str(item.get("note_en") or "")
     return result
 
 
@@ -140,8 +144,15 @@ def build_event_calendar(
     today: date | None = None,
 ) -> dict[str, Any]:
     today = today or datetime.now().date()
-    root = Path(str((config.get("calendar") or {}).get("dir") or "data/calendar"))
-    years = {today.year, (today + timedelta(days=70)).year, (today - timedelta(days=10)).year}
+    calendar_config = config.get("calendar") or {}
+    root = Path(str(calendar_config.get("dir") or "data/calendar"))
+    lookback_days = int(calendar_config.get("lookback_days") or 7)
+    lookahead_days = int(calendar_config.get("lookahead_days") or 60)
+    years = {
+        today.year,
+        (today + timedelta(days=lookahead_days)).year,
+        (today - timedelta(days=lookback_days)).year,
+    }
     manual: list[dict[str, Any]] = []
     missing_years: list[int] = []
     for year in sorted(years):
@@ -154,8 +165,8 @@ def build_event_calendar(
     for year in sorted(years):
         all_events.extend(expiry_events(year, manual))
     metric_event_links(all_events, payload)
-    start = today - timedelta(days=7)
-    end = today + timedelta(days=60)
+    start = today - timedelta(days=lookback_days)
+    end = today + timedelta(days=lookahead_days)
     compact = [compact_event(item, today) for item in all_events if (day := event_date(item)) and start <= day <= end]
     compact.sort(key=lambda item: (item["date"], item["category"], item["name"]))
     upcoming = [item for item in compact if 0 <= item["d_day"] <= 1]

@@ -1,0 +1,187 @@
+- id: sae-autonomy
+  name: 자율주행 자동화 단계
+  name_en: SAE Driving Automation Levels
+  source: https://www.sae.org/news/blog/sae-levels-driving-automation-clarity-refinements
+  source_label: SAE J3016 자동화 단계
+  source_label_en: SAE J3016 automation levels
+  rungs:
+    - level: L0
+      label: 비자동
+      label_en: No automation
+      desc: 운전자가 모든 운전 조작을 맡는 단계입니다.
+      desc_en: The human driver performs all driving tasks.
+    - level: L1
+      label: 운전자 보조
+      label_en: Driver assistance
+      desc: 조향 또는 속도 조절 중 하나를 차가 보조합니다.
+      desc_en: The vehicle assists either steering or speed control.
+    - level: L2
+      label: 부분 자동
+      label_en: Partial automation
+      desc: 조향과 속도 조절을 동시에 보조하지만 운전자가 계속 감독해야 합니다.
+      desc_en: The vehicle assists steering and speed together, but the driver must supervise.
+    - level: L3
+      label: 조건부 자동
+      label_en: Conditional automation
+      desc: 특정 조건에서는 차가 운전하지만 요청이 오면 사람이 넘겨받아야 합니다.
+      desc_en: The vehicle drives in defined conditions, but a human must take over when requested.
+    - level: L4
+      label: 고도 자동
+      label_en: High automation
+      desc: 정해진 지역과 조건 안에서는 사람이 운전하지 않아도 됩니다.
+      desc_en: No human driving is needed inside a defined area and condition.
+    - level: L5
+      label: 완전 자동
+      label_en: Full automation
+      desc: 모든 도로와 조건에서 사람이 운전하지 않아도 됩니다.
+      desc_en: No human driving is needed on any road or condition.
+
+- id: cellular-generation
+  name: 이동통신 세대
+  name_en: Cellular Network Generations
+  source: https://www.3gpp.org/specifications-technologies/releases/release-20
+  source_label: 3GPP Release 20과 6G 계획
+  source_label_en: 3GPP Release 20 and 6G planning
+  rungs:
+    - level: 3G
+      label: 3G
+      label_en: 3G
+      desc: 모바일 인터넷을 넓힌 세대입니다.
+      desc_en: The generation that broadened mobile internet.
+    - level: 4G
+      label: 4G
+      label_en: 4G
+      desc: 스마트폰 영상과 앱 경제를 가능하게 한 세대입니다.
+      desc_en: The generation that enabled smartphone video and app economies.
+    - level: 5G
+      label: 5G
+      label_en: 5G
+      desc: 더 낮은 지연과 높은 용량을 목표로 하는 현재 상용 세대입니다.
+      desc_en: The current commercial generation aimed at lower latency and higher capacity.
+    - level: 5G-A
+      label: 5G-Advanced
+      label_en: 5G-Advanced
+      desc: 5G를 더 고도화하는 3GPP Release 18~20 흐름입니다.
+      desc_en: The Release 18-20 path that further enhances 5G.
+    - level: 6G
+      label: 6G
+      label_en: 6G
+      desc: 3GPP에서 Release 20 연구와 Release 21 규격 작업으로 준비하는 다음 세대입니다.
+      desc_en: The next generation that 3GPP is preparing through Release 20 studies and Release 21 normative work.
+
+- id: hbm-generation
+  name: HBM 세대
+  name_en: HBM Generations
+  source: https://news.skhynix.com/2026-market-outlook-focus-on-the-hbm-led-memory-supercycle/
+  source_label: SK하이닉스 2026 HBM 전망
+  source_label_en: SK hynix 2026 HBM outlook
+  rungs:
+    - level: HBM2
+      label: HBM2
+      label_en: HBM2
+      desc: 초기 AI 가속기 세대에 널리 쓰인 고대역폭 메모리입니다.
+      desc_en: High-bandwidth memory widely used in earlier AI accelerator generations.
+    - level: HBM2E
+      label: HBM2E
+      label_en: HBM2E
+      desc: HBM2보다 속도와 용량을 높인 세대입니다.
+      desc_en: A faster and larger-capacity generation after HBM2.
+    - level: HBM3
+      label: HBM3
+      label_en: HBM3
+      desc: 대형 AI 학습용 GPU에 본격적으로 쓰인 세대입니다.
+      desc_en: A generation used heavily in large AI training GPUs.
+    - level: HBM3E
+      label: HBM3E
+      label_en: HBM3E
+      desc: 2026년에도 AI 서버의 중심으로 남아 있는 주력 세대입니다.
+      desc_en: The mainstream AI-server generation that remains central in 2026.
+    - level: HBM4
+      label: HBM4
+      label_en: HBM4
+      desc: 다음 AI 가속기 플랫폼으로 넘어가는 전환 세대입니다.
+      desc_en: The transition generation for the next AI accelerator platforms.
+
+- id: ai-accelerator-generation
+  name: AI 가속기 세대
+  name_en: AI Accelerator Generations
+  source: https://nvidianews.nvidia.com/news/nvidia-blackwell-platform-arrives-to-power-a-new-era-of-computing
+  source_label: NVIDIA Blackwell 플랫폼
+  source_label_en: NVIDIA Blackwell platform
+  rungs:
+    - level: Ampere
+      label: Ampere
+      label_en: Ampere
+      desc: A100으로 대표되는 이전 AI 학습 가속기 세대입니다.
+      desc_en: The A100-era AI training accelerator generation.
+    - level: Hopper
+      label: Hopper
+      label_en: Hopper
+      desc: H100/H200으로 대표되는 프론티어 모델 학습 세대입니다.
+      desc_en: The H100/H200 generation used for frontier-model training.
+    - level: Blackwell
+      label: Blackwell
+      label_en: Blackwell
+      desc: B200/GB200으로 대표되는 현재 AI 인프라 확장 세대입니다.
+      desc_en: The B200/GB200 generation for current AI infrastructure scaling.
+    - level: Rubin
+      label: Rubin
+      label_en: Rubin
+      desc: Blackwell 다음으로 예정된 차세대 플랫폼입니다.
+      desc_en: The next platform expected after Blackwell.
+
+- id: robot-manipulation
+  name: 로봇 손 조작 단계
+  name_en: Robot Manipulation Stages
+  source: https://www.figure.ai/news/production-at-bmw
+  source_label: Figure 02 BMW 생산 현장 기록
+  source_label_en: Figure 02 BMW production record
+  rungs:
+    - level: demo
+      label: 데모
+      label_en: Demo
+      desc: 정해진 물체와 동작을 보여주는 단계입니다.
+      desc_en: Shows fixed motions on known objects.
+    - level: repetitive-task
+      label: 반복 작업
+      label_en: Repetitive task
+      desc: 공장처럼 통제된 환경에서 반복 업무를 수행합니다.
+      desc_en: Performs repeated work in a controlled factory-like setting.
+    - level: varied-objects
+      label: 다양한 물체
+      label_en: Varied objects
+      desc: 모양과 위치가 달라지는 물건을 안정적으로 다룹니다.
+      desc_en: Handles objects whose shapes and positions vary.
+    - level: general-dexterity
+      label: 범용 손재주
+      label_en: General dexterity
+      desc: 사람이 하는 여러 손작업을 큰 준비 없이 처리합니다.
+      desc_en: Handles many human hand tasks without heavy setup.
+
+- id: robot-locomotion
+  name: 로봇 보행 단계
+  name_en: Robot Locomotion Stages
+  source: https://bostondynamics.com/atlas/
+  source_label: Boston Dynamics Atlas
+  source_label_en: Boston Dynamics Atlas
+  rungs:
+    - level: static
+      label: 정적 보행
+      label_en: Static walk
+      desc: 느리고 제한된 보행이 가능한 단계입니다.
+      desc_en: Slow and limited walking.
+    - level: dynamic
+      label: 동적 보행
+      label_en: Dynamic walk
+      desc: 균형을 잡으며 더 자연스럽게 걷고 방향을 바꿉니다.
+      desc_en: Walks and turns with more natural balance.
+    - level: rough-terrain
+      label: 험지 대응
+      label_en: Rough terrain
+      desc: 울퉁불퉁한 바닥과 예외 상황에 대응합니다.
+      desc_en: Handles uneven floors and unexpected conditions.
+    - level: all-day
+      label: 장시간 작업
+      label_en: All-day work
+      desc: 배터리와 내구성이 충분해 오래 일합니다.
+      desc_en: Works for long periods with enough battery and durability.

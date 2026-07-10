@@ -11,6 +11,7 @@ from collections import defaultdict
 from datetime import date, datetime, timedelta, timezone
 from io import BytesIO, StringIO
 from pathlib import Path
+from statistics import median
 from typing import Any
 from urllib.parse import urljoin
 from zoneinfo import ZoneInfo
@@ -48,6 +49,7 @@ from .fetch_log import (
     use_fetch_logger,
 )
 from .event_calendar import build_event_calendar, write_event_calendar
+from .future_timeline import build_future_timeline, write_future_timeline
 from .korea_exports import fetch_itemtrade_records
 from .alerts import process_alerts
 from .market_gauges import build_market_gauges
@@ -119,6 +121,7 @@ FETCH_SOURCE_ENDPOINTS = {
     "시장 수급": "https://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd",
     "시장 파생지표": "https://api.upbit.com/v1/ticker",
     "시장 심리": "https://production.dataviz.cnn.io/index/fearandgreed/graphdata/{start_date}",
+    "미래 타임라인": "data/future/technologies.yaml",
 }
 DEFAULT_INDUSTRIES = [
     "반도체",
@@ -336,7 +339,7 @@ EN_METRIC_NAME_LABELS = {
     "미국 EV 충전소 수": "US EV Charging Stations",
     "미국 EV 충전 포트 수": "US EV Charging Ports",
     "한국 미분양 주택": "Korea Unsold Homes",
-    "한국 주택매매가격지수": "Korea Home Sale Price Index",
+    "한국 주간 아파트 매매가격지수": "Korea Weekly Apartment Sale Price Index",
     "한국 건축허가 동수": "Korea Building Permits Count",
     "미국 10년 국채금리": "US 10Y Treasury Yield",
     "미국 2년 국채금리": "US 2Y Treasury Yield",
@@ -576,6 +579,8 @@ EN_MEANING_LABELS = {
     "글로벌 발사 건수로 우주 산업 활동성과 위성 인프라 수요를 확인합니다.": "Global launch count indicates space industry activity and satellite infrastructure demand.",
     "미국 EV 충전소 수는 전기차를 이용하기 쉬워지고 있는지와 충전 인프라 투자 흐름을 보여줍니다.": "US EV charging station count shows whether EVs are getting easier to use and how charging infrastructure investment is moving.",
     "미국 EV 충전 포트 수는 전기차 이용 편의성과 인프라 확장 속도를 확인하는 지표입니다.": "US EV charging port count shows EV usability and the pace of infrastructure expansion.",
+    "전국 아파트 매매가격을 매주 조사한 지수입니다. 월간 통계보다 빠르게 국내 주택가격의 상승·하락 방향과 가계 자산 심리 변화를 확인할 수 있습니다.": "A weekly index of apartment sale prices nationwide. It shows the direction of Korean home prices and household wealth sentiment faster than monthly statistics.",
+    "유로존의 현금과 중앙은행 예치금을 합친 기본 통화량의 지급준비 유지기간 평균입니다. ECB 정책이 은행 시스템 안의 돈의 바탕을 얼마나 크게 만들고 있는지 보여줍니다.": "Average euro-area base money over the reserve maintenance period, combining currency and central-bank deposits. It shows the monetary foundation available in the banking system under ECB policy.",
 }
 
 
@@ -589,26 +594,61 @@ def build_dashboard_site(config: dict[str, Any], output_dir: str | Path, session
     logger = FetchLogger(run_type="full", timezone_name=timezone_name)
     with use_fetch_logger(logger):
         payload = build_dashboard_payload(config, session, previous_payload)
+        build_today = datetime.now(ZoneInfo(timezone_name)).date()
         long_histories = enrich_metrics_with_history(
             payload.get("metrics", []), config, previous_payload
         )
         apply_interpretations(payload.get("metrics", []), config)
         payload["market_gauges"] = build_market_gauges(payload.get("metrics", []))
-        payload["calendar"] = build_event_calendar(config, payload, today=datetime.now(ZoneInfo(timezone_name)).date())
+        payload["calendar"] = build_event_calendar(config, payload, today=build_today)
         write_event_calendar(data_path / "calendar.json", payload["calendar"])
+        attach_future_timeline_payload(config, payload, data_path, build_today, logger, session=session)
         market_gauge_history = update_market_gauge_history(
             load_previous_dashboard_payload(data_path / MARKET_GAUGE_HISTORY_FILENAME),
             payload,
             timezone_name,
         )
         payload["collection_issues"] = annotate_metric_freshness(
-            payload.get("metrics", []), datetime.now(ZoneInfo(timezone_name)).date()
+            payload.get("metrics", []), build_today
+        )
+        payload["freshness_summary"] = build_freshness_summary(
+            payload.get("metrics", []), str(payload.get("generated_at") or ""), build_today
         )
         annotate_dashboard_updates(payload, previous_payload)
         briefing_generated_at = str(payload.get("generated_at") or datetime.now(ZoneInfo(timezone_name)).isoformat(timespec="seconds"))
-        base_briefing = build_morning_briefing(payload, session)
-        trajectory = update_intraday_track(data_path, payload, briefing_generated_at)
         briefing_time = datetime.fromisoformat(briefing_generated_at.replace("Z", "+00:00"))
+        briefing_session = briefing_session_context(briefing_time)
+        recent_cards = load_recent_briefing_cards(data_path, limit=4)
+        previous_card = load_latest_briefing_card(data_path)
+        morning_context = {
+            "card_type": "morning",
+            "session": briefing_session,
+            "low_signal": False,
+            "changed_metrics": (payload.get("daily_changes") or {}).get("metrics", []),
+            "recent_topic_history": [
+                {
+                    "generated_at": str(card.get("generated_at") or ""),
+                    "narrative_topics": card.get("narrative_topics") or [],
+                }
+                for card in recent_cards
+                if isinstance(card, dict)
+            ],
+        }
+        changed_ids = {
+            str(item.get("id") or "")
+            for item in morning_context["changed_metrics"]
+            if isinstance(item, dict) and item.get("id")
+        }
+        morning_context["market_narrative"] = market_narrative_context(
+            payload, briefing_session, recent_cards, changed_ids=changed_ids or None
+        )
+        morning_context["persistent_events"] = persistent_market_events(
+            payload,
+            previous_card.get("metric_snapshot") if isinstance(previous_card, dict) else None,
+            recent_cards,
+        )
+        base_briefing = build_morning_briefing(payload, session, briefing_context=morning_context)
+        trajectory = update_intraday_track(data_path, payload, briefing_generated_at)
         payload["morning_briefing"] = build_briefing_card(
             base_briefing,
             card_type="morning",
@@ -616,7 +656,7 @@ def build_dashboard_site(config: dict[str, Any], output_dir: str | Path, session
             generated_label=str(payload.get("generated_label") or ""),
             trajectory=trajectory,
             low_signal=False,
-            session_context=briefing_session_context(briefing_time),
+            session_context=briefing_session,
             gate_reason="일일 전체 빌드",
             metric_snapshot=briefing_metric_snapshot(payload),
         )
@@ -669,9 +709,15 @@ def refresh_prices_site(
     logger = FetchLogger(run_type="prices", timezone_name=timezone_name)
     with use_fetch_logger(logger):
         started_at, started_monotonic = logger.source_started()
-        fresh_metrics = collect_equity_price_metrics(config, session, now.date())
+        scoped_config, scope_label = intraday_price_config(config, now)
+        fresh_metrics = collect_equity_price_metrics(
+            scoped_config,
+            session,
+            now.date(),
+            intraday_now=now,
+        )
         ok_count = sum(1 for item in fresh_metrics if item.get("status") == "ok")
-        message = f"{ok_count}/{len(fresh_metrics)}개 지표 자동 수집"
+        message = f"{scope_label} {ok_count}/{len(fresh_metrics)}개 지표 자동 수집"
         apply_fetch_metadata(fresh_metrics, now.isoformat(timespec="seconds"), previous_by_key)
         record_fetch_result(
             "대표주가/시장지수",
@@ -690,6 +736,18 @@ def refresh_prices_site(
         for metric in fresh_metrics
         if metric.get("status") == "ok"
     }
+    fresh_history_keys = {
+        str(metric.get("history_key") or "")
+        for metric in fresh_by_id.values()
+        if metric.get("history_key")
+    }
+    metrics[:] = [
+        metric
+        for metric in metrics
+        if str(metric.get("history_key") or "") not in RETIRED_HISTORY_KEYS
+        and INTRADAY_REPLACEMENTS.get(str(metric.get("history_key") or ""))
+        not in fresh_history_keys
+    ]
     replaced = 0
     for index, metric in enumerate(metrics):
         fresh = fresh_by_id.get(str(metric.get("id")))
@@ -703,12 +761,24 @@ def refresh_prices_site(
             metrics[index] = fresh
             replaced += 1
 
+    existing_ids = {str(metric.get("id") or "") for metric in metrics if isinstance(metric, dict)}
+    for metric_id, fresh in fresh_by_id.items():
+        if metric_id in existing_ids:
+            continue
+        metrics.append(fresh)
+        existing_ids.add(metric_id)
+        replaced += 1
+
     payload["generated_at"] = now.isoformat(timespec="seconds")
     payload["generated_label"] = now.strftime("%Y-%m-%d %H:%M %Z")
     payload["market_gauges"] = build_market_gauges(metrics)
     payload["calendar"] = build_event_calendar(config, payload, today=now.date())
     write_event_calendar(data_path / "calendar.json", payload["calendar"])
+    attach_future_timeline_payload(config, payload, data_path, now.date(), logger, session=session)
     payload["collection_issues"] = annotate_metric_freshness(metrics, now.date())
+    payload["freshness_summary"] = build_freshness_summary(
+        metrics, str(payload.get("generated_at") or ""), now.date()
+    )
     apply_interpretations(metrics, config)
     payload["prices_refreshed_at"] = now.isoformat(timespec="seconds")
 
@@ -790,6 +860,7 @@ def briefing_metric_changes(
             "changed": True,
             "changed_count": len(current_snapshot),
             "changes": [],
+            "changed_ids": list(current_snapshot),
             "reason": "이전 카드 지표 스냅샷 없음",
         }
 
@@ -827,6 +898,7 @@ def briefing_metric_changes(
         "changed": bool(changes),
         "changed_count": len(changes),
         "changes": changes[:limit],
+        "changed_ids": [str(item.get("id") or "") for item in changes if item.get("id")],
         "reason": f"{len(changes)}개 지표 변화" if changes else "직전 카드 이후 지표 변화 없음",
     }
 
@@ -901,10 +973,14 @@ def benchmark_change_summary(
     return {"significant": bool(drivers), "drivers": drivers}
 
 
-def daily_move_significance(payload: dict[str, Any]) -> dict[str, Any]:
+def daily_move_significance(
+    payload: dict[str, Any], changed_ids: set[str] | None = None
+) -> dict[str, Any]:
     drivers: list[dict[str, Any]] = []
     for metric in payload.get("metrics", []) or []:
         if not isinstance(metric, dict):
+            continue
+        if changed_ids and str(metric.get("id") or "") not in changed_ids:
             continue
         change_pct = to_float(metric.get("change_pct"))
         if change_pct is None or abs(change_pct) < 1.0:
@@ -949,7 +1025,8 @@ def briefing_generation_decision(
         previous_snapshot,
         list(session_context.get("benchmark_names") or []),
     )
-    daily_move = daily_move_significance(payload)
+    changed_ids = {str(metric_id) for metric_id in changes.get("changed_ids", []) if metric_id}
+    daily_move = daily_move_significance(payload, changed_ids or None)
     significant = bool(benchmark["significant"] or daily_move["significant"])
     low_signal = bool(changes["changed"] and not significant)
     low_signal_streak = consecutive_low_signal_count(recent_cards)
@@ -1027,6 +1104,7 @@ def refresh_briefing_site(
         if decision["skip"]:
             if previous_card:
                 payload["morning_briefing"] = previous_card
+            attach_future_timeline_payload(config, payload, data_path, now.date(), logger, session=session)
             logger.record(
                 source="AI 요약",
                 endpoint=GEMINI_GENERATE_URL.format(model=os.getenv("GEMINI_MODEL", GEMINI_DEFAULT_MODEL)),
@@ -1056,19 +1134,44 @@ def refresh_briefing_site(
         "benchmark_drivers": (decision.get("benchmark") or {}).get("drivers", []),
         "daily_move_drivers": (decision.get("daily_move") or {}).get("drivers", []),
         "changed_metrics": (decision.get("changes") or {}).get("changes", []),
-        "recent_cards": [
+        "persistent_events": persistent_market_events(
+            payload,
+            previous_card.get("metric_snapshot") if isinstance(previous_card, dict) else None,
+            recent_cards,
+        ),
+        "recent_topic_history": [
             {
                 "generated_at": str(card.get("generated_at") or ""),
                 "card_type": str(card.get("card_type") or ""),
-                "headline": str(card.get("headline") or ""),
-                "low_signal": bool(card.get("low_signal")),
-                "gate_reason": str(card.get("gate_reason") or ""),
+                "narrative_topics": card.get("narrative_topics") or [],
             }
             for card in recent_cards[:6]
             if isinstance(card, dict)
         ],
         "gemini_daily_count_before": int(usage.get("count") or 0),
     }
+    if card_type in {"close", "us_close"}:
+        briefing_context["day_card_flow"] = [
+            {
+                "generated_at": str(card.get("generated_at") or ""),
+                "card_type": str(card.get("card_type") or ""),
+                "headline": str(card.get("headline") or ""),
+                "narrative_topics": card.get("narrative_topics") or [],
+            }
+            for card in recent_cards[:6]
+            if isinstance(card, dict)
+        ]
+    changed_ids = {
+        str(metric_id)
+        for metric_id in (decision.get("changes") or {}).get("changed_ids", [])
+        if metric_id
+    }
+    briefing_context["market_narrative"] = market_narrative_context(
+        payload,
+        decision["session"],
+        recent_cards,
+        changed_ids=changed_ids or None,
+    )
     base_briefing = build_morning_briefing(
         payload,
         session,
@@ -1093,6 +1196,7 @@ def refresh_briefing_site(
     )
     payload["morning_briefing"] = card
     payload["briefing_index"] = write_briefing_outputs(data_path, card)
+    attach_future_timeline_payload(config, payload, data_path, now.date(), logger, session=session)
 
     status_detail = "Gemini 호출" if card.get("gemini_call_attempted") else "룰 기반 폴백"
     if gemini_guard_message:
@@ -1112,12 +1216,38 @@ def refresh_briefing_site(
 
 
 STALE_THRESHOLD_DAYS = [
-    ("일간", 5),
-    ("주간", 12),
-    ("월간", 45),
-    ("분기", 130),
-    ("연간", 430),
+    ("장중", 2),
+    ("일간", 7),
+    ("주간", 21),
+    # observed_at is the period start, not the release date. Monthly and
+    # quarterly series therefore need enough room for normal publication lag.
+    ("월간", 105),
+    ("분기", 230),
+    ("연간", 550),
 ]
+
+FRESHNESS_SOURCE_AGE_OVERRIDES = {
+    "EIA Open Data API": 145,
+    "SEC Company Facts API": 245,
+    "WSTS Historical Billings Report": 130,
+}
+
+INTRADAY_REPLACEMENTS = {
+    "fred-DEXKOUS": "equity-KRW=X",
+    "fred-VIXCLS": "equity-^VIX",
+}
+
+RETIRED_HISTORY_KEYS = {
+    "multpl-s-p-500-pe-ratio",
+}
+
+
+def metric_stale_after_days(metric: dict[str, Any]) -> int | None:
+    source = str(metric.get("source") or "")
+    if source in FRESHNESS_SOURCE_AGE_OVERRIDES:
+        return FRESHNESS_SOURCE_AGE_OVERRIDES[source]
+    frequency = str(metric.get("frequency") or "")
+    return next((days for token, days in STALE_THRESHOLD_DAYS if token in frequency), None)
 
 
 def annotate_metric_freshness(metrics: list[dict[str, Any]], today: date) -> list[dict[str, Any]]:
@@ -1130,13 +1260,12 @@ def annotate_metric_freshness(metrics: list[dict[str, Any]], today: date) -> lis
         observed = parse_iso_date(metric.get("observed_at"))
         if observed is None:
             continue
-        frequency = str(metric.get("frequency") or "")
-        threshold = next(
-            (days for token, days in STALE_THRESHOLD_DAYS if token in frequency), None
-        )
+        threshold = metric_stale_after_days(metric)
         if threshold is None:
             continue
         age = (today - observed).days
+        metric["freshness_age_days"] = max(0, age)
+        metric["freshness_due_at"] = (observed + timedelta(days=threshold)).isoformat()
         if age > threshold:
             metric["is_stale"] = True
             metric["stale_days"] = age
@@ -1149,6 +1278,91 @@ def annotate_metric_freshness(metrics: list[dict[str, Any]], today: date) -> lis
                 }
             )
     return stale_items
+
+
+def build_freshness_summary(
+    metrics: list[dict[str, Any]], generated_at: str, today: date
+) -> dict[str, Any]:
+    """Compact user-facing health summary, separate from the admin fetch log."""
+    sources: dict[str, dict[str, Any]] = {}
+    totals = {
+        "total_count": 0,
+        "current_count": 0,
+        "updated_count": 0,
+        "waiting_count": 0,
+        "delayed_count": 0,
+        "failed_count": 0,
+    }
+    last_checked_at = ""
+    latest_observed_at = ""
+
+    for metric in metrics:
+        if not isinstance(metric, dict):
+            continue
+        totals["total_count"] += 1
+        fetch_status = str(metric.get("fetch_status") or "")
+        failed = fetch_status == "failed" or metric.get("status") != "ok"
+        delayed = bool(metric.get("is_stale")) and not failed
+        if failed:
+            state = "failed"
+            totals["failed_count"] += 1
+        elif delayed:
+            state = "delayed"
+            totals["delayed_count"] += 1
+        else:
+            state = "current"
+            totals["current_count"] += 1
+        if fetch_status == "success":
+            totals["updated_count"] += 1
+        elif fetch_status == "no_new_data":
+            totals["waiting_count"] += 1
+
+        checked_at = str(metric.get("fetched_at") or "")
+        observed_at = str(metric.get("observed_at") or "")[:10]
+        last_checked_at = max(last_checked_at, checked_at)
+        latest_observed_at = max(latest_observed_at, observed_at)
+        source_name = str(metric.get("source") or "기타")
+        source = sources.setdefault(
+            source_name,
+            {
+                "name": source_name,
+                "total_count": 0,
+                "current_count": 0,
+                "updated_count": 0,
+                "waiting_count": 0,
+                "delayed_count": 0,
+                "failed_count": 0,
+                "last_checked_at": "",
+                "latest_observed_at": "",
+            },
+        )
+        source["total_count"] += 1
+        source[f"{state}_count"] += 1
+        if fetch_status == "success":
+            source["updated_count"] += 1
+        elif fetch_status == "no_new_data":
+            source["waiting_count"] += 1
+        source["last_checked_at"] = max(str(source["last_checked_at"]), checked_at)
+        source["latest_observed_at"] = max(str(source["latest_observed_at"]), observed_at)
+
+    source_rows = sorted(
+        sources.values(),
+        key=lambda item: (
+            -int(item.get("failed_count") or 0),
+            -int(item.get("delayed_count") or 0),
+            str(item.get("name") or ""),
+        ),
+    )
+    status = "failed" if totals["failed_count"] else "delayed" if totals["delayed_count"] else "current"
+    return {
+        "generated_at": generated_at,
+        "last_checked_at": last_checked_at or generated_at,
+        "latest_observed_at": latest_observed_at,
+        "status": status,
+        "as_of_date": today.isoformat(),
+        **totals,
+        "sources": source_rows,
+    }
 
 
 def attach_history_store(config: dict[str, Any]) -> HistoryStore | None:
@@ -1332,9 +1546,15 @@ def fetch_status_label(status: str) -> str:
 
 
 def infer_metric_fetch_status(metric: dict[str, Any], previous: dict[str, Any] | None) -> str:
+    if metric.get("fetch_attempt_failed"):
+        return "failed"
     if metric.get("status") != "ok":
         return "failed"
-    return "success" if metric_observed_advanced(metric, previous) else "no_new_data"
+    if metric_observed_advanced(metric, previous):
+        return "success"
+    if previous is not None and metric_was_updated(metric, previous):
+        return "success"
+    return "no_new_data"
 
 
 def apply_fetch_metadata(
@@ -1361,7 +1581,9 @@ def source_new_data_count(
         if not isinstance(metric, dict):
             continue
         previous = previous_by_key.get(metric_identity(metric)) or previous_by_key.get(str(metric.get("id") or ""))
-        if metric_observed_advanced(metric, previous):
+        if metric_observed_advanced(metric, previous) or (
+            previous is not None and metric_was_updated(metric, previous)
+        ):
             count += 1
     return count
 
@@ -1378,10 +1600,15 @@ def record_fetch_result(
     if logger is None:
         return
     ok_count = sum(1 for item in source_metrics if isinstance(item, dict) and item.get("status") == "ok")
+    attempt_failed = any(
+        isinstance(item, dict) and item.get("fetch_attempt_failed") for item in source_metrics
+    )
     new_count = source_new_data_count(source_metrics, previous_by_key)
     if not source_metrics:
         status = "no_new_data"
     elif ok_count <= 0:
+        status = "failed"
+    elif attempt_failed:
         status = "failed"
     elif new_count > 0:
         status = "success"
@@ -1418,6 +1645,58 @@ def record_fetch_failure(
         started_at=started_at,
         started_monotonic=started_monotonic,
     )
+
+
+def upsert_source_status(payload: dict[str, Any], name: str, status: str, message: str) -> None:
+    records = [item for item in payload.get("source_status", []) if isinstance(item, dict)]
+    next_record = {"name": name, "status": status, "message": sanitize_message(message)}
+    replaced = False
+    for index, record in enumerate(records):
+        if str(record.get("name") or "") == name:
+            records[index] = next_record
+            replaced = True
+            break
+    if not replaced:
+        records.append(next_record)
+    payload["source_status"] = records
+
+
+def attach_future_timeline_payload(
+    config: dict[str, Any],
+    payload: dict[str, Any],
+    data_path: Path,
+    today: date,
+    logger: FetchLogger | None = None,
+    session: requests.Session | None = None,
+) -> dict[str, Any]:
+    started_at, started_monotonic = logger.source_started() if logger else ("", time.monotonic())
+    document = build_future_timeline(config, payload.get("metrics", []), today=today, session=session)
+    payload["future"] = document
+    write_future_timeline(data_path / "future.json", document)
+
+    warnings = document.get("warnings") or []
+    tech_count = int((document.get("summary") or {}).get("technology_count") or 0)
+    if warnings:
+        message = f"{tech_count}개 기술 타임라인 생성, YAML 경고 {len(warnings)}건"
+        source_status = "partial"
+        log_status = "no_new_data"
+    else:
+        message = f"{tech_count}개 기술 타임라인 생성"
+        source_status = "ok"
+        log_status = "success"
+    upsert_source_status(payload, "미래 타임라인", source_status, message)
+    if logger:
+        logger.record(
+            source="미래 타임라인",
+            endpoint=FETCH_SOURCE_ENDPOINTS.get("미래 타임라인", ""),
+            status=log_status,
+            message=message,
+            metric_count=tech_count,
+            new_data_count=0,
+            started_at=started_at,
+            started_monotonic=started_monotonic,
+        )
+    return document
 
 
 def write_fetch_log_outputs(data_path: Path, logger: FetchLogger) -> dict[str, Any]:
@@ -1661,7 +1940,7 @@ def build_morning_briefing(
     gemini_allowed: bool = True,
     disabled_message: str | None = None,
 ) -> dict[str, Any]:
-    briefing = rule_based_morning_briefing(payload)
+    briefing = rule_based_morning_briefing(payload, briefing_context)
     if briefing_context:
         briefing["briefing_context"] = briefing_context
         briefing["low_signal"] = bool(briefing_context.get("low_signal"))
@@ -1695,9 +1974,16 @@ def build_morning_briefing(
         return briefing
 
 
-def rule_based_morning_briefing(payload: dict[str, Any]) -> dict[str, Any]:
+def rule_based_morning_briefing(
+    payload: dict[str, Any], briefing_context: dict[str, Any] | None = None
+) -> dict[str, Any]:
     metrics = [metric for metric in payload.get("metrics", []) if isinstance(metric, dict)]
-    top_movers = top_mover_metrics(metrics)
+    changed_ids = {
+        str(item.get("id") or "")
+        for item in ((briefing_context or {}).get("changed_metrics") or [])
+        if isinstance(item, dict) and item.get("id")
+    }
+    top_movers = top_mover_metrics(metrics, changed_ids=changed_ids or None)
     improving_industries = industry_signal_rows(metrics, "change_pct", reverse=True)[:3]
     slowing_industries = industry_signal_rows(metrics, "yoy_pct", reverse=False)[:3]
     equity_leads = equity_lead_rows(metrics)[:3]
@@ -1710,10 +1996,35 @@ def rule_based_morning_briefing(payload: dict[str, Any]) -> dict[str, Any]:
         for source in payload.get("source_status", [])
         if isinstance(source, dict) and source.get("status") != "ok"
     ]
+    narrative_candidates = ((briefing_context or {}).get("market_narrative") or {}).get("candidates") or []
+    persistent_events = (briefing_context or {}).get("persistent_events") or []
     headline = "오늘 변한 지표가 업황에 주는 의미를 먼저 확인하세요."
-    if top_movers:
+    if narrative_candidates:
+        candidate = narrative_candidates[0]
+        headline = f"{candidate.get('label') or candidate.get('industry')} 흐름이 두드러집니다."
+    elif top_movers:
         first = top_movers[0]
         headline = f"{first['industry']} {first['name']} 변화가 눈에 띕니다."
+    narrative_topics = [
+        f"산업:{item['industry']}"
+        for item in top_movers
+        if item.get("industry")
+    ][:3]
+    bullets = rule_based_bullets(top_movers, improving_industries, slowing_industries, equity_leads)
+    if persistent_events:
+        event = persistent_events[0]
+        change = str(event.get("change_pct_label") or "큰 폭 변동")
+        progression = str(event.get("progression") or "큰 움직임 지속")
+        bullets.append(
+            {
+                "title": "계속 볼 사건",
+                "body": (
+                    f"{event.get('industry')} {event.get('name')}가 당일 {change} 움직인 채 "
+                    f"{progression} 중입니다. 새 흐름과 함께 시장 영향이 이어지는지 확인해야 합니다."
+                ),
+                "metric_ids": [str(event.get("id") or "")],
+            }
+        )
     return {
         "status": "fallback",
         "status_message": "룰 기반 요약",
@@ -1721,12 +2032,13 @@ def rule_based_morning_briefing(payload: dict[str, Any]) -> dict[str, Any]:
         "generated_label": str(payload.get("generated_label") or ""),
         "headline": headline,
         "summary": rule_based_summary(top_movers, improving_industries, slowing_industries, source_issues),
-        "bullets": rule_based_bullets(top_movers, improving_industries, slowing_industries, equity_leads),
+        "bullets": bullets[:5],
         "top_movers": top_movers,
         "improving_industries": improving_industries,
         "slowing_industries": slowing_industries,
         "equity_leads": equity_leads,
         "source_issues": source_issues,
+        "narrative_topics": list(dict.fromkeys(narrative_topics)),
     }
 
 
@@ -1809,8 +2121,222 @@ def load_industry_narratives() -> dict[str, Any]:
     return {}
 
 
-def top_mover_metrics(metrics: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    updated = [metric for metric in metrics if metric.get("daily_status") in {"updated", "new"}]
+def is_representative_stock(metric: dict[str, Any]) -> bool:
+    return str(metric.get("group") or "") == "대표주가" and str(metric.get("history_key") or "").startswith("equity-")
+
+
+def equity_market_for_metric(metric: dict[str, Any]) -> str:
+    history_key = str(metric.get("history_key") or "").upper()
+    return "korea" if history_key.endswith((".KS", ".KQ")) else "us"
+
+
+def recent_narrative_industries(cards: list[dict[str, Any]], limit: int = 4) -> dict[str, float]:
+    penalties: dict[str, float] = defaultdict(float)
+    for card_index, card in enumerate(cards[:limit]):
+        if not isinstance(card, dict):
+            continue
+        topics = card.get("narrative_topics")
+        if not isinstance(topics, list):
+            continue
+        weight = max(0.25, 1.15 - card_index * 0.25)
+        for topic in topics[:4]:
+            parts = str(topic or "").split(":")
+            if len(parts) >= 2 and parts[0] in {"산업", "industry"} and parts[1]:
+                penalties[parts[1]] += weight
+    return dict(penalties)
+
+
+def market_narrative_context(
+    payload: dict[str, Any],
+    session_context: dict[str, Any] | None,
+    recent_cards: list[dict[str, Any]],
+    *,
+    changed_ids: set[str] | None = None,
+) -> dict[str, Any]:
+    """Build evidence-ranked market narratives without using old prose as evidence."""
+    metrics = [item for item in payload.get("metrics", []) if isinstance(item, dict)]
+    session_key = str((session_context or {}).get("key") or "off")
+    market_filter = "korea" if session_key == "korea" else "us" if session_key == "us" else ""
+    stocks = [item for item in metrics if is_representative_stock(item)]
+    session_stocks = [item for item in stocks if not market_filter or equity_market_for_metric(item) == market_filter]
+    if len(session_stocks) >= 2:
+        stocks = session_stocks
+
+    benchmark_names = set((session_context or {}).get("benchmark_names") or [])
+    benchmark_moves = [
+        to_float(item.get("change_pct"))
+        for item in metrics
+        if str(item.get("name") or "") in benchmark_names and to_float(item.get("change_pct")) is not None
+    ]
+    benchmark_move = float(median(benchmark_moves)) if benchmark_moves else 0.0
+    by_industry: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for stock in stocks:
+        if to_float(stock.get("change_pct")) is None:
+            continue
+        industry = str(stock.get("industry") or "")
+        if industry and industry != "매크로":
+            by_industry[industry].append(stock)
+
+    repetition_penalty = recent_narrative_industries(recent_cards)
+    candidates: list[dict[str, Any]] = []
+    for industry, industry_stocks in by_industry.items():
+        if len(industry_stocks) < 2:
+            continue
+        moves = [float(to_float(item.get("change_pct")) or 0.0) for item in industry_stocks]
+        median_move = float(median(moves))
+        direction = "strong" if median_move >= 0 else "weak"
+        aligned_count = sum(1 for value in moves if value >= 0) if direction == "strong" else sum(1 for value in moves if value < 0)
+        breadth = aligned_count / len(moves)
+        relative_move = median_move - benchmark_move
+        changed_count = sum(1 for item in industry_stocks if not changed_ids or str(item.get("id") or "") in changed_ids)
+        raw_score = abs(median_move) * 0.75 + abs(relative_move) * 0.55 + max(0.0, breadth - 0.5) * 2.0
+        if changed_ids and changed_count:
+            raw_score += min(1.0, changed_count * 0.25)
+        if abs(median_move) < 0.6 and abs(relative_move) < 0.8:
+            continue
+        penalty = float(repetition_penalty.get(industry) or 0.0)
+        persistent_major = abs(median_move) >= 3.0 and breadth >= 0.67
+        if persistent_major:
+            # A market-defining move may remain relevant all day. Repetition
+            # lowers its priority, but cannot erase it from the candidate set.
+            penalty = min(penalty, raw_score * 0.25)
+        adjusted_score = raw_score - penalty
+        evidence = sorted(
+            industry_stocks,
+            key=lambda item: abs(to_float(item.get("change_pct")) or 0.0),
+            reverse=True,
+        )[:4]
+        fundamentals = [
+            item
+            for item in metrics
+            if str(item.get("industry") or "") == industry
+            and not is_representative_stock(item)
+            and item.get("status") == "ok"
+            and not item.get("is_stale")
+            and (to_float(item.get("change_pct")) is not None or to_float(item.get("yoy_pct")) is not None)
+        ]
+        fundamentals.sort(
+            key=lambda item: (bool(item.get("is_updated_today")), str(item.get("observed_at") or "")),
+            reverse=True,
+        )
+        candidates.append(
+            {
+                "topic": f"산업:{industry}:{direction}",
+                "industry": industry,
+                "direction": direction,
+                "label": f"{industry} {'주도' if direction == 'strong' else '약세'}",
+                "median_change_pct": round(median_move, 2),
+                "benchmark_change_pct": round(benchmark_move, 2),
+                "relative_change_pct_point": round(relative_move, 2),
+                "breadth": f"{aligned_count}/{len(moves)}",
+                "raw_score": round(raw_score, 3),
+                "repetition_penalty": round(penalty, 3),
+                "score": round(adjusted_score, 3),
+                "new_evidence_count": changed_count,
+                "persistent_major": persistent_major,
+                "evidence": [brief_metric(item) for item in evidence],
+                "fundamental_checks": [brief_metric(item) for item in fundamentals[:2]],
+            }
+        )
+    candidates.sort(key=lambda item: float(item.get("score") or 0.0), reverse=True)
+
+    breadth_moves = [to_float(item.get("change_pct")) for item in stocks]
+    breadth_moves = [float(value) for value in breadth_moves if value is not None]
+    cross_asset_names = {
+        "VIX", "원/달러 환율", "미국 10년 국채금리", "S&P500 선물", "나스닥100 선물",
+        "비트코인", "달러인덱스", "WTI 선물(CL)", "Brent 선물(BZ)",
+    }
+    cross_assets = [
+        brief_metric(item)
+        for item in metrics
+        if str(item.get("name") or "") in cross_asset_names and to_float(item.get("value")) is not None
+    ]
+    return {
+        "session": session_key,
+        "benchmark_change_pct": round(benchmark_move, 2),
+        "market_breadth": {
+            "positive": sum(1 for value in breadth_moves if value > 0),
+            "negative": sum(1 for value in breadth_moves if value < 0),
+            "unchanged": sum(1 for value in breadth_moves if value == 0),
+            "sample_size": len(breadth_moves),
+        },
+        "candidates": candidates[:6],
+        "cross_assets": cross_assets,
+        "freshness": payload.get("freshness_summary", {}),
+        "recent_topic_history": [
+            {"industry": industry, "penalty": round(value, 2)}
+            for industry, value in sorted(repetition_penalty.items(), key=lambda item: item[1], reverse=True)
+        ],
+        "selection_rule": "score는 당일 산업 중앙값·시장 대비 상대강도·상승/하락 종목 비율·직전 카드 이후 새 변화로 계산하며, 최근 반복 주제에는 감점을 적용합니다.",
+    }
+
+
+def persistent_event_threshold(metric: dict[str, Any]) -> float:
+    group = str(metric.get("group") or "")
+    if group == "시장지수":
+        return 2.0
+    if group == "대표주가":
+        return 5.0
+    if str(metric.get("name") or "") in {"VIX", "VKOSPI", "원/달러 환율"}:
+        return 3.0
+    return 4.0
+
+
+def persistent_market_events(
+    payload: dict[str, Any],
+    previous_snapshot: dict[str, Any] | None,
+    recent_cards: list[dict[str, Any]],
+    *,
+    limit: int = 4,
+) -> list[dict[str, Any]]:
+    recent_industries = recent_narrative_industries(recent_cards)
+    events: list[dict[str, Any]] = []
+    for metric in payload.get("metrics", []) or []:
+        if not isinstance(metric, dict):
+            continue
+        current_change = to_float(metric.get("change_pct"))
+        if current_change is None or abs(current_change) < persistent_event_threshold(metric):
+            continue
+        metric_id = str(metric.get("id") or "")
+        previous = (previous_snapshot or {}).get(metric_id)
+        previous_change = to_float(previous.get("change_pct")) if isinstance(previous, dict) else None
+        if previous_change is None:
+            progression = "신규 포착"
+        elif current_change * previous_change < 0:
+            progression = "방향 반전"
+        elif abs(current_change) - abs(previous_change) >= 0.5:
+            progression = "상승폭 확대" if current_change > 0 else "낙폭 확대"
+        elif abs(previous_change) - abs(current_change) >= 0.5:
+            progression = "상승폭 축소" if current_change > 0 else "낙폭 축소"
+        else:
+            progression = "큰 움직임 지속"
+        industry = str(metric.get("industry") or "")
+        events.append(
+            {
+                **brief_metric(metric),
+                "topic": f"산업:{industry}:{'strong' if current_change >= 0 else 'weak'}",
+                "progression": progression,
+                "previous_card_change_pct": previous_change,
+                "mentioned_recently": bool(recent_industries.get(industry)),
+                "instruction": "반복 언급 시 원인 문장을 복사하지 말고 직전 카드 이후 확대·축소·반전과 새 흐름을 설명합니다.",
+            }
+        )
+    events.sort(key=lambda item: abs(float(item.get("change_pct") or 0.0)), reverse=True)
+    return events[:limit]
+
+
+def is_persistent_market_metric(metric: dict[str, Any]) -> bool:
+    change = to_float(metric.get("change_pct"))
+    return change is not None and abs(change) >= persistent_event_threshold(metric)
+
+
+def top_mover_metrics(
+    metrics: list[dict[str, Any]], *, changed_ids: set[str] | None = None
+) -> list[dict[str, Any]]:
+    if changed_ids:
+        updated = [metric for metric in metrics if str(metric.get("id") or "") in changed_ids]
+    else:
+        updated = [metric for metric in metrics if metric.get("daily_status") in {"updated", "new"}]
     candidates = updated or metrics
     ranked = [
         metric
@@ -1819,7 +2345,25 @@ def top_mover_metrics(metrics: list[dict[str, Any]]) -> list[dict[str, Any]]:
         and not metric.get("exclude_from_movers")
     ]
     ranked.sort(key=lambda metric: abs(to_float(metric.get("change_pct")) or 0.0), reverse=True)
-    return [brief_metric(metric) for metric in ranked[:5]]
+    if changed_ids:
+        persistent = [
+            metric
+            for metric in metrics
+            if str(metric.get("id") or "") not in changed_ids
+            and is_persistent_market_metric(metric)
+            and not metric.get("exclude_from_movers")
+        ]
+        persistent.sort(key=lambda metric: abs(to_float(metric.get("change_pct")) or 0.0), reverse=True)
+        ranked = [*ranked[:4], *persistent[:2]]
+    deduped: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for metric in ranked:
+        metric_id = str(metric.get("id") or "")
+        if metric_id in seen:
+            continue
+        seen.add(metric_id)
+        deduped.append(metric)
+    return [brief_metric(metric) for metric in deduped[:5]]
 
 
 def industry_signal_rows(
@@ -2062,10 +2606,21 @@ def gemini_morning_briefing_prompt(payload: dict[str, Any], briefing: dict[str, 
     card_type = str(briefing_context.get("card_type") or "")
     context = {
         "generated_label": payload.get("generated_label", ""),
-        "briefing_context": briefing_context,
+        "briefing_context": {
+            key: briefing_context.get(key)
+            for key in (
+                "card_type", "low_signal", "reason", "significant", "benchmark_drivers",
+                "daily_move_drivers", "changed_metrics",
+            )
+            if key in briefing_context
+        },
         "session_label": session_label,
         "low_signal": low_signal,
-        "narrative_context": narrative_context_for_briefing(briefing),
+        "market_narrative": briefing_context.get("market_narrative") or {},
+        "structural_lenses": narrative_context_for_briefing(briefing),
+        "recent_topic_history": briefing_context.get("recent_topic_history") or [],
+        "persistent_events": briefing_context.get("persistent_events") or [],
+        "day_card_flow": briefing_context.get("day_card_flow") or [],
         "top_movers": briefing.get("top_movers", []),
         "improving_industries": briefing.get("improving_industries", []),
         "slowing_industries": briefing.get("slowing_industries", []),
@@ -2087,7 +2642,7 @@ def gemini_morning_briefing_prompt(payload: dict[str, Any], briefing: dict[str, 
     close_instruction = ""
     if card_type == "close":
         close_instruction = (
-            "이번 카드는 한국장 마감 카드다. recent_cards와 changed_metrics를 함께 보고 당일 한국장 흐름을 종합하라. "
+            "이번 카드는 한국장 마감 카드다. day_card_flow와 changed_metrics를 함께 보고 당일 한국장 흐름을 종합하라. "
             "코스피·코스닥·수급·환율을 우선하고 다음 거래일에 확인할 점으로 마무리하라.\n"
         )
     elif card_type == "us_close":
@@ -2100,19 +2655,24 @@ def gemini_morning_briefing_prompt(payload: dict[str, Any], briefing: dict[str, 
         f"{session_instruction}"
         f"{low_signal_instruction}"
         f"{close_instruction}"
-        "가장 중요한 목표는 오늘 바뀐 지표가 어떤 의미인지 쉬운 말로 설명하는 것이다.\n"
+        "가장 중요한 목표는 개별 등락을 나열하는 것이 아니라 지금 시장을 움직이는 주도 산업, 약한 산업, 수급과 교차자산의 연결을 설명하는 것이다.\n"
         "각 지표를 언급할 때는 name만 쓰지 말고 반드시 kind와 industry를 함께 써라. 예: '로봇 대표주가(주식 가격) Teradyne(TER)'처럼 쓴다.\n"
-        "narrative_context는 시장이 요즘 그 산업을 보는 관점이다. 단, 지표 데이터와 충돌하면 지표 데이터를 우선하고 내러티브는 해석 렌즈로만 사용하라.\n"
-        "narrative_context.stock_market은 주식시장 전체가 주가를 가격화하는 방식이다. 대표주가가 움직일 때는 산업 실물지표와 stock_market의 밸류에이션·금리·포지셔닝 렌즈를 함께 사용하라.\n"
+        "market_narrative.candidates는 당일 대표주 표본의 중앙 등락률, 시장 대비 상대강도, 상승·하락 종목 비율로 계산된 현재 근거다. score가 높은 후보부터 검토하되 evidence와 fundamental_checks가 실제로 뒷받침하는 범위에서만 주도/약세라고 표현하라.\n"
+        "recent_topic_history는 반복을 피하기 위한 감점 기록일 뿐 현재 시장의 증거가 아니다. 직전 카드가 방산을 다뤘다는 이유만으로 방산을 다시 고르지 말고, 새 evidence가 있으며 여전히 최상위 후보일 때만 반복하라.\n"
+        "persistent_events는 하루 종일 시장을 지배할 수 있는 급등·폭락·지수 충격이다. 여전히 극단적이면 후속 카드에도 남기되 같은 설명을 복사하지 말고 progression의 낙폭 확대·축소·반전 여부를 말하라. 새 변화가 더 중요하면 persistent event는 headline이 아니라 보조 bullet로 내려라.\n"
+        "직전 카드 이후 새로 변한 changed_metrics를 우선하고, 이전 headline이나 문장을 다음 카드의 전제로 복사하지 마라. 선두 후보가 바뀌면 headline과 summary의 주제도 바꿔라.\n"
+        "structural_lenses는 산업을 해석하는 일반 원리다. 현재 상황을 단정하는 자료가 아니므로 market_narrative와 지표 데이터가 뒷받침할 때만 적용하라.\n"
+        "structural_lenses.stock_market은 대표주가를 해석하는 일반 렌즈다. 대표주가가 움직일 때는 산업 실물지표와 밸류에이션·금리·포지셔닝을 함께 확인하라.\n"
         "어려운 통계 용어를 피하고, 수요가 강해졌는지, 비용 부담이 커졌는지, 투자심리가 흔들렸는지처럼 사용자가 바로 이해할 수 있게 써라.\n"
         "주가 지표는 기업 실적 자체가 아니라 시장 기대와 위험 선호가 움직인 신호라는 점을 구분해서 설명하라.\n"
         "월간·분기 지표는 새 발표 전까지 그대로일 수 있으니, daily_changes와 top_movers를 우선해서 해석하라.\n"
         "upcoming_events에 오늘·내일 FOMC, 금통위, CPI, 만기일 같은 큰 일정이 있으면 관망 심리나 변동성 가능성을 짧게 언급하라.\n"
         "불확실하거나 데이터 공백이 있으면 사용자 친화적으로 짧게 말하라.\n"
         "출력은 설명 없이 JSON 객체 하나만 반환하라.\n"
-        "스키마: {\"headline\": string, \"summary\": string, \"bullets\": "
+        "스키마: {\"headline\": string, \"summary\": string, \"narrative_topics\": [string], \"bullets\": "
         "[{\"title\": string, \"body\": string, \"metric_ids\": [string]}]}\n"
         "headline은 40자 이내로 오늘의 핵심 변화를 쉽게 말하라.\n"
+        "narrative_topics는 실제로 다룬 주제를 '산업:반도체:strong' 같은 형식으로 최대 3개만 기록하라.\n"
         "summary는 2문장 이내로 '무엇이 변했고 왜 봐야 하는지'를 설명하라.\n"
         "bullets는 3~5개이며 title은 '급변 지표', '좋아진 흐름', '주의할 흐름', '주가와 지표 차이'처럼 짧은 항목명으로 쓰고, body는 '변한 지표의 종류 + 의미 + 다음에 볼 것'을 한 문장으로 써라.\n"
         f"데이터:\n{json.dumps(context, ensure_ascii=False, separators=(',', ':'))}"
@@ -2185,6 +2745,15 @@ def normalize_gemini_briefing(
             "headline": short_text(parsed.get("headline"), fallback.get("headline", ""), 80),
             "summary": short_text(parsed.get("summary"), fallback.get("summary", ""), 360),
             "bullets": normalize_briefing_bullets(parsed.get("bullets"), fallback.get("bullets", [])),
+            "narrative_topics": [
+                short_text(topic, "", 64)
+                for topic in (
+                    parsed.get("narrative_topics")
+                    if isinstance(parsed.get("narrative_topics"), list)
+                    else fallback.get("narrative_topics", [])
+                )
+                if str(topic or "").strip()
+            ][:3],
         }
     )
     return briefing
@@ -2303,7 +2872,11 @@ def build_dashboard_payload(
             source_status.append(
                 {
                     "name": source_name,
-                    "status": "ok" if ok_count else "partial",
+                    "status": (
+                        "ok"
+                        if source_metrics and ok_count == len(source_metrics) and not issue_summary
+                        else "partial"
+                    ),
                     "message": sanitize_message(message),
                 }
             )
@@ -3283,11 +3856,11 @@ EUROPE_LIQUIDITY_ITEMS: list[dict[str, Any]] = [
     {
         "name": "유럽 본원통화",
         "group": "유럽 유동성",
-        "series_key": "ILM.M.U2.C.LT00001.Z5.EUR",
-        "history_key": "ecb-ILM-M-U2-C-LT00001-Z5-EUR",
+        "series_key": "ILM.M.U2.C.LT00001MP.Z5.EUR",
+        "history_key": "ecb-ILM-M-U2-C-LT00001MP-Z5-EUR",
         "metric_id": "europe-liquidity-base-money",
         "frequency": "월간",
-        "meaning": "유로존의 현금과 중앙은행 예치금을 합친 기본 통화량입니다. ECB 정책이 은행 시스템 안의 돈의 바탕을 얼마나 크게 만들고 있는지 보여줍니다.",
+        "meaning": "유로존의 현금과 중앙은행 예치금을 합친 기본 통화량의 지급준비 유지기간 평균입니다. ECB 정책이 은행 시스템 안의 돈의 바탕을 얼마나 크게 만들고 있는지 보여줍니다.",
     },
 ]
 
@@ -3998,8 +4571,105 @@ def compute_spread_points(
     return spreads
 
 
+def price_item_market(item: dict[str, Any]) -> str:
+    symbol = str(item.get("symbol") or "").upper()
+    if symbol.endswith((".KS", ".KQ")) or symbol in {"^KS11", "^KQ11", "^KS200"}:
+        return "korea"
+    if str(item.get("refresh_scope") or "") == "intraday":
+        return "continuous"
+    return "us"
+
+
+def intraday_price_config(config: dict[str, Any], now: datetime) -> tuple[dict[str, Any], str]:
+    equities = dict(config.get("equities", {}) or {})
+    items = [item for item in equities.get("items", []) if isinstance(item, dict)]
+    kst = now.astimezone(ZoneInfo("Asia/Seoul")) if now.tzinfo else now.replace(tzinfo=ZoneInfo("Asia/Seoul"))
+    minute = kst.hour * 60 + kst.minute
+    if kst.weekday() >= 5:
+        markets = {"continuous"}
+        label = "주말 연속시장"
+    elif 8 * 60 + 30 <= minute < 16 * 60:
+        markets = {"korea", "continuous"}
+        label = "한국장"
+    elif minute >= 16 * 60 or minute < 7 * 60:
+        markets = {"us", "continuous"}
+        label = "미국 프리·정규·애프터장"
+    else:
+        markets = {"continuous"}
+        label = "세션 외 연속시장"
+    equities["items"] = [item for item in items if price_item_market(item) in markets]
+    scoped = dict(config)
+    scoped["equities"] = equities
+    return scoped, label
+
+
+def is_us_equity_symbol(symbol: str) -> bool:
+    upper = symbol.upper()
+    if upper.startswith("^") or "=" in upper or upper.endswith((".KS", ".KQ", "-USD")):
+        return False
+    return bool(re.fullmatch(r"[A-Z][A-Z0-9.-]{0,14}", upper))
+
+
+def classify_yahoo_trading_period(meta: dict[str, Any], timestamp: int) -> str:
+    periods = meta.get("currentTradingPeriod")
+    if not isinstance(periods, dict):
+        return ""
+    for key, label in (("pre", "premarket"), ("post", "afterhours"), ("regular", "regular")):
+        period = periods.get(key)
+        if not isinstance(period, dict):
+            continue
+        start = int(period.get("start") or 0)
+        end = int(period.get("end") or 0)
+        if start <= timestamp <= end:
+            return label
+    return ""
+
+
+def fetch_yahoo_extended_quote(
+    session: requests.Session, url: str
+) -> dict[str, Any] | None:
+    response = session.get(
+        url,
+        params={"range": "1d", "interval": "5m", "includePrePost": "true"},
+        headers={"User-Agent": "Mozilla/5.0 stock-industry-dashboard/1.0"},
+        timeout=(5, 30),
+    )
+    response.raise_for_status()
+    result = ((response.json().get("chart") or {}).get("result") or [None])[0]
+    if not isinstance(result, dict):
+        return None
+    timestamps = result.get("timestamp") or []
+    quote = ((result.get("indicators") or {}).get("quote") or [{}])[0]
+    closes = quote.get("close") or []
+    values = [
+        (int(timestamp), value)
+        for timestamp, raw in zip(timestamps, closes)
+        if (value := to_float(raw)) is not None
+    ]
+    if not values:
+        return None
+    timestamp, value = values[-1]
+    meta = result.get("meta") if isinstance(result.get("meta"), dict) else {}
+    market_session = classify_yahoo_trading_period(meta, timestamp)
+    if market_session not in {"premarket", "afterhours"}:
+        return None
+    regular_market_time = int(meta.get("regularMarketTime") or 0)
+    if regular_market_time and timestamp <= regular_market_time:
+        return None
+    observed = datetime.fromtimestamp(timestamp, tz=yahoo_exchange_timezone(meta))
+    return {
+        "value": value,
+        "observed": observed,
+        "market_session": market_session,
+    }
+
+
 def collect_equity_price_metrics(
-    config: dict[str, Any], session: requests.Session, today: date
+    config: dict[str, Any],
+    session: requests.Session,
+    today: date,
+    *,
+    intraday_now: datetime | None = None,
 ) -> list[dict[str, Any]]:
     del today
     equities_config = config.get("equities", {})
@@ -4058,15 +4728,35 @@ def collect_equity_price_metrics(
                 )
                 continue
 
+            extended_quote = None
+            if intraday_now is not None and is_us_equity_symbol(symbol):
+                try:
+                    extended_quote = fetch_yahoo_extended_quote(session, url)
+                except Exception:  # noqa: BLE001 - daily close remains a valid fallback.
+                    extended_quote = None
+
             unit = str(
                 item.get("unit")
                 or ("원" if currency == "KRW" else "$" if currency == "USD" else currency)
             )
             latest_date, latest_value = points[-1]
             previous_value = points[-2][1] if len(points) > 1 else None
+            price_session = ""
+            price_observed_at = ""
+            if extended_quote:
+                quote_time = extended_quote["observed"]
+                quote_date = quote_time.date()
+                if quote_date >= latest_date:
+                    close_baseline = latest_value
+                    points_by_date = dict(points)
+                    points_by_date[quote_date] = float(extended_quote["value"])
+                    points = sorted(points_by_date.items())
+                    latest_date, latest_value = points[-1]
+                    previous_value = close_baseline
+                    price_session = str(extended_quote["market_session"])
+                    price_observed_at = quote_time.isoformat(timespec="seconds")
             yoy_value = find_yoy_value(points, latest_date)
-            metrics.append(
-                make_metric(
+            metric = make_metric(
                     industry=industry,
                     name=name,
                     source="Yahoo Finance chart API",
@@ -4091,7 +4781,10 @@ def collect_equity_price_metrics(
                     refresh_scope=str(item.get("refresh_scope") or ""),
                     chart_style=str(item.get("chart_style") or ""),
                 )
-            )
+            if price_session:
+                metric["price_session"] = price_session
+                metric["price_observed_at"] = price_observed_at
+            metrics.append(metric)
         except Exception as exc:  # noqa: BLE001 - one ticker should not break the dashboard.
             metrics.append(
                 make_metric(
@@ -4739,14 +5432,43 @@ def sec_capex_points(payload: dict[str, Any], tags: list[str] | None = None) -> 
             value = to_float(row.get("val"))
             if start_date is None or end_date is None or value is None:
                 continue
-            if not is_quarter_duration(start_date, end_date):
+            duration = (end_date - start_date).days + 1
+            if not 70 <= duration <= 380:
                 continue
             filed = str(row.get("filed") or "")
             key = (start_date, end_date)
             if key not in by_period or filed >= by_period[key][0]:
                 by_period[key] = (filed, abs(value))
 
-        points = sorted((end_date, value) for (_, end_date), (_, value) in by_period.items())
+        direct_by_end: dict[date, tuple[str, float]] = {}
+        cumulative_by_start: dict[date, list[tuple[date, str, float]]] = defaultdict(list)
+        for (start_date, end_date), (filed, value) in by_period.items():
+            if is_quarter_duration(start_date, end_date):
+                current = direct_by_end.get(end_date)
+                if current is None or filed >= current[0]:
+                    direct_by_end[end_date] = (filed, value)
+            cumulative_by_start[start_date].append((end_date, filed, value))
+
+        derived_by_end: dict[date, tuple[str, float]] = {}
+        for cumulative_rows in cumulative_by_start.values():
+            cumulative_rows.sort(key=lambda item: item[0])
+            previous_end: date | None = None
+            previous_value: float | None = None
+            for end_date, filed, value in cumulative_rows:
+                increment_days = (end_date - previous_end).days if previous_end is not None else 0
+                if (
+                    previous_value is not None
+                    and 70 <= increment_days <= 110
+                    and end_date not in direct_by_end
+                ):
+                    derived = value - previous_value
+                    if derived >= 0:
+                        derived_by_end[end_date] = (filed, derived)
+                previous_end = end_date
+                previous_value = value
+
+        quarterly = {**derived_by_end, **direct_by_end}
+        points = sorted((end_date, value) for end_date, (_, value) in quarterly.items())
         if points and (not best_points or points[-1][0] > best_points[-1][0]):
             best_points = points
     return best_points
@@ -4834,12 +5556,43 @@ def collect_usaspending_metrics(
             or "미국 연방 방산 계약 의무액으로 방산 수주와 예산 집행 모멘텀을 확인합니다."
         )
 
+        def cached_metric(note: str) -> dict[str, Any] | None:
+            store = attach_history_store(config)
+            cached_points = store.series(history_key) if store is not None else []
+            if not cached_points:
+                return None
+            latest_month, latest_value = cached_points[-1]
+            previous_value = cached_points[-2][1] if len(cached_points) > 1 else None
+            metric = make_metric(
+                industry=industry,
+                name=name,
+                source="USAspending API",
+                source_url=endpoint,
+                frequency="월간",
+                automation="무료 공식 API 자동 수집",
+                status="ok",
+                value=latest_value,
+                unit="$B",
+                observed_at=latest_month.isoformat(),
+                previous_value=previous_value,
+                yoy_value=find_yoy_value(cached_points, latest_month),
+                history=cached_points,
+                note=f"{note}; 이전 저장값 표시",
+                group=group,
+                meaning=meaning,
+                history_key=history_key,
+            )
+            metric["fetch_attempt_failed"] = True
+            return metric
+
         try:
             response = session.post(endpoint, json=payload, timeout=(5, 30))
             response.raise_for_status()
             points = parse_usaspending_monthly_amounts(response.json())
             if not points:
                 metrics.append(
+                    cached_metric("관측값 없음")
+                    or
                     make_metric(
                         industry=industry,
                         name=name,
@@ -4881,6 +5634,8 @@ def collect_usaspending_metrics(
             )
         except Exception as exc:  # noqa: BLE001 - one spending item should not break the page.
             metrics.append(
+                cached_metric(f"API 응답 실패: {exc}")
+                or
                 make_metric(
                     industry=industry,
                     name=name,
@@ -5668,7 +6423,7 @@ def parse_kosis_points(payload: object, prd_se: str) -> list[tuple[date, float]]
     else:
         rows = payload
 
-    monthly_values: dict[date, float] = {}
+    period_values: dict[date, float] = {}
     if not isinstance(rows, list):
         return []
 
@@ -5679,8 +6434,8 @@ def parse_kosis_points(payload: object, prd_se: str) -> list[tuple[date, float]]
         value = to_float(row.get("DT") or row.get("dt"))
         if observed_at is None or value is None:
             continue
-        monthly_values[observed_at] = monthly_values.get(observed_at, 0.0) + value
-    return sorted(monthly_values.items())
+        period_values[observed_at] = period_values.get(observed_at, 0.0) + value
+    return sorted(period_values.items())
 
 
 def parse_kosis_period(value: object, prd_se: str = "M") -> date | None:
@@ -5689,6 +6444,8 @@ def parse_kosis_period(value: object, prd_se: str = "M") -> date | None:
         return None
     period = prd_se.upper()
     try:
+        if period == "D" and len(text) >= 8:
+            return date(int(text[:4]), int(text[4:6]), int(text[6:8]))
         if period == "M" and len(text) >= 6:
             return date(int(text[:4]), int(text[4:6]), 1)
         if period == "Q" and len(text) >= 5:

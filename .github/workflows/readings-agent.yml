@@ -1,0 +1,77 @@
+name: Future Readings Agent
+
+on:
+  schedule:
+    # 분기별 15일 11:00 KST.
+    - cron: "0 2 15 1,4,7,10 *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: future-readings-agent
+  cancel-in-progress: false
+
+jobs:
+  readings-agent:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install dependencies
+        run: uv pip install --system -e .
+
+      - name: Run readings agent
+        env:
+          GOOGLE_CSE_API_KEY: ${{ secrets.GOOGLE_CSE_API_KEY }}
+          GOOGLE_CSE_CX: ${{ secrets.GOOGLE_CSE_CX }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python scripts/readings_agent.py --future-dir data/future --audit-dir data/future/audits
+
+      - name: Guard changed paths
+        run: |
+          CHANGED="$(git diff --name-only)"
+          if [ -n "$CHANGED" ]; then
+            python scripts/readings_agent.py --guard-diff $CHANGED
+          fi
+
+      - name: Commit readings update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/future/readings.yaml data/future/audits
+          if git diff --cached --quiet; then
+            echo "No readings changes."
+          else
+            git commit -m "Update future readings agent audit [skip ci]"
+            git pull --rebase origin main || true
+            git push origin HEAD:main
+          fi
+
+      - name: Create audit issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          AUDIT_FILE="$(ls -t data/future/audits/readings-agent-*.md 2>/dev/null | head -1 || true)"
+          if [ -n "$AUDIT_FILE" ]; then
+            gh issue create \
+              --title "Future readings agent audit $(basename "$AUDIT_FILE" .md)" \
+              --body-file "$AUDIT_FILE" || true
+          else
+            echo "No audit report found."
+          fi

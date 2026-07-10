@@ -88,3 +88,40 @@ def test_record_fetch_result_marks_no_new_data_against_previous_payload():
 
     assert run["records"][0]["status"] == "no_new_data"
     assert run["records"][0]["new_data_count"] == 0
+
+
+def test_record_fetch_result_marks_same_day_intraday_price_change_as_new_data():
+    previous = {
+        "equity-NVDA": {
+            "id": "nvda",
+            "history_key": "equity-NVDA",
+            "observed_at": "2026-07-10",
+            "value": 200.0,
+        }
+    }
+    metrics = [
+        {
+            "id": "nvda",
+            "history_key": "equity-NVDA",
+            "status": "ok",
+            "observed_at": "2026-07-10",
+            "value": 202.0,
+        }
+    ]
+    logger = FetchLogger(run_type="prices", timezone_name="Asia/Seoul")
+
+    with use_fetch_logger(logger):
+        started_at, started_monotonic = logger.source_started()
+        record_fetch_result(
+            "대표주가/시장지수",
+            metrics,
+            previous,
+            started_at,
+            started_monotonic,
+            "미국장 1/1개 지표 자동 수집",
+        )
+
+    run = logger.finish()
+
+    assert run["records"][0]["status"] == "success"
+    assert run["records"][0]["new_data_count"] == 1

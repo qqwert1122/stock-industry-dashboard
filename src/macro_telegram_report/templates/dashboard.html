@@ -161,6 +161,10 @@
     body.theme-ready .industry,
     body.theme-ready .industry-head,
     body.theme-ready .industry-icon-wrap,
+    body.theme-ready .future-card,
+    body.theme-ready .future-achieved,
+    body.theme-ready .future-minimap,
+    body.theme-ready .future-band-title,
     body.theme-ready .group,
     body.theme-ready .metric,
     body.theme-ready .metric-table-wrap,
@@ -320,7 +324,7 @@
       min-height: 31px;
       border-radius: 10px;
       padding: 0 10px;
-      color: var(--muted);
+      color: color-mix(in srgb, var(--muted) 72%, transparent);
       font-size: 12.5px;
       font-weight: 500;
     }
@@ -578,52 +582,112 @@
     }
 
     .signal-drawer,
-    .signal-drawer-backdrop {
+    .signal-drawer-backdrop,
+    .metric-detail-drawer,
+    .metric-detail-drawer-backdrop {
       display: none;
     }
 
-    .signal-drawer {
+    .signal-drawer,
+    .metric-detail-drawer {
       position: fixed;
       right: 0;
       top: 0;
       bottom: 0;
-      z-index: 90;
-      width: min(390px, 88vw);
+      height: 100dvh;
+      max-height: 100dvh;
+      box-sizing: border-box;
+      flex-direction: column;
       transform: translateX(102%);
       transition: transform 180ms ease;
       background: var(--signal-drawer-bg);
       border-left: 0;
       box-shadow: -18px 0 45px rgba(0, 0, 0, 0.12);
       padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
-      overflow-y: auto;
+      overflow: hidden;
     }
 
-    .signal-drawer-head {
+    .signal-drawer {
+      z-index: 90;
+      width: min(390px, 88vw);
+    }
+
+    .metric-detail-drawer {
+      z-index: 92;
+      width: min(720px, 94vw);
+    }
+
+    .signal-drawer-head,
+    .metric-detail-drawer-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
+      flex: 0 0 auto;
       margin-bottom: 14px;
     }
 
-    .signal-drawer-body {
+    .signal-drawer-body,
+    .metric-detail-drawer-body {
+      flex: 1 1 auto;
+      min-height: 0;
       display: grid;
       gap: 12px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
     }
 
-    .signal-drawer-backdrop {
+    .metric-detail-drawer-body {
+      display: block;
+      padding-right: 4px;
+    }
+
+    .metric-detail-drawer-body .metric-detail-panel {
+      max-height: none;
+      overflow: visible;
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    .metric-detail-drawer-body .metric-detail-inner {
+      padding: 0 0 10px;
+    }
+
+    .signal-drawer-backdrop,
+    .metric-detail-drawer-backdrop {
       position: fixed;
       inset: 0;
-      z-index: 89;
       background: rgba(0, 0, 0, 0.18);
     }
 
-    body.signal-drawer-open .signal-drawer,
+    .signal-drawer-backdrop {
+      z-index: 89;
+    }
+
+    .metric-detail-drawer-backdrop {
+      z-index: 91;
+    }
+
     body.signal-drawer-open .signal-drawer-backdrop {
       display: block;
     }
 
     body.signal-drawer-open .signal-drawer {
+      display: flex;
+      transform: translateX(0);
+    }
+
+    body.metric-detail-drawer-open {
+      overflow: hidden;
+    }
+
+    body.metric-detail-drawer-open .metric-detail-drawer-backdrop {
+      display: block;
+    }
+
+    body.metric-detail-drawer-open .metric-detail-drawer {
+      display: flex;
       transform: translateX(0);
     }
 
@@ -1232,6 +1296,10 @@
       body.theme-ready .industry,
       body.theme-ready .industry-head,
       body.theme-ready .industry-icon-wrap,
+      body.theme-ready .future-card,
+      body.theme-ready .future-achieved,
+      body.theme-ready .future-minimap,
+      body.theme-ready .future-band-title,
       body.theme-ready .group,
       body.theme-ready .metric,
       body.theme-ready .metric-table-wrap,
@@ -1281,6 +1349,160 @@
     .daily-updates {
       min-width: 0;
       margin: 4px 0 18px;
+    }
+
+    .data-freshness {
+      margin: 0 0 18px;
+      border: 0;
+      border-radius: 16px;
+      background: var(--detail-stat-bg);
+      overflow: hidden;
+    }
+
+    .data-freshness-summary {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 54px;
+      padding: 12px 16px;
+      list-style: none;
+      cursor: pointer;
+    }
+
+    .data-freshness-summary::-webkit-details-marker { display: none; }
+
+    .data-freshness-dot {
+      flex: 0 0 auto;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #22a06b;
+      box-shadow: 0 0 0 4px color-mix(in srgb, #22a06b 13%, transparent);
+    }
+
+    .data-freshness-dot.delayed {
+      background: #f2b800;
+      box-shadow: 0 0 0 4px color-mix(in srgb, #f2b800 15%, transparent);
+    }
+
+    .data-freshness-dot.failed {
+      background: var(--chart-up);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--chart-up) 14%, transparent);
+    }
+
+    .data-freshness-copy {
+      min-width: 0;
+      display: grid;
+      gap: 2px;
+    }
+
+    .data-freshness-title {
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    .data-freshness-meta {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.35;
+      font-weight: 400;
+    }
+
+    .data-freshness-chevron {
+      margin-left: auto;
+      color: var(--muted);
+      font-size: 12px;
+      transition: transform 160ms ease;
+    }
+
+    .data-freshness[open] .data-freshness-chevron { transform: rotate(180deg); }
+
+    .data-freshness-panel {
+      padding: 0 16px 16px;
+    }
+
+    .data-freshness-stats {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      padding: 12px 0 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .data-freshness-stat {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+    }
+
+    .data-freshness-stat strong {
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .data-freshness-stat span {
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.25;
+      font-weight: 500;
+    }
+
+    .data-freshness-sources {
+      display: grid;
+      gap: 0;
+      max-height: 300px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
+    .data-freshness-source {
+      display: grid;
+      grid-template-columns: minmax(130px, 1.4fr) minmax(110px, .8fr) minmax(95px, .7fr) auto;
+      align-items: center;
+      gap: 12px;
+      min-height: 42px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.3;
+    }
+
+    .data-freshness-source-name {
+      overflow: hidden;
+      color: var(--text);
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .data-freshness-source-state {
+      justify-self: end;
+      white-space: nowrap;
+    }
+
+    .data-freshness-source-state.delayed { color: #b98200; }
+    .data-freshness-source-state.failed { color: var(--chart-up); }
+
+    @media (max-width: 680px) {
+      .data-freshness-summary { padding: 11px 12px; }
+      .data-freshness-panel { padding: 0 12px 12px; }
+      .data-freshness-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .data-freshness-sources { overflow-x: hidden; }
+      .data-freshness-source {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-rows: auto auto;
+        gap: 3px 10px;
+        min-width: 0;
+        padding: 9px 0;
+      }
+      .data-freshness-source-name { grid-column: 1; grid-row: 1; }
+      .data-freshness-source > span:nth-child(2) { grid-column: 1; grid-row: 2; }
+      .data-freshness-source > span:nth-child(3) { grid-column: 2; grid-row: 2; justify-self: end; }
+      .data-freshness-source-state { grid-column: 2; grid-row: 1; }
     }
 
     .mover-ticker {
@@ -1851,6 +2073,1495 @@
       white-space: nowrap;
     }
 
+    .future-page {
+      margin: var(--overview-title-top-gap) 0 28px;
+      display: grid;
+      gap: 18px;
+      min-width: 0;
+    }
+
+    .future-page-head {
+      display: grid;
+      gap: 7px;
+      max-width: 760px;
+    }
+
+    .future-page-head h2 {
+      margin: 0;
+      color: var(--text);
+      font-size: 21px;
+      line-height: 1.12;
+      font-weight: 760;
+    }
+
+    .future-page-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+      font-weight: 400;
+    }
+
+    .future-minimap {
+      position: sticky;
+      top: 0;
+      z-index: 12;
+      display: flex;
+      gap: 6px;
+      min-width: 0;
+      overflow-x: auto;
+      padding: 8px 0;
+      background: color-mix(in srgb, var(--bg) 92%, transparent);
+      backdrop-filter: blur(14px);
+      scrollbar-width: none;
+    }
+
+    .future-minimap::-webkit-scrollbar {
+      display: none;
+    }
+
+    .future-minimap button,
+    .future-category-button {
+      min-height: 32px;
+      border: 1px solid var(--line);
+      border-radius: var(--chip-radius);
+      background: var(--menu);
+      color: var(--muted);
+      padding: 0 13px;
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 650;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .future-minimap button:hover,
+    .future-category-button:hover,
+    .future-category-button[aria-pressed="true"] {
+      background: var(--menu-active);
+      color: var(--text);
+    }
+
+    .future-achieved {
+      border: 0;
+      border-radius: 24px;
+      background: var(--menu);
+      padding: 12px 14px;
+    }
+
+    .future-achieved summary {
+      cursor: pointer;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 650;
+      list-style: none;
+    }
+
+    .future-achieved summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .future-today-marker {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .future-today-marker::before,
+    .future-today-marker::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: var(--line);
+    }
+
+    .future-band {
+      display: grid;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .future-band-title {
+      position: sticky;
+      top: 48px;
+      z-index: 10;
+      margin: 0;
+      padding: 7px 0;
+      background: color-mix(in srgb, var(--bg) 92%, transparent);
+      backdrop-filter: blur(14px);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.2;
+      font-weight: 760;
+    }
+
+    .future-timeline {
+      position: relative;
+      display: grid;
+      gap: 12px;
+      min-width: 0;
+      padding-left: 22px;
+    }
+
+    .future-timeline::before {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: 4px;
+      bottom: 4px;
+      width: 2px;
+      border-radius: 999px;
+      background: var(--line);
+    }
+
+    .future-card {
+      position: relative;
+      min-width: 0;
+      display: grid;
+      grid-template-columns: minmax(210px, 240px) minmax(0, 1fr);
+      gap: 0;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel);
+      padding: 0;
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    .future-card::before {
+      content: "";
+      position: absolute;
+      left: -21px;
+      top: 22px;
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: var(--text);
+      box-shadow: 0 0 0 4px var(--bg);
+    }
+
+    .future-card.is-achieved {
+      color: var(--muted);
+      background: color-mix(in srgb, var(--menu) 76%, var(--panel));
+    }
+
+    .future-card.is-active {
+      outline: 2px solid color-mix(in srgb, var(--text) 32%, transparent);
+      outline-offset: 2px;
+    }
+
+    .future-card-side {
+      min-width: 0;
+      display: grid;
+      align-content: start;
+      gap: 16px;
+      background: color-mix(in srgb, var(--menu) 68%, var(--panel));
+      border-right: 1px solid var(--line);
+      padding: 24px;
+    }
+
+    .future-card-main {
+      min-width: 0;
+      display: grid;
+      align-content: start;
+      gap: 18px;
+      padding: 30px;
+    }
+
+    .future-card-decade,
+    .future-side-label {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .future-card-head {
+      display: grid;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .future-card-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      flex-wrap: wrap;
+    }
+
+    .future-card-title {
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      padding: 0;
+      text-align: left;
+      font: inherit;
+      font-size: 22px;
+      line-height: 1.18;
+      font-weight: 820;
+      cursor: pointer;
+    }
+
+    .future-card-meta {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 11.5px;
+      line-height: 1.3;
+      font-weight: 500;
+    }
+
+    .future-status-pill,
+    .future-bottleneck,
+    .future-source-link,
+    .future-source-score,
+    .future-glossary-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      border-radius: var(--chip-radius);
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      background: var(--menu);
+      color: var(--muted);
+      font-size: 11.5px;
+      line-height: 1;
+      font-weight: 650;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .future-side-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      min-width: 0;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .future-side-pills .future-status-pill {
+      border: 0;
+      background: color-mix(in srgb, #8b5cf6 12%, var(--panel));
+      color: #7c3aed;
+    }
+
+    .future-year-block {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .future-year-block strong {
+      color: var(--text);
+      font-size: 38px;
+      line-height: 1;
+      font-weight: 850;
+      letter-spacing: 0;
+    }
+
+    .future-year-block small {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.25;
+      font-weight: 500;
+    }
+
+    .future-track-scorebox {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 7px;
+      min-width: 0;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+      color: var(--text);
+      padding: 0 0 14px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .future-track-score-main {
+      justify-self: end;
+      color: color-mix(in srgb, var(--chart-up) 76%, var(--text));
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 800;
+    }
+
+    .future-track-bars {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .future-track-bars span {
+      height: 4px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--muted) 18%, transparent);
+    }
+
+    .future-track-bars span.is-hit {
+      background: color-mix(in srgb, var(--chart-up) 80%, var(--muted));
+    }
+
+    .future-track-score-source {
+      grid-column: 1 / -1;
+      color: var(--muted);
+      font-size: 10.5px;
+      line-height: 1.25;
+      font-weight: 500;
+      overflow-wrap: anywhere;
+    }
+
+    .future-source-score {
+      cursor: pointer;
+      color: var(--text);
+      background: color-mix(in srgb, var(--chart-blue) 9%, var(--menu));
+    }
+
+    .future-bottleneck {
+      color: var(--text);
+      background: color-mix(in srgb, var(--chart-up) 8%, var(--menu));
+    }
+
+    .future-copy {
+      display: grid;
+      gap: 12px;
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.62;
+      font-weight: 400;
+    }
+
+    .future-copy p {
+      margin: 0;
+    }
+
+    .future-copy .future-why,
+    .future-copy .future-now {
+      color: var(--muted);
+    }
+
+    .future-copy strong {
+      display: block;
+      color: var(--text);
+      font-size: 17px;
+      line-height: 1.55;
+      font-weight: 760;
+    }
+
+    .future-glossary {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .future-glossary-chip {
+      position: relative;
+      border-style: dashed;
+      cursor: help;
+    }
+
+    .future-tooltip {
+      position: absolute;
+      left: 0;
+      bottom: calc(100% + 8px);
+      z-index: 20;
+      width: min(260px, 70vw);
+      display: none;
+      white-space: normal;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--text);
+      padding: 10px;
+      box-shadow: var(--shadow);
+      font-size: 12px;
+      line-height: 1.45;
+      font-weight: 400;
+    }
+
+    .future-glossary-chip:hover .future-tooltip,
+    .future-glossary-chip:focus-visible .future-tooltip {
+      display: block;
+    }
+
+    .future-progress {
+      display: grid;
+      gap: 8px;
+    }
+
+    .future-bottleneck-card {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 6px 10px;
+      min-width: 0;
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--signal-trigger-text) 9%, var(--panel));
+      padding: 14px;
+      color: var(--signal-trigger-text);
+    }
+
+    .future-bottleneck-card span {
+      display: inline-flex;
+      align-items: center;
+      width: max-content;
+      min-height: 22px;
+      border-radius: 6px;
+      background: var(--signal-trigger-text);
+      color: #fff;
+      padding: 0 8px;
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 800;
+    }
+
+    .future-bottleneck-card strong {
+      align-self: center;
+      min-width: 0;
+      color: var(--signal-trigger-text);
+      font-size: 13px;
+      line-height: 1.35;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .future-bottleneck-card p {
+      grid-column: 2;
+      margin: 0;
+      color: color-mix(in srgb, var(--signal-trigger-text) 76%, var(--muted));
+      font-size: 12px;
+      line-height: 1.45;
+      font-weight: 400;
+    }
+
+    .future-breakdown {
+      display: grid;
+      gap: 9px;
+      min-width: 0;
+      padding: 11px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--menu) 58%, var(--panel));
+    }
+
+    .future-breakdown-title {
+      margin: 0;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.25;
+      font-weight: 720;
+    }
+
+    .future-breakdown-list {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .future-breakdown-row {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      padding: 10px;
+      color: var(--text);
+    }
+
+    .future-breakdown-row.is-bottleneck {
+      border-color: color-mix(in srgb, var(--chart-up) 32%, var(--line));
+      background: color-mix(in srgb, var(--chart-up) 7%, var(--surface));
+    }
+
+    .future-breakdown-row.is-low-confidence {
+      border-style: dashed;
+    }
+
+    .future-breakdown-row.is-stale {
+      opacity: 0.82;
+    }
+
+    .future-breakdown-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .future-breakdown-name {
+      min-width: 0;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.28;
+      font-weight: 720;
+      overflow-wrap: anywhere;
+    }
+
+    .future-breakdown-badges {
+      display: flex;
+      justify-content: flex-end;
+      gap: 5px;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+
+    .future-breakdown-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      border-radius: var(--chip-radius);
+      background: var(--menu);
+      color: var(--muted);
+      padding: 0 8px;
+      font-size: 10.5px;
+      line-height: 1;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+
+    .future-breakdown-badge.is-bottleneck {
+      color: var(--text);
+      background: color-mix(in srgb, var(--chart-up) 14%, var(--menu));
+    }
+
+    .future-breakdown-copy {
+      display: grid;
+      gap: 5px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      font-weight: 400;
+    }
+
+    .future-breakdown-copy p {
+      margin: 0;
+    }
+
+    .future-breakdown-gap {
+      color: var(--text);
+      font-weight: 550;
+    }
+
+    .future-breakdown-state {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .future-breakdown-state span {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+      border-radius: 8px;
+      background: var(--menu);
+      padding: 8px;
+      color: var(--text);
+      font-size: 12px;
+      line-height: 1.25;
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+
+    .future-breakdown-state b {
+      color: var(--muted);
+      font-size: 10.5px;
+      line-height: 1;
+      font-weight: 650;
+    }
+
+    .future-ladder {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+
+    .future-ladder-rung {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      border: 1px solid var(--line);
+      border-radius: var(--chip-radius);
+      background: var(--panel);
+      color: var(--muted);
+      padding: 0 9px;
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 650;
+      white-space: nowrap;
+      cursor: help;
+    }
+
+    .future-ladder-rung.is-current {
+      color: var(--text);
+      border-color: color-mix(in srgb, var(--chart-blue) 42%, var(--line));
+      background: color-mix(in srgb, var(--chart-blue) 12%, var(--panel));
+    }
+
+    .future-ladder-rung.is-required {
+      color: var(--text);
+      border-color: color-mix(in srgb, var(--chart-up) 42%, var(--line));
+      background: color-mix(in srgb, var(--chart-up) 10%, var(--panel));
+    }
+
+    .future-ladder-rung.is-current.is-required {
+      border-color: color-mix(in srgb, var(--text) 36%, var(--line));
+      background: color-mix(in srgb, var(--text) 8%, var(--panel));
+    }
+
+    .future-ladder-rung:hover .future-tooltip,
+    .future-ladder-rung:focus-visible .future-tooltip {
+      display: block;
+    }
+
+    .future-breakdown-meta {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+
+    .future-breakdown-chip {
+      min-height: 28px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border: 1px solid var(--line);
+      border-radius: var(--chip-radius);
+      background: var(--menu);
+      color: var(--text);
+      padding: 0 9px;
+      font-size: 11.5px;
+      line-height: 1;
+      font-weight: 650;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    button.future-breakdown-chip {
+      cursor: pointer;
+    }
+
+    button.future-breakdown-chip:hover,
+    .future-breakdown-chip[href]:hover {
+      background: var(--menu-active);
+    }
+
+    .future-breakdown-chip[disabled] {
+      cursor: default;
+      color: var(--muted);
+    }
+
+    .future-breakdown-party {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+
+    .future-breakdown-party-label {
+      color: var(--muted);
+      font-size: 10.5px;
+      line-height: 1;
+      font-weight: 650;
+    }
+
+    .future-metric-list,
+    .future-company-list {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+
+    .future-company-panel {
+      display: grid;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .future-company-panel .future-company-list {
+      display: grid;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .future-company-row {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      padding: 0;
+      text-align: left;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .future-company-row .future-company-name,
+    .future-company-row .future-company-change {
+      margin: 0;
+    }
+
+    .future-company-row .future-company-change {
+      justify-self: end;
+      font-size: 11.5px;
+      font-weight: 750;
+    }
+
+    span.future-company-row {
+      cursor: default;
+    }
+
+    .future-metric-chip {
+      width: min(220px, 100%);
+      min-height: 76px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 72px;
+      gap: 8px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      padding: 10px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .future-metric-chip:hover,
+    .future-company-chip:hover {
+      background: var(--menu-active);
+    }
+
+    .future-metric-name,
+    .future-company-name {
+      display: block;
+      color: var(--text);
+      font-size: 12px;
+      line-height: 1.25;
+      font-weight: 650;
+      overflow-wrap: anywhere;
+    }
+
+    .future-metric-value,
+    .future-company-change {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11.5px;
+      line-height: 1.2;
+      font-weight: 500;
+    }
+
+    .future-metric-chip .chart-mini {
+      width: 72px;
+      height: 38px;
+      max-height: 38px;
+    }
+
+    .future-company-chip {
+      min-height: 32px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--line);
+      border-radius: var(--chip-radius);
+      background: var(--menu);
+      color: var(--text);
+      padding: 0 11px;
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 650;
+      cursor: pointer;
+    }
+
+    .future-company-chip[disabled] {
+      cursor: default;
+      color: var(--muted);
+    }
+
+    .future-readings {
+      display: grid;
+      gap: 9px;
+      min-width: 0;
+    }
+
+    .future-readings-title,
+    .future-reading-level summary {
+      margin: 0;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .future-reading-level {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      overflow: hidden;
+    }
+
+    .future-reading-level summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-height: 36px;
+      padding: 0 10px;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .future-reading-level summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .future-reading-level summary::after {
+      content: "\\f078";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      color: var(--muted);
+      font-size: 10px;
+      transition: transform 160ms ease;
+    }
+
+    .future-reading-level[open] summary::after {
+      transform: rotate(180deg);
+    }
+
+    .future-reading-list {
+      display: grid;
+      gap: 1px;
+      border-top: 1px solid var(--line);
+      background: var(--line);
+    }
+
+    .future-reading-row {
+      display: grid;
+      grid-template-columns: 22px minmax(0, 1fr) auto;
+      gap: 9px;
+      align-items: start;
+      background: var(--panel);
+      color: var(--text);
+      padding: 10px;
+    }
+
+    .future-reading-icon {
+      width: 22px;
+      height: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    .future-reading-main {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .future-reading-title-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+
+    .future-reading-title {
+      color: var(--text);
+      font-size: 12.5px;
+      line-height: 1.25;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+      text-decoration: none;
+    }
+
+    .future-reading-title:hover {
+      text-decoration: underline;
+    }
+
+    .future-reading-meta,
+    .future-reading-badges {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+
+    .future-reading-chip,
+    .future-reading-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      border-radius: var(--chip-radius);
+      border: 1px solid var(--line);
+      background: var(--menu);
+      color: var(--muted);
+      padding: 0 8px;
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .future-reading-badge {
+      color: var(--text);
+      background: color-mix(in srgb, var(--chart-blue) 9%, var(--menu));
+    }
+
+    .future-reading-why {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      font-weight: 400;
+    }
+
+    .future-reading-link {
+      width: 30px;
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .future-reading-link:hover {
+      background: var(--menu-active);
+      color: var(--text);
+    }
+
+    .future-readings-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 11.5px;
+      line-height: 1.45;
+      font-weight: 400;
+    }
+
+    .future-common-readings {
+      margin-left: 22px;
+    }
+
+    .future-track-entry {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-left: 22px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 400;
+    }
+
+    .future-track-link,
+    .future-back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 32px;
+      border: 1px solid var(--line);
+      border-radius: var(--chip-radius);
+      background: var(--menu);
+      color: var(--text);
+      padding: 0 12px;
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .future-track-link:hover,
+    .future-back-link:hover,
+    .future-source-score:hover {
+      background: var(--menu-active);
+    }
+
+    .track-record-page {
+      --track-left-column: minmax(180px, 250px);
+      gap: 16px;
+    }
+
+    .track-score-grid {
+      display: flex;
+      gap: 8px;
+      margin-left: 0;
+      min-width: 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 2px 26px 8px;
+      scrollbar-width: none;
+      -webkit-mask-image: linear-gradient(to right, transparent, #000 26px, #000 calc(100% - 26px), transparent);
+      mask-image: linear-gradient(to right, transparent, #000 26px, #000 calc(100% - 26px), transparent);
+    }
+
+    .track-score-grid::-webkit-scrollbar {
+      display: none;
+    }
+
+    .track-score-card {
+      flex: 0 0 auto;
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      border: 0;
+      border-radius: var(--chip-radius);
+      background: var(--menu);
+      color: var(--text);
+      padding: 0 14px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .track-score-card.is-active,
+    .track-score-card:hover {
+      background: var(--text);
+      color: var(--bg);
+    }
+
+    .track-score-name {
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .track-score-summary {
+      display: none;
+    }
+
+    .track-record-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-left: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+
+    .track-record-legend {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 16px;
+      min-width: 0;
+      color: var(--muted);
+      font-size: 11.5px;
+      line-height: 1;
+      font-weight: 650;
+    }
+
+    .track-record-legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .track-record-legend-item i {
+      width: 12px;
+      height: 12px;
+      display: inline-block;
+      border-radius: 999px;
+    }
+
+    .track-record-legend-item.is-predicted i {
+      border: 2px dashed color-mix(in srgb, var(--muted) 70%, transparent);
+      background: transparent;
+    }
+
+    .track-record-legend-item.is-actual i {
+      background: var(--signal-trigger-text);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--signal-trigger-text) 14%, transparent);
+    }
+
+    .track-record-sort {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .track-record-sort button {
+      min-height: 30px;
+      border: 1px solid var(--line);
+      border-radius: var(--chip-radius);
+      background: var(--menu);
+      color: var(--muted);
+      padding: 0 10px;
+      font-size: 11.5px;
+      line-height: 1;
+      font-weight: 650;
+      cursor: pointer;
+    }
+
+    .track-record-sort button[aria-pressed="true"],
+    .track-record-sort button:hover {
+      background: var(--menu-active);
+      color: var(--text);
+    }
+
+    .track-record-list {
+      display: grid;
+      gap: 0;
+      margin-left: 0;
+      min-width: 0;
+    }
+
+    .track-record-row {
+      --track-color: var(--muted);
+      --track-dot: var(--signal-trigger-text);
+      --track-band: #f4bf42;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      overflow: visible;
+    }
+
+    .track-record-row.status-early {
+      --track-color: #0f9f8f;
+      --track-band: #7dd3c7;
+    }
+
+    .track-record-row.status-on_time {
+      --track-color: var(--signal-trigger-text);
+      --track-band: transparent;
+    }
+
+    .track-record-row.status-late {
+      --track-color: var(--signal-trigger-text);
+    }
+
+    .track-record-row.status-missed {
+      --track-color: var(--signal-trigger-text);
+    }
+
+    .track-record-row summary {
+      display: grid;
+      grid-template-columns: var(--track-left-column) minmax(320px, 1fr);
+      gap: 18px;
+      align-items: center;
+      min-height: 72px;
+      padding: 0;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .track-record-row summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .track-record-row summary:hover {
+      background: transparent;
+    }
+
+    .track-record-row-main,
+    .track-record-title-row {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .track-record-name {
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.25;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .track-record-by,
+    .track-record-years,
+    .track-record-error {
+      color: var(--muted);
+      font-size: 11.5px;
+      line-height: 1.35;
+      font-weight: 500;
+    }
+
+    .track-record-years,
+    .track-record-status {
+      display: none;
+    }
+
+    .track-record-chart {
+      position: relative;
+      display: block;
+      width: 100%;
+      min-width: 0;
+      height: 72px;
+      overflow: visible;
+    }
+
+    .track-record-axis-row {
+      display: grid;
+      grid-template-columns: var(--track-left-column) minmax(320px, 1fr);
+      gap: 18px;
+      align-items: end;
+      min-height: 34px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .track-record-axis-space {
+      min-width: 0;
+    }
+
+    .track-record-axis-canvas {
+      position: relative;
+      min-width: 0;
+      height: 34px;
+    }
+
+    .track-record-axis-label,
+    .track-record-grid-line {
+      position: absolute;
+      left: var(--x);
+      transform: translateX(-50%);
+    }
+
+    .track-record-axis-label {
+      bottom: 10px;
+      white-space: nowrap;
+    }
+
+    .track-record-axis-label::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 22px;
+      width: 1px;
+      height: var(--track-grid-height, 999px);
+      background: repeating-linear-gradient(to bottom, color-mix(in srgb, var(--muted) 25%, transparent) 0 4px, transparent 4px 8px);
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .track-record-timeline {
+      position: relative;
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      height: 72px;
+      min-width: 0;
+      overflow: visible;
+    }
+
+    .track-record-grid-line {
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: repeating-linear-gradient(to bottom, color-mix(in srgb, var(--muted) 18%, transparent) 0 4px, transparent 4px 8px);
+      pointer-events: none;
+    }
+
+    .track-dumbbell {
+      display: none;
+    }
+
+    .track-record-predicted-year,
+    .track-record-actual-year {
+      position: absolute;
+      left: var(--x);
+      transform: translateX(-50%);
+      color: var(--text);
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .track-record-predicted-year {
+      top: 4px;
+      color: var(--muted);
+      font-weight: 650;
+    }
+
+    .track-record-actual-year {
+      top: 4px;
+    }
+
+    .track-record-span {
+      position: absolute;
+      left: var(--start);
+      top: 28px;
+      width: var(--width);
+      height: 28px;
+      min-width: 68px;
+      border-radius: 999px;
+      background: var(--track-band);
+      color: rgba(0, 0, 0, 0.64);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 12px;
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .track-record-predicted-dot,
+    .track-record-actual-dot {
+      position: absolute;
+      left: var(--x);
+      border-radius: 999px;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .track-record-predicted-dot {
+      top: 31px;
+      width: 24px;
+      height: 24px;
+      border: 2px dashed color-mix(in srgb, var(--muted) 60%, transparent);
+      background: transparent;
+      z-index: 4;
+      box-shadow:
+        0 0 0 4px var(--panel),
+        0 8px 18px rgba(0, 0, 0, 0.14);
+    }
+
+    .track-record-actual-dot {
+      top: 22px;
+      width: 34px;
+      height: 34px;
+      background: color-mix(in srgb, var(--track-dot) 18%, transparent);
+      z-index: 5;
+    }
+
+    .track-record-actual-dot::after {
+      content: "";
+      position: absolute;
+      inset: 7px;
+      border-radius: inherit;
+      background: var(--track-dot);
+      box-shadow: 0 0 0 3px var(--panel);
+    }
+
+    .track-record-pill {
+      position: absolute;
+      left: var(--x);
+      top: 31px;
+      transform: translateX(18px);
+      max-width: 100%;
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      border-radius: var(--chip-radius);
+      background: color-mix(in srgb, var(--track-dot) 12%, var(--menu));
+      color: var(--track-dot);
+      padding: 0 9px;
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    .track-record-detail {
+      display: grid;
+      gap: 8px;
+      margin: 0 0 12px calc(min(250px, 28vw) + 18px);
+      border-top: 0;
+      border-radius: 8px;
+      background: var(--surface);
+      padding: 12px;
+    }
+
+    .track-record-detail p {
+      display: grid;
+      grid-template-columns: 70px minmax(0, 1fr);
+      gap: 10px;
+      margin: 0;
+      color: var(--text);
+      font-size: 12.5px;
+      line-height: 1.5;
+      font-weight: 400;
+    }
+
+    .track-record-detail p span {
+      color: var(--muted);
+      font-size: 11.5px;
+      font-weight: 650;
+    }
+
+    .track-record-links {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-left: 80px;
+    }
+
+    .track-record-links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      border: 1px solid var(--line);
+      border-radius: var(--chip-radius);
+      background: var(--menu);
+      color: var(--muted);
+      padding: 0 9px;
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 650;
+      text-decoration: none;
+    }
+
+    .track-record-links a:hover {
+      background: var(--menu-active);
+      color: var(--text);
+    }
+
+    .future-source-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .future-source-link {
+      min-height: 24px;
+      font-size: 11px;
+    }
+
     .daily-update-details {
       min-width: 0;
       margin: -4px 0 0;
@@ -2197,7 +3908,7 @@
       color: #111827;
       font-size: 20px;
       line-height: 1.12;
-      font-weight: 760;
+      font-weight: 600;
     }
 
     .schedule-alerts-grid {
@@ -2267,7 +3978,7 @@
       color: var(--text);
       font-size: 13px;
       line-height: 1.2;
-      font-weight: 620;
+      font-weight: 600;
     }
 
     .event-snapshot-arrow {
@@ -2411,7 +4122,7 @@
       color: var(--text);
       font-size: 12.5px;
       line-height: 1.25;
-      font-weight: 400;
+      font-weight: 600;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
@@ -2705,6 +4416,7 @@
     .calendar-chip.calendar-us_data { color: #7c3aed; }
     .calendar-chip.calendar-expiry { color: #c2410c; }
     .calendar-chip.calendar-holiday { color: #64748b; }
+    .calendar-chip.calendar-earnings { color: #0f9f8f; }
 
     .calendar-main {
       min-width: 0;
@@ -3388,12 +5100,17 @@
       color: var(--text);
       font-size: 36px;
       line-height: 1.1;
-      font-weight: 900;
+      font-weight: 500;
       letter-spacing: 0;
       overflow-wrap: anywhere;
     }
 
     .detail-current-value strong {
+      font: inherit;
+      font-weight: inherit;
+    }
+
+    .metric-table tbody .detail-current-value strong {
       font: inherit;
       font-weight: inherit;
     }
@@ -3488,12 +5205,12 @@
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      gap: 7px 28px;
-      margin: 3px 0 16px;
-      padding: 12px 18px;
+      gap: 7px 0;
+      margin: 3px 0 18px;
+      padding: 0;
       border: 0;
-      border-radius: 14px;
-      background: color-mix(in srgb, var(--menu) 78%, var(--surface));
+      border-radius: 0;
+      background: transparent;
     }
 
     .detail-meta-item {
@@ -3502,31 +5219,51 @@
       align-items: baseline;
       gap: 5px;
       max-width: 100%;
-      padding: 0;
+      position: relative;
+      padding: 0 13px 0 0;
       border: 0;
+      color: var(--muted);
+    }
+
+    .detail-meta-item + .detail-meta-item {
+      padding-left: 13px;
+    }
+
+    .detail-meta-item + .detail-meta-item::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 1px;
+      height: 12px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--muted) 22%, transparent);
+      transform: translateY(-50%);
     }
 
     .detail-meta-label {
       flex: 0 0 auto;
-      color: var(--muted);
+      color: color-mix(in srgb, var(--muted) 72%, transparent);
       font-size: 11px;
       line-height: 1.25;
-      font-weight: 500;
+      font-weight: 600;
       white-space: nowrap;
     }
 
     .detail-meta-value {
       min-width: 0;
       margin-top: 0;
-      color: var(--text);
+      color: color-mix(in srgb, var(--muted) 72%, transparent);
       font-size: 12px;
       line-height: 1.25;
-      font-weight: 500;
+      font-weight: 400;
       overflow-wrap: anywhere;
     }
 
-    .detail-meta-value.positive { color: var(--chart-up); }
-    .detail-meta-value.negative { color: var(--chart-down); }
+    .detail-meta-value.positive,
+    .detail-meta-value.negative {
+      color: color-mix(in srgb, var(--muted) 72%, transparent);
+    }
 
     .metric-interpretation {
       display: grid;
@@ -4693,6 +6430,10 @@
         overflow: hidden;
       }
 
+      body.signal-drawer-open {
+        overflow: hidden;
+      }
+
       .sidebar {
         position: fixed;
         inset: 0 auto 0 0;
@@ -4751,6 +6492,38 @@
       body.drawer-open .drawer-backdrop {
         opacity: 1;
         pointer-events: auto;
+      }
+
+      .signal-drawer,
+      .metric-detail-drawer {
+        inset:
+          max(10px, env(safe-area-inset-top))
+          max(10px, env(safe-area-inset-right))
+          max(10px, env(safe-area-inset-bottom))
+          max(10px, env(safe-area-inset-left));
+        width: auto;
+        height: auto;
+        max-width: none;
+        max-height: calc(100svh - 20px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+        border-radius: 20px;
+        padding: 12px;
+        transform: translateX(calc(100% + 24px));
+      }
+
+      body.signal-drawer-open .signal-drawer,
+      body.metric-detail-drawer-open .metric-detail-drawer {
+        transform: translateX(0);
+      }
+
+      .signal-drawer-head,
+      .metric-detail-drawer-head {
+        min-height: 46px;
+        margin-bottom: 10px;
+      }
+
+      .signal-drawer-body,
+      .metric-detail-drawer-body {
+        padding-right: 2px;
       }
 
       .side-menu {
@@ -4960,6 +6733,201 @@
 
       .favorite-card-value {
         font-size: 15px;
+      }
+
+      .future-page {
+        margin: var(--overview-title-top-gap-mobile) 0 22px;
+        gap: 14px;
+      }
+
+      .future-page-head h2 {
+        font-size: 18px;
+      }
+
+      .future-page-head p {
+        font-size: 12.5px;
+      }
+
+      .future-minimap {
+        top: 0;
+        margin-inline: calc(var(--content-padding-mobile) * -1);
+        padding: 8px var(--content-padding-mobile);
+      }
+
+      .future-band-title {
+        top: 42px;
+        font-size: 14px;
+      }
+
+      .future-timeline {
+        padding-left: 18px;
+      }
+
+      .future-timeline::before {
+        left: 5px;
+      }
+
+      .future-card {
+        grid-template-columns: minmax(0, 1fr);
+        border-radius: 16px;
+        padding: 0;
+      }
+
+      .future-card::before {
+        left: -18px;
+        width: 10px;
+        height: 10px;
+      }
+
+      .future-card-title {
+        font-size: 19px;
+      }
+
+      .future-card-side,
+      .future-card-main {
+        padding: 18px;
+      }
+
+      .future-card-side {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .future-year-block strong {
+        font-size: 34px;
+      }
+
+      .future-copy {
+        font-size: 12.5px;
+      }
+
+      .future-copy strong {
+        font-size: 15px;
+      }
+
+      .future-bottleneck-card {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .future-bottleneck-card p {
+        grid-column: 1;
+      }
+
+      .future-breakdown {
+        padding: 10px;
+      }
+
+      .future-breakdown-head,
+      .future-breakdown-state {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .future-breakdown-head {
+        display: grid;
+      }
+
+      .future-breakdown-badges {
+        justify-content: flex-start;
+      }
+
+      .future-breakdown-state {
+        gap: 6px;
+      }
+
+      .future-ladder-rung,
+      .future-breakdown-chip {
+        white-space: normal;
+      }
+
+      .future-metric-chip {
+        width: 100%;
+        grid-template-columns: minmax(0, 1fr) 82px;
+      }
+
+      .future-metric-chip .chart-mini {
+        width: 82px;
+      }
+
+      .future-reading-row {
+        grid-template-columns: 20px minmax(0, 1fr) 28px;
+        gap: 7px;
+        padding: 9px;
+      }
+
+      .future-common-readings {
+        margin-left: 0;
+      }
+
+      .future-track-entry,
+      .track-score-grid,
+      .track-record-toolbar,
+      .track-record-list {
+        margin-left: 0;
+      }
+
+      .future-track-entry {
+        gap: 7px;
+      }
+
+      .track-score-grid {
+        gap: 7px;
+        margin-inline: calc(var(--content-padding-mobile) * -1);
+        padding-inline: var(--content-padding-mobile);
+      }
+
+      .track-score-card {
+        min-height: 34px;
+        padding: 0 12px;
+      }
+
+      .track-record-toolbar {
+        align-items: center;
+        justify-content: flex-start;
+      }
+
+      .track-record-legend {
+        justify-content: flex-start;
+      }
+
+      .track-record-list {
+        margin-inline: calc(var(--content-padding-mobile) * -1);
+        overflow-x: auto;
+        padding: 0 var(--content-padding-mobile) 8px;
+        scrollbar-width: none;
+      }
+
+      .track-record-list::-webkit-scrollbar {
+        display: none;
+      }
+
+      .track-record-axis-row,
+      .track-record-row summary {
+        grid-template-columns: 150px 430px;
+        gap: 14px;
+        min-width: 594px;
+      }
+
+      .track-record-chart {
+        grid-column: auto;
+        order: initial;
+      }
+
+      .track-record-status {
+        justify-items: end;
+      }
+
+      .track-record-detail {
+        margin: 0 0 12px;
+        padding: 11px;
+      }
+
+      .track-record-detail p {
+        grid-template-columns: 1fr;
+        gap: 3px;
+      }
+
+      .track-record-links {
+        margin-left: 0;
       }
 
       .daily-updates-head {
@@ -5448,12 +7416,16 @@
       }
 
       .detail-meta-strip {
-        gap: 7px 15px;
-        padding: 10px 11px;
+        gap: 7px 0;
+        padding: 0;
       }
 
       .detail-meta-item {
-        padding: 0;
+        padding-right: 10px;
+      }
+
+      .detail-meta-item + .detail-meta-item {
+        padding-left: 10px;
       }
 
       .detail-meta-value {
@@ -5572,9 +7544,9 @@
     }
     .gauge-card-head h3 {
       margin: 0;
-      font-size: 15px;
+      font-size: 13px;
       line-height: 1.2;
-      font-weight: 720;
+      font-weight: 600;
     }
     .gauge-card-actions {
       display: inline-flex;
@@ -5686,28 +7658,28 @@
       min-width: 0;
       padding: 4px 10px;
       border-radius: var(--chip-radius);
-      background: var(--menu);
+      background: transparent;
       color: var(--muted);
       font-size: 11.5px;
       line-height: 1;
       font-weight: 700;
       white-space: nowrap;
     }
-    .thermometer-score.heat-hot,
+    .thermometer-score.heat-hot { background: color-mix(in srgb, var(--gauge-hot) 16%, transparent); color: color-mix(in srgb, var(--gauge-hot) 78%, var(--text)); }
     .gauge-status-badge.heat-hot,
-    .fear-greed-label.heat-hot { background: color-mix(in srgb, var(--gauge-hot) 16%, transparent); color: color-mix(in srgb, var(--gauge-hot) 78%, var(--text)); }
-    .thermometer-score.heat-warm,
+    .fear-greed-label.heat-hot { color: color-mix(in srgb, var(--gauge-hot) 78%, var(--text)); }
+    .thermometer-score.heat-warm { background: color-mix(in srgb, var(--gauge-warm) 16%, transparent); color: color-mix(in srgb, var(--gauge-warm) 78%, var(--text)); }
     .gauge-status-badge.heat-warm,
-    .fear-greed-label.heat-warm { background: color-mix(in srgb, var(--gauge-warm) 16%, transparent); color: color-mix(in srgb, var(--gauge-warm) 78%, var(--text)); }
-    .thermometer-score.heat-neutral,
+    .fear-greed-label.heat-warm { color: color-mix(in srgb, var(--gauge-warm) 78%, var(--text)); }
+    .thermometer-score.heat-neutral { background: color-mix(in srgb, var(--gauge-neutral) 18%, transparent); color: color-mix(in srgb, var(--gauge-neutral) 70%, var(--text)); }
     .gauge-status-badge.heat-neutral,
-    .fear-greed-label.heat-neutral { background: color-mix(in srgb, var(--gauge-neutral) 18%, transparent); color: color-mix(in srgb, var(--gauge-neutral) 70%, var(--text)); }
-    .thermometer-score.heat-cool,
+    .fear-greed-label.heat-neutral { color: color-mix(in srgb, var(--gauge-neutral) 70%, var(--text)); }
+    .thermometer-score.heat-cool { background: color-mix(in srgb, var(--gauge-cool) 16%, transparent); color: color-mix(in srgb, var(--gauge-cool) 78%, var(--text)); }
     .gauge-status-badge.heat-cool,
-    .fear-greed-label.heat-cool { background: color-mix(in srgb, var(--gauge-cool) 16%, transparent); color: color-mix(in srgb, var(--gauge-cool) 78%, var(--text)); }
-    .thermometer-score.heat-cold,
+    .fear-greed-label.heat-cool { color: color-mix(in srgb, var(--gauge-cool) 78%, var(--text)); }
+    .thermometer-score.heat-cold { background: color-mix(in srgb, var(--gauge-cold) 16%, transparent); color: color-mix(in srgb, var(--gauge-cold) 78%, var(--text)); }
     .gauge-status-badge.heat-cold,
-    .fear-greed-label.heat-cold { background: color-mix(in srgb, var(--gauge-cold) 16%, transparent); color: color-mix(in srgb, var(--gauge-cold) 78%, var(--text)); }
+    .fear-greed-label.heat-cold { color: color-mix(in srgb, var(--gauge-cold) 78%, var(--text)); }
     .gauge-primary {
       display: flex;
       align-items: flex-end;
@@ -5719,7 +7691,7 @@
       color: var(--text);
       font-size: 34px;
       line-height: 0.94;
-      font-weight: 790;
+      font-weight: 500;
       letter-spacing: 0;
     }
     .gauge-primary-unit {
@@ -5733,7 +7705,7 @@
       color: var(--text);
       font-size: 26px;
       line-height: 1;
-      font-weight: 780;
+      font-weight: 500;
     }
     .thermometer-track {
       position: relative;
@@ -5814,7 +7786,7 @@
     .fear-greed-name {
       min-width: 0;
       font-size: 13px;
-      font-weight: 650;
+      font-weight: 500;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -5826,7 +7798,7 @@
       font-size: 10.5px;
       line-height: 1;
       font-weight: 650;
-      background: var(--menu);
+      background: transparent;
       color: var(--muted);
       white-space: nowrap;
     }
@@ -5999,19 +7971,6 @@
     }
     .gauge-component-heat { color: var(--muted); font-size: 10.5px; line-height: 1.25; width: 100%; }
     .signal-chip .signal-value { font-weight: 400; font-size: 11.5px; }
-    .pct-badge {
-      display: inline-block;
-      margin-left: 6px;
-      padding: 2px 6px;
-      border-radius: var(--chip-radius);
-      font-size: 11px;
-      font-weight: 700;
-      background: var(--menu);
-      color: var(--muted);
-      white-space: nowrap;
-    }
-    .pct-badge.pct-high { background: rgba(239, 68, 68, 0.12); color: #dc2626; }
-    .pct-badge.pct-low { background: rgba(59, 130, 246, 0.12); color: #2563eb; }
     .metric-stale-badge {
       display: inline-block;
       margin-left: 6px;
@@ -6053,7 +8012,6 @@
       }
 
       .event-snapshot-title,
-      .gauge-card-head h3,
       .fear-greed-name,
       .gauge-component-name,
       .daily-update-title,
@@ -6111,7 +8069,7 @@
           <i class="fa-solid fa-xmark" aria-hidden="true"></i>
         </button>
       </div>
-      <nav class="side-menu" id="industryFilters" aria-label="업종 메뉴"></nav>
+      <nav class="side-menu" id="industryFilters" aria-label="산업 메뉴"></nav>
       <div class="menu-settings" id="menuSettings">
         <div class="settings-menu" id="settingsMenu" role="menu" hidden>
           <button type="button" role="menuitem" data-setting-action="theme">
@@ -6167,6 +8125,16 @@
       <div class="signal-drawer-body" id="signalDrawerBody"></div>
     </aside>
     <div class="signal-drawer-backdrop" id="signalDrawerBackdrop" hidden></div>
+    <aside class="metric-detail-drawer" id="metricDetailDrawer" aria-hidden="true" aria-label="지표 상세">
+      <div class="metric-detail-drawer-head">
+        <strong id="metricDetailDrawerTitle" data-i18n="metricDetailDrawerTitle">지표 상세</strong>
+        <button class="drawer-close metric-detail-drawer-close" id="metricDetailDrawerClose" type="button" aria-label="지표 상세 닫기">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="metric-detail-drawer-body" id="metricDetailDrawerBody"></div>
+    </aside>
+    <div class="metric-detail-drawer-backdrop" id="metricDetailDrawerBackdrop" hidden></div>
     <div class="note-modal-backdrop" id="noteModalBackdrop" hidden></div>
     <aside class="note-modal" id="noteModal" role="dialog" aria-modal="true" aria-labelledby="noteModalTitle" hidden>
       <div class="note-modal-head">
@@ -6257,6 +8225,11 @@
       activeDepth: "",
       navRoot: "overview",
       marketCategory: "수급",
+      futureCategory: "전체",
+      futureView: "timeline",
+      activeFutureId: "",
+      trackRecordSort: "predicted",
+      trackRecordSubject: "",
       isReordering: false,
       draftIndustryOrder: null,
       draggedMenuItem: null,
@@ -6293,6 +8266,7 @@
       signalFilter: "all",
       signalVisibleCount: 50,
       metricNotes: { version: 1, notes: {} },
+      activeMetricDetailId: "",
       activeNoteMetricId: "",
       activeNoteEntryId: "",
       noteInitialText: "",
@@ -6409,7 +8383,7 @@
         visiblePeriod: "표시 기간",
         updateFrequency: "업데이트 주기",
         irregular: "비정기",
-        menuLabel: "업종 메뉴",
+        menuLabel: "산업 메뉴",
         drawerTitle: "메뉴",
         openMenu: "메뉴 열기",
         closeMenu: "메뉴 닫기",
@@ -6432,7 +8406,7 @@
         selectBriefingDate: "브리핑 날짜 선택",
         previousBriefing: "이전 브리핑",
         nextBriefing: "다음 브리핑",
-        favoriteMetrics: "별표한 지표",
+        favoriteMetrics: "즐겨찾기",
         favoriteCount: "개",
         addFavorite: "별표 추가",
         removeFavorite: "별표 해제",
@@ -6446,6 +8420,17 @@
         fetchUpdated: "업데이트됨",
         fetchNoNewData: "신규 데이터 없음",
         fetchFailed: "수집 실패(이전 값 표시 중)",
+        dataFreshness: "데이터 업데이트 현황",
+        dataFreshnessCurrent: "정상",
+        dataFreshnessUpdated: "새 값 반영",
+        dataFreshnessWaiting: "발표 대기",
+        dataFreshnessDelayed: "갱신 지연",
+        dataFreshnessFailed: "수집 실패",
+        dataFreshnessLastChecked: "마지막 확인",
+        dataFreshnessLatestObservation: "최신 관측",
+        dataFreshnessSources: "소스별 현황",
+        metricDetailDrawerTitle: "지표 상세",
+        metricDetailDrawerClose: "지표 상세 닫기",
         signalHistoryTitle: "주요 시그널 히스토리",
         signalHistoryClose: "시그널 이력 닫기",
         signalCurrent: "현재",
@@ -6459,7 +8444,8 @@
         signalHistoryEmpty: "시그널 이력이 없습니다.",
         signalMore: "더 보기",
         marketNav: "시황",
-        indicatorNav: "지표",
+        indicatorNav: "산업",
+        futureNav: "미래",
         back: "뒤로",
         marketOverview: "종합",
         marketFlows: "수급",
@@ -6491,6 +8477,8 @@
         calendarUsData: "미 지표",
         calendarExpiry: "만기",
         calendarHoliday: "휴장",
+        calendarEarnings: "실적",
+        calendarFuture: "미래",
         calendarEvent: "일정",
         metricSearch: "지표 검색",
         metricSearchPlaceholder: "지표명, 업종, 주체, 출처 검색",
@@ -6512,7 +8500,76 @@
         compareLimitCount: "최대 4개 지표까지 비교할 수 있습니다.",
         compareUnitLimit: "원단위 비교는 2개 지표까지만 가능합니다.",
         compareLimitRaw: "음수 값 지표는 2개까지만 원단위 비교",
-        compareNeedsPositive: "표시 구간에 0 이하 값이 있어 =100 비교를 사용할 수 없습니다"
+        compareNeedsPositive: "표시 구간에 0 이하 값이 있어 =100 비교를 사용할 수 없습니다",
+        futureTimelineTitle: "미래 타임라인",
+        futureTimelineIntro: "예측, 현재 진척, 관련 기업을 한 흐름으로 묶어 봅니다.",
+        futureAll: "전체",
+        futureToday: "오늘",
+        futureAchieved: "이미 달성된 예측",
+        futurePrediction: "예측",
+        futureProgress: "진척 지표",
+        futureCompanies: "관련 기업",
+        futureSource: "예측 출처",
+        futureNoMetrics: "연결된 지표 없음",
+        futureNoCompanies: "연결된 기업 없음",
+        futureStatusAchieved: "달성",
+        futureStatusUpcoming: "다가오는 예측",
+        futureStatusDistant: "먼 예측",
+        futureBreakdownTitle: "무엇이 필요한가",
+        futureBreakdownCurrent: "현재",
+        futureBreakdownRequired: "필요",
+        futureBreakdownGapMet: "필요 단계 도달",
+        futureBreakdownGapSteps: "남은 간격",
+        futureBreakdownStepSuffix: "단계",
+        futureBreakdownBottleneck: "병목",
+        futureBreakdownLowConfidence: "낮은 확신",
+        futureBreakdownStale: "점검 필요",
+        futureBreakdownAchievedBy: "도달",
+        futureBreakdownPursuing: "추격",
+        futureBreakdownMetric: "확인 지표",
+        futureBreakdownSource: "근거",
+        futureReadingsTitle: "더 깊이 알아보기",
+        futureReadingsCommonTitle: "미래를 읽는 법",
+        futureReadingBeginner: "입문",
+        futureReadingIntermediate: "중급",
+        futureReadingAdvanced: "심화",
+        futureReadingTrusted: "신뢰 도메인",
+        futureReadingAuto: "자동 수집",
+        futureReadingSubscription: "구독",
+        futureReadingOpen: "원문 열기",
+        futureReadingNotice: "링크는 공개 자료 위주로 선별했으며, 내용은 투자 추천이 아니라 기술 흐름을 이해하기 위한 참고 자료입니다.",
+        futureGlossaryLearnMore: "자세히",
+        futureTrackRecordTitle: "과거 예측",
+        futureTrackRecordIntro: "과거 기술 예측이 실제로 언제 왔는지 비교해보세요.",
+        futureTrackRecordEntryCopy: "미래 예측을 더 차분하게 읽기 위한 과거 기록입니다.",
+        futureTrackRecordBack: "타임라인",
+        futureTrackRecordSort: "정렬",
+        futureTrackRecordSortPredicted: "예측 연도순",
+        futureTrackRecordSortError: "오차 큰 순",
+        futureTrackRecordSortSubject: "주체별",
+        futureTrackRecordAllSubjects: "전체 주체",
+        futureTrackRecordStillOpen: "아직",
+        futureTrackRecordNow: "현재",
+        futureTrackRecordExact: "정확",
+        futureTrackRecordEarly: "빠름",
+        futureTrackRecordLate: "늦음",
+        futureTrackYearSuffix: "년",
+        futureTrackRecordWhat: "예측",
+        futureTrackRecordOutcome: "결과",
+        futureTrackRecordLesson: "교훈",
+        futureTrackRecordActualBasis: "판정 기준",
+        futureTrackRecordSource: "예측 출처",
+        futureTrackRecordEmpty: "표시할 예측 기록이 없습니다.",
+        futureTrackRecordJudgedSuffix: "건 판정",
+        futureTrackRecordHitSuffix: "건 적중",
+        futureTrackRecordPredictedPoint: "예측 시점",
+        futureTrackRecordActualPoint: "실제 도래",
+        futureTrackStatusEarly: "빨리 옴",
+        futureTrackStatusOnTime: "거의 정확",
+        futureTrackStatusLate: "늦음",
+        futureTrackStatusMissed: "미완",
+        futureTrackStatusPending: "판정 대기",
+        futureEmpty: "표시할 미래 기술이 없습니다."
       },
       en: {
         title: "Industry Metrics Dashboard",
@@ -6638,6 +8695,17 @@
         fetchUpdated: "Updated",
         fetchNoNewData: "No new data",
         fetchFailed: "Fetch failed; showing prior value",
+        dataFreshness: "Data update status",
+        dataFreshnessCurrent: "Current",
+        dataFreshnessUpdated: "New values",
+        dataFreshnessWaiting: "Awaiting release",
+        dataFreshnessDelayed: "Delayed",
+        dataFreshnessFailed: "Failed",
+        dataFreshnessLastChecked: "Last checked",
+        dataFreshnessLatestObservation: "Latest observation",
+        dataFreshnessSources: "Status by source",
+        metricDetailDrawerTitle: "Metric Detail",
+        metricDetailDrawerClose: "Close metric detail",
         signalHistoryTitle: "Key Signal History",
         signalHistoryClose: "Close signal history",
         signalCurrent: "Current",
@@ -6651,7 +8719,8 @@
         signalHistoryEmpty: "No signal history.",
         signalMore: "More",
         marketNav: "Market",
-        indicatorNav: "Indicators",
+        indicatorNav: "Industries",
+        futureNav: "Future",
         back: "Back",
         marketOverview: "Overview",
         marketFlows: "Flows",
@@ -6683,6 +8752,8 @@
         calendarUsData: "US data",
         calendarExpiry: "Expiry",
         calendarHoliday: "Holiday",
+        calendarEarnings: "Earnings",
+        calendarFuture: "Future",
         calendarEvent: "Event",
         metricSearch: "Search metrics",
         metricSearchPlaceholder: "Search metric, sector, investor, source",
@@ -6704,7 +8775,76 @@
         compareLimitCount: "Up to 4 metrics can be compared.",
         compareUnitLimit: "Raw-unit comparison is limited to two metrics.",
         compareLimitRaw: "Negative-value metrics are limited to two raw series",
-        compareNeedsPositive: "=100 is unavailable because the visible range includes zero or negative values"
+        compareNeedsPositive: "=100 is unavailable because the visible range includes zero or negative values",
+        futureTimelineTitle: "Future Timeline",
+        futureTimelineIntro: "Track predictions, current progress, and the companies linked to each theme.",
+        futureAll: "All",
+        futureToday: "Today",
+        futureAchieved: "Achieved predictions",
+        futurePrediction: "Prediction",
+        futureProgress: "Progress metrics",
+        futureCompanies: "Related companies",
+        futureSource: "Prediction source",
+        futureNoMetrics: "No linked metrics",
+        futureNoCompanies: "No linked companies",
+        futureStatusAchieved: "Achieved",
+        futureStatusUpcoming: "Upcoming",
+        futureStatusDistant: "Distant",
+        futureBreakdownTitle: "What Must Happen",
+        futureBreakdownCurrent: "Current",
+        futureBreakdownRequired: "Required",
+        futureBreakdownGapMet: "Required level reached",
+        futureBreakdownGapSteps: "Remaining gap",
+        futureBreakdownStepSuffix: "steps",
+        futureBreakdownBottleneck: "Bottleneck",
+        futureBreakdownLowConfidence: "Low confidence",
+        futureBreakdownStale: "Needs review",
+        futureBreakdownAchievedBy: "Achieved by",
+        futureBreakdownPursuing: "Pursuing",
+        futureBreakdownMetric: "Metric",
+        futureBreakdownSource: "Basis",
+        futureReadingsTitle: "Read Deeper",
+        futureReadingsCommonTitle: "How to Read the Future",
+        futureReadingBeginner: "Beginner",
+        futureReadingIntermediate: "Intermediate",
+        futureReadingAdvanced: "Advanced",
+        futureReadingTrusted: "Trusted domain",
+        futureReadingAuto: "Auto-collected",
+        futureReadingSubscription: "Subscription",
+        futureReadingOpen: "Open source",
+        futureReadingNotice: "These links are curated public materials for understanding technology trends, not investment recommendations.",
+        futureGlossaryLearnMore: "Learn more",
+        futureTrackRecordTitle: "Past Predictions",
+        futureTrackRecordIntro: "Compare when past technology forecasts actually arrived.",
+        futureTrackRecordEntryCopy: "A calibration record for reading future predictions more calmly.",
+        futureTrackRecordBack: "Timeline",
+        futureTrackRecordSort: "Sort",
+        futureTrackRecordSortPredicted: "Predicted year",
+        futureTrackRecordSortError: "Largest error",
+        futureTrackRecordSortSubject: "Forecaster",
+        futureTrackRecordAllSubjects: "All forecasters",
+        futureTrackRecordStillOpen: "Still open",
+        futureTrackRecordNow: "Now",
+        futureTrackRecordExact: "Exact",
+        futureTrackRecordEarly: "early",
+        futureTrackRecordLate: "late",
+        futureTrackYearSuffix: "y",
+        futureTrackRecordWhat: "Prediction",
+        futureTrackRecordOutcome: "Outcome",
+        futureTrackRecordLesson: "Lesson",
+        futureTrackRecordActualBasis: "Judgment basis",
+        futureTrackRecordSource: "Prediction source",
+        futureTrackRecordEmpty: "No prediction records to show.",
+        futureTrackRecordJudgedSuffix: " judged",
+        futureTrackRecordHitSuffix: " hits",
+        futureTrackRecordPredictedPoint: "Forecast date",
+        futureTrackRecordActualPoint: "Actual arrival",
+        futureTrackStatusEarly: "Early",
+        futureTrackStatusOnTime: "On time",
+        futureTrackStatusLate: "Late",
+        futureTrackStatusMissed: "Missed",
+        futureTrackStatusPending: "Pending",
+        futureEmpty: "No future technologies to show."
       }
     };
 
@@ -6728,6 +8868,8 @@
     ];
     const overviewCategoryKey = "종합";
     const defaultMarketCategory = marketCategories[0]?.key || "수급";
+    const futureAllCategory = "전체";
+    const defaultFutureCategories = ["전체", "AI", "로봇·모빌리티", "바이오", "에너지", "우주"];
     const navStateStorageKey = "dashboard-nav-state";
     const englishIndustryFallbacks = {
       "반도체": "Semiconductors",
@@ -7149,6 +9291,14 @@
         const depth = unhashSegment(rest.slice(1).join("/") || "");
         return industry ? { type: "industry", industry, depth } : null;
       }
+      if (kind === "future" || kind === "f") {
+        const first = unhashSegment(rest[0] || "");
+        if (first === "track-record") {
+          return { type: "future", view: "track-record", subject: unhashSegment(rest[1] || "") };
+        }
+        const techId = unhashSegment(rest.join("/") || "");
+        return { type: "future", view: "timeline", techId };
+      }
       if (kind === "d") {
         const key = unhashSegment(rest.join("/"));
         const metric = metricByHashKey(key);
@@ -7163,6 +9313,14 @@
       if (state.navRoot === "industry" && state.activeIndustry) {
         const depth = state.activeDepth ? `/${hashSegment(state.activeDepth)}` : "";
         return `#i/${hashSegment(state.activeIndustry)}${depth}`;
+      }
+      if (state.navRoot === "future") {
+        if (state.futureView === "track-record") {
+          return state.trackRecordSubject
+            ? `#future/track-record/${hashSegment(state.trackRecordSubject)}`
+            : "#future/track-record";
+        }
+        return state.activeFutureId ? `#future/${hashSegment(state.activeFutureId)}` : "#future";
       }
       return "";
     }
@@ -7385,7 +9543,11 @@
         navRoot: state.navRoot,
         marketCategory: state.marketCategory,
         activeIndustry: state.activeIndustry,
-        activeDepth: state.activeDepth
+        activeDepth: state.activeDepth,
+        futureCategory: state.futureCategory,
+        futureView: state.futureView,
+        activeFutureId: state.activeFutureId,
+        trackRecordSubject: state.trackRecordSubject
       }));
     }
 
@@ -7413,6 +9575,12 @@
         state.navRoot = "industry";
         state.activeIndustry = route.industry || "";
         state.activeDepth = route.depth || "";
+      } else if (route.type === "future") {
+        state.navRoot = "future";
+        state.futureCategory = futureAllCategory;
+        state.futureView = route.view || "timeline";
+        state.activeFutureId = route.techId || "";
+        state.trackRecordSubject = route.subject || "";
       } else if (route.type === "detail") {
         selectNavForMetric(route.metric);
       }
@@ -7428,6 +9596,9 @@
         if (route.type === "detail") {
           requestAnimationFrame(() => openMetricDetail(route.metric.id, { updateHash: false, scroll: true }));
         }
+        if (route.type === "future" && route.techId) {
+          requestAnimationFrame(() => document.getElementById(futureCardId(route.techId))?.scrollIntoView({ block: "center" }));
+        }
       }
       state.applyingHashRoute = false;
       return true;
@@ -7440,6 +9611,8 @@
         const industries = visibleIndustries();
         state.activeIndustry = industries[0] || "";
       }
+      if (state.navRoot === "future" && !state.futureCategory) state.futureCategory = futureAllCategory;
+      if (state.navRoot === "future" && !state.futureView) state.futureView = "timeline";
       saveNavState();
       renderFilters();
       renderDailyUpdates();
@@ -8116,6 +10289,7 @@
           <div class="menu-item"><button type="button" data-nav-root="overview" aria-pressed="${state.navRoot === "overview"}" aria-current="${state.navRoot === "overview"}">${escapeHtml(t("marketOverview"))}</button></div>
           <div class="menu-item"><button type="button" data-nav-root="market" aria-pressed="false">${escapeHtml(t("marketNav"))}</button></div>
           <div class="menu-item"><button type="button" data-nav-root="industry" aria-pressed="false">${escapeHtml(t("indicatorNav"))}</button></div>
+          <div class="menu-item"><button type="button" data-nav-root="future" aria-pressed="false">${escapeHtml(t("futureNav"))}</button></div>
         `;
         menu.querySelectorAll("[data-nav-root]").forEach((button) => {
           button.addEventListener("click", () => setNavRoot(button.dataset.navRoot));
@@ -8137,6 +10311,32 @@
         menu.querySelector("[data-nav-root]")?.addEventListener("click", () => setNavRoot("overview"));
         menu.querySelectorAll("[data-market-category]").forEach((button) => {
           button.addEventListener("click", () => setMarketCategory(button.dataset.marketCategory));
+        });
+        initMenuScrollDrag();
+        return;
+      }
+
+      if (state.navRoot === "future") {
+        const categories = futureCategories();
+        menu.innerHTML = `
+          <div class="menu-item"><button type="button" data-nav-root="overview" aria-pressed="false">← ${escapeHtml(t("back"))}</button></div>
+          <div class="menu-item">
+            <button type="button" data-future-view="track-record" aria-pressed="${state.futureView === "track-record"}" aria-current="${state.futureView === "track-record"}">
+              ${escapeHtml(t("futureTrackRecordTitle"))}
+            </button>
+          </div>
+          ${categories.map((category) => `
+            <div class="menu-item">
+              <button type="button" data-future-category="${escapeHtml(category)}" aria-pressed="${state.futureView !== "track-record" && state.futureCategory === category}" aria-current="${state.futureView !== "track-record" && state.futureCategory === category}">
+                ${escapeHtml(localizedFutureCategory(category))}
+              </button>
+            </div>
+          `).join("")}
+        `;
+        menu.querySelector("[data-nav-root]")?.addEventListener("click", () => setNavRoot("overview"));
+        menu.querySelector("[data-future-view]")?.addEventListener("click", () => setFutureTrackRecordView());
+        menu.querySelectorAll("[data-future-category]").forEach((button) => {
+          button.addEventListener("click", () => setFutureCategory(button.dataset.futureCategory || futureAllCategory));
         });
         initMenuScrollDrag();
         return;
@@ -9121,6 +11321,7 @@
       saveFavoriteMetricIds();
       renderDailyUpdates();
       renderIndustries();
+      if (state.activeMetricDetailId === metricId) renderMetricDetailDrawer(metricId);
     }
 
     function initFavoriteButtons(root = document) {
@@ -9364,6 +11565,7 @@
       renderDailyUpdates();
       renderIndustries();
       renderMetricSearchHost();
+      if (state.activeMetricDetailId) renderMetricDetailDrawer(state.activeMetricDetailId);
     }
 
     function saveActiveNote() {
@@ -9526,13 +11728,45 @@
       }
     }
 
+    function normalizedInterpretationText(value) {
+      return String(value || "")
+        .replace(/[\s,.;:·\-–—()\[\]{}]+/g, "")
+        .trim();
+    }
+
+    function uniqueInterpretationParts(metric, rawParts) {
+      const meaningNorm = normalizedInterpretationText(localizedField(metric, "meaning"));
+      const parts = [];
+      const seen = [];
+      rawParts.forEach((raw) => {
+        const text = localizedText(raw || "").trim();
+        const norm = normalizedInterpretationText(text);
+        if (!text || !norm) return;
+        if (meaningNorm && (norm === meaningNorm || meaningNorm.includes(norm) || norm.includes(meaningNorm))) return;
+        if (seen.some((existing) => norm === existing || norm.includes(existing) || existing.includes(norm))) return;
+        parts.push(text);
+        seen.push(norm);
+      });
+      return parts;
+    }
+
+    function interpretationDisplayText(metric) {
+      const item = metric?.interpretation;
+      if (!item) return "";
+      const headline = item.headline || item.meaning_text || "";
+      const detail = item.detail_text || item.trend_label || "";
+      const parts = uniqueInterpretationParts(metric, [headline, detail]);
+      if (!parts.length && item.text) {
+        return uniqueInterpretationParts(metric, [item.text]).join(" ");
+      }
+      return parts.join(" ");
+    }
+
     function interpretationMarkup(metric) {
       const item = metric?.interpretation;
       if (!item || !item.text) return "";
-      const headline = item.headline || item.meaning_text || item.text || "";
-      const detail = item.detail_text || item.trend_label || "";
-      const secondary = detail && detail !== headline && detail !== item.text ? detail : "";
-      const text = `${localizedText(headline || item.text)}${secondary ? ` ${localizedText(secondary)}` : ""}`;
+      const text = interpretationDisplayText(metric);
+      if (!text) return "";
       return `<div class="detail-interpretation-row">
         <span class="detail-interpretation-label">${escapeHtml(t("interpretationColumnSignal"))}</span>
         <div class="detail-interpretation-content">
@@ -9620,7 +11854,6 @@
           <span class="metric-value-wrap">
             <span class="metric-current-value">${escapeHtml(displayMetricValue(metric))}</span>
             ${metricChangeBadge(metric)}
-            ${percentileBadge(metric)}
           </span>
         </td>
         <td class="metric-chart-cell" data-label="${escapeHtml(t("chart"))}">
@@ -9671,8 +11904,61 @@
       rememberMetricVisit(metricId);
     }
 
+    function initMetricDetailContent(root, metricId) {
+      if (!root || !metricId) return;
+      initDetailRange(metricId, root);
+      initFavoriteButtons(root);
+      initCompareControls(root);
+      initNoteButtons(root);
+      initCsvButtons(root);
+      initDetailChartTooltips(root);
+      const scroller = root.querySelector(".detail-chart-scroll");
+      if (scroller) {
+        requestAnimationFrame(() => {
+          scroller.scrollLeft = Math.max(0, scroller.scrollWidth - scroller.clientWidth);
+          scheduleDynamicDetailAxis(scroller.closest(".detail-chart"));
+          updateMetricDetailHeight(root.closest(".metric-detail-row"));
+        });
+      }
+    }
+
+    function renderMetricDetailDrawer(metricId = state.activeMetricDetailId) {
+      const metric = metricById(metricId);
+      const body = document.getElementById("metricDetailDrawerBody");
+      if (!metric || !body) return;
+      body.innerHTML = metricDetail(metric);
+      initMetricDetailContent(body, metric.id);
+    }
+
+    function setMetricDetailDrawerOpen(open, metricId = state.activeMetricDetailId) {
+      const drawer = document.getElementById("metricDetailDrawer");
+      const backdrop = document.getElementById("metricDetailDrawerBackdrop");
+      if (!drawer || !backdrop) return;
+      if (open) {
+        const metric = metricById(metricId);
+        if (!metric) return;
+        if (state.compareBaseMetricId !== metric.id) resetCompareState(metric.id);
+        state.activeMetricDetailId = metric.id;
+        setDrawerOpen(false);
+        setSignalDrawerOpen(false);
+        renderMetricDetailDrawer(metric.id);
+      } else {
+        state.activeMetricDetailId = "";
+        document.querySelectorAll(".detail-chart").forEach((chart) => hideDetailTooltip(chart, true));
+      }
+      document.body.classList.toggle("metric-detail-drawer-open", Boolean(open));
+      drawer.setAttribute("aria-hidden", String(!open));
+      backdrop.hidden = !open;
+    }
+
     function openMetricDetail(metricId, options = {}) {
-      jumpToMetric(metricId, { ...options, open: true });
+      const metric = metricById(metricId);
+      if (!metric) return;
+      setMetricDetailDrawerOpen(true, metric.id);
+      rememberMetricVisit(metric.id);
+      if (options.updateHash === true) {
+        writeDashboardHash(`#d/${hashSegment(metricHashKey(metric))}`, "replace");
+      }
     }
 
     function updateMetricDetailHeight(detail) {
@@ -9692,24 +11978,17 @@
     function refreshMetricDetail(metricId) {
       const metric = metricById(metricId);
       const detail = document.getElementById(`metric-detail-${metricId}`);
-      if (!metric || !detail) return;
-      const cell = detail.querySelector("td");
-      if (!cell) return;
-      cell.innerHTML = metricDetail(metric);
-      initDetailRange(metricId, detail);
-      initFavoriteButtons(detail);
-      initCompareControls(detail);
-      initNoteButtons(detail);
-      initCsvButtons(detail);
-      initDetailChartTooltips(detail);
-      updateMetricDetailHeight(detail);
-      const scroller = detail.querySelector(".detail-chart-scroll");
-      if (scroller) {
-        requestAnimationFrame(() => {
-          scroller.scrollLeft = Math.max(0, scroller.scrollWidth - scroller.clientWidth);
-          scheduleDynamicDetailAxis(scroller.closest(".detail-chart"));
+      if (!metric) return;
+      if (detail) {
+        const cell = detail.querySelector("td");
+        if (cell) {
+          cell.innerHTML = metricDetail(metric);
+          initMetricDetailContent(detail, metricId);
           updateMetricDetailHeight(detail);
-        });
+        }
+      }
+      if (state.activeMetricDetailId === metric.id) {
+        renderMetricDetailDrawer(metric.id);
       }
     }
 
@@ -9802,11 +12081,14 @@
 
     function renderCompareSearchResults(metricId) {
       const metric = metricById(metricId);
-      const host = [...document.querySelectorAll("[data-compare-results]")].find((element) => element.dataset.compareResults === metricId);
-      if (!metric || !host) return;
-      host.innerHTML = compareSearchResultsMarkup(metric);
-      initCompareControls(host);
-      updateMetricDetailHeight(host.closest(".metric-detail-row"));
+      const hosts = [...document.querySelectorAll("[data-compare-results]")]
+        .filter((element) => element.dataset.compareResults === metricId);
+      if (!metric || !hosts.length) return;
+      hosts.forEach((host) => {
+        host.innerHTML = compareSearchResultsMarkup(metric);
+        initCompareControls(host);
+        updateMetricDetailHeight(host.closest(".metric-detail-row"));
+      });
       requestAnimationFrame(updateOpenMetricDetailHeights);
     }
 
@@ -9928,17 +12210,17 @@
       document.querySelectorAll("[data-daily-update-metric]").forEach((button) => {
         if (button.dataset.dailyUpdateBound === "true") return;
         button.dataset.dailyUpdateBound = "true";
-        button.addEventListener("click", () => jumpToMetric(button.dataset.dailyUpdateMetric));
+        button.addEventListener("click", () => openMetricDetail(button.dataset.dailyUpdateMetric));
       });
       document.querySelectorAll("[data-briefing-metric]").forEach((button) => {
         if (button.dataset.briefingMetricBound === "true") return;
         button.dataset.briefingMetricBound = "true";
-        button.addEventListener("click", () => jumpToMetric(button.dataset.briefingMetric));
+        button.addEventListener("click", () => openMetricDetail(button.dataset.briefingMetric));
         if (button.tagName !== "BUTTON") {
           button.addEventListener("keydown", (event) => {
             if (event.key !== "Enter" && event.key !== " ") return;
             event.preventDefault();
-            jumpToMetric(button.dataset.briefingMetric);
+            openMetricDetail(button.dataset.briefingMetric);
           });
         }
       });
@@ -9960,12 +12242,12 @@
       document.querySelectorAll("[data-favorite-card]").forEach((button) => {
         if (button.dataset.favoriteCardBound === "true") return;
         button.dataset.favoriteCardBound = "true";
-        button.addEventListener("click", () => jumpToMetric(button.dataset.favoriteCard));
+        button.addEventListener("click", () => openMetricDetail(button.dataset.favoriteCard));
         button.addEventListener("keydown", (event) => {
           if (event.target.closest("[data-favorite-toggle]") || event.target.closest("[data-note-open]")) return;
           if (event.key !== "Enter" && event.key !== " ") return;
           event.preventDefault();
-          jumpToMetric(button.dataset.favoriteCard);
+          openMetricDetail(button.dataset.favoriteCard);
         });
       });
       initNoteButtons();
@@ -10367,14 +12649,6 @@
       const windowStats = stats.y10 || stats.all;
       if (!windowStats || typeof windowStats.pct !== "number") return null;
       return windowStats;
-    }
-
-    function percentileBadge(metric) {
-      const windowStats = percentileWindowStats(metric);
-      if (!windowStats) return "";
-      const pct = windowStats.pct;
-      const cls = pct >= 80 ? "pct-high" : pct <= 20 ? "pct-low" : "pct-mid";
-      return `<span class="pct-badge ${cls}" title="${escapeHtml(t("percentile10y"))}">${Math.round(pct)}%</span>`;
     }
 
     function percentileDetailStats(metric) {
@@ -11171,6 +13445,8 @@
       us_data: "#8b6ac9",
       expiry: "#d08a4e",
       holiday: "#8792a2",
+      earnings: "#0f9f8f",
+      future: "#2f9f8f",
       event: "#8a8a8a"
     };
 
@@ -11180,7 +13456,9 @@
         bok: t("calendarBok"),
         us_data: t("calendarUsData"),
         expiry: t("calendarExpiry"),
-        holiday: t("calendarHoliday")
+        holiday: t("calendarHoliday"),
+        earnings: t("calendarEarnings"),
+        future: t("calendarFuture")
       }[category] || t("calendarEvent");
     }
 
@@ -11692,10 +13970,98 @@
       </section>`;
     }
 
+    function freshnessSummaryData() {
+      const summary = DASHBOARD_DATA.freshness_summary;
+      if (summary && Number(summary.total_count || 0) > 0) return summary;
+      const metrics = (DASHBOARD_DATA.metrics || []).filter((metric) => metric && typeof metric === "object");
+      const delayed = metrics.filter((metric) => metric.is_stale).length;
+      const failed = metrics.filter((metric) => metric.fetch_status === "failed" || metric.status === "error").length;
+      return {
+        total_count: metrics.length,
+        current_count: Math.max(0, metrics.length - delayed - failed),
+        updated_count: metrics.filter((metric) => metric.fetch_status === "success").length,
+        waiting_count: metrics.filter((metric) => metric.fetch_status === "no_new_data").length,
+        delayed_count: delayed,
+        failed_count: failed,
+        last_checked_at: DASHBOARD_DATA.generated_at || "",
+        latest_observed_at: metrics.reduce((latest, metric) => String(metric.observed_at || "") > latest ? String(metric.observed_at || "") : latest, ""),
+        status: failed ? "failed" : delayed ? "delayed" : "current",
+        sources: [],
+      };
+    }
+
+    function freshnessSourceState(source) {
+      if (Number(source.failed_count || 0) > 0) return "failed";
+      if (Number(source.delayed_count || 0) > 0) return "delayed";
+      return "current";
+    }
+
+    function freshnessStateText(stateName) {
+      if (stateName === "failed") return t("dataFreshnessFailed");
+      if (stateName === "delayed") return t("dataFreshnessDelayed");
+      return t("dataFreshnessCurrent");
+    }
+
+    function renderDataFreshness() {
+      const summary = freshnessSummaryData();
+      const total = Number(summary.total_count || 0);
+      if (!total) return "";
+      const current = Number(summary.current_count || 0);
+      const stateName = String(summary.status || "current");
+      const checkedAt = String(summary.last_checked_at || summary.generated_at || DASHBOARD_DATA.generated_at || "");
+      const checkedRelative = metricUpdatedAtText({ fetched_at: checkedAt });
+      const checkedExact = fetchedAtText(checkedAt);
+      const latestObserved = dateText(summary.latest_observed_at || "");
+      const sources = Array.isArray(summary.sources) ? summary.sources : [];
+      const sourceRows = sources.map((source) => {
+        const sourceState = freshnessSourceState(source);
+        const sourceChecked = String(source.last_checked_at || "");
+        const sourceLatest = dateText(source.latest_observed_at || "");
+        const sourceCount = Number(source.total_count || 0);
+        return `<div class="data-freshness-source">
+          <span class="data-freshness-source-name" title="${escapeHtml(source.name || "")}">${escapeHtml(source.name || "")}</span>
+          <span title="${escapeHtml(fetchedAtText(sourceChecked))}">${escapeHtml(metricUpdatedAtText({ fetched_at: sourceChecked }))}</span>
+          <span>${escapeHtml(sourceLatest || "-")}</span>
+          <span class="data-freshness-source-state ${sourceState}">${escapeHtml(freshnessStateText(sourceState))} ${sourceCount}</span>
+        </div>`;
+      }).join("");
+      const title = state.language === "ko"
+        ? `${t("dataFreshness")} · ${total}개 중 ${current}개 ${t("dataFreshnessCurrent")}`
+        : `${t("dataFreshness")} · ${current} of ${total} ${t("dataFreshnessCurrent").toLowerCase()}`;
+      const metaParts = [
+        `${t("dataFreshnessLastChecked")} ${checkedRelative || checkedExact || "-"}`,
+        `${t("dataFreshnessLatestObservation")} ${latestObserved || "-"}`,
+      ];
+      return `<details class="data-freshness">
+        <summary class="data-freshness-summary">
+          <span class="data-freshness-dot ${escapeHtml(stateName)}" aria-hidden="true"></span>
+          <span class="data-freshness-copy">
+            <span class="data-freshness-title">${escapeHtml(title)}</span>
+            <span class="data-freshness-meta" title="${escapeHtml(checkedExact)}">${escapeHtml(metaParts.join(" · "))}</span>
+          </span>
+          <i class="fa-solid fa-chevron-down data-freshness-chevron" aria-hidden="true"></i>
+        </summary>
+        <div class="data-freshness-panel">
+          <div class="data-freshness-stats">
+            <div class="data-freshness-stat"><strong>${current}</strong><span>${escapeHtml(t("dataFreshnessCurrent"))}</span></div>
+            <div class="data-freshness-stat"><strong>${Number(summary.updated_count || 0)}</strong><span>${escapeHtml(t("dataFreshnessUpdated"))}</span></div>
+            <div class="data-freshness-stat"><strong>${Number(summary.waiting_count || 0)}</strong><span>${escapeHtml(t("dataFreshnessWaiting"))}</span></div>
+            <div class="data-freshness-stat"><strong>${Number(summary.delayed_count || 0)}</strong><span>${escapeHtml(t("dataFreshnessDelayed"))}</span></div>
+            <div class="data-freshness-stat"><strong>${Number(summary.failed_count || 0)}</strong><span>${escapeHtml(t("dataFreshnessFailed"))}</span></div>
+          </div>
+          ${sourceRows ? `<div class="data-freshness-sources" aria-label="${escapeHtml(t("dataFreshnessSources"))}">${sourceRows}</div>` : ""}
+        </div>
+      </details>`;
+    }
+
     function renderDailyUpdates() {
       const section = document.getElementById("dailyUpdates");
       if (!section) return;
       renderMoverTicker();
+      if (state.navRoot === "future" && !isSearchFiltering()) {
+        section.innerHTML = "";
+        return;
+      }
       if (isSearchFiltering()) {
         section.innerHTML = renderSearchResultsCards();
         initDailyUpdateLinks();
@@ -11724,7 +14090,7 @@
       const overviewActive = state.navRoot === "overview";
       const scheduleAlerts = overviewActive ? renderScheduleAlerts() : "";
       const gauges = overviewActive ? renderMarketGauges() : "";
-      section.innerHTML = `${renderMorningBriefing()}${favorites}${scheduleAlerts}${gauges}<details class="daily-update-details">
+      section.innerHTML = `${renderMorningBriefing()}${renderDataFreshness()}${favorites}${scheduleAlerts}${gauges}<details class="daily-update-details">
         <summary class="daily-update-summary">
           <span>${escapeHtml(t("showDailyChanges"))}</span>
           <span class="daily-update-summary-icon" aria-hidden="true">›</span>
@@ -11871,6 +14237,827 @@
       </article>`;
     }
 
+    function futureData() {
+      const future = DASHBOARD_DATA.future && typeof DASHBOARD_DATA.future === "object" ? DASHBOARD_DATA.future : {};
+      return {
+        categories: Array.isArray(future.categories) ? future.categories : defaultFutureCategories,
+        glossary: future.glossary && typeof future.glossary === "object" ? future.glossary : {},
+        common_readings: Array.isArray(future.common_readings) ? future.common_readings : [],
+        track_record: future.track_record && typeof future.track_record === "object" ? future.track_record : { items: [], subjects: [], summary: {} },
+        breakdown: future.breakdown && typeof future.breakdown === "object" ? future.breakdown : { ladders: [], summary: {} },
+        technologies: Array.isArray(future.technologies) ? future.technologies : [],
+        summary: future.summary && typeof future.summary === "object" ? future.summary : {}
+      };
+    }
+
+    function futureCategories() {
+      const categories = futureData().categories.filter(Boolean);
+      const unique = [...new Set([futureAllCategory, ...categories])];
+      return unique.length ? unique : defaultFutureCategories;
+    }
+
+    function localizedFutureCategory(category) {
+      if (category === futureAllCategory) return t("futureAll");
+      if (state.language !== "en") return category || "";
+      const tech = futureData().technologies.find((item) => item.category === category && item.category_en);
+      const fallbacks = {
+        "로봇·모빌리티": "Robotics/Mobility",
+        "바이오": "Biotech",
+        "에너지": "Energy",
+        "우주": "Space"
+      };
+      return tech?.category_en || fallbacks[category] || category || "";
+    }
+
+    function localizedFutureField(item, field) {
+      if (!item) return "";
+      if (state.language === "en") {
+        return item[`${field}_en`] || localizedText(item[field] || "");
+      }
+      return item[field] || "";
+    }
+
+    function futureStatusLabel(status) {
+      if (status === "achieved") return t("futureStatusAchieved");
+      if (status === "distant") return t("futureStatusDistant");
+      return t("futureStatusUpcoming");
+    }
+
+    function futureCardId(techId) {
+      return `future-card-${idSegment(techId)}`;
+    }
+
+    function futureBandId(band) {
+      return `future-band-${idSegment(band)}`;
+    }
+
+    function setFutureCategory(category, options = {}) {
+      state.navRoot = "future";
+      state.futureView = "timeline";
+      state.futureCategory = category || futureAllCategory;
+      state.activeFutureId = "";
+      state.trackRecordSubject = "";
+      saveNavState();
+      renderFilters();
+      renderDailyUpdates();
+      renderIndustries();
+      if (options.updateHash !== false) writeDashboardHash("#future", "push");
+      closeDrawerOnMobile();
+    }
+
+    function setFutureTrackRecordView(subject = "", options = {}) {
+      state.navRoot = "future";
+      state.futureView = "track-record";
+      state.activeFutureId = "";
+      state.trackRecordSubject = subject || "";
+      saveNavState();
+      renderFilters();
+      renderDailyUpdates();
+      renderIndustries();
+      if (options.updateHash !== false) writeDashboardHash(currentNavHash(), options.hashMode || "push");
+      closeDrawerOnMobile();
+    }
+
+    function setTrackRecordSubject(subject = "") {
+      setFutureTrackRecordView(state.trackRecordSubject === subject ? "" : subject);
+    }
+
+    function setTrackRecordSort(sortKey) {
+      state.trackRecordSort = sortKey || "predicted";
+      renderIndustries();
+      writeDashboardHash(currentNavHash(), "replace");
+    }
+
+    function filteredFutureTechnologies() {
+      const category = state.futureCategory || futureAllCategory;
+      return futureData().technologies.filter((item) => (
+        category === futureAllCategory || item.category === category
+      ));
+    }
+
+    function futureBandSortKey(band) {
+      if (/^\d{4}$/.test(String(band))) return Number(band);
+      if (band === "2030년대") return 2030;
+      if (band === "2040년대") return 2040;
+      if (band === "먼 미래") return 9990;
+      if (band === "미정") return 9999;
+      return 9000;
+    }
+
+    function localizedFutureBand(band) {
+      if (state.language !== "en") return band;
+      if (band === "2030년대") return "2030s";
+      if (band === "2040년대") return "2040s";
+      if (band === "먼 미래") return "Distant future";
+      if (band === "미정") return "Unscheduled";
+      return band;
+    }
+
+    function futureGlossaryMarkup(keys) {
+      const glossary = futureData().glossary || {};
+      return (keys || []).map((key) => {
+        const item = glossary[key];
+        if (!item) return "";
+        const term = state.language === "en" ? (item.term_en || item.term) : item.term;
+        const short = state.language === "en" ? (item.short_en || item.short) : item.short;
+        const learnMore = item.learn_more || item.source || "";
+        return `<span class="future-glossary-chip" tabindex="0">${escapeHtml(term)}
+          <span class="future-tooltip">${escapeHtml(short)}${learnMore ? `<br><a href="${escapeHtml(learnMore)}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("futureGlossaryLearnMore"))}</a>` : ""}</span>
+        </span>`;
+      }).join("");
+    }
+
+    function localizedReadingField(item, field) {
+      if (!item) return "";
+      if (state.language === "en") return item[`${field}_en`] || localizedText(item[field] || "");
+      return item[field] || "";
+    }
+
+    function futureReadingLevelLabel(level) {
+      if (state.language !== "en") return level || "";
+      if (level === "입문") return t("futureReadingBeginner");
+      if (level === "중급") return t("futureReadingIntermediate");
+      if (level === "심화") return t("futureReadingAdvanced");
+      return level || "";
+    }
+
+    function futureReadingIcon(reading) {
+      const type = String(reading?.type || "").toLowerCase();
+      if (type.includes("뉴스레터") || type.includes("newsletter")) return "fa-regular fa-envelope";
+      if (type.includes("데이터") || type.includes("data")) return "fa-solid fa-database";
+      if (type.includes("책") || type.includes("book")) return "fa-solid fa-book";
+      if (type.includes("리포트") || type.includes("report")) return "fa-regular fa-file-lines";
+      if (type.includes("공식") || type.includes("official")) return "fa-solid fa-building-columns";
+      return "fa-regular fa-newspaper";
+    }
+
+    function futureReadingBadges(reading) {
+      const badges = [];
+      if (reading.trusted) badges.push(t("futureReadingTrusted"));
+      if (reading.subscription) badges.push(t("futureReadingSubscription"));
+      if (reading.auto_collected) badges.push(t("futureReadingAuto"));
+      return badges.map((badge) => `<span class="future-reading-badge">${escapeHtml(badge)}</span>`).join("");
+    }
+
+    function futureReadingRow(reading) {
+      const title = localizedReadingField(reading, "title");
+      const why = localizedReadingField(reading, "why");
+      const meta = [
+        localizedReadingField(reading, "type"),
+        reading.lang || "",
+        localizedReadingField(reading, "effort"),
+        localizedReadingField(reading, "cadence")
+      ].filter(Boolean);
+      const badges = futureReadingBadges(reading);
+      return `<div class="future-reading-row">
+        <span class="future-reading-icon"><i class="${escapeHtml(futureReadingIcon(reading))}" aria-hidden="true"></i></span>
+        <span class="future-reading-main">
+          <span class="future-reading-title-row">
+            <a class="future-reading-title" href="${escapeHtml(reading.url || "#")}" target="_blank" rel="noopener noreferrer">${escapeHtml(title)}</a>
+            ${badges ? `<span class="future-reading-badges">${badges}</span>` : ""}
+          </span>
+          <span class="future-reading-meta">${meta.map((item) => `<span class="future-reading-chip">${escapeHtml(item)}</span>`).join("")}</span>
+          ${why ? `<p class="future-reading-why">${escapeHtml(why)}</p>` : ""}
+        </span>
+        <a class="future-reading-link" href="${escapeHtml(reading.url || "#")}" target="_blank" rel="noopener noreferrer" aria-label="${escapeHtml(t("futureReadingOpen"))}">
+          <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+        </a>
+      </div>`;
+    }
+
+    function futureReadingsMarkup(readings, options = {}) {
+      const items = Array.isArray(readings) ? readings.filter((item) => item && item.url) : [];
+      if (!items.length) return "";
+      const levels = ["입문", "중급", "심화"];
+      const sections = levels.map((level) => {
+        const levelItems = items.filter((item) => item.level === level);
+        if (!levelItems.length) return "";
+        return `<details class="future-reading-level" ${level === "입문" ? "open" : ""}>
+          <summary>${escapeHtml(futureReadingLevelLabel(level))} <span>${levelItems.length}</span></summary>
+          <div class="future-reading-list">${levelItems.map(futureReadingRow).join("")}</div>
+        </details>`;
+      }).join("");
+      const title = options.common ? t("futureReadingsCommonTitle") : t("futureReadingsTitle");
+      return `<section class="future-readings ${options.common ? "future-common-readings" : ""}">
+        <h3 class="future-readings-title">${escapeHtml(title)}</h3>
+        ${sections}
+        <p class="future-readings-note">${escapeHtml(t("futureReadingNotice"))}</p>
+      </section>`;
+    }
+
+    function futureMetricMarkup(metric) {
+      if (!metric?.id) return "";
+      const value = metric.display_value || "";
+      const change = metric.change_pct_label || metric.change_abs_label || "";
+      return `<button class="future-metric-chip" type="button" data-future-metric="${escapeHtml(metric.id)}">
+        <span>
+          <span class="future-metric-name">${escapeHtml(localizedField(metric, "name"))}</span>
+          <span class="future-metric-value">${escapeHtml([value, change].filter(Boolean).join(" · "))}</span>
+        </span>
+        ${chart(metric.history || [], "chart-mini", metric)}
+      </button>`;
+    }
+
+    function futureCompanyMarkup(company) {
+      const metricId = company?.metric_id || "";
+      const label = state.language === "en" ? (company?.label_en || company?.label || company?.symbol || "") : (company?.label || company?.symbol || "");
+      const change = company?.change_pct_label || "";
+      const disabled = metricId ? "" : " disabled";
+      const dataAttr = metricId ? ` data-future-company="${escapeHtml(metricId)}"` : "";
+      return `<button class="future-company-chip" type="button"${dataAttr}${disabled}>
+        <span class="future-company-name">${escapeHtml(label)}</span>
+        ${change ? `<span class="future-company-change ${directionClass(company.change_pct)}">${escapeHtml(change)}</span>` : ""}
+      </button>`;
+    }
+
+    function localizedBreakdownField(item, field) {
+      if (!item) return "";
+      if (state.language === "en") return item[`${field}_en`] || localizedText(item[field] || "");
+      return item[field] || "";
+    }
+
+    function futureBreakdownGapLabel(requirement) {
+      if (requirement?.satisfied) return t("futureBreakdownGapMet");
+      const gapSteps = Number(requirement?.gap_steps);
+      if (Number.isFinite(gapSteps) && gapSteps > 0) {
+        return state.language === "en"
+          ? `${t("futureBreakdownGapSteps")} ${gapSteps} ${t("futureBreakdownStepSuffix")}`
+          : `${t("futureBreakdownGapSteps")} ${gapSteps}${t("futureBreakdownStepSuffix")}`;
+      }
+      return "";
+    }
+
+    function futureBreakdownBadges(requirement) {
+      const badges = [];
+      if (requirement?.is_bottleneck) badges.push({ label: t("futureBreakdownBottleneck"), className: "is-bottleneck" });
+      const gapLabel = futureBreakdownGapLabel(requirement);
+      if (gapLabel) badges.push({ label: gapLabel, className: requirement?.satisfied ? "is-satisfied" : "" });
+      if (requirement?.confidence === "low") badges.push({ label: t("futureBreakdownLowConfidence"), className: "is-low" });
+      if (requirement?.stale) badges.push({ label: t("futureBreakdownStale"), className: "is-stale" });
+      return badges.map((badge) => `<span class="future-breakdown-badge ${badge.className}">${escapeHtml(badge.label)}</span>`).join("");
+    }
+
+    function futureBreakdownStateMarkup(requirement) {
+      const current = localizedBreakdownField(requirement, "current_label");
+      const target = localizedBreakdownField(requirement, "target_label");
+      if (!current && !target) return "";
+      return `<div class="future-breakdown-state">
+        ${current ? `<span><b>${escapeHtml(t("futureBreakdownCurrent"))}</b>${escapeHtml(current)}</span>` : ""}
+        ${target ? `<span><b>${escapeHtml(t("futureBreakdownRequired"))}</b>${escapeHtml(target)}</span>` : ""}
+      </div>`;
+    }
+
+    function futureBreakdownLadderMarkup(requirement) {
+      const rungs = Array.isArray(requirement?.ladder?.rungs) ? requirement.ladder.rungs : [];
+      if (!rungs.length) return "";
+      const currentIndex = Number(requirement.current_index);
+      const requiredIndex = Number(requirement.required_index);
+      const items = rungs.map((rung) => {
+        const index = Number(rung.index);
+        const classes = [
+          "future-ladder-rung",
+          Number.isFinite(currentIndex) && index === currentIndex ? "is-current" : "",
+          Number.isFinite(requiredIndex) && index === requiredIndex ? "is-required" : ""
+        ].filter(Boolean).join(" ");
+        const label = state.language === "en" ? (rung.label_en || rung.label || rung.level) : (rung.label || rung.level);
+        const desc = state.language === "en" ? (rung.desc_en || rung.desc || "") : (rung.desc || "");
+        const level = rung.level || "";
+        return `<span class="${classes}" tabindex="0" aria-label="${escapeHtml([level, label, desc].filter(Boolean).join(": "))}">
+          ${escapeHtml(label)}
+          ${desc ? `<span class="future-tooltip">${escapeHtml(level ? `${level}: ${desc}` : desc)}</span>` : ""}
+        </span>`;
+      }).join("");
+      return `<div class="future-ladder" aria-label="${escapeHtml(localizedBreakdownField(requirement.ladder, "name"))}">${items}</div>`;
+    }
+
+    function futureBreakdownPartyChip(party) {
+      const label = state.language === "en" ? (party?.label_en || party?.label || party?.symbol || "") : (party?.label || party?.symbol || "");
+      const change = party?.change_pct_label || "";
+      if (!label) return "";
+      if (party?.metric_id) {
+        return `<button class="future-breakdown-chip" type="button" data-breakdown-company="${escapeHtml(party.metric_id)}">
+          <span>${escapeHtml(label)}</span>${change ? `<span class="${directionClass(party.change_pct)}">${escapeHtml(change)}</span>` : ""}
+        </button>`;
+      }
+      return `<span class="future-breakdown-chip">${escapeHtml(label)}</span>`;
+    }
+
+    function futureBreakdownPartyRow(label, parties) {
+      const chips = (Array.isArray(parties) ? parties : []).map(futureBreakdownPartyChip).filter(Boolean).join("");
+      if (!chips) return "";
+      return `<div class="future-breakdown-party">
+        <span class="future-breakdown-party-label">${escapeHtml(label)}</span>
+        ${chips}
+      </div>`;
+    }
+
+    function futureBreakdownMetricMarkup(requirement) {
+      const metric = requirement?.metric || null;
+      const fallback = localizedBreakdownField(requirement, "metric_label");
+      if (metric?.id) {
+        const value = [metric.display_value || "", metric.change_pct_label || metric.change_abs_label || ""].filter(Boolean).join(" · ");
+        return `<button class="future-breakdown-chip" type="button" data-breakdown-metric="${escapeHtml(metric.id)}">
+          <span>${escapeHtml(localizedField(metric, "name") || fallback || t("futureBreakdownMetric"))}</span>
+          ${value ? `<span>${escapeHtml(value)}</span>` : ""}
+        </button>`;
+      }
+      return fallback ? `<span class="future-breakdown-chip">${escapeHtml(fallback)}</span>` : "";
+    }
+
+    function futureBreakdownSourceMarkup(requirement) {
+      const source = requirement?.source || "";
+      if (!source) return "";
+      const label = localizedBreakdownField(requirement, "source_label") || t("futureBreakdownSource");
+      return `<a class="future-breakdown-chip" href="${escapeHtml(source)}" target="_blank" rel="noopener noreferrer">
+        ${escapeHtml(label)}
+      </a>`;
+    }
+
+    function futureBreakdownRequirementMarkup(requirement, tech) {
+      const rowId = `future-breakdown-${idSegment(tech?.id || "tech")}-${idSegment(requirement?.id || "requirement")}`;
+      const badges = futureBreakdownBadges(requirement);
+      const ladder = futureBreakdownLadderMarkup(requirement);
+      const stateMarkup = futureBreakdownStateMarkup(requirement);
+      const metric = futureBreakdownMetricMarkup(requirement);
+      const source = futureBreakdownSourceMarkup(requirement);
+      const meta = [metric, source].filter(Boolean).join("");
+      const classes = [
+        "future-breakdown-row",
+        requirement?.is_bottleneck ? "is-bottleneck" : "",
+        requirement?.confidence === "low" ? "is-low-confidence" : "",
+        requirement?.stale ? "is-stale" : ""
+      ].filter(Boolean).join(" ");
+      return `<section class="${classes}" id="${escapeHtml(rowId)}" data-breakdown-row="${escapeHtml(requirement?.flow_id || "")}">
+        <div class="future-breakdown-head">
+          <div class="future-breakdown-name">${escapeHtml(localizedBreakdownField(requirement, "name"))}</div>
+          ${badges ? `<div class="future-breakdown-badges">${badges}</div>` : ""}
+        </div>
+        ${stateMarkup}
+        ${ladder}
+        <div class="future-breakdown-copy">
+          <p class="future-breakdown-gap">${escapeHtml(localizedBreakdownField(requirement, "gap"))}</p>
+          <p>${escapeHtml(localizedBreakdownField(requirement, "what"))}</p>
+        </div>
+        ${futureBreakdownPartyRow(t("futureBreakdownAchievedBy"), requirement?.achieved_by)}
+        ${futureBreakdownPartyRow(t("futureBreakdownPursuing"), requirement?.pursuing)}
+        ${meta ? `<div class="future-breakdown-meta">${meta}</div>` : ""}
+      </section>`;
+    }
+
+    function futureBreakdownMarkup(tech) {
+      const requirements = Array.isArray(tech?.breakdown?.requirements) ? tech.breakdown.requirements : [];
+      if (!requirements.length) return "";
+      return `<section class="future-breakdown">
+        <h3 class="future-breakdown-title">${escapeHtml(t("futureBreakdownTitle"))}</h3>
+        <div class="future-breakdown-list">
+          ${requirements.map((requirement) => futureBreakdownRequirementMarkup(requirement, tech)).join("")}
+        </div>
+      </section>`;
+    }
+
+    function trackRecordData() {
+      const track = futureData().track_record || {};
+      return {
+        items: Array.isArray(track.items) ? track.items : [],
+        subjects: Array.isArray(track.subjects) ? track.subjects : [],
+        summary: track.summary && typeof track.summary === "object" ? track.summary : {}
+      };
+    }
+
+    function localizedTrackField(item, field) {
+      if (!item) return "";
+      if (state.language === "en") return item[`${field}_en`] || localizedText(item[field] || "");
+      return item[field] || "";
+    }
+
+    function trackRecordStatusLabel(status) {
+      if (status === "early") return t("futureTrackStatusEarly");
+      if (status === "on_time") return t("futureTrackStatusOnTime");
+      if (status === "late") return t("futureTrackStatusLate");
+      if (status === "missed") return t("futureTrackStatusMissed");
+      return t("futureTrackStatusPending");
+    }
+
+    function trackRecordErrorLabel(item) {
+      const status = item?.status || "pending";
+      const error = Number(item?.error_years);
+      if (status === "pending") return t("futureTrackRecordStillOpen");
+      if (status === "missed") {
+        return Number.isFinite(error)
+          ? `${Math.abs(error)}${t("futureTrackYearSuffix")}+`
+          : t("futureTrackStatusMissed");
+      }
+      if (!Number.isFinite(error)) return "";
+      if (error === 0) return t("futureTrackRecordExact");
+      const abs = Math.abs(error);
+      return error < 0
+        ? `${abs}${t("futureTrackYearSuffix")} ${t("futureTrackRecordEarly")}`
+        : `${abs}${t("futureTrackYearSuffix")} ${t("futureTrackRecordLate")}`;
+    }
+
+    function trackRecordSubjectName(subject) {
+      if (state.language === "en") return subject?.name_en || subject?.name || "";
+      return subject?.name || "";
+    }
+
+    function trackRecordSubjectSummary(subject) {
+      if (state.language === "en") return subject?.summary_en || subject?.summary || "";
+      return subject?.summary || "";
+    }
+
+    function trackRecordSubjectScore(subject) {
+      if (state.language === "en") return subject?.score_label_en || subject?.score_label || "";
+      return subject?.score_label || "";
+    }
+
+    function filteredTrackRecordItems() {
+      const items = trackRecordData().items.slice();
+      const filtered = state.trackRecordSubject
+        ? items.filter((item) => item.by_id === state.trackRecordSubject)
+        : items;
+      return filtered.sort((a, b) => {
+        if (state.trackRecordSort === "error") {
+          return Number(b.absolute_error_years ?? -1) - Number(a.absolute_error_years ?? -1)
+            || Number(a.predicted_for_year || 9999) - Number(b.predicted_for_year || 9999);
+        }
+        if (state.trackRecordSort === "subject") {
+          return String(localizedTrackField(a, "predicted_by")).localeCompare(String(localizedTrackField(b, "predicted_by")), state.language === "en" ? "en" : "ko")
+            || Number(a.predicted_for_year || 9999) - Number(b.predicted_for_year || 9999);
+        }
+        return Number(a.predicted_for_year || 9999) - Number(b.predicted_for_year || 9999)
+          || String(localizedTrackField(a, "name")).localeCompare(String(localizedTrackField(b, "name")), state.language === "en" ? "en" : "ko");
+      });
+    }
+
+    function trackRecordAxisRange(items) {
+      const years = items.flatMap((item) => [
+        Number(item.predicted_for_year),
+        Number(item.display_actual_year || item.actual_year)
+      ]).filter(Number.isFinite);
+      const min = Math.min(...years, 1950);
+      const max = Math.max(...years, new Date().getFullYear());
+      return { min: min - 3, max: max + 3 };
+    }
+
+    function trackRecordX(year, range) {
+      const value = Number(year);
+      if (!Number.isFinite(value) || range.max <= range.min) return 0;
+      return Math.max(0, Math.min(100, ((value - range.min) / (range.max - range.min)) * 100));
+    }
+
+    function trackRecordAxisTicks(range) {
+      const span = Math.max(1, range.max - range.min);
+      const step = span > 75 ? 20 : span > 36 ? 10 : 5;
+      const start = Math.ceil(range.min / step) * step;
+      const end = Math.floor(range.max / step) * step;
+      const ticks = [];
+      for (let year = start; year <= end; year += step) ticks.push(year);
+      return ticks.length ? ticks : [Math.round(range.min), Math.round(range.max)];
+    }
+
+    function trackRecordTickMarkup(ticks, range, className = "track-record-grid-line") {
+      return ticks.map((year) => {
+        const x = trackRecordX(year, range).toFixed(3);
+        const label = className === "track-record-axis-label" ? escapeHtml(String(year)) : "";
+        return `<span class="${className}" style="--x:${x}%">${label}</span>`;
+      }).join("");
+    }
+
+    function trackRecordAxisRow(range, ticks) {
+      return `<div class="track-record-axis-row" aria-hidden="true">
+        <div class="track-record-axis-space"></div>
+        <div class="track-record-axis-canvas">
+          ${trackRecordTickMarkup(ticks, range, "track-record-axis-label")}
+        </div>
+      </div>`;
+    }
+
+    function trackRecordTimeline(item, range, ticks) {
+      const predictedYear = Number(item.predicted_for_year);
+      const actualYear = Number(item.display_actual_year || item.actual_year);
+      const predictedX = trackRecordX(predictedYear, range);
+      const actualX = trackRecordX(actualYear, range);
+      const hasPredicted = Number.isFinite(predictedYear);
+      const hasActual = Number.isFinite(actualYear);
+      const yearGap = hasPredicted && hasActual ? Math.abs(actualYear - predictedYear) : 0;
+      const start = Math.min(predictedX, actualX);
+      const width = Math.abs(actualX - predictedX);
+      const hasSpan = hasPredicted && hasActual && yearGap >= 6 && width >= 7;
+      const actualLabel = item.open_ended ? t("futureTrackRecordNow") : String(item.actual_year || item.display_actual_year || "");
+      const errorLabel = trackRecordErrorLabel(item);
+      return `<span class="track-record-timeline" aria-label="${escapeHtml(localizedTrackField(item, "name"))}">
+        ${trackRecordTickMarkup(ticks, range)}
+        ${hasSpan ? `<span class="track-record-predicted-year" style="--x:${predictedX.toFixed(3)}%">${escapeHtml(String(item.predicted_for_year || ""))}</span>` : ""}
+        ${hasSpan ? `<span class="track-record-predicted-dot" style="--x:${predictedX.toFixed(3)}%"></span>` : ""}
+        ${hasSpan ? `<span class="track-record-span" style="--start:${start.toFixed(3)}%;--width:${width.toFixed(3)}%">${escapeHtml(errorLabel)}</span>` : ""}
+        ${hasActual ? `<span class="track-record-actual-year" style="--x:${actualX.toFixed(3)}%">${escapeHtml(actualLabel)}</span>` : ""}
+        ${hasActual ? `<span class="track-record-actual-dot" style="--x:${actualX.toFixed(3)}%"></span>` : ""}
+        ${!hasSpan && hasActual ? `<span class="track-record-pill" style="--x:${actualX.toFixed(3)}%">${escapeHtml(errorLabel || trackRecordStatusLabel(item.status))}</span>` : ""}
+      </span>`;
+    }
+
+    function trackRecordSourceLinks(item) {
+      const sourceLabel = localizedTrackField(item, "source_label") || t("futureTrackRecordSource");
+      const actualLabel = localizedTrackField(item, "actual_source_label") || t("futureTrackRecordActualBasis");
+      return `<div class="track-record-links">
+        ${item.source ? `<a href="${escapeHtml(item.source)}" target="_blank" rel="noopener">${escapeHtml(sourceLabel)}</a>` : ""}
+        ${item.actual_source ? `<a href="${escapeHtml(item.actual_source)}" target="_blank" rel="noopener">${escapeHtml(actualLabel)}</a>` : ""}
+      </div>`;
+    }
+
+    function trackRecordRow(item, range, ticks) {
+      const predictedText = `${localizedTrackField(item, "predicted_for") || item.predicted_for_year || ""}`;
+      const actualText = item.actual_year ? `${item.actual_year}` : t("futureTrackRecordStillOpen");
+      return `<details class="track-record-row status-${escapeHtml(item.status || "pending")}" data-track-status="${escapeHtml(item.status || "pending")}">
+        <summary>
+          <span class="track-record-row-main">
+            <span class="track-record-title-row">
+              <span class="track-record-name">${escapeHtml(localizedTrackField(item, "name"))}</span>
+              <span class="track-record-by">${escapeHtml(localizedTrackField(item, "predicted_by"))}, ${escapeHtml(String(item.predicted_in || ""))}</span>
+            </span>
+            <span class="track-record-years">${escapeHtml(predictedText)} → ${escapeHtml(actualText)}</span>
+          </span>
+          <span class="track-record-chart">${trackRecordTimeline(item, range, ticks)}</span>
+          <span class="track-record-status">
+            <span class="track-record-pill">${escapeHtml(trackRecordStatusLabel(item.status))}</span>
+            <span class="track-record-error">${escapeHtml(trackRecordErrorLabel(item))}</span>
+          </span>
+        </summary>
+        <div class="track-record-detail">
+          <p><span>${escapeHtml(t("futureTrackRecordWhat"))}</span>${escapeHtml(localizedTrackField(item, "what"))}</p>
+          <p><span>${escapeHtml(t("futureTrackRecordOutcome"))}</span>${escapeHtml(localizedTrackField(item, "outcome"))}</p>
+          <p><span>${escapeHtml(t("futureTrackRecordLesson"))}</span>${escapeHtml(localizedTrackField(item, "lesson"))}</p>
+          <p><span>${escapeHtml(t("futureTrackRecordActualBasis"))}</span>${escapeHtml(localizedTrackField(item, "actual_label"))}</p>
+          ${trackRecordSourceLinks(item)}
+        </div>
+      </details>`;
+    }
+
+    function renderTrackRecordScorecards(subjects) {
+      const summary = trackRecordData().summary || {};
+      const cards = [
+        `<button class="track-score-card ${state.trackRecordSubject ? "" : "is-active"}" type="button" data-track-subject="" aria-label="${escapeHtml(`${t("futureTrackRecordAllSubjects")} · ${summary.judged_count || 0}${t("futureTrackRecordJudgedSuffix")}`)}">
+          <span class="track-score-name">${escapeHtml(t("futureTrackRecordAllSubjects"))}</span>
+          <span class="track-score-summary">${escapeHtml(`${summary.judged_count || 0}${t("futureTrackRecordJudgedSuffix")} · ${summary.on_time_count || 0}${t("futureTrackRecordHitSuffix")}`)}</span>
+        </button>`,
+        ...subjects.map((subject) => `<button class="track-score-card ${state.trackRecordSubject === subject.id ? "is-active" : ""}" type="button" data-track-subject="${escapeHtml(subject.id)}" aria-label="${escapeHtml(`${trackRecordSubjectName(subject)} · ${trackRecordSubjectSummary(subject)}`)}">
+          <span class="track-score-name">${escapeHtml(trackRecordSubjectName(subject))}</span>
+          <span class="track-score-summary">${escapeHtml(trackRecordSubjectSummary(subject))}</span>
+        </button>`)
+      ];
+      return `<div class="track-score-grid">${cards.join("")}</div>`;
+    }
+
+    function renderFutureTrackRecord() {
+      const data = trackRecordData();
+      const subjects = data.subjects || [];
+      const items = filteredTrackRecordItems();
+      const range = trackRecordAxisRange(items);
+      const ticks = trackRecordAxisTicks(range);
+      return `<article class="future-page track-record-page" data-future-track-record>
+        <div class="future-page-head">
+          <button class="future-back-link" type="button" data-future-back-timeline>← ${escapeHtml(t("futureTrackRecordBack"))}</button>
+          <h2>${escapeHtml(t("futureTrackRecordTitle"))}</h2>
+          <p>${escapeHtml(t("futureTrackRecordIntro"))}</p>
+        </div>
+        ${renderTrackRecordScorecards(subjects)}
+        <div class="track-record-toolbar">
+          <div class="track-record-legend" aria-hidden="true">
+            <span class="track-record-legend-item is-predicted"><i></i>${escapeHtml(t("futureTrackRecordPredictedPoint"))}</span>
+            <span class="track-record-legend-item is-actual"><i></i>${escapeHtml(t("futureTrackRecordActualPoint"))}</span>
+          </div>
+        </div>
+        <div class="track-record-list">
+          ${items.length ? `${trackRecordAxisRow(range, ticks)}${items.map((item) => trackRecordRow(item, range, ticks)).join("")}` : `<div class="empty" style="display:block">${escapeHtml(t("futureTrackRecordEmpty"))}</div>`}
+        </div>
+      </article>`;
+    }
+
+    function futureSourceMarkup(tech) {
+      const predicted = tech.predicted || {};
+      const source = predicted.source || "";
+      const label = state.language === "en"
+        ? (predicted.source_label_en || localizedText(predicted.source_label || ""))
+        : (predicted.source_label || t("futureSource"));
+      if (!source) return "";
+      const subject = tech.track_record_subject || null;
+      const scoreLabel = subject ? (state.language === "en" ? (subject.score_label_en || subject.score_label) : subject.score_label) : "";
+      return `<div class="future-source-row">
+        <a class="future-source-link" href="${escapeHtml(source)}" target="_blank" rel="noopener">${escapeHtml(t("futureSource"))}: ${escapeHtml(label)}</a>
+        ${subject ? `<button class="future-source-score" type="button" data-track-record-subject="${escapeHtml(subject.id)}">${escapeHtml(scoreLabel)}</button>` : ""}
+      </div>`;
+    }
+
+    function futureCompanySideMarkup(company) {
+      const metricId = company?.metric_id || "";
+      const label = state.language === "en" ? (company?.label_en || company?.label || company?.symbol || "") : (company?.label || company?.symbol || "");
+      const change = company?.change_pct_label || "";
+      const tag = metricId ? "button" : "span";
+      const dataAttr = metricId ? ` type="button" data-future-company="${escapeHtml(metricId)}"` : "";
+      return `<${tag} class="future-company-row"${dataAttr}>
+        <span class="future-company-name">${escapeHtml(label)}</span>
+        ${change ? `<span class="future-company-change ${directionClass(company.change_pct)}">${escapeHtml(change)}</span>` : ""}
+      </${tag}>`;
+    }
+
+    function futureTrackScoreMarkup(tech) {
+      const subject = tech.track_record_subject || null;
+      if (!subject) return "";
+      const judged = Math.max(0, Number(subject.judged_count || 0));
+      const hits = Math.max(0, Number(subject.on_time_count || 0));
+      const scoreLabel = state.language === "en" ? (subject.score_label_en || subject.score_label || "") : (subject.score_label || "");
+      const total = Math.max(judged, 1);
+      const bars = Array.from({ length: Math.min(Math.max(total, 3), 6) }, (_item, index) => (
+        `<span class="${index < hits ? "is-hit" : ""}"></span>`
+      )).join("");
+      return `<button class="future-track-scorebox" type="button" data-track-record-subject="${escapeHtml(subject.id)}">
+        <span class="future-side-label">${escapeHtml(t("futureTrackRecordTitle"))}</span>
+        <span class="future-track-score-main">${escapeHtml(`${hits} / ${judged || total}`)}</span>
+        <span class="future-track-bars">${bars}</span>
+        ${scoreLabel ? `<span class="future-track-score-source">${escapeHtml(scoreLabel)}</span>` : ""}
+      </button>`;
+    }
+
+    function futureDecadeLabel(tech) {
+      const year = Number(tech?.predicted?.year);
+      if (!Number.isFinite(year)) return localizedFutureBand(tech?.band || "");
+      const decade = Math.floor(year / 10) * 10;
+      return state.language === "en" ? `${decade}s` : `${decade}년대`;
+    }
+
+    function futureBottleneckMarkup(tech) {
+      const text = localizedFutureField(tech, "bottleneck");
+      if (!text) return "";
+      const cleaned = text.replace(/^병목\s*[:：]\s*/i, "").replace(/^Bottleneck\s*[:：]\s*/i, "");
+      return `<div class="future-bottleneck-card">
+        <span>${escapeHtml(t("futureBreakdownBottleneck"))}</span>
+        <strong>${escapeHtml(cleaned)}</strong>
+        <p>${escapeHtml(localizedFutureField(tech, "now"))}</p>
+      </div>`;
+    }
+
+    function futureCardMarkup(tech) {
+      const predicted = tech.predicted || {};
+      const predictedLabel = state.language === "en"
+        ? (predicted.label_en || predicted.label || predicted.year || "")
+        : (predicted.label || predicted.year || "");
+      const metrics = (tech.metrics || []).map(futureMetricMarkup).join("");
+      const companies = (tech.companies || []).map(futureCompanySideMarkup).join("");
+      const glossary = futureGlossaryMarkup(tech.glossary || []);
+      const readings = futureReadingsMarkup(tech.readings || []);
+      const breakdown = futureBreakdownMarkup(tech);
+      const active = state.activeFutureId === tech.id;
+      return `<article class="future-card ${tech.status === "achieved" ? "is-achieved" : ""} ${active ? "is-active" : ""}" id="${futureCardId(tech.id)}" data-future-card="${escapeHtml(tech.id)}">
+        <aside class="future-card-side">
+          <span class="future-card-decade">${escapeHtml(futureDecadeLabel(tech))}</span>
+          <button class="future-card-title" type="button" data-future-focus="${escapeHtml(tech.id)}">${escapeHtml(localizedFutureField(tech, "name"))}</button>
+          <div class="future-side-pills">
+            <span class="future-status-pill">${escapeHtml(futureStatusLabel(tech.status))}</span>
+            ${glossary}
+          </div>
+          <div class="future-year-block">
+            <span class="future-side-label">${escapeHtml(t("futurePrediction"))}</span>
+            <strong>${escapeHtml(String(predicted.year || predictedLabel || ""))}</strong>
+            <small>${escapeHtml(dateText(tech.as_of || ""))}</small>
+          </div>
+          ${futureTrackScoreMarkup(tech)}
+          <div class="future-company-panel">
+            <span class="future-side-label">${escapeHtml(t("futureCompanies"))}</span>
+            <div class="future-company-list" aria-label="${escapeHtml(t("futureCompanies"))}">
+              ${companies || `<span class="future-company-change">${escapeHtml(t("futureNoCompanies"))}</span>`}
+            </div>
+          </div>
+        </aside>
+        <div class="future-card-main">
+          <div class="future-copy">
+            <p><strong>${escapeHtml(localizedFutureField(tech, "why"))}</strong></p>
+            <p class="future-why">${escapeHtml(localizedFutureField(tech, "what"))}</p>
+          </div>
+          ${futureBottleneckMarkup(tech)}
+          <div class="future-progress">
+            <div class="future-metric-list" aria-label="${escapeHtml(t("futureProgress"))}">
+              ${metrics || `<span class="future-metric-value">${escapeHtml(t("futureNoMetrics"))}</span>`}
+            </div>
+          </div>
+          ${breakdown}
+          ${readings}
+          ${futureSourceMarkup(tech)}
+        </div>
+      </article>`;
+    }
+
+    function renderFutureTimeline() {
+      const technologies = filteredFutureTechnologies();
+      if (!technologies.length) {
+        return `<article class="future-page"><div class="empty" style="display:block">${escapeHtml(t("futureEmpty"))}</div></article>`;
+      }
+      const achieved = technologies.filter((item) => item.status === "achieved");
+      const upcoming = technologies.filter((item) => item.status !== "achieved");
+      const byBand = upcoming.reduce((map, tech) => {
+        const band = tech.band || "미정";
+        map.set(band, [...(map.get(band) || []), tech]);
+        return map;
+      }, new Map());
+      const bands = [...byBand.entries()].sort(([a], [b]) => futureBandSortKey(a) - futureBandSortKey(b));
+      const minimap = [
+        `<button type="button" data-future-jump="future-today">${escapeHtml(t("futureToday"))}</button>`,
+        ...bands.map(([band]) => `<button type="button" data-future-jump="${escapeHtml(futureBandId(band))}">${escapeHtml(localizedFutureBand(band))}</button>`)
+      ].join("");
+      return `<article class="future-page" data-future-page>
+        <div class="future-page-head">
+          <h2>${escapeHtml(t("futureTimelineTitle"))}</h2>
+          <p>${escapeHtml(t("futureTimelineIntro"))}</p>
+        </div>
+        <div class="future-track-entry">
+          <button class="future-track-link" type="button" data-future-track-record-link>
+            <span>${escapeHtml(t("futureTrackRecordTitle"))}</span>
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </button>
+          <span>${escapeHtml(t("futureTrackRecordEntryCopy"))}</span>
+        </div>
+        <div class="future-minimap" aria-label="${escapeHtml(t("futureTimelineTitle"))}">${minimap}</div>
+        ${achieved.length ? `<details class="future-achieved">
+          <summary>${escapeHtml(t("futureAchieved"))} ${achieved.length}</summary>
+          <div class="future-timeline">${achieved.map(futureCardMarkup).join("")}</div>
+        </details>` : ""}
+        <div class="future-today-marker" id="future-today">${escapeHtml(t("futureToday"))}</div>
+        ${bands.map(([band, items]) => `<section class="future-band" id="${futureBandId(band)}">
+          <h3 class="future-band-title">${escapeHtml(localizedFutureBand(band))}</h3>
+          <div class="future-timeline">${items.map(futureCardMarkup).join("")}</div>
+        </section>`).join("")}
+        ${futureReadingsMarkup(futureData().common_readings || [], { common: true })}
+      </article>`;
+    }
+
+    function initFutureTimeline() {
+      document.querySelector("[data-future-track-record-link]")?.addEventListener("click", () => setFutureTrackRecordView());
+      document.querySelectorAll("[data-future-jump]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const target = document.getElementById(button.dataset.futureJump || "");
+          target?.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      });
+      document.querySelectorAll("[data-future-metric]").forEach((button) => {
+        button.addEventListener("click", () => openMetricDetail(button.dataset.futureMetric));
+      });
+      document.querySelectorAll("[data-future-company]").forEach((button) => {
+        button.addEventListener("click", () => openMetricDetail(button.dataset.futureCompany));
+      });
+      document.querySelectorAll("[data-breakdown-metric]").forEach((button) => {
+        button.addEventListener("click", () => openMetricDetail(button.dataset.breakdownMetric));
+      });
+      document.querySelectorAll("[data-breakdown-company]").forEach((button) => {
+        button.addEventListener("click", () => openMetricDetail(button.dataset.breakdownCompany));
+      });
+      document.querySelectorAll("[data-future-component]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const componentId = button.dataset.futureComponent || "";
+          const target = [...document.querySelectorAll("[data-breakdown-row]")]
+            .find((row) => row.dataset.breakdownRow === componentId);
+          target?.scrollIntoView({ behavior: "smooth", block: "center" });
+        });
+      });
+      document.querySelectorAll("[data-breakdown-row]").forEach((row) => {
+        row.addEventListener("click", (event) => {
+          if (event.target.closest("button, a")) return;
+          const componentId = row.dataset.breakdownRow || "";
+          const target = [...document.querySelectorAll("[data-future-component]")]
+            .find((node) => node.dataset.futureComponent === componentId && node !== row);
+          target?.scrollIntoView({ behavior: "smooth", block: "center" });
+        });
+      });
+      document.querySelectorAll("[data-future-focus]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.activeFutureId = button.dataset.futureFocus || "";
+          saveNavState();
+          writeDashboardHash(currentNavHash(), "push");
+          document.querySelectorAll("[data-future-card]").forEach((card) => {
+            card.classList.toggle("is-active", card.dataset.futureCard === state.activeFutureId);
+          });
+        });
+      });
+      document.querySelectorAll("[data-track-record-subject]").forEach((button) => {
+        button.addEventListener("click", () => setFutureTrackRecordView(button.dataset.trackRecordSubject || ""));
+      });
+    }
+
+    function initFutureTrackRecord() {
+      document.querySelector("[data-future-back-timeline]")?.addEventListener("click", () => {
+        state.futureView = "timeline";
+        state.trackRecordSubject = "";
+        saveNavState();
+        renderFilters();
+        renderIndustries();
+        writeDashboardHash("#future", "push");
+      });
+      document.querySelectorAll("[data-track-subject]").forEach((button) => {
+        button.addEventListener("click", () => setTrackRecordSubject(button.dataset.trackSubject || ""));
+      });
+      document.querySelectorAll("[data-track-sort]").forEach((button) => {
+        button.addEventListener("click", () => setTrackRecordSort(button.dataset.trackSort || "predicted"));
+      });
+    }
+
     function renderIndustries() {
       const metrics = DASHBOARD_DATA.metrics;
       const stack = document.getElementById("industryStack");
@@ -11919,6 +15106,16 @@
         initDailyUpdateLinks();
         scheduleBranchLineUpdate();
         updateActiveFromScroll();
+        return;
+      }
+      if (state.navRoot === "future") {
+        document.getElementById("empty").style.display = "none";
+        stack.innerHTML = state.futureView === "track-record" ? renderFutureTrackRecord() : renderFutureTimeline();
+        if (state.futureView === "track-record") {
+          initFutureTrackRecord();
+        } else {
+          initFutureTimeline();
+        }
         return;
       }
       if (state.navRoot === "root") {
@@ -12529,6 +15726,8 @@
       document.getElementById("signalHistoryToggle")?.setAttribute("title", t("signalHistoryTitle"));
       document.getElementById("signalDrawer")?.setAttribute("aria-label", t("signalHistoryTitle"));
       document.getElementById("signalDrawerClose")?.setAttribute("aria-label", t("signalHistoryClose"));
+      document.getElementById("metricDetailDrawer")?.setAttribute("aria-label", t("metricDetailDrawerTitle"));
+      document.getElementById("metricDetailDrawerClose")?.setAttribute("aria-label", t("metricDetailDrawerClose"));
       document.getElementById("themeToggle")?.setAttribute("aria-label", t("toggleTheme"));
       document.getElementById("themeToggle")?.setAttribute("title", t("toggleTheme"));
       document.getElementById("noteModalClose")?.setAttribute("aria-label", t("close"));
@@ -12917,7 +16116,10 @@
       const backdrop = document.getElementById("signalDrawerBackdrop");
       const toggle = document.getElementById("signalHistoryToggle");
       if (!drawer || !backdrop || !toggle) return;
-      if (open) setDrawerOpen(false);
+      if (open) {
+        setDrawerOpen(false);
+        setMetricDetailDrawerOpen(false);
+      }
       document.body.classList.toggle("signal-drawer-open", Boolean(open));
       drawer.setAttribute("aria-hidden", String(!open));
       toggle.setAttribute("aria-expanded", String(Boolean(open)));
@@ -12950,6 +16152,14 @@
       document.getElementById("signalDrawerBackdrop")?.addEventListener("click", () => setSignalDrawerOpen(false));
       document.addEventListener("keydown", (event) => {
         if (event.key === "Escape") setSignalDrawerOpen(false);
+      });
+    }
+
+    function initMetricDetailDrawer() {
+      document.getElementById("metricDetailDrawerClose")?.addEventListener("click", () => setMetricDetailDrawerOpen(false));
+      document.getElementById("metricDetailDrawerBackdrop")?.addEventListener("click", () => setMetricDetailDrawerOpen(false));
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") setMetricDetailDrawerOpen(false);
       });
     }
 
@@ -13134,6 +16344,9 @@
       if (route?.type === "detail") {
         requestAnimationFrame(() => openMetricDetail(route.metric.id, { updateHash: false, scroll: true }));
       }
+      if (route?.type === "future" && route.techId) {
+        requestAnimationFrame(() => document.getElementById(futureCardId(route.techId))?.scrollIntoView({ block: "center" }));
+      }
     }
 
     initLanguage();
@@ -13148,6 +16361,7 @@
     initScrollTopButton();
     initMobileDrawer();
     initSignalHistory();
+    initMetricDetailDrawer();
     initPwaSupport();
     render();
     initHashRouting();

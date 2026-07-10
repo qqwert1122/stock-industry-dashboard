@@ -15,7 +15,12 @@ class BriefingCardTest(unittest.TestCase):
         with TemporaryDirectory() as tmp:
             data_path = Path(tmp)
             card = build_briefing_card(
-                {"headline": "테스트", "summary": "요약", "bullets": []},
+                {
+                    "headline": "테스트",
+                    "summary": "요약",
+                    "bullets": [],
+                    "narrative_topics": ["산업:반도체:strong"],
+                },
                 card_type="close",
                 generated_at="2026-07-09T06:15:00+09:00",
                 generated_label="2026-07-09 06:15 KST",
@@ -26,6 +31,7 @@ class BriefingCardTest(unittest.TestCase):
             day = json.loads((data_path / "briefings" / "2026-07-09.json").read_text(encoding="utf-8"))
             self.assertEqual(day["cards"][0]["card_type"], "close")
             self.assertEqual(index["cards"][0]["id"], card["id"])
+            self.assertEqual(index["cards"][0]["narrative_topics"], ["산업:반도체:strong"])
 
     def test_intraday_track_flags_yen_carry_risk(self):
         payload1 = {

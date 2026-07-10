@@ -34,6 +34,8 @@ HOST_MIN_INTERVALS = {
     "www.stat-search.boj.or.jp": 1.0,
     "data-api.ecb.europa.eu": 1.0,
     "publicreporting.cftc.gov": 1.0,
+    "www.googleapis.com": 1.0,
+    "generativelanguage.googleapis.com": 1.0,
 }
 RATE_LIMIT_STATUSES = {429, 503}
 MAX_RATE_LIMIT_RETRIES = 2
