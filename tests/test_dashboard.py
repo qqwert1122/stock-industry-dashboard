@@ -402,6 +402,27 @@ class DashboardTest(unittest.TestCase):
         self.assertIn("대표주가(주식 가격)", briefing["summary"])
         self.assertIn("시장", briefing["summary"])
 
+    def test_rule_based_briefing_uses_natural_subject_particle_for_metric_names(self):
+        briefing = rule_based_morning_briefing(
+            {
+                "source_status": [],
+                "metrics": [
+                    {
+                        "id": "phase-3",
+                        "industry": "바이오",
+                        "group": "파이프라인",
+                        "name": "Phase 3 임상 시작",
+                        "change_pct": 5.6,
+                        "change_pct_label": "+5.6%",
+                        "yoy_pct": 10.0,
+                    }
+                ],
+            }
+        )
+
+        self.assertIn("Phase 3 임상 시작이 +5.6% 움직였습니다", briefing["summary"])
+        self.assertNotIn("Phase 3 임상 시작가", briefing["summary"])
+
     def test_narrative_context_is_compact_and_relevant(self):
         briefing = {
             "top_movers": [{"industry": "로봇", "name": "Teradyne(TER)"}],
@@ -477,6 +498,7 @@ class DashboardTest(unittest.TestCase):
         self.assertIn("market_narrative", str(session.post_json))
         self.assertIn("stock_market", str(session.post_json))
         self.assertIn("멀티플", str(session.post_json))
+        self.assertIn("Phase 3 임상 시작이", str(session.post_json))
         self.assertIn("AI 서버", str(session.post_json))
         self.assertNotIn("secret-test-key", str(briefing))
         self.assertNotIn("secret-test-key", str(session.post_json))

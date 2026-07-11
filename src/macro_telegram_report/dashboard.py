@@ -2527,7 +2527,11 @@ def metric_change_meaning(metric: dict[str, Any]) -> str:
 def metric_change_summary(metric: dict[str, Any]) -> str:
     change = str(metric.get("change_pct_label") or "변동")
     kind = str(metric.get("kind") or metric.get("group") or "지표")
-    return f"{metric['industry']}의 {kind}인 {metric['name']}가 {change} 움직였습니다. {metric_change_meaning(metric)}"
+    name = str(metric.get("name") or "지표")
+    return (
+        f"{metric['industry']}의 {kind}인 {name}{subject_particle(name)} {change} 움직였습니다. "
+        f"{metric_change_meaning(metric)}"
+    )
 
 
 def topic_label(text: str) -> str:
@@ -2542,6 +2546,17 @@ def topic_particle(text: str) -> str:
         if char.isalnum():
             return "는"
     return "는"
+
+
+def subject_particle(text: str) -> str:
+    """Return the natural Korean subject particle for a metric name."""
+    for char in reversed(str(text or "").strip()):
+        code = ord(char)
+        if 0xAC00 <= code <= 0xD7A3:
+            return "이" if (code - 0xAC00) % 28 else "가"
+        if char.isalnum():
+            return "가"
+    return "가"
 
 
 def rule_based_summary(
@@ -2668,6 +2683,8 @@ def gemini_morning_briefing_prompt(payload: dict[str, Any], briefing: dict[str, 
         f"{close_instruction}"
         "가장 중요한 목표는 개별 등락을 나열하는 것이 아니라 지금 시장을 움직이는 주도 산업, 약한 산업, 수급과 교차자산의 연결을 설명하는 것이다.\n"
         "각 지표를 언급할 때는 name만 쓰지 말고 반드시 kind와 industry를 함께 써라. 예: '로봇 대표주가(주식 가격) Teradyne(TER)'처럼 쓴다.\n"
+        "한국어 조사는 반드시 자연스럽게 맞춰라. 지표명을 주어로 쓸 때는 마지막 글자의 받침에 맞춰 이/가를 선택한다. "
+        "예: 'Phase 3 임상 시작이 +5.6% 움직였습니다'가 맞고, 'Phase 3 임상 시작가'는 쓰지 마라.\n"
         "market_narrative.candidates는 당일 대표주 표본의 중앙 등락률, 시장 대비 상대강도, 상승·하락 종목 비율로 계산된 현재 근거다. score가 높은 후보부터 검토하되 evidence와 fundamental_checks가 실제로 뒷받침하는 범위에서만 주도/약세라고 표현하라.\n"
         "recent_topic_history는 반복을 피하기 위한 감점 기록일 뿐 현재 시장의 증거가 아니다. 직전 카드가 방산을 다뤘다는 이유만으로 방산을 다시 고르지 말고, 새 evidence가 있으며 여전히 최상위 후보일 때만 반복하라.\n"
         "persistent_events는 하루 종일 시장을 지배할 수 있는 급등·폭락·지수 충격이다. 여전히 극단적이면 후속 카드에도 남기되 같은 설명을 복사하지 말고 progression의 낙폭 확대·축소·반전 여부를 말하라. 새 변화가 더 중요하면 persistent event는 headline이 아니라 보조 bullet로 내려라.\n"

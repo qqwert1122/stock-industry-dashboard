@@ -333,9 +333,19 @@ def mock_calendar(today: date, payload: dict[str, Any]) -> dict[str, Any]:
         (-3, "미국 CPI 발표", "us_data", "US", "인플레이션 방향 확인", cpi_metric),
         (0, "FOMC 결정", "fed", "US", "금리와 유동성 기대가 크게 움직일 수 있는 날", None),
         (1, "한국은행 금통위", "bok", "KR", "국내 금리 민감 업종을 볼 때 중요", None),
+        (2, "미국 고용보고서", "us_data", "US", "고용과 금리 기대를 함께 확인", None),
         (3, "한국 옵션만기", "expiry", "KR", "수급 변동성이 커질 수 있는 날", None),
+        (5, "미국 소비자물가 발표", "us_data", "US", "물가 압력과 금리 기대 확인", cpi_metric),
+        (7, "한국 수출입 동향", "kr_data", "KR", "수출 업종의 수요 흐름 확인", None),
+        (9, "미국 소매판매", "us_data", "US", "소비 경기의 온도를 확인", None),
+        (12, "FOMC 의사록", "fed", "US", "연준의 정책 기조를 재확인", None),
+        (14, "한국 금융통화위원회", "bok", "KR", "국내 금리 경로를 점검", None),
+        (16, "미국 생산자물가 발표", "us_data", "US", "기업 원가와 물가 압력 확인", None),
         (18, "NYSE 휴장", "holiday", "US", "미국 주식시장 휴장", None),
+        (21, "한국 옵션만기", "expiry", "KR", "파생상품 만기로 수급 변동성 확대 가능", None),
+        (24, "미국 GDP 잠정치", "us_data", "US", "경기 성장률과 시장 기대를 비교", None),
         (27, "미국 PCE 발표", "us_data", "US", "연준이 선호하는 물가 지표", cpi_metric),
+        (29, "한국 산업활동동향", "kr_data", "KR", "국내 경기 흐름을 종합 점검", None),
     ]
     events: list[dict[str, Any]] = []
     for offset, name, category, country, note, metric in definitions:
@@ -478,6 +488,35 @@ def mock_signal_log(payload: dict[str, Any]) -> dict[str, Any]:
             "telegram_sent": False,
         },
     ]
+    recent_specs = [
+        (2, "VIX", vix, "triggered", 37.4, "37.4", "≥ 30", "변동성 경계 구간 더미 시그널입니다."),
+        (3, "Sahm Rule", sahm, "cleared", 0.46, "0.46%p", "≥ 0.5", "침체 경계 구간이 완화된 더미 시그널입니다."),
+        (4, "VIX", vix, "triggered", 33.1, "33.1", "≥ 30", "변동성 상승 더미 시그널입니다."),
+        (5, "Sahm Rule", sahm, "triggered", 0.64, "0.64%p", "≥ 0.5", "침체 경계 진입 더미 시그널입니다."),
+        (6, "VIX", vix, "cleared", 24.8, "24.8", "≥ 30", "변동성 경계 해제 더미 시그널입니다."),
+        (7, "Sahm Rule", sahm, "triggered", 0.58, "0.58%p", "≥ 0.5", "침체 경계 재진입 더미 시그널입니다."),
+        (8, "VIX", vix, "triggered", 35.2, "35.2", "≥ 30", "공포 구간 접근 더미 시그널입니다."),
+        (9, "Sahm Rule", sahm, "cleared", 0.41, "0.41%p", "≥ 0.5", "침체 경계 이탈 더미 시그널입니다."),
+        (10, "VIX", vix, "triggered", 31.8, "31.8", "≥ 30", "변동성 재확대 더미 시그널입니다."),
+    ]
+    for days_ago, metric_name, metric, direction, value, display_value, threshold_label, message in recent_specs:
+        observed_at = now - timedelta(days=days_ago)
+        events.append(
+            {
+                "ts": observed_at.isoformat(timespec="seconds"),
+                "observed_at": observed_at.date().isoformat(),
+                "rule_key": f"{metric_name}|{direction}|{threshold_label}",
+                "metric_id": str(metric.get("id") or ""),
+                "metric_name": metric_name,
+                "direction": direction,
+                "value": value,
+                "display_value": display_value,
+                "threshold_label": threshold_label,
+                "message": message,
+                "context": {"KS11": 3200.0, "GSPC": 5600.0, "USDKRW": 1375.0},
+                "telegram_sent": False,
+            }
+        )
     return {"version": 1, "updated_at": now.isoformat(timespec="seconds"), "events": events}
 
 
