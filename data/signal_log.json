@@ -14,6 +14,24 @@
       "message": "공포 구간",
       "context": {},
       "telegram_sent": true
+    },
+    {
+      "ts": "2026-07-10T19:57:29",
+      "observed_at": "2026-07-10",
+      "rule_key": "원/달러 환율|above=1500",
+      "metric_id": "c0e679b6845a",
+      "metric_name": "원/달러 환율",
+      "direction": "cleared",
+      "value": 1499.9000244140625,
+      "display_value": "1,499.9원",
+      "threshold_label": "≥ 1500",
+      "message": "환율이 위기 수준입니다. 달러 자산/환헤지 상황을 점검하세요.",
+      "context": {
+        "KS11": 7291.91015625,
+        "GSPC": 7549.27978515625,
+        "USDKRW": 1499.9000244140625
+      },
+      "telegram_sent": false
     }
   ]
 }

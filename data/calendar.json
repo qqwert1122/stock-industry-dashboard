@@ -1,28 +1,19 @@
 {
   "version": 1,
-  "generated_at": "2026-07-09T23:06:09",
+  "generated_at": "2026-07-10T23:58:27",
   "window": {
-    "from": "2026-07-02",
-    "to": "2026-10-07"
+    "from": "2026-07-04",
+    "to": "2026-10-09"
   },
   "events": [
-    {
-      "date": "2026-07-03",
-      "name": "NYSE 휴장",
-      "category": "holiday",
-      "country": "US",
-      "note": "Independence Day observed",
-      "d_day": -6,
-      "d_day_label": "D-6"
-    },
     {
       "date": "2026-07-09",
       "name": "한국 옵션만기",
       "category": "expiry",
       "country": "KR",
       "note": "매월 둘째 목요일 기준, 휴장 시 전영업일",
-      "d_day": 0,
-      "d_day_label": "D-day"
+      "d_day": -2,
+      "d_day_label": "D-2"
     },
     {
       "date": "2026-07-14",
@@ -30,8 +21,8 @@
       "category": "earnings",
       "country": "US",
       "note": "2Q26, pre-market",
-      "d_day": 5,
-      "d_day_label": "D+5"
+      "d_day": 3,
+      "d_day_label": "D+3"
     },
     {
       "date": "2026-07-14",
@@ -39,8 +30,8 @@
       "category": "us_data",
       "country": "US",
       "note": "2026년 6월 CPI",
-      "d_day": 5,
-      "d_day_label": "D+5",
+      "d_day": 3,
+      "d_day_label": "D+3",
       "metric_id": "e9b8cd241fa0"
     },
     {
@@ -49,8 +40,8 @@
       "category": "earnings",
       "country": "NL",
       "note": "2Q26, pre-market",
-      "d_day": 6,
-      "d_day_label": "D+6"
+      "d_day": 4,
+      "d_day_label": "D+4"
     },
     {
       "date": "2026-07-16",
@@ -58,8 +49,8 @@
       "category": "bok",
       "country": "KR",
       "note": "통화정책방향 결정회의",
-      "d_day": 7,
-      "d_day_label": "D+7"
+      "d_day": 5,
+      "d_day_label": "D+5"
     },
     {
       "date": "2026-07-16",
@@ -67,8 +58,8 @@
       "category": "earnings",
       "country": "KR",
       "note": "2Q26, 국내 실적 캘린더 기준",
-      "d_day": 7,
-      "d_day_label": "D+7"
+      "d_day": 5,
+      "d_day_label": "D+5"
     },
     {
       "date": "2026-07-16",
@@ -76,8 +67,8 @@
       "category": "earnings",
       "country": "TW",
       "note": "2Q26, pre-market",
-      "d_day": 7,
-      "d_day_label": "D+7"
+      "d_day": 5,
+      "d_day_label": "D+5"
     },
     {
       "date": "2026-07-21",
@@ -85,8 +76,8 @@
       "category": "earnings",
       "country": "US",
       "note": "2Q26, pre-market",
-      "d_day": 12,
-      "d_day_label": "D+12"
+      "d_day": 10,
+      "d_day_label": "D+10"
     },
     {
       "date": "2026-07-22",
@@ -94,8 +85,8 @@
       "category": "earnings",
       "country": "US",
       "note": "2Q26",
-      "d_day": 13,
-      "d_day_label": "D+13"
+      "d_day": 11,
+      "d_day_label": "D+11"
     },
     {
       "date": "2026-07-22",
@@ -103,8 +94,8 @@
       "category": "earnings",
       "country": "US",
       "note": "2Q26, pre-market",
-      "d_day": 13,
-      "d_day_label": "D+13"
+      "d_day": 11,
+      "d_day_label": "D+11"
     },
     {
       "date": "2026-07-22",
@@ -112,8 +103,8 @@
       "category": "earnings",
       "country": "US",
       "note": "2Q26, after-hours",
-      "d_day": 13,
-      "d_day_label": "D+13"
+      "d_day": 11,
+      "d_day_label": "D+11"
     },
     {
       "date": "2026-07-22",
@@ -121,8 +112,19 @@
       "category": "earnings",
       "country": "KR",
       "note": "2Q26, Quartr 기준",
-      "d_day": 13,
-      "d_day_label": "D+13"
+      "d_day": 11,
+      "d_day_label": "D+11"
+    },
+    {
+      "date": "2026-07-22",
+      "name": "핵융합 산업 리포트 시즌",
+      "category": "future",
+      "country": "GLOBAL",
+      "note": "민간 핵융합 투자·공급망·상업화 목표를 점검하는 시즌",
+      "d_day": 11,
+      "d_day_label": "D+11",
+      "name_en": "Fusion industry report season",
+      "note_en": "Season for checking private fusion funding, supply chain, and commercialization targets"
     },
     {
       "date": "2026-07-23",
@@ -130,8 +132,8 @@
       "category": "earnings",
       "country": "KR",
       "note": "2Q26, 국내 실적 캘린더 기준",
-      "d_day": 14,
-      "d_day_label": "D+14"
+      "d_day": 12,
+      "d_day_label": "D+12"
     },
     {
       "date": "2026-07-23",
@@ -139,8 +141,8 @@
       "category": "earnings",
       "country": "US",
       "note": "2Q26, after-hours",
-      "d_day": 14,
-      "d_day_label": "D+14"
+      "d_day": 12,
+      "d_day_label": "D+12"
     },
     {
       "date": "2026-07-23",
@@ -148,8 +150,8 @@
       "category": "earnings",
       "country": "KR",
       "note": "2Q26, Investing.com/국내 실적 캘린더 기준",
-      "d_day": 14,
-      "d_day_label": "D+14"
+      "d_day": 12,
+      "d_day_label": "D+12"
     },
     {
       "date": "2026-07-23",
@@ -157,8 +159,8 @@
       "category": "earnings",
       "country": "US",
       "note": "2Q26, pre-market",
-      "d_day": 14,
-      "d_day_label": "D+14"
+      "d_day": 12,
+      "d_day_label": "D+12"
     },
     {
       "date": "2026-07-23",
@@ -166,8 +168,8 @@
       "category": "earnings",
       "country": "KR",
       "note": "2Q26, 국내 실적 캘린더 기준",
-      "d_day": 14,
-      "d_day_label": "D+14"
+      "d_day": 12,
+      "d_day_label": "D+12"
     },
     {
       "date": "2026-07-23",
@@ -175,8 +177,8 @@
       "category": "earnings",
       "country": "KR",
       "note": "2Q26",
-      "d_day": 14,
-      "d_day_label": "D+14"
+      "d_day": 12,
+      "d_day_label": "D+12"
     },
     {
       "date": "2026-07-27",
@@ -184,8 +186,8 @@
       "category": "earnings",
       "country": "US",
       "note": "2Q26, after-hours",
-      "d_day": 18,
-      "d_day_label": "D+18"
+      "d_day": 16,
+      "d_day_label": "D+16"
     },
     {
       "date": "2026-07-28",
@@ -193,8 +195,8 @@
       "category": "earnings",
       "country": "KR",
       "note": "2Q26, 국내 실적 캘린더 기준",
-      "d_day": 19,
-      "d_day_label": "D+19"
+      "d_day": 17,
+      "d_day_label": "D+17"
     },
     {
       "date": "2026-07-29",
@@ -202,8 +204,8 @@
       "category": "earnings",
       "country": "US",
       "note": "2Q26",
-      "d_day": 20,
-      "d_day_label": "D+20"
+      "d_day": 18,
+      "d_day_label": "D+18"
     },
     {
       "date": "2026-07-29",
@@ -211,8 +213,8 @@
       "category": "earnings",
       "country": "US",
       "note": "2Q26",
-      "d_day": 20,
-      "d_day_label": "D+20"
+      "d_day": 18,
+      "d_day_label": "D+18"
     },
     {
       "date": "2026-07-29",
@@ -220,8 +222,8 @@
       "category": "earnings",
       "country": "US",
       "note": "2Q26",
-      "d_day": 20,
-      "d_day_label": "D+20"
+      "d_day": 18,
+      "d_day_label": "D+18"
     },
     {
       "date": "2026-07-29",
@@ -229,8 +231,8 @@
       "category": "earnings",
       "country": "KR",
       "note": "2Q26, 국내 실적 캘린더 기준",
-      "d_day": 20,
-      "d_day_label": "D+20"
+      "d_day": 18,
+      "d_day_label": "D+18"
     },
     {
       "date": "2026-07-29",
@@ -238,8 +240,8 @@
       "category": "fed",
       "country": "US",
       "note": "7월 FOMC",
-      "d_day": 20,
-      "d_day_label": "D+20"
+      "d_day": 18,
+      "d_day_label": "D+18"
     },
     {
       "date": "2026-07-30",
@@ -247,8 +249,8 @@
       "category": "earnings",
       "country": "US",
       "note": "2Q26",
-      "d_day": 21,
-      "d_day_label": "D+21"
+      "d_day": 19,
+      "d_day_label": "D+19"
     },
     {
       "date": "2026-07-30",
@@ -256,8 +258,8 @@
       "category": "earnings",
       "country": "US",
       "note": "2Q26",
-      "d_day": 21,
-      "d_day_label": "D+21"
+      "d_day": 19,
+      "d_day_label": "D+19"
     },
     {
       "date": "2026-07-30",
@@ -265,8 +267,8 @@
       "category": "earnings",
       "country": "US",
       "note": "2Q26",
-      "d_day": 21,
-      "d_day_label": "D+21"
+      "d_day": 19,
+      "d_day_label": "D+19"
     },
     {
       "date": "2026-07-30",
@@ -274,8 +276,8 @@
       "category": "earnings",
       "country": "KR",
       "note": "2Q26 earnings conference call, 10:00 KST",
-      "d_day": 21,
-      "d_day_label": "D+21"
+      "d_day": 19,
+      "d_day_label": "D+19"
     },
     {
       "date": "2026-08-04",
@@ -283,8 +285,8 @@
       "category": "earnings",
       "country": "US",
       "note": "2Q26",
-      "d_day": 26,
-      "d_day_label": "D+26"
+      "d_day": 24,
+      "d_day_label": "D+24"
     },
     {
       "date": "2026-08-04",
@@ -292,8 +294,8 @@
       "category": "earnings",
       "country": "US",
       "note": "2Q26",
-      "d_day": 26,
-      "d_day_label": "D+26"
+      "d_day": 24,
+      "d_day_label": "D+24"
     },
     {
       "date": "2026-08-05",
@@ -301,8 +303,8 @@
       "category": "earnings",
       "country": "US",
       "note": "2Q26, after-hours",
-      "d_day": 27,
-      "d_day_label": "D+27"
+      "d_day": 25,
+      "d_day_label": "D+25"
     },
     {
       "date": "2026-08-05",
@@ -310,8 +312,8 @@
       "category": "earnings",
       "country": "US",
       "note": "2Q26, pre-market",
-      "d_day": 27,
-      "d_day_label": "D+27"
+      "d_day": 25,
+      "d_day_label": "D+25"
     },
     {
       "date": "2026-08-06",
@@ -319,8 +321,8 @@
       "category": "earnings",
       "country": "KR",
       "note": "2Q26, Quartr 기준",
-      "d_day": 28,
-      "d_day_label": "D+28"
+      "d_day": 26,
+      "d_day_label": "D+26"
     },
     {
       "date": "2026-08-06",
@@ -328,8 +330,8 @@
       "category": "earnings",
       "country": "US",
       "note": "2Q26",
-      "d_day": 28,
-      "d_day_label": "D+28"
+      "d_day": 26,
+      "d_day_label": "D+26"
     },
     {
       "date": "2026-08-06",
@@ -337,8 +339,8 @@
       "category": "earnings",
       "country": "JP",
       "note": "2Q26",
-      "d_day": 28,
-      "d_day_label": "D+28"
+      "d_day": 26,
+      "d_day_label": "D+26"
     },
     {
       "date": "2026-08-07",
@@ -346,8 +348,8 @@
       "category": "earnings",
       "country": "US",
       "note": "2Q26",
-      "d_day": 29,
-      "d_day_label": "D+29"
+      "d_day": 27,
+      "d_day_label": "D+27"
     },
     {
       "date": "2026-08-07",
@@ -355,8 +357,8 @@
       "category": "earnings",
       "country": "KR",
       "note": "2Q26, Quartr 기준",
-      "d_day": 29,
-      "d_day_label": "D+29"
+      "d_day": 27,
+      "d_day_label": "D+27"
     },
     {
       "date": "2026-08-07",
@@ -364,8 +366,8 @@
       "category": "earnings",
       "country": "KR",
       "note": "2Q26, Investing.com/국내 실적 캘린더 기준",
-      "d_day": 29,
-      "d_day_label": "D+29"
+      "d_day": 27,
+      "d_day_label": "D+27"
     },
     {
       "date": "2026-08-07",
@@ -373,8 +375,8 @@
       "category": "earnings",
       "country": "KR",
       "note": "2Q26, Business Insider 기준",
-      "d_day": 29,
-      "d_day_label": "D+29"
+      "d_day": 27,
+      "d_day_label": "D+27"
     },
     {
       "date": "2026-08-07",
@@ -382,8 +384,8 @@
       "category": "earnings",
       "country": "KR",
       "note": "2Q26, 국내 실적 캘린더 기준",
-      "d_day": 29,
-      "d_day_label": "D+29"
+      "d_day": 27,
+      "d_day_label": "D+27"
     },
     {
       "date": "2026-08-11",
@@ -391,8 +393,8 @@
       "category": "earnings",
       "country": "US",
       "note": "2Q26",
-      "d_day": 33,
-      "d_day_label": "D+33"
+      "d_day": 31,
+      "d_day_label": "D+31"
     },
     {
       "date": "2026-08-11",
@@ -400,8 +402,8 @@
       "category": "earnings",
       "country": "US",
       "note": "2Q26",
-      "d_day": 33,
-      "d_day_label": "D+33"
+      "d_day": 31,
+      "d_day_label": "D+31"
     },
     {
       "date": "2026-08-12",
@@ -409,8 +411,8 @@
       "category": "us_data",
       "country": "US",
       "note": "2026년 7월 CPI",
-      "d_day": 34,
-      "d_day_label": "D+34",
+      "d_day": 32,
+      "d_day_label": "D+32",
       "metric_id": "e9b8cd241fa0"
     },
     {
@@ -419,8 +421,8 @@
       "category": "earnings",
       "country": "US",
       "note": "3Q26, after-hours",
-      "d_day": 35,
-      "d_day_label": "D+35"
+      "d_day": 33,
+      "d_day_label": "D+33"
     },
     {
       "date": "2026-08-13",
@@ -428,8 +430,8 @@
       "category": "expiry",
       "country": "KR",
       "note": "매월 둘째 목요일 기준, 휴장 시 전영업일",
-      "d_day": 35,
-      "d_day_label": "D+35"
+      "d_day": 33,
+      "d_day_label": "D+33"
     },
     {
       "date": "2026-08-18",
@@ -437,8 +439,8 @@
       "category": "earnings",
       "country": "KR",
       "note": "2Q26, 국내 실적 캘린더 기준",
-      "d_day": 40,
-      "d_day_label": "D+40"
+      "d_day": 38,
+      "d_day_label": "D+38"
     },
     {
       "date": "2026-08-19",
@@ -446,8 +448,8 @@
       "category": "earnings",
       "country": "KR",
       "note": "2Q26, Investing.com/국내 실적 캘린더 기준",
-      "d_day": 41,
-      "d_day_label": "D+41"
+      "d_day": 39,
+      "d_day_label": "D+39"
     },
     {
       "date": "2026-08-26",
@@ -455,8 +457,8 @@
       "category": "earnings",
       "country": "US",
       "note": "2Q26",
-      "d_day": 48,
-      "d_day_label": "D+48"
+      "d_day": 46,
+      "d_day_label": "D+46"
     },
     {
       "date": "2026-08-27",
@@ -464,8 +466,8 @@
       "category": "bok",
       "country": "KR",
       "note": "통화정책방향 결정회의",
-      "d_day": 49,
-      "d_day_label": "D+49"
+      "d_day": 47,
+      "d_day_label": "D+47"
     },
     {
       "date": "2026-09-07",
@@ -473,8 +475,8 @@
       "category": "holiday",
       "country": "US",
       "note": "Labor Day",
-      "d_day": 60,
-      "d_day_label": "D+60"
+      "d_day": 58,
+      "d_day_label": "D+58"
     },
     {
       "date": "2026-09-08",
@@ -482,8 +484,8 @@
       "category": "earnings",
       "country": "US",
       "note": "1Q FY2027, estimated",
-      "d_day": 61,
-      "d_day_label": "D+61"
+      "d_day": 59,
+      "d_day_label": "D+59"
     },
     {
       "date": "2026-09-10",
@@ -491,8 +493,8 @@
       "category": "expiry",
       "country": "KR",
       "note": "3·6·9·12월 둘째 목요일 기준",
-      "d_day": 63,
-      "d_day_label": "D+63"
+      "d_day": 61,
+      "d_day_label": "D+61"
     },
     {
       "date": "2026-09-10",
@@ -500,8 +502,8 @@
       "category": "expiry",
       "country": "KR",
       "note": "매월 둘째 목요일 기준, 휴장 시 전영업일",
-      "d_day": 63,
-      "d_day_label": "D+63"
+      "d_day": 61,
+      "d_day_label": "D+61"
     },
     {
       "date": "2026-09-11",
@@ -509,8 +511,8 @@
       "category": "us_data",
       "country": "US",
       "note": "2026년 8월 CPI",
-      "d_day": 64,
-      "d_day_label": "D+64",
+      "d_day": 62,
+      "d_day_label": "D+62",
       "metric_id": "e9b8cd241fa0"
     },
     {
@@ -519,8 +521,8 @@
       "category": "fed",
       "country": "US",
       "note": "9월 FOMC·SEP",
-      "d_day": 69,
-      "d_day_label": "D+69"
+      "d_day": 67,
+      "d_day_label": "D+67"
     },
     {
       "date": "2026-09-18",
@@ -528,8 +530,8 @@
       "category": "expiry",
       "country": "US",
       "note": "3·6·9·12월 셋째 금요일 기준, 휴장 시 전영업일",
-      "d_day": 71,
-      "d_day_label": "D+71"
+      "d_day": 69,
+      "d_day_label": "D+69"
     },
     {
       "date": "2026-09-23",
@@ -537,8 +539,19 @@
       "category": "earnings",
       "country": "US",
       "note": "4Q FY2026, expected after-hours",
-      "d_day": 76,
-      "d_day_label": "D+76"
+      "d_day": 74,
+      "d_day_label": "D+74"
+    },
+    {
+      "date": "2026-09-24",
+      "name": "World Robotics 발표 시즌",
+      "category": "future",
+      "country": "GLOBAL",
+      "note": "로봇 설치 대수와 지역별 자동화 수요를 확인하는 시즌",
+      "d_day": 75,
+      "d_day_label": "D+75",
+      "name_en": "World Robotics report season",
+      "note_en": "Season for checking robot installations and regional automation demand"
     },
     {
       "date": "2026-09-24",
@@ -546,8 +559,8 @@
       "category": "holiday",
       "country": "KR",
       "note": "추석 연휴",
-      "d_day": 77,
-      "d_day_label": "D+77"
+      "d_day": 75,
+      "d_day_label": "D+75"
     },
     {
       "date": "2026-09-25",
@@ -555,8 +568,8 @@
       "category": "holiday",
       "country": "KR",
       "note": "추석 연휴",
-      "d_day": 78,
-      "d_day_label": "D+78"
+      "d_day": 76,
+      "d_day_label": "D+76"
     },
     {
       "date": "2026-10-05",
@@ -564,20 +577,28 @@
       "category": "holiday",
       "country": "KR",
       "note": "개천절 대체휴일",
-      "d_day": 88,
-      "d_day_label": "D+88"
-    }
-  ],
-  "upcoming": [
+      "d_day": 86,
+      "d_day_label": "D+86"
+    },
     {
-      "date": "2026-07-09",
+      "date": "2026-10-08",
       "name": "한국 옵션만기",
       "category": "expiry",
       "country": "KR",
       "note": "매월 둘째 목요일 기준, 휴장 시 전영업일",
-      "d_day": 0,
-      "d_day_label": "D-day"
+      "d_day": 89,
+      "d_day_label": "D+89"
+    },
+    {
+      "date": "2026-10-09",
+      "name": "KRX 휴장",
+      "category": "holiday",
+      "country": "KR",
+      "note": "한글날",
+      "d_day": 90,
+      "d_day_label": "D+90"
     }
   ],
+  "upcoming": [],
   "missing_years": []
 }

@@ -1,7 +1,481 @@
 {
   "version": 1,
-  "updated_at": "2026-07-09T15:13:20+09:00",
+  "updated_at": "2026-07-11T08:54:34+09:00",
   "cards": [
+    {
+      "id": "2026-07-11-morning-f634eeefb3",
+      "date": "2026-07-11",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-07-11T08:54:34+09:00",
+      "generated_label": "2026-07-11 08:54 KST",
+      "headline": "건설·금융·우주 중심의 시장 강세와 외국인 수급 이탈",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:건설/부동산:strong",
+        "산업:은행/금융:strong",
+        "산업:우주:strong"
+      ]
+    },
+    {
+      "id": "2026-07-11-intraday-81a6a02f93",
+      "date": "2026-07-11",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-11T07:31:19+09:00",
+      "generated_label": "2026-07-11 07:31 KST",
+      "headline": "미국 증시 소폭 반등 속 암호자산 유동성 개선",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 이더리움",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:neutral",
+        "산업:스테이블코인:strong"
+      ]
+    },
+    {
+      "id": "2026-07-11-intraday-d21fd24bd0",
+      "date": "2026-07-11",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-11T06:05:05+09:00",
+      "generated_label": "2026-07-11 06:05 KST",
+      "headline": "미국 증시 변동성 완화와 스테이블코인 강세",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:데이터인프라:weak",
+        "산업:반도체:weak"
+      ]
+    },
+    {
+      "id": "2026-07-11-intraday-d5ec65b01a",
+      "date": "2026-07-11",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-11T04:57:30+09:00",
+      "generated_label": "2026-07-11 04:57 KST",
+      "headline": "미국 증시 변동성 완화와 스테이블코인 강세",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:데이터인프라:weak",
+        "산업:반도체:weak"
+      ]
+    },
+    {
+      "id": "2026-07-11-intraday-08cb833368",
+      "date": "2026-07-11",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-11T03:07:22+09:00",
+      "generated_label": "2026-07-11 03:07 KST",
+      "headline": "스테이블코인 강세와 알루미늄 급락이 엇갈린 미국장",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 알루미늄 선물(ALI)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:철강/소재:weak",
+        "산업:매크로:neutral"
+      ]
+    },
+    {
+      "id": "2026-07-11-intraday-b583e23ec9",
+      "date": "2026-07-11",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-11T01:25:32+09:00",
+      "generated_label": "2026-07-11 01:25 KST",
+      "headline": "미국 증시 혼조 속 알루미늄 급락과 위험자산 선호",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 알루미늄 선물(ALI)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:철강/소재:weak",
+        "산업:스테이블코인:strong",
+        "산업:매크로:neutral"
+      ]
+    },
+    {
+      "id": "2026-07-11-morning-a706181d82",
+      "date": "2026-07-11",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-07-11T00:46:35+09:00",
+      "generated_label": "2026-07-11 00:46 KST",
+      "headline": "스테이블코인 강세와 반도체·데이터인프라의 엇갈린 흐름",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:반도체:weak",
+        "산업:데이터인프라:weak"
+      ]
+    },
+    {
+      "id": "2026-07-11-morning-b32a5e9034",
+      "date": "2026-07-11",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-07-11T00:12:59+09:00",
+      "generated_label": "2026-07-11 00:12 KST",
+      "headline": "스테이블코인 강세와 데이터인프라의 숨 고르기",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:데이터인프라:weak",
+        "산업:반도체:weak"
+      ]
+    },
+    {
+      "id": "2026-07-10-morning-67b7e8945e",
+      "date": "2026-07-10",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-07-10T23:50:30+09:00",
+      "generated_label": "2026-07-10 23:50 KST",
+      "headline": "스테이블코인 강세 속 반도체·데이터인프라 차익실현",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:데이터인프라:weak",
+        "산업:반도체:weak"
+      ]
+    },
+    {
+      "id": "2026-07-10-intraday-08f7d6e197",
+      "date": "2026-07-10",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-10T23:40:37+09:00",
+      "generated_label": "2026-07-10 23:40 KST",
+      "headline": "스테이블코인 강세와 반도체 차익실현의 교차",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Circle(CRCL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:반도체:weak",
+        "산업:로봇:strong"
+      ]
+    },
+    {
+      "id": "2026-07-10-intraday-29a554edcf",
+      "date": "2026-07-10",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-10T23:37:59+09:00",
+      "generated_label": "2026-07-10 23:37 KST",
+      "headline": "스테이블코인 강세와 반도체 차익실현의 공존",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Circle(CRCL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:반도체:weak",
+        "산업:로봇:strong"
+      ]
+    },
+    {
+      "id": "2026-07-10-intraday-4ec2b5a9e4",
+      "date": "2026-07-10",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-10T23:29:21+09:00",
+      "generated_label": "2026-07-10 23:29 KST",
+      "headline": "스테이블코인 강세 속 반도체 차익실현 지속",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Circle(CRCL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:반도체:weak",
+        "산업:로봇:strong"
+      ]
+    },
+    {
+      "id": "2026-07-10-intraday-3fde5dd754",
+      "date": "2026-07-10",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-10T23:24:51+09:00",
+      "generated_label": "2026-07-10 23:24 KST",
+      "headline": "스테이블코인 강세와 반도체 차익실현의 교차",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Circle(CRCL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:반도체:weak",
+        "산업:로봇:strong"
+      ]
+    },
+    {
+      "id": "2026-07-10-intraday-e147e0ada9",
+      "date": "2026-07-10",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-10T23:21:36+09:00",
+      "generated_label": "2026-07-10 23:21 KST",
+      "headline": "반도체 차익실현 속 스테이블코인 강세",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Circle(CRCL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:반도체:weak",
+        "산업:로봇:strong"
+      ]
+    },
+    {
+      "id": "2026-07-10-intraday-9f24c93f28",
+      "date": "2026-07-10",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-10T23:12:13+09:00",
+      "generated_label": "2026-07-10 23:12 KST",
+      "headline": "스테이블코인 강세와 반도체 차익실현의 교차",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Circle(CRCL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:반도체:weak",
+        "산업:로봇:strong"
+      ]
+    },
+    {
+      "id": "2026-07-10-morning-153099742a",
+      "date": "2026-07-10",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-07-10T23:05:34+09:00",
+      "generated_label": "2026-07-10 23:05 KST",
+      "headline": "스테이블코인 강세와 반도체 차별화 흐름",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:로봇:strong",
+        "산업:반도체:weak"
+      ]
+    },
+    {
+      "id": "2026-07-10-morning-f88103858a",
+      "date": "2026-07-10",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-07-10T22:57:45+09:00",
+      "generated_label": "2026-07-10 22:57 KST",
+      "headline": "건설·금융·스테이블코인 주도, 외국인 수급은 여전히 관망",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:건설/부동산:strong",
+        "산업:은행/금융:strong",
+        "산업:매크로:weak"
+      ]
+    },
+    {
+      "id": "2026-07-10-intraday-c5fc97fc25",
+      "date": "2026-07-10",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-10T16:04:47+09:00",
+      "generated_label": "2026-07-10 16:04 KST",
+      "headline": "코스피 외국인 순매도 전환과 주요 대형주 약세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true
+    },
+    {
+      "id": "2026-07-10-intraday-fb93b82950",
+      "date": "2026-07-10",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-10T12:42:28+09:00",
+      "generated_label": "2026-07-10 12:42 KST",
+      "headline": "코스피·코스닥 급반등, 외국인 수급 이탈은 주의",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true
+    },
+    {
+      "id": "2026-07-10-morning-949f314af2",
+      "date": "2026-07-10",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-07-10T09:00:13+09:00",
+      "generated_label": "2026-07-10 09:00 KST",
+      "headline": "외국인 순매도 전환과 KOSPI 수급 변동성 확대",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true
+    },
+    {
+      "id": "2026-07-10-intraday-ea39959e4e",
+      "date": "2026-07-10",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-10T06:56:44+09:00",
+      "generated_label": "2026-07-10 06:56 KST",
+      "headline": "방산 수출 급증과 데이터 인프라 투자 확대",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 한국 수출 무기류/탄약(9306)",
+      "gemini_call_attempted": true
+    },
+    {
+      "id": "2026-07-10-intraday-a7de7bf1df",
+      "date": "2026-07-10",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-10T05:18:18+09:00",
+      "generated_label": "2026-07-10 05:18 KST",
+      "headline": "미국 반도체주 반등과 데이터 인프라 투자 확대",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 한국 수출 무기류/탄약(9306)",
+      "gemini_call_attempted": true
+    },
+    {
+      "id": "2026-07-10-intraday-63a1193bc5",
+      "date": "2026-07-10",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-10T03:17:31+09:00",
+      "generated_label": "2026-07-10 03:17 KST",
+      "headline": "미국 반도체주 반등과 데이터 인프라 투자 확대",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 한국 수출 무기류/탄약(9306)",
+      "gemini_call_attempted": true
+    },
+    {
+      "id": "2026-07-10-intraday-f6ad7462a9",
+      "date": "2026-07-10",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-10T01:26:26+09:00",
+      "generated_label": "2026-07-10 01:26 KST",
+      "headline": "미국 반도체주 반등과 데이터 인프라 투자 확대",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true
+    },
+    {
+      "id": "2026-07-09-morning-01e704ff63",
+      "date": "2026-07-09",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-07-09T23:53:58+09:00",
+      "generated_label": "2026-07-09 23:53 KST",
+      "headline": "미국 반도체 반등과 한국 옵션만기일의 긴장감",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true
+    },
+    {
+      "id": "2026-07-09-morning-ba170469b6",
+      "date": "2026-07-09",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-07-09T23:47:39+09:00",
+      "generated_label": "2026-07-09 23:47 KST",
+      "headline": "반도체 장비주 강세와 한국 옵션만기 경계감",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true
+    },
+    {
+      "id": "2026-07-09-morning-9dffe98eee",
+      "date": "2026-07-09",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-07-09T23:37:49+09:00",
+      "generated_label": "2026-07-09 23:37 KST",
+      "headline": "미국 반도체 반등과 한국 옵션만기일의 긴장감",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true
+    },
+    {
+      "id": "2026-07-09-morning-d43cb08fb5",
+      "date": "2026-07-09",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-07-09T18:10:38+09:00",
+      "generated_label": "2026-07-09 18:10 KST",
+      "headline": "코스피 공포 심화와 옵션만기일 변동성 주의",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true
+    },
+    {
+      "id": "2026-07-09-intraday-7d03c8772a",
+      "date": "2026-07-09",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-09T16:54:14+09:00",
+      "generated_label": "2026-07-09 16:54 KST",
+      "headline": "한국 수출 무기류 급증과 옵션만기일 변동성",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 한국 수출 무기류/탄약(9306)",
+      "gemini_call_attempted": true
+    },
+    {
+      "id": "2026-07-09-morning-ec60947d43",
+      "date": "2026-07-09",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-07-09T16:31:13+09:00",
+      "generated_label": "2026-07-09 16:31 KST",
+      "headline": "한국 옵션만기일의 변동성과 방산주 차익실현",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true
+    },
     {
       "id": "2026-07-09-morning-7bfd398c1f",
       "date": "2026-07-09",
