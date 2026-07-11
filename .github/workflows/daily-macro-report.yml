@@ -102,11 +102,15 @@ jobs:
         run: industry-dashboard --config config.yaml --out site
 
       - name: Refresh Admin analytics snapshot
-        if: ${{ vars.GA_PROPERTY_ID != '' && secrets.GA_SERVICE_ACCOUNT_JSON != '' }}
         env:
           GA_PROPERTY_ID: ${{ vars.GA_PROPERTY_ID }}
           GA_SERVICE_ACCOUNT_JSON: ${{ secrets.GA_SERVICE_ACCOUNT_JSON }}
-        run: python scripts/refresh_analytics.py --out site/data/analytics.json
+        run: |
+          if [ -z "$GA_PROPERTY_ID" ] || [ -z "$GA_SERVICE_ACCOUNT_JSON" ]; then
+            echo "Google Analytics credentials are not configured; keeping the previous snapshot."
+            exit 0
+          fi
+          python scripts/refresh_analytics.py --out site/data/analytics.json
 
       - name: Commit data cache back to repository
         run: |
