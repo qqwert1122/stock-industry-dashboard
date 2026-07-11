@@ -11,7 +11,18 @@ import yaml
 
 FUTURE_DATA_VERSION = 1
 DEFAULT_FUTURE_DIR = Path("data/future")
-DEFAULT_CATEGORIES = ["전체", "AI", "로봇·모빌리티", "바이오", "에너지", "우주"]
+DEFAULT_CATEGORIES = [
+    "전체",
+    "AI",
+    "로봇·모빌리티",
+    "바이오",
+    "에너지",
+    "우주",
+    "컴퓨팅",
+    "인간증강",
+    "식량",
+    "기후",
+]
 TECH_REQUIRED_FIELDS = ("id", "name", "category", "status", "what", "why", "now", "as_of")
 PREDICTION_REQUIRED_FIELDS = ("year", "source_label", "source")
 TRACK_REQUIRED_FIELDS = (
@@ -60,6 +71,10 @@ LINK_FAILURE_WARNING_COUNT = 2
 LADDER_REQUIRED_FIELDS = ("id", "name", "source", "rungs")
 BREAKDOWN_REQUIREMENT_REQUIRED_FIELDS = ("id", "name", "what", "gap", "confidence", "as_of", "source")
 BREAKDOWN_CONFIDENCE_LEVELS = {"high", "medium", "low"}
+FUTURE_INVESTABLE_LEVELS = {"true", "partial", "false"}
+FUTURE_NATURE_LEVELS = {"frontier", "product", "governance"}
+ROADMAP_PHASE_STATUSES = {"done", "active", "projected"}
+ROADMAP_MARKER_TYPES = {"prediction", "achieved", "milestone"}
 DEFAULT_TRUSTED_DOMAINS = {
     "ai.gov",
     "aiindex.stanford.edu",
@@ -640,7 +655,16 @@ def compact_prediction(raw: dict[str, Any]) -> dict[str, Any]:
         "source_label": str(predicted.get("source_label") or ""),
         "source_label_en": str(predicted.get("source_label_en") or predicted.get("source_label") or ""),
         "source": str(predicted.get("source") or ""),
+        "confidence": str(predicted.get("confidence") or "medium").lower(),
+        "manufacturer_forecast": bool(predicted.get("manufacturer_forecast", False)),
     }
+
+
+def normalize_investable(value: Any) -> str:
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    normalized = str(value or "true").strip().lower()
+    return normalized if normalized in FUTURE_INVESTABLE_LEVELS else "true"
 
 
 def int_or_none(value: Any) -> int | None:
@@ -652,6 +676,242 @@ def int_or_none(value: Any) -> int | None:
         return None
 
 
+def roadmap_year(value: Any) -> float | None:
+    if value is None or value == "":
+        return None
+    try:
+        year = float(value)
+    except (TypeError, ValueError):
+        return None
+    return year if 1900 <= year <= 2200 else None
+
+
+def roadmap_year_label(value: float | None) -> str:
+    if value is None:
+        return ""
+    return str(int(value)) if value.is_integer() else f"{value:.1f}"
+
+
+def normalize_roadmap_revision(raw: Any) -> dict[str, Any] | None:
+    if not isinstance(raw, dict):
+        return None
+    start = roadmap_year(raw.get("start"))
+    end = roadmap_year(raw.get("end"))
+    if start is None or end is None or end < start:
+        return None
+    return {
+        "date": str(raw.get("date") or ""),
+        "start": start,
+        "end": end,
+        "note": str(raw.get("note") or ""),
+        "note_en": str(raw.get("note_en") or raw.get("note") or ""),
+    }
+
+
+def roadmap_ghost(phase: dict[str, Any], revisions: list[dict[str, Any]]) -> dict[str, Any] | None:
+    start = phase.get("start")
+    end = phase.get("end")
+    previous = next(
+        (
+            revision
+            for revision in reversed(revisions)
+            if revision.get("start") != start or revision.get("end") != end
+        ),
+        None,
+    )
+    if not previous:
+        return None
+    start_shift = float(start) - float(previous["start"])
+    end_shift = float(end) - float(previous["end"])
+    shift = start_shift if start_shift else end_shift
+    return {
+        "start": previous["start"],
+        "end": previous["end"],
+        "date": previous.get("date") or "",
+        "shift_years": shift,
+        "direction": "delayed" if shift > 0 else "advanced" if shift < 0 else "changed",
+    }
+
+
+def normalize_roadmap_marker(raw: Any, *, fallback_id: str) -> dict[str, Any] | None:
+    if not isinstance(raw, dict):
+        return None
+    year = roadmap_year(raw.get("year"))
+    if year is None:
+        return None
+    marker_type = str(raw.get("type") or "milestone").strip().lower()
+    marker_type = marker_type if marker_type in ROADMAP_MARKER_TYPES else "milestone"
+    return {
+        "id": str(raw.get("id") or fallback_id),
+        "year": year,
+        "type": marker_type,
+        "label": str(raw.get("label") or roadmap_year_label(year)),
+        "label_en": str(raw.get("label_en") or raw.get("label") or roadmap_year_label(year)),
+        "ref": str(raw.get("ref") or ""),
+    }
+
+
+def build_future_roadmaps(
+    base_dir: Path,
+    technologies_raw: list[dict[str, Any]],
+    metrics: list[dict[str, Any]],
+    breakdown: dict[str, Any],
+    *,
+    today: date,
+    warnings: list[dict[str, str]],
+) -> dict[str, Any]:
+    known_tech = {str(item.get("id") or ""): item for item in technologies_raw if item.get("id")}
+    by_key, _by_symbol = metric_indexes(metrics)
+    changelog_by_tech: dict[str, list[dict[str, Any]]] = {}
+    for row in load_future_yaml(base_dir / "changelog.yaml"):
+        tech_id = str(row.get("tech") or row.get("technology") or "")
+        if tech_id:
+            changelog_by_tech.setdefault(tech_id, []).append(row)
+
+    by_tech: dict[str, dict[str, Any]] = {}
+    phase_count = 0
+    for raw_block in load_future_yaml(base_dir / "roadmap.yaml"):
+        tech_id = str(raw_block.get("tech") or raw_block.get("technology") or "").strip()
+        tech = known_tech.get(tech_id)
+        if not tech:
+            warnings.append(warning_record("future_roadmap", tech_id or "unknown", "technologies.yaml에서 기술을 찾을 수 없습니다."))
+            continue
+        if str(tech.get("nature") or "").lower() == "governance":
+            warnings.append(warning_record("future_roadmap", tech_id, "governance 기술은 시간축 간트에서 제외됩니다."))
+            continue
+        phases_raw = raw_block.get("phases") if isinstance(raw_block.get("phases"), list) else []
+        if len(phases_raw) > 6:
+            warnings.append(warning_record("future_roadmap", tech_id, "단계가 6개를 초과합니다. 비슷한 단계를 합치세요."))
+        requirements = breakdown.get("by_tech", {}).get(tech_id, {}).get("requirements", [])
+        phases: list[dict[str, Any]] = []
+        for index, raw_phase in enumerate(phases_raw):
+            if not isinstance(raw_phase, dict):
+                continue
+            phase_id = str(raw_phase.get("id") or f"phase-{index + 1}")
+            item_id = f"{tech_id}:{phase_id}"
+            start = roadmap_year(raw_phase.get("start"))
+            end = roadmap_year(raw_phase.get("end"))
+            status = str(raw_phase.get("status") or "").strip().lower()
+            if start is None or end is None or end < start:
+                warnings.append(warning_record("future_roadmap", item_id, "start/end 기간이 올바르지 않습니다."))
+                continue
+            if status not in ROADMAP_PHASE_STATUSES:
+                warnings.append(warning_record("future_roadmap", item_id, f"status={status} 값을 알 수 없습니다."))
+                status = "projected"
+            basis = str(raw_phase.get("basis") or "").strip()
+            if status == "projected" and not basis:
+                warnings.append(warning_record("future_roadmap_basis", item_id, "projected 단계에 basis가 없습니다."))
+            if status == "done" and end > today.year:
+                warnings.append(warning_record("future_roadmap_status", item_id, "미래에 끝나는 단계를 done으로 표시했습니다."))
+            if status == "active" and end < today.year:
+                warnings.append(warning_record("future_roadmap_status", item_id, "이미 끝난 기간을 active로 표시했습니다."))
+            if status == "active" and start > today.year:
+                warnings.append(warning_record("future_roadmap_status", item_id, "아직 시작하지 않은 기간을 active로 표시했습니다."))
+            if status == "projected" and end < today.year:
+                warnings.append(warning_record("future_roadmap_status", item_id, "이미 끝난 기간을 projected로 표시했습니다."))
+            confidence = str(raw_phase.get("confidence") or "medium").strip().lower()
+            if confidence not in BREAKDOWN_CONFIDENCE_LEVELS:
+                warnings.append(warning_record("future_roadmap", item_id, f"confidence={confidence} 값을 알 수 없습니다."))
+                confidence = "medium"
+            revisions = [
+                revision
+                for item in (raw_phase.get("revisions") or [])
+                if (revision := normalize_roadmap_revision(item))
+            ]
+            if revisions and (revisions[-1].get("start") != start or revisions[-1].get("end") != end):
+                warnings.append(warning_record("future_roadmap_revision", item_id, "마지막 revision 기간이 현재 start/end와 다릅니다."))
+            links = raw_phase.get("links") if isinstance(raw_phase.get("links"), dict) else {}
+            ladder_link = links.get("ladder_rung") if isinstance(links.get("ladder_rung"), list) else []
+            ladder_id = str(ladder_link[0]) if ladder_link else ""
+            ladder_rung_id = str(ladder_link[1]) if len(ladder_link) > 1 else ""
+            linked_requirement = next(
+                (
+                    requirement
+                    for requirement in requirements
+                    if str((requirement.get("ladder") or {}).get("id") or "") == ladder_id
+                    and ladder_rung_id in {str(requirement.get("required_rung") or ""), str(requirement.get("current_rung") or "")}
+                ),
+                None,
+            )
+            linked_metrics = [
+                metric
+                for ref in (links.get("metrics") or [])
+                if (metric := resolve_metric_ref(ref, by_key))
+            ]
+            phase = {
+                "id": phase_id,
+                "name": str(raw_phase.get("name") or phase_id),
+                "name_en": str(raw_phase.get("name_en") or raw_phase.get("name") or phase_id),
+                "start": start,
+                "end": end,
+                "status": status,
+                "desc": str(raw_phase.get("desc") or ""),
+                "desc_en": str(raw_phase.get("desc_en") or raw_phase.get("desc") or ""),
+                "basis": basis,
+                "basis_en": str(raw_phase.get("basis_en") or basis),
+                "confidence": confidence,
+                "revisions": revisions,
+                "ladder_link": {
+                    "ladder_id": ladder_id,
+                    "rung": ladder_rung_id,
+                    "flow_id": str(linked_requirement.get("flow_id") or "") if linked_requirement else "",
+                    "label": str(linked_requirement.get("name") or "") if linked_requirement else "",
+                    "label_en": str(linked_requirement.get("name_en") or "") if linked_requirement else "",
+                } if ladder_id else None,
+                "metrics": linked_metrics,
+            }
+            phase["ghost"] = roadmap_ghost(phase, revisions)
+            phases.append(phase)
+
+        markers = [
+            marker
+            for index, item in enumerate(raw_block.get("markers") or [])
+            if (marker := normalize_roadmap_marker(item, fallback_id=f"{tech_id}-marker-{index + 1}"))
+        ]
+        predicted = compact_prediction(tech) if isinstance(tech.get("predicted"), dict) else None
+        if predicted and predicted.get("year"):
+            prediction_label = str(predicted.get("source_label") or tech.get("name") or "예측")
+            markers.append({
+                "id": f"{tech_id}-f1-prediction",
+                "year": float(predicted["year"]),
+                "type": "prediction",
+                "label": prediction_label,
+                "label_en": str(predicted.get("source_label_en") or prediction_label),
+                "ref": "f1",
+            })
+        for index, row in enumerate(changelog_by_tech.get(tech_id, [])):
+            marker = normalize_roadmap_marker(
+                {
+                    "id": row.get("id") or f"{tech_id}-changelog-{index + 1}",
+                    "year": row.get("year") or str(row.get("date") or "")[:4],
+                    "type": "achieved" if str(row.get("status") or "") == "achieved" else "milestone",
+                    "label": row.get("title") or row.get("name"),
+                    "label_en": row.get("title_en") or row.get("name_en"),
+                    "ref": "f3",
+                },
+                fallback_id=f"{tech_id}-changelog-{index + 1}",
+            )
+            if marker:
+                markers.append(marker)
+        unique_markers: dict[tuple[float, str, str], dict[str, Any]] = {}
+        for marker in markers:
+            unique_markers[(marker["year"], marker["type"], marker["label"])] = marker
+        markers = sorted(unique_markers.values(), key=lambda item: (item["year"], item["type"]))
+        values = [today.year - 8, today.year + 10]
+        values.extend(float(item[key]) for item in phases for key in ("start", "end"))
+        values.extend(float(item["year"]) for item in markers)
+        by_tech[tech_id] = {
+            "tech": tech_id,
+            "as_of": str(raw_block.get("as_of") or ""),
+            "phases": phases,
+            "markers": markers,
+            "range": {"start": min(values), "end": max(values)},
+        }
+        phase_count += len(phases)
+    return {
+        "by_tech": by_tech,
+        "summary": {"technology_count": len(by_tech), "phase_count": phase_count},
+    }
 def slug_key(value: Any, fallback: str = "unknown") -> str:
     text = str(value or "").strip().lower()
     text = re.sub(r"[^a-z0-9가-힣]+", "-", text).strip("-")
@@ -673,8 +933,9 @@ def future_band_for_year(year: int | None, today: date) -> str:
 
 
 def sort_key_for_technology(item: dict[str, Any]) -> tuple[int, int, str]:
-    status_order = {"achieved": 0, "upcoming": 1, "distant": 2}
-    year = item.get("predicted", {}).get("year")
+    status_order = {"achieved": 0, "upcoming": 1, "distant": 2, "watch": 3}
+    predicted = item.get("predicted") if isinstance(item.get("predicted"), dict) else {}
+    year = predicted.get("year")
     return (status_order.get(str(item.get("status") or ""), 1), int(year or 9999), str(item.get("name") or ""))
 
 
@@ -965,10 +1226,23 @@ def validate_future_content(
         for field in TECH_REQUIRED_FIELDS:
             if not tech.get(field):
                 add_warning("technology", tech_id, f"{field} 필드가 비어 있습니다.")
-        predicted = tech.get("predicted") if isinstance(tech.get("predicted"), dict) else {}
-        for field in PREDICTION_REQUIRED_FIELDS:
-            if not predicted.get(field):
-                add_warning("prediction", tech_id, f"predicted.{field} 필드가 비어 있습니다.")
+        predicted = tech.get("predicted") if isinstance(tech.get("predicted"), dict) else None
+        status = str(tech.get("status") or "")
+        if predicted is None:
+            if status != "watch":
+                add_warning("prediction", tech_id, "predicted가 null이면 status는 watch여야 합니다.")
+        else:
+            for field in PREDICTION_REQUIRED_FIELDS:
+                if not predicted.get(field):
+                    add_warning("prediction", tech_id, f"predicted.{field} 필드가 비어 있습니다.")
+        investable = normalize_investable(tech.get("investable"))
+        if tech.get("investable") is not None and str(tech.get("investable")).lower() not in FUTURE_INVESTABLE_LEVELS:
+            add_warning("technology", tech_id, f"investable={tech.get('investable')} 값을 알 수 없습니다.")
+        nature = str(tech.get("nature") or "frontier").strip().lower()
+        if nature not in FUTURE_NATURE_LEVELS:
+            add_warning("technology", tech_id, f"nature={nature} 값을 알 수 없습니다.")
+        if nature == "governance" and investable != "false":
+            add_warning("technology", tech_id, "governance 항목은 investable: false여야 합니다.")
         as_of = parse_future_date(tech.get("as_of"))
         if not as_of:
             add_warning("technology", tech_id, "as_of 날짜를 읽을 수 없습니다.")
@@ -1230,6 +1504,14 @@ def build_future_timeline(
         today=today,
         warnings=warnings,
     )
+    future_roadmaps = build_future_roadmaps(
+        base_dir,
+        technologies_raw,
+        metrics,
+        future_breakdown,
+        today=today,
+        warnings=warnings,
+    )
     track_subjects = {
         str(subject.get("id") or ""): subject
         for subject in track_record.get("subjects", [])
@@ -1257,15 +1539,18 @@ def build_future_timeline(
         category = str(raw.get("category") or "")
         if category and category not in categories:
             categories.append(category)
-        predicted = compact_prediction(raw)
+        predicted = compact_prediction(raw) if isinstance(raw.get("predicted"), dict) else None
         metric_refs = [
             resolved
             for ref in (raw.get("metrics") or [])[:3]
             if (resolved := resolve_metric_ref(ref, by_key))
         ]
-        company_refs = [resolve_company_ref(ref, by_symbol) for ref in (raw.get("companies") or [])]
-        year = predicted.get("year")
-        track_subject_id = subject_id_for_prediction(predicted)
+        investable = normalize_investable(raw.get("investable"))
+        company_refs = [] if investable == "false" else [resolve_company_ref(ref, by_symbol) for ref in (raw.get("companies") or [])]
+        year = predicted.get("year") if predicted else None
+        tech_as_of = parse_future_date(raw.get("as_of"))
+        tech_stale = bool(tech_as_of and (today - tech_as_of).days > STALE_DAYS)
+        track_subject_id = subject_id_for_prediction(predicted or {})
         track_subject = track_subjects.get(track_subject_id)
         track_subject_payload = (
             {
@@ -1289,7 +1574,18 @@ def build_future_timeline(
                 "category_en": str(raw.get("category_en") or category),
                 "status": str(raw.get("status") or "upcoming"),
                 "predicted": predicted,
-                "band": future_band_for_year(year if isinstance(year, int) else None, today),
+                "band": "연도 미정 트랙" if str(raw.get("status") or "") == "watch" else future_band_for_year(year if isinstance(year, int) else None, today),
+                "investable": investable,
+                "nature": str(raw.get("nature") or "frontier").strip().lower(),
+                "private_players": [str(item) for item in (raw.get("private_players") or []) if str(item).strip()],
+                "issues": [
+                    {
+                        "label": str(item.get("label") or ""),
+                        "label_en": str(item.get("label_en") or item.get("label") or ""),
+                    }
+                    for item in (raw.get("issues") or [])
+                    if isinstance(item, dict) and item.get("label")
+                ],
                 "what": str(raw.get("what") or ""),
                 "what_en": str(raw.get("what_en") or raw.get("what") or ""),
                 "why": str(raw.get("why") or ""),
@@ -1303,10 +1599,12 @@ def build_future_timeline(
                 "metrics": metric_refs,
                 "companies": company_refs,
                 "breakdown": future_breakdown.get("by_tech", {}).get(str(raw.get("id") or ""), {"requirements": []}),
+                "roadmap": future_roadmaps.get("by_tech", {}).get(str(raw.get("id") or "")),
                 "readings": readings_by_tech.get(str(raw.get("id") or ""), []),
                 "track_record_subject_id": track_subject_id,
                 "track_record_subject": track_subject_payload,
                 "as_of": str(raw.get("as_of") or ""),
+                "stale": tech_stale,
             }
         )
 
@@ -1331,7 +1629,7 @@ def build_future_timeline(
     years = [
         int(item["predicted"]["year"])
         for item in technologies
-        if isinstance(item.get("predicted", {}).get("year"), int)
+        if isinstance(item.get("predicted"), dict) and isinstance(item["predicted"].get("year"), int)
     ]
     return {
         "version": FUTURE_DATA_VERSION,
@@ -1344,6 +1642,7 @@ def build_future_timeline(
             "ladders": future_breakdown.get("ladders", []),
             "summary": future_breakdown.get("summary", {}),
         },
+        "roadmap": {"summary": future_roadmaps.get("summary", {})},
         "technologies": technologies,
         "summary": {
             "technology_count": len(technologies),

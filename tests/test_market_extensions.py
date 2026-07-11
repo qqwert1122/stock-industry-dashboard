@@ -7,8 +7,10 @@ from unittest.mock import patch
 
 from macro_telegram_report.alerts import process_alerts
 from macro_telegram_report.dashboard import (
+    assign_metric_country_fields,
     assign_market_navigation_fields,
     calculate_us_net_liquidity,
+    collect_fred_metrics,
     collect_global_liquidity_metrics,
     collect_us_liquidity_metrics,
     flow_metrics_from_raw_document,
@@ -45,6 +47,16 @@ class FakeResponse:
 
     def json(self):
         return self.payload
+
+
+class FakeFredSession:
+    def __init__(self, observations):
+        self.observations = observations
+        self.params = {}
+
+    def get(self, _url, params=None, **_kwargs):
+        self.params = params or {}
+        return FakeResponse({"observations": self.observations})
 
 
 class FakeKrxSession:
@@ -158,6 +170,23 @@ class FakeGlobalLiquiditySession:
 
 
 class MarketExtensionsTest(unittest.TestCase):
+    def test_metric_country_assignment_covers_major_markets_and_regions(self):
+        metrics = [
+            {"name": "코스피", "source": "Yahoo Finance", "history_key": ""},
+            {"name": "미국 5년 기대 인플레이션(BEI)", "source": "FRED API", "history_key": "fred-T5YIE"},
+            {"name": "일본 BOJ 총자산", "source": "BOJ", "history_key": "boj-BS01"},
+            {"name": "유럽 M3", "source": "ECB", "history_key": "ecb-BSI"},
+            {"name": "TSMC 월매출", "source": "공식 공시", "history_key": ""},
+            {"name": "Worldwide", "source": "FRED API", "history_key": ""},
+        ]
+
+        assign_metric_country_fields(metrics)
+
+        self.assertEqual(
+            [metric["country"] for metric in metrics],
+            ["KR", "US", "JP", "EU", "TW", "GLOBAL"],
+        )
+
     def test_dev_mock_payload_includes_market_gauges(self):
         import scripts.dev_dashboard as dev_dashboard
 
@@ -279,6 +308,44 @@ class MarketExtensionsTest(unittest.TestCase):
         self.assertEqual(kospi["market_category"], "종합")
         self.assertNotEqual(rate.get("section"), "market")
         self.assertEqual(rate["also_market_category"], ["금리·채권"])
+
+    @patch.dict("os.environ", {"FRED_API_KEY": "test-key"})
+    def test_fred_expected_inflation_series_uses_full_initial_history(self):
+        session = FakeFredSession(
+            [
+                {"date": "2003-01-02", "value": "1.65"},
+                {"date": "2026-07-09", "value": "2.34"},
+            ]
+        )
+        config = {
+            "history": {"enabled": False},
+            "dashboard": {
+                "fred_series": [
+                    {
+                        "id": "T5YIE",
+                        "name": "미국 5년 기대 인플레이션(BEI)",
+                        "industry": "매크로",
+                        "unit": "%",
+                        "frequency": "일간",
+                        "group": "금리",
+                        "section": "market",
+                        "market_category": "금리·채권",
+                    }
+                ]
+            },
+        }
+
+        metrics = collect_fred_metrics(config, session, date(2026, 7, 10))
+
+        self.assertNotIn("observation_start", session.params)
+        self.assertEqual(len(metrics), 1)
+        metric = metrics[0]
+        self.assertEqual(metric["name"], "미국 5년 기대 인플레이션(BEI)")
+        self.assertEqual(metric["history_key"], "fred-T5YIE")
+        self.assertEqual(metric["value"], 2.34)
+        self.assertEqual(len(metric["history"]), 2)
+        self.assertEqual(metric["section"], "market")
+        self.assertEqual(metric["market_category"], "금리·채권")
 
     def test_us_net_liquidity_aligns_components_as_of_each_day(self):
         walcl = [(date(2024, 1, 1), 7000.0), (date(2024, 1, 3), 7100.0)]

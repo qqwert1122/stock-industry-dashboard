@@ -323,3 +323,400 @@
       source_label: Unitree G1 공식 제품 페이지
       source_label_en: Unitree G1 official product page
       gap_score: 2
+- tech: quantum
+  requirements:
+    - id: error-correction
+      name: 오류정정
+      name_en: Error correction
+      ladder: quantum-maturity
+      required_rung: fault-tolerant
+      current_rung: logical-demo
+      what: 물리 큐비트의 오류를 묶어서 고치는 논리 큐비트가 긴 계산의 전제입니다.
+      what_en: Logical qubits that suppress physical errors are required for long computations.
+      gap: 여러 논리 큐비트를 동시에 안정적으로 유지하고 오류정정 비용을 낮춰야 합니다.
+      gap_en: Multiple logical qubits must remain stable together with lower correction overhead.
+      pursuing: [IBM, Google Quantum, Quantinuum, QuEra]
+      metric: 논리 큐비트 수·오류정정 주기
+      metric_en: Logical qubits and error-correction cycles
+      confidence: high
+      as_of: 2026-03-01
+      source: https://www.ibm.com/roadmaps/quantum/2030/
+      source_label: IBM Quantum 2030 로드맵
+      source_label_en: IBM Quantum 2030 roadmap
+      gap_score: 3
+    - id: scale
+      name: 확장 가능한 시스템
+      name_en: Scalable system
+      target_label: 수백 개의 안정적 논리 큐비트
+      target_label_en: Hundreds of stable logical qubits
+      current_label: IBM 공개 하드웨어는 156큐비트 Heron, 전체 가용 큐비트 2,300+; Condor 1,121큐비트는 확장 실증
+      current_label_en: IBM lists 156-qubit Heron hardware and 2,300+ available qubits; 1,121-qubit Condor was a scaling demonstration
+      what: 큐비트 수만 늘리는 것이 아니라 제어 장치와 모듈을 함께 확장해야 합니다.
+      what_en: Control systems and modules must scale with qubit counts.
+      gap: 제조사별 큐비트 정의가 달라 단순 숫자 비교는 오해를 만들 수 있습니다.
+      gap_en: Vendor qubit definitions differ, so raw-count comparisons can mislead.
+      pursuing: [IBM, Google Quantum, IonQ, Rigetti]
+      metric: 물리·논리 큐비트 수
+      metric_en: Physical and logical qubit counts
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.ibm.com/quantum/hardware
+      source_label: IBM Quantum 하드웨어 현황
+      source_label_en: IBM Quantum hardware status
+      gap_score: 2
+    - id: useful-application
+      name: 실용적 응용
+      name_en: Useful application
+      ladder: quantum-maturity
+      required_rung: useful-advantage
+      current_rung: logical-demo
+      what: 고전 컴퓨터보다 실제 연구나 산업 문제를 더 잘 풀어야 합니다.
+      what_en: A quantum system must beat classical methods on a useful research or industry problem.
+      gap: 재현 가능한 유용한 우위 사례가 아직 부족합니다.
+      gap_en: Reproducible examples of useful advantage remain scarce.
+      pursuing: [IBM, Google Quantum, IonQ]
+      metric: 검증된 양자우위 사례 수
+      metric_en: Verified useful-advantage demonstrations
+      confidence: medium
+      as_of: 2026-07-12
+      source: https://www.ibm.com/roadmaps/quantum/2030/
+      source_label: IBM Quantum 로드맵
+      source_label_en: IBM Quantum roadmap
+      gap_score: 3
+
+- tech: bci
+  requirements:
+    - id: clinical-stage
+      name: 임상·허가 단계
+      name_en: Clinical and regulatory stage
+      ladder: bci-clinical
+      required_rung: medical-approval
+      current_rung: invasive-feasibility
+      what: 이식형 BCI는 장기 안전성과 실제 기능 개선을 임상시험으로 입증해야 합니다.
+      what_en: Implanted BCI must prove long-term safety and functional benefit in clinical trials.
+      gap: PRIME은 초기 타당성 시험이며 정식 승인까지 확증 임상과 규제 심사가 남았습니다.
+      gap_en: PRIME is an early feasibility study; pivotal evidence and regulatory review remain.
+      pursuing: [Neuralink, Synchron, Paradromics, Precision Neuroscience]
+      metric: FDA 임상 단계·이식 환자 수
+      metric_en: FDA trial stage and implanted patient count
+      confidence: high
+      as_of: 2026-01-09
+      source: https://clinicaltrials.gov/study/NCT06429735
+      source_label: ClinicalTrials.gov PRIME 연구
+      source_label_en: ClinicalTrials.gov PRIME study
+      gap_score: 3
+    - id: signal-stability
+      name: 장기 신호 안정성
+      name_en: Long-term signal stability
+      target_label: 수년간 안정적인 고대역폭 제어
+      target_label_en: Stable high-bandwidth control for years
+      current_label: 초기 환자에서 기능과 안전성 관찰 중
+      current_label_en: Function and safety under observation in early participants
+      what: 전극 신호가 시간이 지나도 약해지지 않아야 일상 의료기기가 됩니다.
+      what_en: Electrode signals must remain useful over time for routine medical use.
+      gap: 조직 반응, 장치 수명, 개인별 재보정 부담을 장기간 검증해야 합니다.
+      gap_en: Tissue response, device life, and recalibration burden need long-term evidence.
+      pursuing: [Neuralink, Synchron, Blackrock Neurotech]
+      metric: 정보전송률·장치 관련 이상반응
+      metric_en: Information transfer rate and device-related adverse events
+      confidence: medium
+      as_of: 2026-01-09
+      source: https://www.fda.gov/regulatory-information/search-fda-guidance-documents/implanted-brain-computer-interface-bci-devices-patients-paralysis-or-amputation-non-clinical-testing
+      source_label: FDA 이식형 BCI 가이드
+      source_label_en: FDA implanted BCI guidance
+      gap_score: 2
+    - id: invasiveness
+      name: 시술 위험
+      name_en: Procedure risk
+      ladder: bci-clinical
+      required_rung: medical-approval
+      current_rung: invasive-feasibility
+      what: 높은 신호 해상도와 낮은 수술 위험을 함께 달성해야 합니다.
+      what_en: The field must combine high signal resolution with low procedural risk.
+      gap: 침습형은 수술 위험이 있고 저침습·비침습 방식은 대역폭이 낮습니다.
+      gap_en: Invasive systems carry surgical risk while less-invasive systems offer lower bandwidth.
+      pursuing: [Synchron, Neuralink, Precision Neuroscience]
+      metric: 수술 합병증·채널 수
+      metric_en: Procedural complications and channel count
+      confidence: medium
+      as_of: 2026-07-12
+      source: https://www.fda.gov/news-events/fda-meetings-conferences-and-workshops/public-workshop-food-and-drug-administrationnational-institutes-health-joint-workshop-developing
+      source_label: FDA·NIH BCI 임상평가 워크숍
+      source_label_en: FDA-NIH BCI outcomes workshop
+      gap_score: 2
+
+- tech: future-food
+  requirements:
+    - id: cost-parity
+      name: 배양육 원가
+      name_en: Cultivated-meat cost
+      target_label: 일반육과 경쟁 가능한 수십 달러/kg 이하
+      target_label_en: Tens of dollars per kg or less
+      current_label: USDA가 정리한 기술경제 모델의 저가정은 $1.95~$37/kg이나 실제 상업 원가와는 다름
+      current_label_en: USDA-reviewed techno-economic low estimates span $1.95-$37/kg, not actual commercial cost
+      what: 소비자가 반복 구매하려면 가격이 일반 고기와 가까워져야 합니다.
+      what_en: Repeat consumer demand requires prices closer to conventional meat.
+      gap: 배양배지와 대형 바이오리액터의 비용·수율을 동시에 개선해야 합니다.
+      gap_en: Growth-media cost and large-bioreactor yield must improve together.
+      pursuing: [UPSIDE Foods, GOOD Meat, Mosa Meat]
+      metric: 배양육 생산원가($/kg)
+      metric_en: Cultivated-meat production cost ($/kg)
+      confidence: low
+      as_of: 2026-07-12
+      source: https://ers.usda.gov/publications/110622
+      source_label: USDA ERS 세포농업 경제성 보고서
+      source_label_en: USDA ERS cellular-agriculture economics report
+      gap_score: 3
+    - id: regulation
+      name: 판매 허용과 검사
+      name_en: Market authorization and inspection
+      target_label: 주요 시장의 반복 가능한 판매 허용
+      target_label_en: Repeatable market access across major markets
+      current_label: 미국은 FDA 협의와 USDA 검사 체계가 적용되는 초기 시장
+      current_label_en: Early U.S. market under FDA consultation and USDA inspection
+      what: 안전성 검토뿐 아니라 생산시설 검사와 표시 규정을 통과해야 합니다.
+      what_en: Products need safety review, facility inspection, and compliant labeling.
+      gap: 국가별 절차와 소비자 표시 기준이 달라 확산 속도가 일정하지 않습니다.
+      gap_en: National procedures and labeling rules differ, making adoption uneven.
+      achieved_by: [UPSIDE Foods, GOOD Meat]
+      metric: 판매 허용 국가·제품 수
+      metric_en: Countries and products with market access
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.fda.gov/food/hfp-constituent-updates/fda-completes-second-pre-market-consultation-human-food-made-using-animal-cell-culture-technology
+      source_label: FDA 두 번째 사전시장 협의 완료
+      source_label_en: FDA second pre-market consultation completion
+      gap_score: 2
+    - id: scale
+      name: 대량생산
+      name_en: Production scale
+      target_label: 상업 규모의 안정적 수율
+      target_label_en: Stable yields at commercial scale
+      current_label: 제한된 생산과 초기 상업화
+      current_label_en: Limited production and early commercialization
+      what: 작은 실험실 배양을 식품 공장 규모로 옮겨도 품질과 수율이 유지돼야 합니다.
+      what_en: Lab cultivation must retain quality and yield at food-factory scale.
+      gap: 대형 배양기의 오염 관리와 열·산소 전달이 어렵습니다.
+      gap_en: Contamination control, heat, and oxygen transfer are difficult in large vessels.
+      pursuing: [UPSIDE Foods, GOOD Meat, Mosa Meat, Perfect Day]
+      metric: 생산능력·배양 수율
+      metric_en: Capacity and culture yield
+      confidence: low
+      as_of: 2026-07-12
+      source: https://www.fda.gov/food/food-ingredients-packaging/human-food-made-cultured-animal-cells
+      source_label: FDA 배양 세포 식품 안내
+      source_label_en: FDA cultured-cell food overview
+      gap_score: 3
+
+- tech: uam
+  requirements:
+    - id: certification
+      name: 기체 인증
+      name_en: Aircraft certification
+      ladder: evtol-certification
+      required_rung: commercial-operation
+      current_rung: type-certification
+      current_label: FAA는 선두 미국 업체가 인증 최종 단계 또는 그 직전이라고 평가하지만 진입 시점은 미확정
+      current_label_en: FAA says leading U.S. developers are in or near final certification phases, while entry timing remains uncertain
+      what: 형식인증과 생산 승인, 운항 허가를 차례로 통과해야 승객을 태울 수 있습니다.
+      what_en: Type, production, and operating approvals are required before passenger service.
+      gap: 선두 업체도 인증 과정에 있으며 일정은 규제기관의 안전 검증에 좌우됩니다.
+      gap_en: Leading developers remain in certification, with timing governed by safety evidence.
+      pursuing: [Joby, Archer, EHang, Supernal]
+      metric: 형식인증 단계·상업 노선 수
+      metric_en: Type-certification stage and commercial routes
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.faa.gov/data_research/aviation/aerospace_forecasts/FY_2026-2046_Full_Forecast_Document_Tables.pdf
+      source_label: FAA Aerospace Forecast 2026-2046
+      source_label_en: FAA Aerospace Forecast 2026-2046
+      gap_score: 3
+    - id: battery
+      name: 배터리와 운항 경제성
+      name_en: Battery and operating economics
+      target_label: 안전 예비분을 포함한 반복 운항
+      target_label_en: Repeated service with safe reserves
+      current_label: 짧은 도심 노선 중심의 유인 시제기
+      current_label_en: Piloted prototypes focused on short urban routes
+      what: 항속거리뿐 아니라 충전 시간과 수명, 탑재중량이 수익성을 정합니다.
+      what_en: Range, charge time, life, and payload together determine economics.
+      gap: 안전 예비전력을 남기면서 충분한 승객과 운항 횟수를 확보해야 합니다.
+      gap_en: Aircraft need enough passengers and cycles while retaining safe energy reserves.
+      pursuing: [Joby, Archer, EHang]
+      metric: Wh/kg·항속거리·회전시간
+      metric_en: Wh/kg, range, and turnaround time
+      confidence: medium
+      as_of: 2026-07-12
+      source: https://www.faa.gov/air-taxis
+      source_label: FAA Air Taxis 안내
+      source_label_en: FAA Air Taxis overview
+      gap_score: 2
+    - id: infrastructure
+      name: 버티포트와 도심 수용성
+      name_en: Vertiports and urban acceptance
+      target_label: 반복 가능한 노선·이착륙장 운영
+      target_label_en: Repeatable route and vertiport operations
+      current_label: 초기 도입 지역의 인프라 계획 단계
+      current_label_en: Infrastructure planning in early-adopter communities
+      what: 이착륙장, 저고도 항로, 소음 기준이 기체와 함께 준비돼야 합니다.
+      what_en: Vertiports, low-altitude routes, and noise rules must mature with aircraft.
+      gap: 주민 수용성과 기존 항공교통 통합이 지역별 확산 속도를 제한합니다.
+      gap_en: Community acceptance and airspace integration constrain local rollout.
+      pursuing: [FAA, NASA, 지방정부]
+      metric: 운영 버티포트·허가 노선 수
+      metric_en: Operating vertiports and authorized routes
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.faa.gov/newsroom/faa-issues-implementation-plan-outlining-steps-usher-advanced-air-mobility
+      source_label: FAA Innovate28 실행계획
+      source_label_en: FAA Innovate28 implementation plan
+      gap_score: 2
+
+- tech: carbon-capture
+  requirements:
+    - id: cost
+      name: 순제거 비용
+      name_en: Net removal cost
+      target_label: 포집·저장 포함 순톤당 100달러 미만
+      target_label_en: Below $100 per net ton including capture and storage
+      current_label: DOE 인용 범위는 액상용매 $225~355, 고체흡착제 $330~600/톤
+      current_label_en: DOE cites $225-$355/ton for liquid solvents and $330-$600/ton for solid sorbents
+      what: 포집 과정의 에너지와 저장 비용까지 포함한 순비용이 내려가야 합니다.
+      what_en: Net cost must include capture energy and durable storage.
+      gap: DOE 목표는 2032년이지만 현재 공개 비용은 방식별 편차가 커 단일값 비교가 어렵습니다.
+      gap_en: DOE targets 2032, but current public costs vary widely by method.
+      pursuing: [Climeworks, Heirloom, Carbon Engineering]
+      metric: 순제거 비용($/tCO2)
+      metric_en: Net removal cost ($/tCO2)
+      confidence: medium
+      as_of: 2026-07-12
+      source: https://www.energy.gov/sites/default/files/2025-07/LIFTOFF_DOE_Carbon-Management.pdf
+      source_label: DOE Carbon Management Liftoff 보고서
+      source_label_en: DOE Carbon Management Liftoff report
+      gap_score: 3
+    - id: scale
+      name: 포집 규모
+      name_en: Capture scale
+      target_label: 백만 톤급 반복 가능한 플랜트
+      target_label_en: Repeatable million-ton-scale plants
+      current_label: 소형 상업 플랜트와 대형 실증 준비
+      current_label_en: Small commercial plants and larger demonstrations in development
+      what: 기후에 의미가 있으려면 여러 지역에서 대형 설비가 반복 건설돼야 합니다.
+      what_en: Climate relevance requires repeatable large plants in many locations.
+      gap: 저탄소 전력, 흡착 소재, 건설비와 저장 인프라가 함께 확장돼야 합니다.
+      gap_en: Low-carbon power, sorbents, construction, and storage infrastructure must scale together.
+      pursuing: [Climeworks, Heirloom, OXY]
+      metric: 연간 설계 포집량(tCO2)
+      metric_en: Nameplate annual capture (tCO2)
+      confidence: medium
+      as_of: 2026-07-12
+      source: https://www.energy.gov/science/doe-explainsdirect-air-capture
+      source_label: DOE Direct Air Capture 설명
+      source_label_en: DOE Direct Air Capture explainer
+      gap_score: 3
+    - id: permanence
+      name: 영구 저장과 검증
+      name_en: Durable storage and verification
+      target_label: 100년 이상 검증 가능한 저장
+      target_label_en: Verifiable storage for at least 100 years
+      current_label: 프로젝트별 저장·모니터링 체계 구축 중
+      current_label_en: Project-specific storage and monitoring systems under development
+      what: 포집량보다 실제 순제거량과 저장 영속성을 측정해야 합니다.
+      what_en: Net removal and storage durability matter more than gross capture.
+      gap: 전과정 배출과 누출을 같은 기준으로 측정·보고해야 합니다.
+      gap_en: Lifecycle emissions and leakage need consistent measurement and reporting.
+      pursuing: [미국 에너지부, 저장 사업자]
+      metric: 검증된 순제거량·저장 기간
+      metric_en: Verified net removals and storage duration
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.energy.gov/hgeo/best-practices-life-cycle-assessment-direct-air-capture-storage-dacs
+      source_label: DOE DACS 전과정평가 모범규범
+      source_label_en: DOE DACS life-cycle assessment practices
+      gap_score: 2
+
+- tech: geoengineering
+  requirements:
+    - id: governance
+      name: 국제 거버넌스
+      name_en: International governance
+      target_label: 포괄적이고 투명한 국제 합의
+      target_label_en: Inclusive and transparent international agreement
+      current_label: 연구·정책 논의 중, 전 지구적 감독 체계 부재
+      current_label_en: Research and policy debate without global oversight
+      what: 효과보다 누가 결정하고 책임지는지에 대한 국제 규칙이 먼저 필요합니다.
+      what_en: International rules for authority and accountability must precede deployment.
+      gap: 단독 실행, 국경을 넘는 피해, 중단 충격을 다룰 합의가 없습니다.
+      gap_en: No agreement governs unilateral action, cross-border harm, or termination shock.
+      pursuing: [UNEP, WMO, 각국 연구기관]
+      metric: 국제 협의·거버넌스 이니셔티브
+      metric_en: International consultations and governance initiatives
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.unep.org/resources/report/Solar-Radiation-Modification-research-deployment
+      source_label: UNEP One Atmosphere
+      source_label_en: UNEP One Atmosphere
+      gap_score: 3
+
+- tech: spatial
+  requirements:
+    - id: form-factor
+      name: 안경형 폼팩터
+      name_en: Glasses form factor
+      target_label: 하루 종일 쓰는 일반 안경 크기와 무게
+      target_label_en: Everyday-glasses size and all-day comfort
+      current_label: 헤드셋 상용화·진짜 AR 안경은 제품 시제품
+      current_label_en: Commercial headsets; true AR glasses remain product prototypes
+      what: 디스플레이와 센서, 배터리를 안경 크기로 줄여야 합니다.
+      what_en: Displays, sensors, and batteries must fit into glasses.
+      gap: 광학과 발열, 배터리, 가격을 동시에 해결하기 어렵습니다.
+      gap_en: Optics, heat, battery, and cost are difficult to solve together.
+      pursuing: [Meta, Apple, Google, Samsung]
+      metric: 기기 무게·사용시간
+      metric_en: Device weight and battery life
+      confidence: high
+      as_of: 2026-07-12
+      source: https://about.fb.com/news/2024/09/introducing-orion-our-first-true-augmented-reality-glasses/
+      source_label: Meta Orion 제품 시제품
+      source_label_en: Meta Orion product prototype
+      gap_score: 3
+    - id: optics
+      name: 디스플레이와 광학
+      name_en: Display and optics
+      target_label: 넓은 시야각과 야외 밝기를 갖춘 투명 안경
+      target_label_en: Transparent glasses with wide field of view and outdoor brightness
+      current_label: 고급 시제품에서 넓은 시야각 실증
+      current_label_en: Wide field of view demonstrated in advanced prototypes
+      what: 현실을 가리지 않으면서 선명한 디지털 정보를 겹쳐 보여야 합니다.
+      what_en: Digital content must remain sharp without blocking the real world.
+      gap: 웨이브가이드 수율과 마이크로 디스플레이 효율, 원가가 병목입니다.
+      gap_en: Waveguide yield, microdisplay efficiency, and cost remain constraints.
+      pursuing: [Meta, Apple, Sony]
+      metric: 시야각·밝기·광학 수율
+      metric_en: Field of view, brightness, and optical yield
+      confidence: medium
+      as_of: 2026-07-12
+      source: https://about.fb.com/news/2024/09/introducing-orion-our-first-true-augmented-reality-glasses/
+      source_label: Meta Orion 공개 자료
+      source_label_en: Meta Orion announcement
+      gap_score: 2
+    - id: adoption
+      name: 가격과 생태계
+      name_en: Price and ecosystem
+      target_label: 대중 가격과 반복 사용 앱 생태계
+      target_label_en: Mass-market price and repeat-use app ecosystem
+      current_label: 고가 초기 시장과 제한된 핵심 용도
+      current_label_en: Premium early market with limited core use cases
+      what: 하드웨어를 매일 쓰게 만드는 앱과 서비스가 함께 커져야 합니다.
+      what_en: Apps and services must make the hardware worth using every day.
+      gap: 사용자 수와 개발자 콘텐츠가 서로를 기다리는 초기 시장 문제입니다.
+      gap_en: Users and developer content are waiting on each other in an early market.
+      pursuing: [Meta, Apple, Google, Samsung]
+      metric: 연간 출하량·가격·활성 앱 수
+      metric_en: Annual shipments, price, and active apps
+      confidence: low
+      as_of: 2026-07-12
+      source: https://about.fb.com/news/2024/12/accelerating-the-future-ai-mixed-reality-and-the-metaverse/
+      source_label: Meta 혼합현실 제품 방향
+      source_label_en: Meta mixed-reality product direction
+      gap_score: 2

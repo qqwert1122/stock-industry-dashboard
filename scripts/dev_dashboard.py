@@ -330,22 +330,24 @@ def metric_by_name(payload: dict[str, Any], name: str) -> dict[str, Any] | None:
 def mock_calendar(today: date, payload: dict[str, Any]) -> dict[str, Any]:
     cpi_metric = metric_by_name(payload, "미국 CPI")
     definitions = [
-        (-3, "미국 CPI 발표", "us_data", "US", "인플레이션 방향 확인", cpi_metric),
-        (0, "FOMC 결정", "fed", "US", "금리와 유동성 기대가 크게 움직일 수 있는 날", None),
-        (1, "한국은행 금통위", "bok", "KR", "국내 금리 민감 업종을 볼 때 중요", None),
-        (2, "미국 고용보고서", "us_data", "US", "고용과 금리 기대를 함께 확인", None),
-        (3, "한국 옵션만기", "expiry", "KR", "수급 변동성이 커질 수 있는 날", None),
-        (5, "미국 소비자물가 발표", "us_data", "US", "물가 압력과 금리 기대 확인", cpi_metric),
-        (7, "한국 수출입 동향", "kr_data", "KR", "수출 업종의 수요 흐름 확인", None),
-        (9, "미국 소매판매", "us_data", "US", "소비 경기의 온도를 확인", None),
-        (12, "FOMC 의사록", "fed", "US", "연준의 정책 기조를 재확인", None),
-        (14, "한국 금융통화위원회", "bok", "KR", "국내 금리 경로를 점검", None),
-        (16, "미국 생산자물가 발표", "us_data", "US", "기업 원가와 물가 압력 확인", None),
+        (-3, "미국 CPI 발표", "macro", "US", "인플레이션 방향 확인", cpi_metric),
+        (0, "FOMC 결정", "policy", "US", "금리와 유동성 기대가 크게 움직일 수 있는 날", None),
+        (1, "한국은행 금통위", "policy", "KR", "국내 금리 민감 업종을 볼 때 중요", None),
+        (2, "미국 고용보고서", "macro", "US", "고용과 금리 기대를 함께 확인", None),
+        (3, "한국 옵션만기", "market", "KR", "수급 변동성이 커질 수 있는 날", None),
+        (5, "미국 소비자물가 발표", "macro", "US", "물가 압력과 금리 기대 확인", cpi_metric),
+        (7, "한국 수출입 동향", "macro", "KR", "수출 업종의 수요 흐름 확인", None),
+        (9, "미국 소매판매", "macro", "US", "소비 경기의 온도를 확인", None),
+        (10, "NVIDIA 실적", "corporate", "US", "AI 인프라 투자 흐름을 확인", None),
+        (11, "WSTS 판매액 발표", "industry", "GLOBAL", "반도체 업황과 지역별 수요를 확인", None),
+        (12, "FOMC 의사록", "policy", "US", "연준의 정책 기조를 재확인", None),
+        (14, "한국 금융통화위원회", "policy", "KR", "국내 금리 경로를 점검", None),
+        (16, "미국 생산자물가 발표", "macro", "US", "기업 원가와 물가 압력 확인", None),
         (18, "NYSE 휴장", "holiday", "US", "미국 주식시장 휴장", None),
-        (21, "한국 옵션만기", "expiry", "KR", "파생상품 만기로 수급 변동성 확대 가능", None),
-        (24, "미국 GDP 잠정치", "us_data", "US", "경기 성장률과 시장 기대를 비교", None),
-        (27, "미국 PCE 발표", "us_data", "US", "연준이 선호하는 물가 지표", cpi_metric),
-        (29, "한국 산업활동동향", "kr_data", "KR", "국내 경기 흐름을 종합 점검", None),
+        (21, "한국 옵션만기", "market", "KR", "파생상품 만기로 수급 변동성 확대 가능", None),
+        (24, "미국 GDP 잠정치", "macro", "US", "경기 성장률과 시장 기대를 비교", None),
+        (27, "미국 PCE 발표", "macro", "US", "연준이 선호하는 물가 지표", cpi_metric),
+        (29, "한국 산업활동동향", "macro", "KR", "국내 경기 흐름을 종합 점검", None),
     ]
     events: list[dict[str, Any]] = []
     for offset, name, category, country, note, metric in definitions:
@@ -747,6 +749,16 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
     add_market("고객예탁금", "신용·예탁금", "예탁금", "조원", 54, 0.04, 0.8)
     add_market("신용융자 잔고", "신용·예탁금", "신용", "조원", 18.5, 0.02, 0.32)
     add_market("미국 10년 국채금리", "금리·채권", "금리", "%", 4.1, -0.002, 0.06)
+    add_market(
+        "미국 5년 기대 인플레이션(BEI)",
+        "금리·채권",
+        "금리",
+        "%",
+        2.34,
+        0.008,
+        0.05,
+        meaning="미국 5년 물가연동국채와 일반 국채 금리의 차이로 계산한 시장의 향후 5년 기대 인플레이션입니다. 상승하면 시장이 예상하는 중기 물가 압력이 커졌다는 뜻입니다.",
+    )
     add_market("한국 기준금리", "금리·채권", "금리", "%", 2.75, 0, 0.02)
     add_market("미국 10Y-3M 금리차", "금리·채권", "경기침체", "%p", -1.4, 0.01, 0.03)
     add_market("미국 하이일드 회사채 OAS", "금리·채권", "신용", "%", 4.3, 0.008, 0.06)
@@ -880,6 +892,7 @@ def build_mock_payload(dashboard: Any) -> dict[str, Any]:
         metric["fetch_status"] = "success" if index % 6 == 0 else "no_new_data"
         metric["fetch_status_label"] = dashboard.fetch_status_label(metric["fetch_status"])
 
+    dashboard.assign_metric_country_fields(metrics)
     dashboard.annotate_metric_freshness(metrics, now.date())
 
     industries = [industry for industry in dashboard.DEFAULT_INDUSTRIES if any(metric["industry"] == industry for metric in metrics)]

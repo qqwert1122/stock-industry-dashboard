@@ -205,3 +205,208 @@
   bottleneck_en: "Bottleneck: uncertainty after AGI"
   metrics: [Microsoft, Amazon, CoreWeave]
   companies: [MSFT, NVDA, GOOGL, META]
+
+- id: quantum
+  name: 양자 컴퓨팅
+  name_en: Quantum Computing
+  category: 컴퓨팅
+  category_en: Computing
+  nature: frontier
+  investable: true
+  predicted:
+    year: 2029
+    label: 2029년 결함허용 초기 시스템
+    label_en: Initial fault-tolerant system in 2029
+    source_label: IBM Quantum 로드맵(제조사 목표)
+    source_label_en: IBM Quantum roadmap (manufacturer target)
+    source: https://www.ibm.com/roadmaps/quantum/2030/
+    confidence: medium
+    manufacturer_forecast: true
+  status: upcoming
+  as_of: 2026-07-12
+  what: 0과 1을 동시에 겹쳐 다루는 새로운 방식의 컴퓨터입니다. 모든 계산이 아니라 특정 문제에서만 빠릅니다.
+  what_en: A new kind of computer that can work with overlapping states of zero and one. It is faster only for certain problems, not every calculation.
+  why: 신약·소재 개발이 빨라지고, 지금의 인터넷 암호는 새 방식으로 바꿔야 합니다.
+  why_en: It could speed up drug and materials discovery, while forcing today's internet encryption to change.
+  now: 오류를 스스로 고치는 단계로 넘어가는 관문 앞에 있습니다.
+  now_en: The field is approaching the transition to machines that can correct their own errors.
+  glossary: [qubit, logical-qubit, post-quantum-cryptography]
+  bottleneck: "병목: 여러 논리 큐비트의 안정적인 오류정정"
+  bottleneck_en: "Bottleneck: stable error correction across multiple logical qubits"
+  companies: [IBM, IONQ, RGTI, QBTS, GOOGL, MSFT]
+  private_players: [Quantinuum, PsiQuantum, QuEra]
+
+- id: bci
+  name: 뇌-컴퓨터 인터페이스
+  name_en: Brain-Computer Interface
+  category: 인간증강
+  category_en: Human Augmentation
+  nature: frontier
+  investable: false
+  predicted:
+    year: 2032
+    label: 2030년대 초 의료기기 승인 시나리오
+    label_en: Early-2030s medical authorization scenario
+    source_label: FDA 임상 경로와 공개 임상 진행 기반 시나리오
+    source_label_en: Scenario based on FDA pathways and public clinical progress
+    source: https://clinicaltrials.gov/study/NCT06429735
+    confidence: low
+  status: distant
+  as_of: 2026-01-09
+  what: 생각만으로 기계를 움직일 수 있게 뇌와 컴퓨터를 연결하는 기술입니다.
+  what_en: Technology that connects the brain to a computer so a person can control a machine through thought.
+  why: 마비 환자가 다시 소통하고 움직일 수 있게 됩니다. 먼 미래엔 능력의 확장까지 이야기됩니다.
+  why_en: It could restore communication and movement for people with paralysis; enhancement is a much more distant idea.
+  now: 소수의 환자가 이식받아 생각으로 커서와 외부 장치를 움직이는 초기 임상 단계입니다.
+  now_en: A small number of patients are in early trials using implants to control cursors and external devices.
+  glossary: [invasive-electrode]
+  bottleneck: "병목: 장기 안전성·신호 안정성·정식 의료기기 승인"
+  bottleneck_en: "Bottleneck: long-term safety, signal stability, and medical authorization"
+  companies: []
+  private_players: [Neuralink, Synchron, Paradromics, Precision Neuroscience]
+
+- id: future-food
+  name: 미래 식량
+  name_en: Future Food
+  category: 식량
+  category_en: Food
+  nature: frontier
+  investable: partial
+  predicted:
+    year: 2030
+    label: 2030년 가격 격차 축소 시나리오
+    label_en: 2030 cost-gap narrowing scenario
+    source_label: FDA 규제 현황·산업 비용 전망 기반 시나리오
+    source_label_en: Scenario based on FDA status and industry cost outlooks
+    source: https://www.fda.gov/food/food-ingredients-packaging/human-food-made-cultured-animal-cells
+    confidence: low
+  status: distant
+  as_of: 2026-07-12
+  what: 가축 없이 세포와 미생물로 고기·우유를 만드는 기술입니다.
+  what_en: Technology that makes meat and dairy proteins from cells and microbes without raising whole animals.
+  why: 땅과 물을 훨씬 덜 쓰면서 식량 위기와 탄소 배출을 줄일 수 있습니다.
+  why_en: It could reduce land and water use while helping with food security and emissions.
+  now: 먹을 수 있는 배양육은 이미 있고, 가격이 일반 고기 수준으로 내려오느냐의 싸움입니다.
+  now_en: Cultivated meat exists, but the contest is whether its cost can approach conventional meat.
+  glossary: [precision-fermentation]
+  bottleneck: "병목: 배양배지 비용과 대량생산 경제성"
+  bottleneck_en: "Bottleneck: growth-media cost and large-scale economics"
+  companies: [TSN, ADM]
+  private_players: [UPSIDE Foods, GOOD Meat, Mosa Meat, Perfect Day]
+
+- id: uam
+  name: 도심항공 UAM
+  name_en: Urban Air Mobility
+  category: 로봇·모빌리티
+  category_en: Robotics/Mobility
+  nature: frontier
+  investable: true
+  predicted:
+    year: 2028
+    label: 2028년 초기 상업 운항 확대
+    label_en: Initial commercial scale-up by 2028
+    source_label: FAA Innovate28 실행계획
+    source_label_en: FAA Innovate28 implementation plan
+    source: https://www.faa.gov/newsroom/faa-issues-implementation-plan-outlining-steps-usher-advanced-air-mobility
+    confidence: medium
+  status: upcoming
+  as_of: 2026-07-12
+  what: 전기로 뜨고 내리는 소형 비행기로 도심 하늘을 나는 에어택시입니다.
+  what_en: Electric air taxis that take off and land vertically for short urban trips.
+  why: 막히는 도로 위 1시간 거리를 10여 분으로 줄일 수 있습니다.
+  why_en: It could turn an hour in road traffic into a much shorter flight.
+  now: 시험 비행은 성공했고, 항공 당국의 안전 인증을 받는 단계입니다.
+  now_en: Test flights have succeeded; safety certification is now the pacing item.
+  glossary: [evtol, type-certification]
+  bottleneck: "병목: 형식인증과 안전 입증"
+  bottleneck_en: "Bottleneck: type certification and safety evidence"
+  companies: [JOBY, ACHR, EH]
+  private_players: [Supernal, Volocopter]
+
+- id: carbon-capture
+  name: 탄소포집 DAC
+  name_en: Direct Air Capture
+  category: 기후
+  category_en: Climate
+  nature: frontier
+  investable: partial
+  predicted:
+    year: 2032
+    label: 2032년 톤당 100달러 목표
+    label_en: $100 per net ton target by 2032
+    source_label: 미국 에너지부 Carbon Negative Shot
+    source_label_en: U.S. DOE Carbon Negative Shot
+    source: https://www.energy.gov/hgeo/funding-notice-carbon-negative-shot-pilots
+    confidence: medium
+  status: distant
+  as_of: 2026-07-12
+  what: 공기 중의 이산화탄소를 직접 빨아들여 땅속에 저장하는 기술입니다.
+  what_en: Technology that removes carbon dioxide directly from ambient air and stores it.
+  why: 이미 배출된 탄소를 되돌릴 수 있는 몇 안 되는 수단입니다.
+  why_en: It is one of the few tools that can address carbon already emitted.
+  now: 소규모 공장이 가동 중이지만 비용이 목표의 몇 배라 아직 비쌉니다.
+  now_en: Small plants operate today, but costs remain several times above the long-term target.
+  glossary: [dac]
+  bottleneck: "병목: 톤당 비용·저탄소 에너지·영구 저장 검증"
+  bottleneck_en: "Bottleneck: cost per ton, low-carbon energy, and durable storage"
+  companies: [OXY]
+  private_players: [Climeworks, Carbon Engineering, Heirloom]
+
+- id: geoengineering
+  name: 지구공학
+  name_en: Geoengineering
+  category: 기후
+  category_en: Climate
+  nature: governance
+  investable: false
+  predicted: null
+  status: watch
+  as_of: 2026-07-12
+  what: 지구 기온을 인위적으로 낮추려는 대규모 개입 기술입니다.
+  what_en: Large-scale interventions intended to deliberately cool the planet.
+  why: 기후 위기의 비상 수단으로 거론되지만, 부작용과 윤리 논쟁이 큽니다.
+  why_en: It is discussed as an emergency climate option, but carries major side effects and ethical disputes.
+  now: 기술 개발보다 해도 되는가에 대한 국제 합의가 먼저인 논쟁 단계입니다.
+  now_en: The central question is international legitimacy and governance, not technical deployment speed.
+  glossary: [sai]
+  bottleneck: "핵심 쟁점: 국제 거버넌스 부재와 되돌리기 어려운 지역별 위험"
+  bottleneck_en: "Key issue: absent global governance and hard-to-reverse regional risks"
+  companies: []
+  issues:
+    - label: 한 국가나 집단이 단독 실행할 위험
+      label_en: Risk of unilateral deployment by one state or group
+    - label: 갑자기 중단할 때 온도가 급반등하는 종료 충격
+      label_en: Termination shock if an intervention suddenly stops
+    - label: 지역별 강수와 기후 영향의 불균형
+      label_en: Unequal regional effects on rainfall and climate
+    - label: 배출 감축 노력을 늦출 수 있는 도덕적 해이
+      label_en: Moral hazard that could delay emissions cuts
+
+- id: spatial
+  name: 공간 컴퓨팅
+  name_en: Spatial Computing
+  category: 컴퓨팅
+  category_en: Computing
+  nature: product
+  investable: true
+  predicted:
+    year: 2030
+    label: 2030년 안경형 대중화 시나리오
+    label_en: 2030 consumer-glasses scenario
+    source_label: Meta Orion 제품 로드맵 기반 시나리오
+    source_label_en: Scenario based on Meta's Orion product roadmap
+    source: https://about.fb.com/news/2024/09/introducing-orion-our-first-true-augmented-reality-glasses/
+    confidence: low
+    manufacturer_forecast: true
+  status: distant
+  as_of: 2026-07-12
+  what: 디지털 화면을 현실 공간 위에 겹쳐 보여주는 안경과 헤드셋입니다.
+  what_en: Glasses and headsets that place digital information into the physical world.
+  why: 스마트폰을 대체할 다음 컴퓨터 후보로 꼽힙니다.
+  why_en: It is a candidate for the computing platform that follows the smartphone.
+  now: 헤드셋은 나와 있고, 하루 종일 쓸 만큼 가볍고 싼 안경이 관문입니다.
+  now_en: Headsets are available; the hurdle is glasses light, affordable, and useful enough for all-day wear.
+  glossary: [trl]
+  bottleneck: "병목: 안경형 광학·배터리·가격·킬러 앱"
+  bottleneck_en: "Bottleneck: glasses-scale optics, battery, price, and a killer app"
+  companies: [META, AAPL, GOOGL, SONY, 005930.KS]

@@ -24,6 +24,8 @@
 | [feature-future-readings-agent.md](feature-future-readings-agent.md) | **F5** — 읽을거리 큐레이션 에이전트 (분기별 웹 탐색→하드 반려만 거르고 자동 게재, 사후 감사 이슈 + removed.yaml 1줄 제거) + 실행 프롬프트 |
 | [feature-future-track-record.md](feature-future-track-record.md) | **F6** — 예측의 성적표 (과거 기술 예측 vs 실제 완성 시점 덤벨 아카이브, 주체별 스코어카드, F1 출처 배지 연동) + 실행 프롬프트 |
 | [feature-future-tech-breakdown.md](feature-future-tech-breakdown.md) | **F7** — 기술 요구사항 브레이크다운 (도메인별 능력 사다리: 자율주행 L0~L5·통신 세대·HBM 세대, 목표/현재 단·달성 기업·병목) + **저자 작성 위키 콘텐츠**(로보택시·AGI·휴머노이드) + 실행 프롬프트 |
+| [feature-future-expansion.md](feature-future-expansion.md) | **F8** — 미래 기술 확장 세트 7종 (양자·BCI·미래식량·도심항공·탄소포집·지구공학·공간컴퓨팅) + investable/nature 성격 태그 + **저자 작성 위키 콘텐츠** + 실행 프롬프트 |
+| [feature-future-roadmap-gantt.md](feature-future-roadmap-gantt.md) | **F9** — 기술별 로드맵 간트 (done/active/projected 막대 + 오늘선 + 예측 마름모 + 재추정 유령 막대) + **저자 작성 시드 13종** + 실행 프롬프트 |
 
 공통 제약(요구사항 1): **운영 비용 0원.** 유료 API·유료 호스팅·유료 모델 금지.
 무료 한도(GitHub Actions, Gemini free tier, 각 공공/무료 API) 안에서만 동작해야 한다.

@@ -61,7 +61,7 @@ def expiry_events(year: int, manual_events: list[dict[str, Any]]) -> list[dict[s
             {
                 "date": option_day.isoformat(),
                 "name": "한국 옵션만기",
-                "category": "expiry",
+                "category": "market",
                 "country": "KR",
                 "note": "매월 둘째 목요일 기준, 휴장 시 전영업일",
             }
@@ -72,7 +72,7 @@ def expiry_events(year: int, manual_events: list[dict[str, Any]]) -> list[dict[s
                 {
                     "date": futures_day.isoformat(),
                     "name": "한국 선물만기",
-                    "category": "expiry",
+                    "category": "market",
                     "country": "KR",
                     "note": "3·6·9·12월 둘째 목요일 기준",
                 }
@@ -82,7 +82,7 @@ def expiry_events(year: int, manual_events: list[dict[str, Any]]) -> list[dict[s
                 {
                     "date": quad_day.isoformat(),
                     "name": "미국 쿼드러플위칭",
-                    "category": "expiry",
+                    "category": "market",
                     "country": "US",
                     "note": "3·6·9·12월 셋째 금요일 기준, 휴장 시 전영업일",
                 }

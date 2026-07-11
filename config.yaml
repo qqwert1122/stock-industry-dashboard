@@ -563,6 +563,15 @@ dashboard:
       frequency: 일간
       group: 경기침체 시그널
       meaning: 10년-3개월 금리차는 역사적으로 침체 예측력이 가장 높은 수익률곡선 지표입니다. 마이너스(역전)가 길게 이어지면 1~2년 내 침체 확률이 커집니다.
+    - id: T5YIE
+      name: 미국 5년 기대 인플레이션(BEI)
+      industry: 매크로
+      unit: "%"
+      frequency: 일간
+      group: 금리
+      section: market
+      market_category: 금리·채권
+      meaning: 미국 5년 물가연동국채와 일반 국채 금리의 차이로 계산한 시장의 향후 5년 기대 인플레이션입니다. 상승하면 시장이 예상하는 중기 물가 압력이 커졌다는 뜻입니다.
     - id: UNRATE
       name: 미국 실업률
       industry: 매크로

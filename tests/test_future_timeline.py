@@ -583,3 +583,226 @@ def test_write_future_timeline_outputs_json(tmp_path: Path) -> None:
 
     assert target.exists()
     assert '"technologies": []' in target.read_text(encoding="utf-8")
+
+
+def test_future_expansion_content_covers_all_seven_technologies() -> None:
+    future_dir = Path(__file__).resolve().parents[1] / "data" / "future"
+    document = build_future_timeline(
+        {"future": {"dir": str(future_dir)}},
+        [],
+        today=date(2026, 7, 12),
+    )
+    expected = {"quantum", "bci", "future-food", "uam", "carbon-capture", "geoengineering", "spatial"}
+    technologies = {item["id"]: item for item in document["technologies"] if item["id"] in expected}
+
+    assert set(technologies) == expected
+    assert {"컴퓨팅", "인간증강", "식량", "기후"}.issubset(document["categories"])
+    assert all(item["breakdown"]["requirements"] for item in technologies.values())
+    assert all(item["readings"] for item in technologies.values())
+    assert all(item["bottleneck"] for item in technologies.values())
+
+
+def test_future_expansion_investability_and_governance_rules() -> None:
+    future_dir = Path(__file__).resolve().parents[1] / "data" / "future"
+    document = build_future_timeline(
+        {"future": {"dir": str(future_dir)}},
+        [],
+        today=date(2026, 7, 12),
+    )
+    technologies = {item["id"]: item for item in document["technologies"]}
+
+    assert technologies["bci"]["investable"] == "false"
+    assert technologies["bci"]["companies"] == []
+    assert technologies["bci"]["private_players"]
+    assert technologies["future-food"]["investable"] == "partial"
+    assert technologies["future-food"]["private_players"]
+    assert technologies["geoengineering"]["nature"] == "governance"
+    assert technologies["geoengineering"]["predicted"] is None
+    assert technologies["geoengineering"]["status"] == "watch"
+    assert technologies["geoengineering"]["band"] == "연도 미정 트랙"
+    assert technologies["geoengineering"]["issues"]
+    assert all(item["kind"] != "ladder" for item in technologies["geoengineering"]["breakdown"]["requirements"])
+    assert not any(warning["kind"] == "prediction" and warning["id"] == "geoengineering" for warning in document["warnings"])
+
+
+def test_future_expansion_template_reuses_cards_with_new_branches() -> None:
+    template = (
+        Path(__file__).resolve().parents[1]
+        / "src"
+        / "macro_telegram_report"
+        / "templates"
+        / "dashboard.html"
+    ).read_text(encoding="utf-8")
+
+    assert 'tech.status === "watch"' in template
+    assert 'futureNoInvestableCompanies' in template
+    assert 'futurePartialInvesting' in template
+    assert 'futureGovernanceIssues' in template
+    assert 'future-card ${tech.status === "achieved"' in template
+
+
+def test_future_roadmap_merges_prediction_and_revision_ghost(tmp_path: Path) -> None:
+    future_dir = tmp_path / "future"
+    write_yaml(
+        future_dir / "technologies.yaml",
+        """
+        - id: robotaxi
+          name: 로보택시
+          category: 로봇
+          status: upcoming
+          as_of: 2026-07-12
+          what: 설명
+          why: 의미
+          now: 현재
+          predicted:
+            year: 2029
+            source_label: 외부 예측
+            source: https://example.com/prediction
+        """,
+    )
+    write_yaml(
+        future_dir / "roadmap.yaml",
+        """
+        - tech: robotaxi
+          as_of: 2026-07-12
+          phases:
+            - id: adoption
+              name: 대중화
+              start: 2029
+              end: 2033
+              status: projected
+              desc: 일상 교통수단이 되는 구간입니다.
+              basis: 도시 확장 속도를 이은 추정입니다.
+              confidence: low
+              revisions:
+                - {date: 2026-01, start: 2028, end: 2032, note: 최초 추정}
+                - {date: 2026-07, start: 2029, end: 2033, note: 1년 순연}
+        """,
+    )
+
+    document = build_future_timeline({"future": {"dir": str(future_dir)}}, [], today=date(2026, 7, 12))
+    roadmap = document["technologies"][0]["roadmap"]
+
+    assert roadmap["markers"][0]["year"] == 2029
+    assert roadmap["markers"][0]["type"] == "prediction"
+    assert roadmap["phases"][0]["ghost"] == {
+        "start": 2028.0,
+        "end": 2032.0,
+        "date": "2026-01",
+        "shift_years": 1.0,
+        "direction": "delayed",
+    }
+
+
+def test_future_roadmap_warns_for_missing_basis_and_status_conflicts(tmp_path: Path) -> None:
+    future_dir = tmp_path / "future"
+    write_yaml(
+        future_dir / "technologies.yaml",
+        """
+        - id: sample
+          name: 샘플
+          category: 기술
+          status: upcoming
+          as_of: 2026-07-12
+          what: 설명
+          why: 의미
+          now: 현재
+          predicted:
+            year: 2030
+            source_label: 예측
+            source: https://example.com
+        """,
+    )
+    write_yaml(
+        future_dir / "roadmap.yaml",
+        """
+        - tech: sample
+          phases:
+            - {id: future-done, name: 미래 완료, start: 2026, end: 2028, status: done, desc: 설명, confidence: high}
+            - {id: past-active, name: 과거 진행, start: 2020, end: 2024, status: active, desc: 설명, confidence: high}
+            - {id: no-basis, name: 근거 없음, start: 2028, end: 2030, status: projected, desc: 설명, confidence: low}
+        """,
+    )
+
+    document = build_future_timeline({"future": {"dir": str(future_dir)}}, [], today=date(2026, 7, 12))
+    warning_kinds = [warning["kind"] for warning in document["warnings"]]
+
+    assert "future_roadmap_basis" in warning_kinds
+    assert warning_kinds.count("future_roadmap_status") == 2
+
+
+def test_future_roadmap_excludes_governance_and_merges_changelog(tmp_path: Path) -> None:
+    future_dir = tmp_path / "future"
+    write_yaml(
+        future_dir / "technologies.yaml",
+        """
+        - id: product
+          name: 제품 기술
+          category: 기술
+          nature: product
+          status: upcoming
+          as_of: 2026-07-12
+          what: 설명
+          why: 의미
+          now: 현재
+          predicted: {year: 2030, source_label: 예측, source: https://example.com}
+        - id: governance
+          name: 거버넌스 기술
+          category: 기술
+          nature: governance
+          investable: false
+          status: watch
+          as_of: 2026-07-12
+          what: 설명
+          why: 의미
+          now: 현재
+          predicted: null
+        """,
+    )
+    write_yaml(
+        future_dir / "roadmap.yaml",
+        """
+        - tech: product
+          phases:
+            - {id: launch, name: 출시, start: 2025, end: 2028, status: active, desc: 설명, basis: 공개 일정, confidence: high}
+        - tech: governance
+          phases:
+            - {id: debate, name: 논의, start: 2025, end: 2030, status: active, desc: 설명, basis: 국제 논의, confidence: high}
+        """,
+    )
+    write_yaml(
+        future_dir / "changelog.yaml",
+        """
+        - id: product-demo
+          tech: product
+          date: 2026-05-01
+          status: achieved
+          title: 시제품 공개
+          title_en: Prototype unveiled
+        """,
+    )
+
+    document = build_future_timeline({"future": {"dir": str(future_dir)}}, [], today=date(2026, 7, 12))
+    technologies = {item["id"]: item for item in document["technologies"]}
+
+    assert technologies["governance"]["roadmap"] is None
+    assert any(marker["ref"] == "f3" and marker["type"] == "achieved" for marker in technologies["product"]["roadmap"]["markers"])
+
+
+def test_future_roadmap_real_content_and_svg_contract() -> None:
+    root = Path(__file__).resolve().parents[1]
+    document = build_future_timeline(
+        {"future": {"dir": str(root / "data" / "future")}},
+        [],
+        today=date(2026, 7, 12),
+    )
+    technologies = {item["id"]: item for item in document["technologies"]}
+    template = (root / "src" / "macro_telegram_report" / "templates" / "dashboard.html").read_text(encoding="utf-8")
+
+    assert document["roadmap"]["summary"] == {"technology_count": 12, "phase_count": 50}
+    assert technologies["robotaxi"]["roadmap"]["phases"]
+    assert technologies["geoengineering"]["roadmap"] is None
+    assert "future-roadmap-svg" in template
+    assert "stroke-dasharray: 5 4" in template
+    assert "roadmap-gradient-" in template
+    assert "future-roadmap-ghost" in template

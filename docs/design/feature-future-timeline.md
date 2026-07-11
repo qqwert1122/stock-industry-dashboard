@@ -244,3 +244,7 @@ docs/design/README.md의 공통 지침을 읽고 docs/design/feature-future-time
 
 완료 조건: 8절 AC 전부. 브랜치 feat/f1-future-timeline.
 ```
+# F1 후속 개선 이슈
+
+- 기술 카드가 15개 이상일 때를 위한 `제목 + 병목 1줄` 축약 모드를 후속 범위로 검토한다.
+  F8에서는 분야 필터와 기존 카드 UI를 유지하며 자동 축약은 적용하지 않는다.

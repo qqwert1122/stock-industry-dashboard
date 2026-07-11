@@ -218,6 +218,14 @@ class DashboardTest(unittest.TestCase):
             }
         )
 
+        self.assertNotIn("__GA_MEASUREMENT_ID__", html)
+        self.assertIn("ui_click", html)
+        self.assertIn("marketbrief.analytics-consent", html)
+        self.assertIn("방문 분석을 허용할까요?", html)
+        self.assertIn("privacy.html", html)
+        self.assertIn("site-footer-links", html)
+        self.assertIn("if (consent === \"accepted\") enableAnalytics()", html)
+
         self.assertIn("테스트 대시보드", html)
         self.assertIn("assets/marketbrief-logo.svg", html)
         self.assertIn("DASHBOARD_DATA", html)
@@ -261,6 +269,8 @@ class DashboardTest(unittest.TestCase):
         self.assertIn("../data/fetch_log.json", html)
         self.assertIn("수집 로그", html)
         self.assertIn("실패만 보기", html)
+        self.assertIn("../data/analytics.json", html)
+        self.assertIn("Pageviews", html)
 
     def test_annotate_dashboard_updates_detects_updated_and_new_metrics(self):
         payload = {

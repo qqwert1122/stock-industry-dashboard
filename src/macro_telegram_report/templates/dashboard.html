@@ -34,6 +34,8 @@
       --note-accent: #f2b800;
       --chart-up: #f23645;
       --chart-down: #1f5eff;
+      --blue: #3b82f6;
+      --detail-updated-week: #e97817;
       --gauge-marker-bg: #f7f7f7;
       --gauge-marker-border: rgba(23, 23, 23, 0.08);
       --gauge-marker-shadow: 0 2px 7px rgba(0, 0, 0, 0.14);
@@ -91,6 +93,8 @@
       --gauge-warm: #ff8066;
       --gauge-hot: #ff5a66;
       --gauge-gradient: linear-gradient(90deg, var(--gauge-cold) 0%, #34d399 34%, var(--gauge-neutral) 66%, var(--gauge-hot) 100%);
+      --blue: #60a5fa;
+      --detail-updated-week: #fb923c;
       --signal-drawer-bg: #111111;
       --signal-card-bg: #1d1d1d;
       --signal-card-muted: #858585;
@@ -629,6 +633,62 @@
       line-height: 1.55;
     }
 
+    .site-footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 0;
+    }
+
+    .site-footer-links a {
+      color: var(--muted);
+      font-size: 11.5px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .site-footer-links a:hover,
+    .site-footer-links a:focus-visible {
+      color: var(--text);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .site-footer-branding {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .site-footer-logo {
+      display: flex;
+      flex: 0 0 auto;
+    }
+
+    .site-footer-copy {
+      min-width: 0;
+      display: grid;
+      gap: 7px;
+      flex: 1 1 420px;
+    }
+
+    .site-footer-logo img {
+      display: block;
+      width: 150px;
+      height: auto;
+    }
+
+    body.theme-dark .site-footer-logo img {
+      filter: invert(1) hue-rotate(180deg);
+    }
+
+    @media (max-width: 760px) {
+      .site-footer-logo img {
+        width: 118px;
+      }
+    }
+
     .topbar {
       display: flex;
       align-items: center;
@@ -724,6 +784,10 @@
       width: min(720px, 94vw);
     }
 
+    .metric-detail-sheet-handle {
+      display: none;
+    }
+
     .signal-drawer-head,
     .metric-detail-drawer-head {
       display: flex;
@@ -736,17 +800,23 @@
       border-bottom: 1px solid rgba(23, 23, 23, 0.045);
     }
 
-    .signal-drawer-head strong,
-    .metric-detail-drawer-head strong {
+    .signal-drawer-head strong {
       min-width: 0;
+      margin: 0;
       color: var(--text);
       font-size: 18px;
       line-height: 1.15;
       font-weight: 700;
     }
 
+    .metric-detail-drawer-title {
+      min-width: 0;
+      display: grid;
+      justify-items: start;
+      gap: 3px;
+    }
+
     .signal-drawer-back,
-    .metric-detail-drawer-back,
     .note-modal-close {
       display: grid;
       flex: 0 0 auto;
@@ -1080,6 +1150,12 @@
     .metric-search-input::placeholder {
       color: var(--muted);
       opacity: 0.82;
+      font-weight: 400;
+    }
+
+    .metric-search-input::-webkit-search-cancel-button {
+      display: none;
+      -webkit-appearance: none;
     }
 
     .metric-search-close {
@@ -1168,21 +1244,22 @@
     }
 
     .currency-toggle,
+    .country-filter-toggle,
     .theme-toggle {
-      min-width: 94px;
+      min-width: 82px;
       height: 40px;
       border: 1px solid var(--line);
       border-radius: 24px;
       display: inline-grid;
-      grid-template-columns: 20px auto 18px;
+      grid-template-columns: 18px auto 14px;
       align-items: center;
       justify-content: center;
-      gap: 7px;
+      gap: 5px;
       position: relative;
       background: var(--menu);
       color: var(--text);
       cursor: pointer;
-      padding: 0 11px;
+      padding: 0 8px;
       font-size: 13px;
       font-weight: 400;
     }
@@ -1269,6 +1346,7 @@
     }
 
     .currency-toggle:hover,
+    .country-filter-toggle:hover,
     .theme-toggle:hover,
     .scroll-top-button:hover,
     .floating-search-button:hover {
@@ -1276,10 +1354,73 @@
     }
 
     .currency-toggle:focus-visible,
+    .country-filter-toggle:focus-visible,
     .theme-toggle:focus-visible,
     .scroll-top-button:focus-visible {
       outline: 2px solid var(--text);
       outline-offset: 3px;
+    }
+
+    .country-filter-control {
+      position: relative;
+    }
+
+    .country-filter-toggle {
+      min-width: 96px;
+    }
+
+    .country-filter-chevron {
+      width: 14px;
+      color: var(--muted);
+      font-size: 11px;
+      text-align: center;
+    }
+
+    .country-filter-flag {
+      width: 20px;
+      height: 14px;
+    }
+
+    .country-filter-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      z-index: 72;
+      width: 176px;
+      max-height: min(420px, calc(100vh - 90px));
+      overflow-y: auto;
+      padding: 7px;
+      border: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+      border-radius: 14px;
+      background: var(--surface);
+      box-shadow: var(--menu-shadow);
+    }
+
+    .country-filter-menu[hidden] {
+      display: none;
+    }
+
+    .country-filter-option {
+      width: 100%;
+      min-height: 36px;
+      border: 0;
+      border-radius: 10px;
+      display: grid;
+      grid-template-columns: 18px minmax(0, 1fr);
+      align-items: center;
+      gap: 8px;
+      padding: 0 9px;
+      background: transparent;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 400;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .country-filter-option:hover,
+    .country-filter-option[aria-checked="true"] {
+      background: var(--menu);
     }
 
     .toggle-label {
@@ -1290,8 +1431,8 @@
     }
 
     .toggle-chevron {
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
       color: var(--muted);
       stroke-width: 2;
     }
@@ -1299,8 +1440,8 @@
     .currency-icon-slot,
     .theme-icon-orbit {
       position: relative;
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       display: block;
       overflow: hidden;
       font-size: 16px;
@@ -1862,8 +2003,7 @@
       margin-top: 2px;
     }
 
-    .briefing-timeline-row,
-    .briefing-date-row {
+    .briefing-timeline-row {
       display: flex;
       align-items: center;
       gap: 6px;
@@ -1872,9 +2012,16 @@
       scrollbar-width: none;
     }
 
-    .briefing-timeline-row::-webkit-scrollbar,
-    .briefing-date-row::-webkit-scrollbar {
+    .briefing-timeline-row::-webkit-scrollbar {
       display: none;
+    }
+
+    .briefing-date-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow: visible;
+      padding-bottom: 2px;
     }
 
     .briefing-chip,
@@ -2513,6 +2660,11 @@
       text-overflow: ellipsis;
     }
 
+    .favorite-card-meta .metric-country-badge {
+      margin-right: 5px;
+      font-size: 10px;
+    }
+
     .favorite-card-chart {
       min-width: 0;
       align-self: end;
@@ -2833,6 +2985,30 @@
       color: #7c3aed;
     }
 
+    .future-nature-pill,
+    .future-investable-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      border-radius: var(--chip-radius);
+      padding: 0 9px;
+      background: color-mix(in srgb, var(--muted) 9%, var(--panel));
+      color: var(--muted);
+      font-size: 11.5px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .future-nature-pill.is-governance {
+      background: color-mix(in srgb, #f59e0b 12%, var(--panel));
+      color: #b45309;
+    }
+
+    .future-investable-pill.is-false,
+    .future-investable-pill.is-partial {
+      background: color-mix(in srgb, #64748b 10%, var(--panel));
+    }
+
     .future-year-block {
       display: grid;
       gap: 4px;
@@ -3035,6 +3211,184 @@
       border: 1px solid var(--line);
       border-radius: 8px;
       background: color-mix(in srgb, var(--menu) 58%, var(--panel));
+    }
+
+    .future-roadmap {
+      display: grid;
+      gap: 12px;
+      min-width: 0;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--menu) 42%, var(--panel));
+    }
+
+    .future-roadmap-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .future-roadmap-head h3 {
+      margin: 0;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.25;
+      font-weight: 720;
+    }
+
+    .future-roadmap-notice {
+      margin: 0;
+      color: var(--muted);
+      font-size: 11.5px;
+      line-height: 1.45;
+      font-weight: 400;
+    }
+
+    .future-roadmap-controls {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .future-roadmap-expand {
+      min-height: 30px;
+      border: 1px solid var(--line);
+      border-radius: var(--chip-radius);
+      background: var(--panel);
+      color: var(--muted);
+      padding: 0 10px;
+      font: inherit;
+      font-size: 11.5px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .future-roadmap-expand:hover { background: var(--menu-active); color: var(--text); }
+    .future-roadmap-expand[disabled] { opacity: 0.34; cursor: default; }
+
+    .future-roadmap-chart {
+      width: 100%;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .future-roadmap-svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+    .future-roadmap-axis,
+    .future-roadmap-grid {
+      stroke: var(--line);
+      stroke-width: 1;
+      vector-effect: non-scaling-stroke;
+      pointer-events: none;
+    }
+
+    .future-roadmap-axis-label,
+    .future-roadmap-phase-label,
+    .future-roadmap-marker-label,
+    .future-roadmap-bar-label,
+    .future-roadmap-shift-label {
+      fill: var(--muted);
+      font-family: inherit;
+      letter-spacing: 0;
+    }
+
+    .future-roadmap-axis-label { font-size: 10px; }
+    .future-roadmap-phase-label { fill: var(--text); font-size: 11px; font-weight: 600; }
+    .future-roadmap-bar-label { font-size: 9.5px; font-weight: 600; }
+    .future-roadmap-marker-label { fill: var(--text); font-size: 9.5px; font-weight: 600; }
+    .future-roadmap-shift-label { fill: var(--chart-up); font-size: 9.5px; font-weight: 650; }
+
+    .future-roadmap-phase-hit { cursor: pointer; outline: none; }
+    .future-roadmap-phase-hit:hover .future-roadmap-bar,
+    .future-roadmap-phase-hit:focus-visible .future-roadmap-bar { filter: brightness(0.94); stroke-width: 2; }
+    .future-roadmap-bar { vector-effect: non-scaling-stroke; }
+    .future-roadmap-bar.is-done { fill: color-mix(in srgb, var(--muted) 48%, var(--menu)); }
+    .future-roadmap-bar.is-active { fill: color-mix(in srgb, var(--blue) 76%, var(--panel)); }
+    .future-roadmap-bar.is-projected {
+      stroke: color-mix(in srgb, var(--chart-up) 72%, var(--line));
+      stroke-width: 1.4;
+      stroke-dasharray: 5 4;
+    }
+
+    .future-roadmap-ghost {
+      fill: none;
+      stroke: color-mix(in srgb, var(--muted) 60%, var(--line));
+      stroke-width: 1.4;
+      stroke-dasharray: 3 4;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .future-roadmap-today {
+      stroke: var(--chart-up);
+      stroke-width: 1.5;
+      stroke-dasharray: 2 3;
+      vector-effect: non-scaling-stroke;
+      pointer-events: none;
+    }
+
+    .future-roadmap-today-label { fill: var(--chart-up); font-size: 9.5px; font-weight: 700; }
+    .future-roadmap-diamond.is-prediction { fill: var(--chart-up); }
+    .future-roadmap-diamond.is-achieved { fill: var(--blue); }
+    .future-roadmap-diamond.is-milestone { fill: var(--favorite-star); }
+    .future-roadmap-marker { pointer-events: none; }
+    .future-roadmap-click-target { fill: transparent; pointer-events: all; }
+
+    .future-roadmap-legend {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .future-roadmap-legend span { display: inline-flex; align-items: center; gap: 5px; }
+    .future-roadmap-legend i { width: 18px; height: 8px; border-radius: 2px; background: var(--menu-active); }
+    .future-roadmap-legend .is-active { background: var(--blue); }
+    .future-roadmap-legend .is-projected {
+      border: 1px dashed var(--chart-up);
+      background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--chart-up) 22%, transparent), transparent);
+    }
+    .future-roadmap-legend .is-ghost { border: 1px dashed var(--muted); background: transparent; }
+
+    .future-roadmap-details {
+      display: grid;
+      gap: 9px;
+      min-width: 0;
+      padding: 12px;
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--text);
+    }
+
+    .future-roadmap-details[hidden] { display: none; }
+    .future-roadmap-details h4 { margin: 0; font-size: 13px; line-height: 1.3; }
+    .future-roadmap-details p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .future-roadmap-details strong { color: var(--text); font-weight: 650; }
+    .future-roadmap-revisions { display: grid; gap: 5px; margin: 0; padding-left: 18px; color: var(--muted); font-size: 11.5px; line-height: 1.45; }
+    .future-roadmap-links { display: flex; gap: 7px; flex-wrap: wrap; }
+    .future-roadmap-link {
+      min-height: 28px;
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: var(--chip-radius);
+      background: var(--menu);
+      color: var(--text);
+      padding: 0 9px;
+      font: inherit;
+      font-size: 11.5px;
+      font-weight: 500;
+      cursor: pointer;
     }
 
     .future-breakdown-title {
@@ -3283,6 +3637,23 @@
       display: grid;
       gap: 7px;
       min-width: 0;
+    }
+
+    .future-company-notice,
+    .future-private-players {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .future-governance-issues {
+      margin: 0;
+      padding: 14px 16px 14px 32px;
+      border-radius: var(--card-radius);
+      background: color-mix(in srgb, #f59e0b 7%, var(--panel));
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.65;
     }
 
     .future-company-row {
@@ -4611,8 +4982,16 @@
         margin-top: var(--overview-title-top-gap-mobile);
       }
 
+      .overview-hero .schedule-alerts {
+        margin-top: 26px;
+      }
+
       .schedule-alerts-head h2 {
         font-size: 18px;
+      }
+
+      .event-snapshot-copy {
+        display: none;
       }
 
       .schedule-alerts-grid {
@@ -4629,6 +5008,77 @@
       padding-bottom: 18px;
     }
 
+    .calendar-filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 22px;
+    }
+
+    .calendar-filter-button {
+      min-height: 30px;
+      padding: 0 4px;
+      border: 0;
+      border-radius: 0;
+      position: relative;
+      isolation: isolate;
+      background: transparent;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .calendar-filter-button[aria-pressed="true"] {
+      padding: 0 11px;
+      border-radius: var(--chip-radius);
+      background: transparent;
+      color: var(--text);
+    }
+
+    .calendar-filter-button[aria-pressed="true"]::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      border-radius: inherit;
+      background: var(--menu);
+      animation: calendarFilterPillEnterFromLeft 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .calendar-filter-button.is-from-right[aria-pressed="true"]::after {
+      animation-name: calendarFilterPillEnterFromRight;
+    }
+
+    @keyframes calendarFilterPillEnterFromLeft {
+      from { opacity: 0; transform: translateX(-14px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes calendarFilterPillEnterFromRight {
+      from { opacity: 0; transform: translateX(14px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .calendar-filter-button:hover,
+    .calendar-filter-button:focus-visible {
+      background: transparent;
+      color: var(--text);
+      outline: none;
+    }
+
+    .calendar-filter-button[aria-pressed="true"]:hover,
+    .calendar-filter-button[aria-pressed="true"]:focus-visible {
+      background: transparent;
+      color: var(--text);
+    }
+
+    .calendar-filter-button[aria-pressed="true"]:hover::after,
+    .calendar-filter-button[aria-pressed="true"]:focus-visible::after {
+      background: var(--menu-active);
+    }
+
     .calendar-stack {
       display: grid;
       gap: 18px;
@@ -4637,7 +5087,7 @@
     .calendar-layout {
       display: grid;
       grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
-      gap: 16px;
+      gap: 32px;
       align-items: start;
     }
 
@@ -4880,12 +5330,12 @@
       white-space: nowrap;
     }
 
-    .calendar-chip.calendar-fed { color: #dc2626; }
-    .calendar-chip.calendar-bok { color: #2563eb; }
-    .calendar-chip.calendar-us_data { color: #7c3aed; }
-    .calendar-chip.calendar-expiry { color: #c2410c; }
+    .calendar-chip.calendar-policy { color: #dc2626; }
+    .calendar-chip.calendar-macro { color: #7c3aed; }
+    .calendar-chip.calendar-market { color: #c2410c; }
     .calendar-chip.calendar-holiday { color: #64748b; }
-    .calendar-chip.calendar-earnings { color: #0f9f8f; }
+    .calendar-chip.calendar-corporate { color: #0f9f8f; }
+    .calendar-chip.calendar-industry { color: #2f9f8f; }
 
     .calendar-main {
       min-width: 0;
@@ -4899,7 +5349,7 @@
       text-overflow: ellipsis;
       white-space: nowrap;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 400;
     }
 
     .calendar-empty-text {
@@ -4935,6 +5385,11 @@
 
     .calendar-agenda-table .calendar-type-cell {
       width: 98px;
+    }
+
+    .calendar-agenda-table .calendar-country-cell {
+      width: 58px;
+      text-align: center;
     }
 
     .calendar-agenda-table .calendar-dday-cell {
@@ -5119,8 +5574,8 @@
       padding: 0 12px;
       background: var(--menu);
       color: var(--muted);
-      font-size: 11px;
-      font-weight: 820;
+      font-size: 16px;
+      font-weight: 600;
       text-align: left;
       white-space: nowrap;
     }
@@ -5192,7 +5647,7 @@
 
     .metric-name {
       min-width: 0;
-      font-size: 13px;
+      font-size: 16px;
       line-height: 1.26;
       font-weight: 780;
       overflow-wrap: anywhere;
@@ -5208,6 +5663,57 @@
     }
 
     .metric-name-wrap .metric-name {
+      min-width: 0;
+    }
+
+    .metric-country-badge,
+    .calendar-country-badge {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.2;
+      font-weight: 400;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    .country-flag-image {
+      display: block;
+      width: 18px;
+      height: 12px;
+      flex: 0 0 auto;
+      border: 1px solid color-mix(in srgb, var(--line) 88%, transparent);
+      border-radius: 3px;
+      object-fit: cover;
+      box-shadow: 0 1px 1px rgba(20, 25, 35, 0.06);
+    }
+
+    .country-filter-flag .country-flag-image {
+      width: 20px;
+      height: 14px;
+      border-radius: 4px;
+    }
+
+    .metric-country-badge.is-compact .metric-country-label {
+      display: none;
+    }
+
+    .metric-country-label {
+      display: none;
+    }
+
+    .metric-country-badge.is-compact {
+      margin-left: 5px;
+      vertical-align: middle;
+    }
+
+    .calendar-name-line {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       min-width: 0;
     }
 
@@ -5259,7 +5765,7 @@
     .metric-description {
       margin: 0;
       color: var(--muted);
-      font-size: 12.5px;
+      font-size: 16px;
       line-height: 1.35;
       overflow-wrap: anywhere;
     }
@@ -5270,7 +5776,7 @@
 
     .metric-date {
       color: var(--muted);
-      font-size: 12px;
+      font-size: 16px;
       font-weight: 680;
       white-space: nowrap;
     }
@@ -5278,7 +5784,7 @@
     .metric-current-value {
       display: block;
       color: var(--text);
-      font-size: 12.5px;
+      font-size: 16px;
       line-height: 1.25;
       font-weight: 820;
       overflow-wrap: anywhere;
@@ -5402,11 +5908,10 @@
       min-width: 0;
     }
 
-    .detail-title-row {
-      display: flex;
-      align-items: baseline;
-      flex-wrap: wrap;
-      gap: 6px 9px;
+    .detail-title-column {
+      display: grid;
+      justify-items: start;
+      gap: 3px;
       min-width: 0;
     }
 
@@ -5420,13 +5925,39 @@
       overflow-wrap: anywhere;
     }
 
+    .detail-title-line {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+    }
+
     .detail-updated-at {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
       color: color-mix(in srgb, var(--muted) 62%, var(--surface));
       font-size: 12px;
       line-height: 1.25;
       font-weight: 400;
       white-space: nowrap;
     }
+
+    .detail-updated-at::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      flex: 0 0 auto;
+      border-radius: 999px;
+      background: var(--muted);
+    }
+
+    .detail-updated-at.is-fresh { color: var(--blue); }
+    .detail-updated-at.is-fresh::before { background: var(--blue); }
+    .detail-updated-at.is-week-old { color: var(--detail-updated-week); }
+    .detail-updated-at.is-week-old::before { background: var(--detail-updated-week); }
+    .detail-updated-at.is-stale { color: var(--muted); }
+    .detail-updated-at.is-stale::before { background: var(--muted); }
 
     .detail-sizedbox {
       height: 4px;
@@ -5459,6 +5990,10 @@
 
     .detail-interpretation-content {
       min-width: 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 4px 8px;
       color: var(--text);
       font-size: 14px;
       line-height: 1.35;
@@ -5468,9 +6003,25 @@
     .detail-interpretation-text {
       display: block;
       min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      overflow-wrap: anywhere;
+    }
+
+    .detail-interpretation-more {
+      flex: 0 0 auto;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: color-mix(in srgb, var(--muted) 58%, var(--surface));
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.35;
+      cursor: pointer;
+    }
+
+    .detail-interpretation-more:hover,
+    .detail-interpretation-more:focus-visible {
+      color: var(--text);
+      text-decoration: underline;
     }
 
     .detail-measurements {
@@ -5732,6 +6283,61 @@
     .detail-meta-value.positive,
     .detail-meta-value.negative {
       color: color-mix(in srgb, var(--muted) 72%, transparent);
+    }
+
+    .detail-meta-disclosure {
+      margin: 3px 0 18px;
+    }
+
+    .metric-detail-drawer-body .detail-meta-disclosure {
+      margin-top: -6px;
+    }
+
+    .detail-meta-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.35;
+      cursor: pointer;
+    }
+
+    .detail-meta-toggle i {
+      font-size: 11px;
+      transition: transform 180ms ease;
+    }
+
+    .detail-meta-toggle[aria-expanded="true"] i {
+      transform: rotate(90deg);
+    }
+
+    .detail-meta-toggle:hover,
+    .detail-meta-toggle:focus-visible {
+      color: var(--text);
+    }
+
+    .detail-meta-disclosure .detail-meta-strip {
+      margin: 9px 0 0;
+    }
+
+    .detail-meta-disclosure.is-expanded .detail-meta-content {
+      animation: detailMetaReveal 220ms ease both;
+    }
+
+    @keyframes detailMetaReveal {
+      from {
+        opacity: 0;
+        transform: translateY(-5px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .metric-interpretation {
@@ -6868,11 +7474,12 @@
     .empty {
       display: none;
       margin: 28px 0;
-      padding: 26px;
-      border: 1px dashed var(--line);
-      border-radius: 8px;
-      color: var(--muted);
-      text-align: center;
+      padding: 8px 0;
+      border: 0;
+      color: color-mix(in srgb, var(--muted) 62%, var(--surface));
+      font-size: 14px;
+      font-weight: 400;
+      text-align: left;
     }
 
     @media (max-width: 1180px) {
@@ -6887,10 +7494,17 @@
     }
 
     @media (max-width: 760px) {
-      .daily-updates.is-overview-content > .overview-hero { order: 1; }
+      .daily-updates.is-overview-content > .overview-hero {
+        display: contents;
+      }
+      .daily-updates.is-overview-content > .overview-hero > .morning-briefing-section { order: 1; }
       .daily-updates.is-overview-content > .favorite-metrics { order: 2; }
       .daily-updates.is-overview-content > .market-diagnosis { order: 3; }
-      .daily-updates.is-overview-content > .daily-update-details { order: 4; }
+      .daily-updates.is-overview-content > .overview-hero > .schedule-alerts {
+        order: 4;
+        margin-top: var(--overview-title-top-gap-mobile);
+      }
+      .daily-updates.is-overview-content > .daily-update-details { order: 5; }
 
       body {
         font-size: 15px;
@@ -6922,13 +7536,13 @@
         position: fixed;
         inset: 0 auto 0 0;
         z-index: 70;
-        width: min(320px, calc(100vw - 54px));
+        width: min(288px, calc(100vw - 54px));
         max-width: calc(100vw - 54px);
         height: 100dvh;
         max-height: 100dvh;
         grid-template-rows: auto minmax(0, 1fr) auto auto;
         padding: 14px;
-        border-radius: 0 20px 20px 0;
+        border-radius: 0;
         overflow: visible;
         transform: translateX(calc(-100% - 24px));
         transition: transform 260ms ease;
@@ -6958,8 +7572,7 @@
         border: 1px solid var(--line);
       }
 
-      .signal-drawer-back,
-      .metric-detail-drawer-back {
+      .signal-drawer-back {
         width: 32px;
         height: 32px;
         border: 0;
@@ -7008,15 +7621,64 @@
         transform: translateX(0);
       }
 
-      .signal-drawer-head,
+      .metric-detail-drawer {
+        inset: auto 0 0;
+        width: 100%;
+        height: min(82dvh, 720px);
+        max-height: calc(100dvh - max(28px, env(safe-area-inset-top)));
+        padding: 12px 16px max(16px, env(safe-area-inset-bottom));
+        border-radius: 20px 20px 0 0;
+        box-shadow: 0 -18px 45px rgba(0, 0, 0, 0.12);
+        transform: translateY(calc(100% + 24px));
+      }
+
+      .metric-detail-sheet-handle {
+        width: 100%;
+        height: 16px;
+        display: grid;
+        place-items: start center;
+        margin: -4px 0 2px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .metric-detail-sheet-handle::before {
+        content: "";
+        width: 36px;
+        height: 4px;
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--muted) 34%, transparent);
+      }
+
+      .metric-detail-sheet-handle:focus-visible::before,
+      .metric-detail-sheet-handle:hover::before {
+        background: color-mix(in srgb, var(--muted) 58%, transparent);
+      }
+
+      body.metric-detail-drawer-open .metric-detail-drawer {
+        transform: translateY(0);
+      }
+
       .metric-detail-drawer-head {
+        min-height: 46px;
+        margin: 0 -16px 10px;
+        padding: 0 16px 12px;
+      }
+
+      .metric-detail-drawer-body {
+        padding-right: 2px;
+        padding-bottom: 8px;
+      }
+
+      .signal-drawer-head {
         min-height: 46px;
         margin: 0 -12px 10px;
         padding: 0 12px 12px;
       }
 
-      .signal-drawer-body,
-      .metric-detail-drawer-body {
+      .signal-drawer-body {
         padding-right: 2px;
       }
 
@@ -7076,10 +7738,39 @@
         gap: 7px;
       }
 
+      .title-wrap {
+        position: absolute;
+        left: 50%;
+        top: max(10px, env(safe-area-inset-top));
+        z-index: 57;
+        height: 46px;
+        display: grid;
+        place-items: center;
+        transform: translateX(-50%);
+        pointer-events: none;
+      }
+
+      .brand-heading {
+        height: 100%;
+        display: grid;
+        place-items: center;
+      }
+
       .search-toggle,
       .history-toggle {
         width: 46px;
         height: 46px;
+      }
+
+      .topbar-actions .history-toggle,
+      .topbar-actions .currency-toggle,
+      .topbar-actions .country-filter-control,
+      .topbar-actions .theme-toggle {
+        display: none;
+      }
+
+      .metric-country-label {
+        display: none;
       }
 
       .floating-search-button {
@@ -7097,6 +7788,16 @@
         padding: 0;
         background: transparent;
         backdrop-filter: none;
+        isolation: isolate;
+      }
+
+      .metric-search-host::before {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        inset: -44px -12px -12px;
+        pointer-events: none;
+        background: linear-gradient(to top, var(--bg) 0%, color-mix(in srgb, var(--bg) 82%, transparent) 34%, color-mix(in srgb, var(--bg) 36%, transparent) 72%, transparent 100%);
       }
 
       .currency-toggle,
@@ -7121,6 +7822,11 @@
 
       body.has-mover-ticker .scroll-top-button {
         bottom: calc(max(18px, env(safe-area-inset-bottom)) + 38px);
+      }
+
+      body.search-active .scroll-top-button {
+        z-index: 83;
+        bottom: calc(max(12px, calc(env(safe-area-inset-bottom) + var(--search-bottom-offset, 12px))) + 64px);
       }
 
       .currency-toggle .toggle-label,
@@ -7236,6 +7942,10 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
+      .favorite-card-note {
+        display: none;
+      }
+
       .favorite-card {
         min-height: 116px;
         padding: 14px;
@@ -7338,6 +8048,12 @@
       .future-breakdown {
         padding: 10px;
       }
+
+      .future-roadmap { padding: 11px; }
+      .future-roadmap-controls { display: flex; }
+      .future-roadmap-head { align-items: flex-start; }
+      .future-roadmap-legend { grid-template-columns: repeat(2, minmax(0, 1fr)); display: grid; gap: 8px 10px; }
+      .future-roadmap-legend span { min-width: 0; font-size: 10.5px; }
 
       .future-breakdown-head,
       .future-breakdown-state {
@@ -7545,7 +8261,7 @@
 
       .calendar-layout {
         grid-template-columns: 1fr;
-        gap: 14px;
+        gap: 28px;
       }
 
       .calendar-month-panel {
@@ -7590,7 +8306,11 @@
       }
 
       .calendar-agenda-table .calendar-date-cell {
-        width: 58px;
+        width: 84px;
+      }
+
+      .calendar-agenda-table .calendar-country-cell {
+        width: 42px;
       }
 
       .calendar-agenda-table .calendar-dday-cell {
@@ -7732,7 +8452,7 @@
 
       .metric-table th[data-mobile-label]::after {
         content: attr(data-mobile-label);
-        font-size: 10.5px;
+        font-size: 16px;
       }
 
       .calendar-agenda-table col.calendar-type-cell,
@@ -7769,7 +8489,7 @@
       .metric-chart-cell { width: 28%; }
 
       .metric-name {
-        font-size: 13.5px;
+        font-size: 16px;
         line-height: 1.22;
       }
 
@@ -8368,9 +9088,6 @@
       .market-gauges {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
-      .favorite-metrics.is-paged .favorite-metrics-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
       .market-diagnosis .gauge-card,
       .market-diagnosis .gauge-card:first-child,
       .market-diagnosis .gauge-card:last-child {
@@ -8379,6 +9096,12 @@
       .market-diagnosis .gauge-card + .gauge-card {
         border-top: 1px solid color-mix(in srgb, var(--line) 74%, transparent);
         border-left: 0;
+      }
+    }
+
+    @media (min-width: 761px) and (max-width: 1180px) {
+      .favorite-metrics.is-paged .favorite-metrics-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
     }
 
@@ -8564,11 +9287,57 @@
         font-size: 20px;
       }
 
+      .market-diagnosis .thermometer-card .gauge-basis-title,
+      .market-diagnosis .recession-card .gauge-basis-title,
+      .market-diagnosis .thermometer-card .gauge-component-name,
+      .market-diagnosis .recession-card .gauge-component-name,
+      .market-diagnosis .thermometer-card .gauge-component-value,
+      .market-diagnosis .recession-card .gauge-component-value,
+      .market-diagnosis .thermometer-card .gauge-component-change,
+      .market-diagnosis .recession-card .gauge-component-change {
+        font-size: 13px;
+      }
+
+      .market-diagnosis .thermometer-card .gauge-component-list,
+      .market-diagnosis .recession-card .gauge-component-list {
+        padding: 8px 4px 8px 0;
+        -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 10px, #000 calc(100% - 10px), transparent 100%);
+        mask-image: linear-gradient(to bottom, transparent 0, #000 10px, #000 calc(100% - 10px), transparent 100%);
+      }
+
+      .market-diagnosis .gauge-status-badge {
+        font-size: 16px;
+      }
+
+      .daily-updates.is-overview-content > .overview-hero > .morning-briefing-section,
+      .daily-updates.is-overview-content > .favorite-metrics,
+      .daily-updates.is-overview-content > .market-diagnosis,
+      .daily-updates.is-overview-content > .overview-hero > .schedule-alerts {
+        gap: 14px;
+      }
+
+      .daily-updates.is-overview-content > .overview-hero > .morning-briefing-section .morning-briefing {
+        margin-bottom: 18px;
+      }
+
+      .daily-updates.is-overview-content > .favorite-metrics,
+      .daily-updates.is-overview-content > .market-diagnosis,
+      .daily-updates.is-overview-content > .overview-hero > .schedule-alerts {
+        margin: var(--overview-title-top-gap-mobile) 0 18px;
+      }
+
+      .daily-updates.is-overview-content > .daily-update-details {
+        margin: var(--overview-title-top-gap-mobile) 0 0;
+      }
+
+      .daily-updates.is-overview-content > .favorite-metrics {
+        padding-bottom: 0;
+      }
+
       .event-snapshot-title,
       .fear-greed-name,
       .gauge-component-name,
-      .daily-update-title,
-      .metric-name {
+      .daily-update-title {
         font-size: 18px;
       }
 
@@ -8616,6 +9385,12 @@
       .calendar-agenda-table th,
       .side-menu button {
         font-size: 15px;
+      }
+
+      .metric-table th:not([data-mobile-label]),
+      .metric-table th[data-mobile-label]::after,
+      .metric-table .metric-name {
+        font-size: 16px;
       }
 
       .side-menu .menu-depth-button {
@@ -8678,9 +9453,82 @@
         font-size: 13px;
       }
     }
+    .consent-banner {
+      position: fixed;
+      z-index: 1000;
+      right: 20px;
+      bottom: 20px;
+      width: min(430px, calc(100vw - 32px));
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+    .consent-banner strong { display: block; margin-bottom: 7px; font-size: 15px; }
+    .consent-banner p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .consent-actions { display: flex; gap: 8px; margin-top: 14px; }
+    .consent-button, .consent-settings-button { border: 1px solid var(--line); border-radius: 999px; min-height: 36px; padding: 0 13px; background: var(--menu); color: var(--text); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .consent-button.primary { border-color: var(--text); background: var(--text); color: var(--bg); }
+    .consent-settings-button { position: fixed; z-index: 999; right: 18px; bottom: 18px; min-width: 38px; padding: 0 11px; opacity: .78; }
+    @media (max-width: 560px) { .consent-banner { right: 16px; bottom: 16px; } }
   </style>
 </head>
 <body>
+  <script>
+    (() => {
+      const measurementId = "__GA_MEASUREMENT_ID__";
+      const storageKey = "marketbrief.analytics-consent";
+      const canTrack = /^G-[A-Z0-9]+$/.test(measurementId);
+      function enableAnalytics() {
+        if (!canTrack || window.__analyticsEnabled) return;
+        window.__analyticsEnabled = true;
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function () { window.dataLayer.push(arguments); };
+        const script = document.createElement("script");
+        script.async = true;
+        script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+        document.head.appendChild(script);
+        window.gtag("js", new Date());
+        window.gtag("config", measurementId, { anonymize_ip: true });
+        document.addEventListener("click", (event) => {
+          const target = event.target.closest("a, button, [role='button']");
+          if (!target || target.closest("[data-analytics-ignore]")) return;
+          const label = target.dataset.analyticsLabel || target.getAttribute("aria-label") || target.textContent?.replace(/\s+/g, " ").trim().slice(0, 80) || target.id || target.tagName.toLowerCase();
+          window.gtag("event", "ui_click", { element_label: label, element_id: target.id || undefined, destination: target.getAttribute("href") || undefined });
+        });
+      }
+      function setConsent(value) {
+        localStorage.setItem(storageKey, value);
+        document.getElementById("analyticsConsent")?.remove();
+        if (value === "accepted") enableAnalytics();
+      }
+      function showConsent() {
+        if (!canTrack || document.getElementById("analyticsConsent")) return;
+        const banner = document.createElement("section");
+        banner.className = "consent-banner";
+        banner.id = "analyticsConsent";
+        banner.setAttribute("role", "dialog");
+        banner.setAttribute("aria-label", "분석 쿠키 선택");
+        banner.innerHTML = '<strong>방문 분석을 허용할까요?</strong><p>서비스 개선을 위해 페이지 방문과 버튼 클릭을 익명으로 집계합니다. 거부해도 모든 기능을 이용할 수 있습니다. <a href="privacy.html">개인정보처리방침</a></p><div class="consent-actions"><button class="consent-button primary" type="button" data-consent="accepted">허용</button><button class="consent-button" type="button" data-consent="rejected">거부</button></div>';
+        document.body.appendChild(banner);
+        banner.querySelectorAll("[data-consent]").forEach((button) => button.addEventListener("click", () => setConsent(button.dataset.consent)));
+      }
+      function addSettingsButton() {
+        if (!canTrack) return;
+        const button = document.createElement("button");
+        button.className = "consent-settings-button";
+        button.type = "button";
+        button.title = "분석 설정";
+        button.textContent = "분석 설정";
+        button.addEventListener("click", () => { localStorage.removeItem(storageKey); showConsent(); });
+        document.body.appendChild(button);
+      }
+      const consent = localStorage.getItem(storageKey);
+      if (consent === "accepted") enableAnalytics();
+      if (canTrack) document.addEventListener("DOMContentLoaded", () => { if (!consent) showConsent(); addSettingsButton(); });
+    })();
+  </script>
   <div class="offline-banner" id="offlineBanner"></div>
   <main class="shell">
     <aside class="sidebar" id="mobileDrawer" aria-label="업종 메뉴">
@@ -8697,6 +9545,11 @@
             <i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i>
             <span data-i18n="darkMode">다크모드</span>
             <span class="settings-meta" id="themeSettingLabel"></span>
+          </button>
+          <button type="button" role="menuitem" data-setting-action="currency">
+            <i class="fa-solid fa-dollar-sign" aria-hidden="true"></i>
+            <span data-i18n="currency">통화</span>
+            <span class="settings-meta" id="currencySettingLabel"></span>
           </button>
           <button type="button" role="menuitem" data-setting-action="language">
             <i class="fa-solid fa-language" aria-hidden="true"></i>
@@ -8750,11 +9603,9 @@
     </aside>
     <div class="signal-drawer-backdrop" id="signalDrawerBackdrop" hidden></div>
     <aside class="metric-detail-drawer" id="metricDetailDrawer" aria-hidden="true" aria-label="지표 상세">
+      <button class="metric-detail-sheet-handle" id="metricDetailSheetHandle" type="button" aria-label="지표 상세 닫기" title="지표 상세 닫기"></button>
       <div class="metric-detail-drawer-head">
-        <button class="drawer-close metric-detail-drawer-back" id="metricDetailDrawerBack" type="button" aria-label="지표 상세 닫기">
-          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
-        </button>
-        <strong id="metricDetailDrawerTitle" data-i18n="metricDetailDrawerTitle">지표 상세</strong>
+        <div class="metric-detail-drawer-title" id="metricDetailDrawerTitle"></div>
         <button class="drawer-close metric-detail-drawer-close" id="metricDetailDrawerClose" type="button" aria-label="지표 상세 닫기">
           <i class="fa-solid fa-xmark" aria-hidden="true"></i>
         </button>
@@ -8828,6 +9679,14 @@
             <span class="toggle-label" id="currencyToggleLabel">달러</span>
             <svg xmlns="http://www.w3.org/2000/svg" class="toggle-chevron lucide lucide-chevrons-up-down-icon lucide-chevrons-up-down" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
           </button>
+          <div class="country-filter-control" id="countryFilterControl">
+            <button class="country-filter-toggle" id="countryFilterToggle" type="button" aria-label="국가 필터" title="국가 필터" aria-expanded="false" aria-controls="countryFilterMenu">
+              <span class="country-filter-flag" id="countryFilterFlag" aria-hidden="true"><img class="country-flag-image" src="assets/country-flags/global.svg" alt=""></span>
+              <span class="toggle-label" id="countryFilterLabel">전체</span>
+              <i class="fa-solid fa-chevron-right country-filter-chevron" aria-hidden="true"></i>
+            </button>
+            <div class="country-filter-menu" id="countryFilterMenu" role="menu" hidden></div>
+          </div>
           <button class="theme-toggle" id="themeToggle" type="button" aria-label="다크모드 전환" title="다크모드 전환">
             <span class="theme-icon-orbit" aria-hidden="true">
               <i class="fa-solid fa-sun theme-icon theme-icon-sun"></i>
@@ -8843,8 +9702,16 @@
       <section class="industry-stack" id="industryStack"></section>
       <div class="empty" id="empty" data-i18n="empty">표시할 지표가 없습니다.</div>
       <footer class="site-footer">
-        <p class="site-footer-copyright">&copy; 2026 luceforge studio. All rights reserved.</p>
-        <p class="site-footer-disclaimer">본 서비스는 공개 데이터를 바탕으로 한 정보 제공용 참고 자료이며, 투자 자문·권유 또는 매매 추천이 아닙니다. 표시되는 데이터의 정확성, 완전성, 최신성은 보장되지 않으며 오류·누락·지연으로 발생한 손해에 대해 책임을 지지 않습니다. 모든 투자 판단과 그에 따른 손익의 책임은 이용자에게 있으며, 투자 원금 손실이 발생할 수 있습니다.</p>
+        <div class="site-footer-branding">
+          <div class="site-footer-logo">
+            <img src="assets/luceforge-studio-final.png" alt="luceforge studio">
+          </div>
+          <div class="site-footer-copy">
+            <p class="site-footer-copyright">&copy; 2026 luceforge studio. All rights reserved.</p>
+            <p class="site-footer-disclaimer">본 서비스는 공개 데이터를 바탕으로 한 정보 제공용 참고 자료이며, 투자 자문·권유 또는 매매 추천이 아닙니다. 표시되는 데이터의 정확성, 완전성, 최신성은 보장되지 않으며 오류·누락·지연으로 발생한 손해에 대해 책임을 지지 않습니다. 모든 투자 판단과 그에 따른 손익의 책임은 이용자에게 있으며, 투자 원금 손실이 발생할 수 있습니다.</p>
+            <p class="site-footer-links"><a href="privacy.html">개인정보처리방침</a></p>
+          </div>
+        </div>
       </footer>
     </section>
   </main>
@@ -8867,6 +9734,7 @@
       draggedMenuItem: null,
       language: "ko",
       currency: "usd",
+      countryFilter: "ALL",
       timeZone: "Asia/Seoul",
       favoriteMetricIds: new Set(),
       favoritePage: 0,
@@ -8896,11 +9764,15 @@
       gaugeHistoryRange: {},
       calendarSelectedDate: "",
       calendarViewMonth: "",
+      calendarCategoryFilter: "all",
+      calendarFilterDirection: "right",
       signalLog: { events: [] },
       signalFilter: "all",
       signalVisibleCount: 50,
       metricNotes: { version: 1, notes: {} },
       activeMetricDetailId: "",
+      interpretationExpanded: {},
+      detailMetadataExpanded: {},
       activeNoteMetricId: "",
       activeNoteEntryId: "",
       noteInitialText: "",
@@ -8934,6 +9806,7 @@
         title: "산업별 지표 대시보드",
         settings: "설정",
         darkMode: "다크모드",
+        currency: "통화",
         lightMode: "라이트",
         darkModeState: "다크",
         language: "언어변경",
@@ -9067,6 +9940,8 @@
         dataFreshnessSources: "소스별 현황",
         metricDetailDrawerTitle: "지표 상세",
         metricDetailDrawerClose: "지표 상세 닫기",
+        detailMetaMore: "자세히 보기",
+        detailMetaLess: "접기",
         signalHistoryTitle: "주요 시그널 히스토리",
         signalHistoryClose: "시그널 이력 닫기",
         signalCurrent: "현재",
@@ -9079,6 +9954,8 @@
         signalCurrentEmpty: "발동 중인 시그널이 없습니다.",
         signalHistoryEmpty: "시그널 이력이 없습니다.",
         signalMore: "더 보기",
+        interpretationMore: "더보기",
+        interpretationLess: "접기",
         marketNav: "시황",
         indicatorNav: "산업",
         futureNav: "미래",
@@ -9099,8 +9976,14 @@
         noRecentAlerts: "최근 알림이 없습니다.",
         calendarDate: "날짜",
         calendarType: "구분",
+        calendarCountry: "국가",
         calendarSchedule: "일정",
         calendarDday: "D-day",
+        calendarPolicy: "통화정책",
+        calendarMacro: "거시경제",
+        calendarMarket: "시장일정",
+        calendarCorporate: "기업",
+        calendarIndustry: "산업",
         calendarTodayTomorrow: "오늘·내일",
         calendarThisWeek: "이번 주",
         calendarNext30: "향후 30일",
@@ -9151,6 +10034,36 @@
         futureStatusAchieved: "달성",
         futureStatusUpcoming: "다가오는 예측",
         futureStatusDistant: "먼 예측",
+        futureStatusWatch: "관찰",
+        futureUnknownTrack: "시점을 매기지 않는 관찰 항목",
+        futureNatureFrontier: "프런티어",
+        futureNatureProduct: "제품",
+        futureNatureGovernance: "거버넌스 · 관찰용",
+        futureInvestableTrue: "직접 투자 가능",
+        futureInvestablePartial: "간접 투자",
+        futureInvestableFalse: "직접 투자 대상 아님",
+        futureNoInvestableCompanies: "직접 투자할 상장사가 뚜렷하지 않은 분야입니다.",
+        futurePartialInvesting: "상장사는 대부분 간접 노출이며 핵심 사업자는 비상장입니다.",
+        futurePrivatePlayers: "비상장 핵심 주체",
+        futureGovernanceIssues: "핵심 쟁점",
+        futureForecastLow: "낮은 확신의 시나리오",
+        futureManufacturerForecast: "제조사 목표",
+        futureStale: "업데이트 점검 필요",
+        futureRoadmapTitle: "기술 로드맵",
+        futureRoadmapNotice: "미래 구간은 운영자의 추정입니다. 근거와 수정 이력을 함께 보세요.",
+        futureRoadmapDone: "완료",
+        futureRoadmapActive: "진행",
+        futureRoadmapProjected: "추정",
+        futureRoadmapGhost: "이전 추정",
+        futureRoadmapToday: "오늘",
+        futureRoadmapEarlier: "이전 연도 펼치기",
+        futureRoadmapLater: "먼 미래 펼치기",
+        futureRoadmapBasis: "기간 근거",
+        futureRoadmapRevisions: "재추정 이력",
+        futureRoadmapInitial: "최초 추정",
+        futureRoadmapDelayed: "년 밀림",
+        futureRoadmapAdvanced: "년 당김",
+        futureRoadmapLadder: "연결된 사다리",
         futureBreakdownTitle: "무엇이 필요한가",
         futureBreakdownCurrent: "현재",
         futureBreakdownRequired: "필요",
@@ -9211,6 +10124,7 @@
         title: "Industry Metrics Dashboard",
         settings: "Settings",
         darkMode: "Dark mode",
+        currency: "Currency",
         lightMode: "Light",
         darkModeState: "Dark",
         language: "Language",
@@ -9344,6 +10258,8 @@
         dataFreshnessSources: "Status by source",
         metricDetailDrawerTitle: "Metric Detail",
         metricDetailDrawerClose: "Close metric detail",
+        detailMetaMore: "View details",
+        detailMetaLess: "Show less",
         signalHistoryTitle: "Key Signal History",
         signalHistoryClose: "Close signal history",
         signalCurrent: "Current",
@@ -9356,6 +10272,8 @@
         signalCurrentEmpty: "No signals are active.",
         signalHistoryEmpty: "No signal history.",
         signalMore: "More",
+        interpretationMore: "Show more",
+        interpretationLess: "Show less",
         marketNav: "Market",
         indicatorNav: "Industries",
         futureNav: "Future",
@@ -9376,8 +10294,14 @@
         noRecentAlerts: "No recent alerts.",
         calendarDate: "Date",
         calendarType: "Type",
+        calendarCountry: "Country",
         calendarSchedule: "Event",
         calendarDday: "D-day",
+        calendarPolicy: "Policy",
+        calendarMacro: "Macro",
+        calendarMarket: "Market",
+        calendarCorporate: "Corporate",
+        calendarIndustry: "Industry",
         calendarTodayTomorrow: "Today/Tomorrow",
         calendarThisWeek: "This week",
         calendarNext30: "Next 30 days",
@@ -9428,6 +10352,36 @@
         futureStatusAchieved: "Achieved",
         futureStatusUpcoming: "Upcoming",
         futureStatusDistant: "Distant",
+        futureStatusWatch: "Watch",
+        futureUnknownTrack: "Observation items without a target year",
+        futureNatureFrontier: "Frontier",
+        futureNatureProduct: "Product",
+        futureNatureGovernance: "Governance · observation",
+        futureInvestableTrue: "Directly investable",
+        futureInvestablePartial: "Indirect exposure",
+        futureInvestableFalse: "Not an investment theme",
+        futureNoInvestableCompanies: "There is no clear publicly listed pure-play investment in this field.",
+        futurePartialInvesting: "Listed names are mostly indirect exposure; key operators are private.",
+        futurePrivatePlayers: "Key private players",
+        futureGovernanceIssues: "Key issues",
+        futureForecastLow: "Low-confidence scenario",
+        futureManufacturerForecast: "Manufacturer target",
+        futureStale: "Update due",
+        futureRoadmapTitle: "Technology roadmap",
+        futureRoadmapNotice: "Future periods are editorial estimates. Review the basis and revision history together.",
+        futureRoadmapDone: "Done",
+        futureRoadmapActive: "Active",
+        futureRoadmapProjected: "Estimated",
+        futureRoadmapGhost: "Prior estimate",
+        futureRoadmapToday: "Today",
+        futureRoadmapEarlier: "Show earlier years",
+        futureRoadmapLater: "Show later years",
+        futureRoadmapBasis: "Basis",
+        futureRoadmapRevisions: "Revision history",
+        futureRoadmapInitial: "Initial estimate",
+        futureRoadmapDelayed: "y delayed",
+        futureRoadmapAdvanced: "y earlier",
+        futureRoadmapLadder: "Linked ladder",
         futureBreakdownTitle: "What Must Happen",
         futureBreakdownCurrent: "Current",
         futureBreakdownRequired: "Required",
@@ -9508,6 +10462,7 @@
     const defaultMarketCategory = marketCategories[0]?.key || "수급";
     const futureAllCategory = "전체";
     const defaultFutureCategories = ["전체", "AI", "로봇·모빌리티", "바이오", "에너지", "우주"];
+    const futureRoadmapRanges = {};
     const navStateStorageKey = "dashboard-nav-state";
     const englishIndustryFallbacks = {
       "반도체": "Semiconductors",
@@ -10159,6 +11114,142 @@
         .map((entry) => entry.metric);
     }
 
+    const countryMeta = {
+      ALL: { asset: "global", ko: "전체", en: "All" },
+      KR: { asset: "kr", ko: "한국", en: "Korea" },
+      US: { asset: "us", ko: "미국", en: "United States" },
+      JP: { asset: "jp", ko: "일본", en: "Japan" },
+      CN: { asset: "cn", ko: "중국", en: "China" },
+      EU: { asset: "eu", ko: "유럽", en: "Europe" },
+      TW: { asset: "tw", ko: "대만", en: "Taiwan" },
+      NL: { asset: "nl", ko: "네덜란드", en: "Netherlands" },
+      APAC: { asset: "apac", ko: "아시아태평양", en: "Asia Pacific" },
+      AMERICAS: { asset: "americas", ko: "미주", en: "Americas" },
+      GLOBAL: { asset: "global", ko: "글로벌", en: "Global" }
+    };
+
+    function normalizedCountryCode(value) {
+      const code = String(value || "").trim().toUpperCase();
+      return countryMeta[code] ? code : "GLOBAL";
+    }
+
+    function metricCountryCode(metric) {
+      if (metric?.country) return normalizedCountryCode(metric.country);
+      const text = `${metric?.name || ""} ${metric?.source || ""} ${metric?.history_key || ""}`;
+      const lowered = text.toLowerCase();
+      if (/worldwide|global|world bank|글로벌|전세계/.test(lowered)) return "GLOBAL";
+      if (/asia pacific|아시아 태평양/.test(lowered)) return "APAC";
+      if (/americas|미주/.test(lowered)) return "AMERICAS";
+      if (/bdi|철광석|구리|알루미늄|리튬 가격|usdt\/usdc|비트코인|김치프리미엄|Phase 3 임상/i.test(text)) return "GLOBAL";
+      if (/한국|코스피|코스닥|원\/달러|VKOSPI|\.KS|\.KQ|KRX|KOSIS|ECOS|KOFIA/i.test(text)) return "KR";
+      if (/일본|BOJ|엔\/달러|엔\/원|boj-/i.test(text)) return "JP";
+      if (/중국|위안|CNY/i.test(text)) return "CN";
+      if (/유럽|유로시스템|ECB|유로존|ecb-/i.test(text)) return "EU";
+      if (/TSMC|대만/i.test(text)) return "TW";
+      if (/ASML|네덜란드/i.test(text)) return "NL";
+      if (/미국|S&P|나스닥|다우|VIX|Sahm|GDPNow|CNN|WTI|연준|TGA|역레포|하이일드|FRED|FiscalData|FINRA|openFDA|USAspending|EIA|NREL/i.test(text)) return "US";
+      return "GLOBAL";
+    }
+
+    function eventCountryCode(event) {
+      return normalizedCountryCode(event?.country || "GLOBAL");
+    }
+
+    function countryLabel(code) {
+      const info = countryMeta[normalizedCountryCode(code)] || countryMeta.GLOBAL;
+      return state.language === "en" ? info.en : info.ko;
+    }
+
+    function countryFlagMarkup(code) {
+      const info = countryMeta[normalizedCountryCode(code)] || countryMeta.GLOBAL;
+      return `<img class="country-flag-image" src="assets/country-flags/${info.asset}.svg" alt="">`;
+    }
+
+    function countryBadgeMarkup(code, className = "metric-country-badge") {
+      const normalized = normalizedCountryCode(code);
+      const info = countryMeta[normalized] || countryMeta.GLOBAL;
+      return `<span class="${className}" title="${escapeHtml(countryLabel(normalized))}">${countryFlagMarkup(normalized)}<span class="metric-country-label">${escapeHtml(countryLabel(normalized))}</span></span>`;
+    }
+
+    function matchesCountryFilter(code) {
+      return state.countryFilter === "ALL" || normalizedCountryCode(code) === state.countryFilter;
+    }
+
+    function countryFilteredMetrics(metrics = DASHBOARD_DATA.metrics || []) {
+      return metrics.filter((metric) => matchesCountryFilter(metricCountryCode(metric)));
+    }
+
+    function availableCountryCodes() {
+      const codes = new Set((DASHBOARD_DATA.metrics || []).map(metricCountryCode));
+      const events = Array.isArray(DASHBOARD_DATA.calendar?.events) ? DASHBOARD_DATA.calendar.events : [];
+      events.forEach((event) => codes.add(eventCountryCode(event)));
+      const preferred = ["KR", "US", "JP", "CN", "EU", "TW", "NL", "APAC", "AMERICAS", "GLOBAL"];
+      return ["ALL", ...preferred.filter((code) => codes.has(code)), ...[...codes].filter((code) => !preferred.includes(code)).sort()];
+    }
+
+    function updateCountryFilterControl() {
+      const info = countryMeta[state.countryFilter] || countryMeta.ALL;
+      const flag = document.getElementById("countryFilterFlag");
+      const label = document.getElementById("countryFilterLabel");
+      const menu = document.getElementById("countryFilterMenu");
+      const toggle = document.getElementById("countryFilterToggle");
+      if (flag) flag.innerHTML = countryFlagMarkup(state.countryFilter);
+      if (label) label.textContent = countryLabel(state.countryFilter);
+      if (toggle) {
+        const accessibleLabel = state.language === "en" ? "Country filter" : "국가 필터";
+        toggle.setAttribute("aria-label", accessibleLabel);
+        toggle.setAttribute("title", accessibleLabel);
+      }
+      if (menu) {
+        menu.innerHTML = availableCountryCodes().map((code) => {
+          const option = countryMeta[code] || countryMeta.GLOBAL;
+          const selected = state.countryFilter === code;
+          return `<button class="country-filter-option" type="button" role="menuitemradio" aria-checked="${selected}" data-country-filter="${code}">${countryFlagMarkup(code)}<span>${escapeHtml(countryLabel(code))}</span></button>`;
+        }).join("");
+        menu.querySelectorAll("[data-country-filter]").forEach((button) => {
+          button.addEventListener("click", () => setCountryFilter(button.dataset.countryFilter || "ALL"));
+        });
+      }
+    }
+
+    function setCountryFilterOpen(open) {
+      const toggle = document.getElementById("countryFilterToggle");
+      const menu = document.getElementById("countryFilterMenu");
+      if (!toggle || !menu) return;
+      const isOpen = Boolean(open);
+      toggle.setAttribute("aria-expanded", String(isOpen));
+      menu.hidden = !isOpen;
+      const chevron = toggle.querySelector(".country-filter-chevron");
+      if (chevron) chevron.className = `fa-solid fa-chevron-${isOpen ? "down" : "right"} country-filter-chevron`;
+    }
+
+    function setCountryFilter(code) {
+      state.countryFilter = availableCountryCodes().includes(code) ? code : "ALL";
+      state.favoritePage = 0;
+      localStorage.setItem("dashboard-country-filter", state.countryFilter);
+      setCountryFilterOpen(false);
+      updateCountryFilterControl();
+      renderDailyUpdates();
+      renderIndustries();
+    }
+
+    function initCountryFilter() {
+      const saved = normalizedCountryCode(localStorage.getItem("dashboard-country-filter") || "ALL");
+      state.countryFilter = availableCountryCodes().includes(saved) ? saved : "ALL";
+      updateCountryFilterControl();
+      document.getElementById("countryFilterToggle")?.addEventListener("click", () => {
+        const toggle = document.getElementById("countryFilterToggle");
+        setCountryFilterOpen(toggle?.getAttribute("aria-expanded") !== "true");
+      });
+      document.addEventListener("click", (event) => {
+        const control = document.getElementById("countryFilterControl");
+        if (control && !control.contains(event.target)) setCountryFilterOpen(false);
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") setCountryFilterOpen(false);
+      });
+    }
+
     function metricMarketCategories(metric) {
       const categories = [];
       if (metric?.market_category) categories.push(metric.market_category);
@@ -10179,7 +11270,7 @@
     }
 
     function marketMetricsForCategory(category) {
-      return (DASHBOARD_DATA.metrics || []).filter((metric) => metricMarketCategories(metric).includes(category));
+      return countryFilteredMetrics().filter((metric) => metricMarketCategories(metric).includes(category));
     }
 
     function saveNavState() {
@@ -10338,23 +11429,6 @@
       summary.textContent = query
         ? `${t("metricSearchCount")} ${state.searchResults.length}${state.searchFuzzyMode ? ` · ${t("similarResults")}` : ""}`
         : "";
-      document.querySelector(".metric-search-suggestions")?.toggleAttribute("hidden", Boolean(query));
-    }
-
-    function renderMetricSearchSuggestions() {
-      if (normalizeSearchText(state.searchQuery)) return "";
-      const recent = recentSearches().map((query) => ({ type: "query", label: query, value: query }));
-      const favorites = favoriteMetrics().slice(0, 6).map((metric) => ({ type: "metric", label: localizedField(metric, "name"), value: metric.id }));
-      const recentMetrics = recentMetricIds()
-        .map(metricById)
-        .filter(Boolean)
-        .slice(0, 4)
-        .map((metric) => ({ type: "metric", label: localizedField(metric, "name"), value: metric.id }));
-      const chips = [...recent, ...favorites, ...recentMetrics].slice(0, 12);
-      if (!chips.length) return "";
-      return `<div class="metric-search-suggestions">
-        ${chips.map((chip) => `<button type="button" class="metric-search-chip" data-search-chip-type="${escapeHtml(chip.type)}" data-search-chip-value="${escapeHtml(chip.value)}">${escapeHtml(chip.label)}</button>`).join("")}
-      </div>`;
     }
 
     function renderMetricSearchHost() {
@@ -10380,22 +11454,10 @@
         </button>
       </div>
       <div class="metric-search-summary" id="metricSearchSummary"></div>
-      ${renderMetricSearchSuggestions()}`;
+      `;
       const input = document.getElementById("metricSearchInput");
       input?.addEventListener("input", () => scheduleMetricSearch(input.value));
       document.getElementById("metricSearchClose")?.addEventListener("click", closeMetricSearch);
-      document.querySelectorAll("[data-search-chip-type]").forEach((button) => {
-        button.addEventListener("click", () => {
-          if (button.dataset.searchChipType === "metric") {
-            closeMetricSearch();
-            openMetricDetail(button.dataset.searchChipValue);
-            return;
-          }
-          applyMetricSearch(button.dataset.searchChipValue || "");
-          renderMetricSearchHost();
-          document.getElementById("metricSearchInput")?.focus({ preventScroll: true });
-        });
-      });
       updateSearchSummary();
       updateSearchViewportOffset();
     }
@@ -10659,6 +11721,37 @@
       }
       if (field === "unit") return localizedUnit(item);
       return localizedText(item[field] || "");
+    }
+
+    function metricMeaningParts(metric) {
+      const explicitDescription = String(localizedField(metric, "description") || "").trim();
+      const explicitInterpretation = String(localizedField(metric, "interpretation_context") || "").trim();
+      if (explicitDescription) {
+        return { description: explicitDescription, interpretation: explicitInterpretation };
+      }
+
+      const meaning = String(localizedField(metric, "meaning") || "").trim();
+      if (!meaning) return { description: "", interpretation: explicitInterpretation };
+
+      const sentences = meaning.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [meaning];
+      let description = String(sentences.shift() || "").trim();
+      const interpretation = [...sentences.map((sentence) => sentence.trim()).filter(Boolean), explicitInterpretation];
+
+      // When a definition and a value judgement share one sentence, keep the definition in the table.
+      const judgementStart = description.search(/\s+(?=(?:높을수록|낮을수록|증가하면|감소하면|늘면|줄면|오르면|내리면|급등하면|급락하면|마이너스\(|0보다|100보다|기준선을|저점에서|고점에서|역사적으로))/);
+      if (judgementStart > 0) {
+        interpretation.unshift(description.slice(judgementStart).trim());
+        description = description.slice(0, judgementStart).trim();
+      }
+      return { description, interpretation: interpretation.filter(Boolean).join(" ") };
+    }
+
+    function metricDescriptionText(metric) {
+      return metricMeaningParts(metric).description;
+    }
+
+    function metricInterpretationContext(metric) {
+      return metricMeaningParts(metric).interpretation;
     }
 
     function localizedGroup(group, items = []) {
@@ -11849,13 +12942,22 @@
       </div>`;
     }
 
-    function detailMetaStrip(metric) {
-      return `<div class="detail-meta-strip">
+    function detailMetaStrip(metric, options = {}) {
+      const items = `<div class="detail-meta-strip">
         ${detailMetaItem(t("visiblePeriod"), displayPeriodLabel(metric), "", `data-period-meta="${escapeHtml(metric.id)}"`)}
         ${detailMetaItem(t("dataAsOf"), dateText(metric.observed_label || metric.observed_at, metric))}
         ${detailMetaItem(t("lastChecked"), lastCheckedText(metric), metric.fetch_status === "failed" ? "negative" : "")}
         ${detailMetaItem(t("nextUpdate"), dateText(metric.next_update_label, metric))}
         ${detailMetaItem(t("updateFrequency"), localizedField(metric, "frequency") || t("irregular"))}
+      </div>`;
+      if (!options.collapsible) return items;
+      const expanded = Boolean(state.detailMetadataExpanded[metric.id]);
+      return `<div class="detail-meta-disclosure${expanded ? " is-expanded" : ""}">
+        <button class="detail-meta-toggle" type="button" data-detail-meta-toggle="${escapeHtml(metric.id)}" aria-expanded="${expanded}">
+          <span>${escapeHtml(t(expanded ? "detailMetaLess" : "detailMetaMore"))}</span>
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+        <div class="detail-meta-content"${expanded ? "" : " hidden"}>${items}</div>
       </div>`;
     }
 
@@ -11890,8 +12992,24 @@
       return label ? `${label} · ${status}` : status;
     }
 
+    function metricUpdatedAtSource(metric) {
+      return metric?.fetched_at || DASHBOARD_DATA.generated_at || DASHBOARD_DATA.generated_label || metric?.observed_at || "";
+    }
+
+    function metricUpdatedAtAgeClass(metric) {
+      const normalizedSource = normalizedDateTimeSource(metricUpdatedAtSource(metric));
+      const date = new Date(normalizedSource);
+      if (!normalizedSource || Number.isNaN(date.getTime()) || /^\d{4}-\d{2}-\d{2}$/.test(normalizedSource)) {
+        return "is-stale";
+      }
+      const ageMs = Math.max(0, Date.now() - date.getTime());
+      if (ageMs < 86400000) return "is-fresh";
+      if (ageMs < 604800000) return "is-week-old";
+      return "is-stale";
+    }
+
     function metricUpdatedAtText(metric) {
-      const source = metric?.fetched_at || DASHBOARD_DATA.generated_at || DASHBOARD_DATA.generated_label || metric?.observed_at || "";
+      const source = metricUpdatedAtSource(metric);
       const normalizedSource = normalizedDateTimeSource(source);
       const date = new Date(normalizedSource);
       if (!normalizedSource || Number.isNaN(date.getTime()) || /^\d{4}-\d{2}-\d{2}$/.test(normalizedSource)) {
@@ -12416,7 +13534,7 @@
     }
 
     function uniqueInterpretationParts(metric, rawParts) {
-      const meaningNorm = normalizedInterpretationText(localizedField(metric, "meaning"));
+      const meaningNorm = normalizedInterpretationText(metricDescriptionText(metric));
       const parts = [];
       const seen = [];
       rawParts.forEach((raw) => {
@@ -12433,25 +13551,37 @@
 
     function interpretationDisplayText(metric) {
       const item = metric?.interpretation;
-      if (!item) return "";
-      const headline = item.headline || item.meaning_text || "";
-      const detail = item.detail_text || item.trend_label || "";
-      const parts = uniqueInterpretationParts(metric, [headline, detail]);
-      if (!parts.length && item.text) {
+      const headline = item?.headline || item?.meaning_text || "";
+      const detail = item?.detail_text || item?.trend_label || "";
+      const context = metricInterpretationContext(metric);
+      const parts = uniqueInterpretationParts(metric, [headline, detail, context]);
+      if (!parts.length && item?.text) {
         return uniqueInterpretationParts(metric, [item.text]).join(" ");
       }
       return parts.join(" ");
     }
 
+    function interpretationPreviewText(text, limit = 120) {
+      if (text.length <= limit) return text;
+      const slice = text.slice(0, limit);
+      const sentenceEnd = Math.max(slice.lastIndexOf(". "), slice.lastIndexOf(".\""));
+      const wordEnd = slice.lastIndexOf(" ");
+      const end = sentenceEnd >= limit * 0.55 ? sentenceEnd + 1 : wordEnd >= limit * 0.55 ? wordEnd : limit;
+      return slice.slice(0, end).trim();
+    }
+
     function interpretationMarkup(metric) {
-      const item = metric?.interpretation;
-      if (!item || !item.text) return "";
       const text = interpretationDisplayText(metric);
       if (!text) return "";
+      const canExpand = text.length > 120;
+      const expanded = Boolean(state.interpretationExpanded[metric.id]);
+      const collapsed = canExpand && !expanded;
+      const visibleText = collapsed ? interpretationPreviewText(text) : text;
       return `<div class="detail-interpretation-row">
         <span class="detail-interpretation-label">${escapeHtml(t("interpretationColumnSignal"))}</span>
         <div class="detail-interpretation-content">
-          <span class="detail-interpretation-text" title="${escapeHtml(text)}">${escapeHtml(text)}</span>
+          <span class="detail-interpretation-text">${escapeHtml(visibleText)}${collapsed ? "..." : ""}</span>
+          ${canExpand ? `<button class="detail-interpretation-more" type="button" data-interpretation-toggle="${escapeHtml(metric.id)}" aria-expanded="${expanded}">${escapeHtml(t(expanded ? "interpretationLess" : "interpretationMore"))}</button>` : ""}
         </div>
       </div>`;
     }
@@ -12468,20 +13598,26 @@
       </div>`;
     }
 
-    function metricDetail(metric) {
+    function detailTitleColumnMarkup(metric, headingTag = "h3") {
+      return `<div class="detail-title-column">
+        <div class="detail-title-line"><${headingTag} class="detail-title">${escapeHtml(localizedField(metric, "name"))}</${headingTag}>${countryBadgeMarkup(metricCountryCode(metric))}</div>
+        <span class="detail-updated-at ${metricUpdatedAtAgeClass(metric)}">${escapeHtml(metricUpdatedAtText(metric))}</span>
+      </div>`;
+    }
+
+    function metricDetail(metric, options = {}) {
+      const titleColumn = options.includeTitle === false ? "" : `${detailTitleColumnMarkup(metric)}
+            <div class="detail-sizedbox" aria-hidden="true"></div>`;
+      const titleBlock = `<div class="detail-title-block">
+            ${titleColumn}
+            <p class="detail-description">${escapeHtml(metricDescriptionText(metric))}</p>
+            ${interpretationMarkup(metric)}
+          </div>`;
       return `<div class="metric-detail-panel">
         <div class="metric-detail-inner">
-          <div class="detail-title-block">
-            <div class="detail-title-row">
-              <h3 class="detail-title">${escapeHtml(localizedField(metric, "name"))}</h3>
-              <span class="detail-updated-at">${escapeHtml(metricUpdatedAtText(metric))}</span>
-            </div>
-            <div class="detail-sizedbox" aria-hidden="true"></div>
-            <p class="detail-description">${escapeHtml(localizedField(metric, "meaning") || "")}</p>
-            ${interpretationMarkup(metric)}
-          </div>
+          ${titleBlock}
           ${detailMeasurementsMarkup(metric)}
-          ${detailMetaStrip(metric)}
+          ${detailMetaStrip(metric, { collapsible: Boolean(options.collapsibleMeta) })}
           <div class="detail-toolbar detail-actions-row">
             ${favoriteButtonMarkup(metric)}
             <button class="detail-icon-button${metricHasNote(metric) ? " note-active" : ""}" type="button" data-note-open="${escapeHtml(metric.id)}">
@@ -12520,12 +13656,13 @@
           <button class="metric-toggle" type="button" data-metric-toggle aria-expanded="false" aria-controls="${detailId}">
             <span class="metric-name-wrap">
               <span class="metric-name">${highlightSearchText(localizedField(metric, "name"))}</span>
+              ${countryBadgeMarkup(metricCountryCode(metric))}
               ${metricStatusMarkup(metric)}
             </span>
           </button>
         </td>
         <td class="metric-description-cell" data-label="${escapeHtml(t("description"))}">
-          <p class="metric-description">${highlightSearchText(localizedField(metric, "meaning"))}</p>
+          <p class="metric-description">${highlightSearchText(metricDescriptionText(metric))}</p>
         </td>
         <td class="metric-date-cell" data-label="${escapeHtml(t("lastUpdated"))}">
           <span class="metric-date">${escapeHtml(dateText(metric.observed_label, metric))}</span>
@@ -12550,7 +13687,7 @@
     }
 
     function changedMetrics() {
-      return (DASHBOARD_DATA.metrics || []).filter((metric) =>
+      return countryFilteredMetrics().filter((metric) =>
         metric.daily_status === "updated" || metric.daily_status === "new"
       );
     }
@@ -12587,6 +13724,8 @@
     function initMetricDetailContent(root, metricId) {
       if (!root || !metricId) return;
       initDetailRange(metricId, root);
+      initInterpretationToggles(root);
+      initDetailMetaToggles(root);
       initFavoriteButtons(root);
       initCompareControls(root);
       initNoteButtons(root);
@@ -12602,11 +13741,41 @@
       }
     }
 
+    function initInterpretationToggles(root = document) {
+      root.querySelectorAll("[data-interpretation-toggle]").forEach((button) => {
+        if (button.dataset.interpretationBound === "true") return;
+        button.dataset.interpretationBound = "true";
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          const metricId = button.dataset.interpretationToggle || "";
+          if (!metricId) return;
+          state.interpretationExpanded[metricId] = !state.interpretationExpanded[metricId];
+          refreshMetricDetail(metricId);
+        });
+      });
+    }
+
+    function initDetailMetaToggles(root = document) {
+      root.querySelectorAll("[data-detail-meta-toggle]").forEach((button) => {
+        if (button.dataset.detailMetaBound === "true") return;
+        button.dataset.detailMetaBound = "true";
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          const metricId = button.dataset.detailMetaToggle || "";
+          if (!metricId) return;
+          state.detailMetadataExpanded[metricId] = !state.detailMetadataExpanded[metricId];
+          refreshMetricDetail(metricId);
+        });
+      });
+    }
+
     function renderMetricDetailDrawer(metricId = state.activeMetricDetailId) {
       const metric = metricById(metricId);
       const body = document.getElementById("metricDetailDrawerBody");
-      if (!metric || !body) return;
-      body.innerHTML = metricDetail(metric);
+      const title = document.getElementById("metricDetailDrawerTitle");
+      if (!metric || !body || !title) return;
+      title.innerHTML = detailTitleColumnMarkup(metric, "h2");
+      body.innerHTML = metricDetail(metric, { includeTitle: false, collapsibleMeta: true });
       initMetricDetailContent(body, metric.id);
     }
 
@@ -12617,6 +13786,7 @@
       if (open) {
         const metric = metricById(metricId);
         if (!metric) return;
+        if (state.activeMetricDetailId !== metric.id) state.detailMetadataExpanded[metric.id] = false;
         if (state.compareBaseMetricId !== metric.id) resetCompareState(metric.id);
         state.activeMetricDetailId = metric.id;
         setDrawerOpen(false);
@@ -12947,6 +14117,20 @@
     }
 
     function initCalendarControls(root = document) {
+      root.querySelectorAll("[data-calendar-filter]").forEach((button) => {
+        if (button.dataset.calendarBound === "true") return;
+        button.dataset.calendarBound = "true";
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          const nextFilter = button.dataset.calendarFilter || "all";
+          const currentIndex = calendarFilters.findIndex((filter) => filter.key === state.calendarCategoryFilter);
+          const nextIndex = calendarFilters.findIndex((filter) => filter.key === nextFilter);
+          state.calendarFilterDirection = nextIndex >= currentIndex ? "left" : "right";
+          state.calendarCategoryFilter = nextFilter;
+          state.calendarSelectedDate = "";
+          rerenderCalendarSection();
+        });
+      });
       root.querySelectorAll("[data-calendar-date]").forEach((button) => {
         if (button.dataset.calendarBound === "true") return;
         button.dataset.calendarBound = "true";
@@ -13524,6 +14708,11 @@
       </span>`;
     }
 
+    function gaugeMetricCountryMarkup(metricId) {
+      const metric = metricById(metricId);
+      return metric ? countryBadgeMarkup(metricCountryCode(metric), "metric-country-badge is-compact") : "";
+    }
+
     function localizedGaugeName(item) {
       if (!item) return "";
       if (state.language !== "en") return item.name || item.metric_name || "";
@@ -13532,7 +14721,7 @@
     }
 
     function gaugeComponentMarkup(component) {
-      const inner = `<span class="gauge-component-name">${escapeHtml(localizedGaugeName(component))}</span>
+      const inner = `<span class="gauge-component-name">${escapeHtml(localizedGaugeName(component))}${gaugeMetricCountryMarkup(component.metric_id)}</span>
         <span class="gauge-component-value">${escapeHtml(localizedValueLabel(component.value_label || ""))}</span>
         ${gaugeMetricChangeMarkup(component.metric_id)}`;
       if (component.metric_id) {
@@ -13543,7 +14732,7 @@
 
     function signalChipMarkup(signal) {
       const cls = `signal-chip signal-${escapeHtml(signal.status || "ok")}`;
-      const inner = `<span class="gauge-component-name">${escapeHtml(localizedGaugeName(signal))}</span>
+      const inner = `<span class="gauge-component-name">${escapeHtml(localizedGaugeName(signal))}${gaugeMetricCountryMarkup(signal.metric_id)}</span>
         <span class="gauge-component-value signal-value">${escapeHtml(localizedValueLabel(signal.value_label || ""))}</span>
         ${gaugeMetricChangeMarkup(signal.metric_id)}`;
       const title = escapeHtml(localizedText(signal.description || ""));
@@ -13614,7 +14803,7 @@
       const heatClass = thermometerClass(score);
       const inner = `<span class="fear-greed-row-head">
           <span class="fear-greed-name-line">
-            <span class="fear-greed-name">${escapeHtml(localizedGaugeName(item))}</span>
+            <span class="fear-greed-name">${escapeHtml(localizedGaugeName(item))}${gaugeMetricCountryMarkup(item.metric_id)}</span>
             <span class="fear-greed-label ${heatClass}">${escapeHtml(localizedText(item.label || ""))}</span>
           </span>
           <span class="fear-greed-score-line">
@@ -14194,13 +15383,15 @@
     }
 
     function favoriteMetrics() {
-      return (DASHBOARD_DATA.metrics || []).filter((metric) => state.favoriteMetricIds.has(metric.id));
+      return countryFilteredMetrics().filter((metric) => state.favoriteMetricIds.has(metric.id));
     }
 
-    const favoritePageSize = 15;
+    function favoritePageSize() {
+      return mobileDrawerQuery.matches ? 6 : 15;
+    }
 
     function favoritePageCount(metrics = favoriteMetrics()) {
-      return Math.max(1, Math.ceil(metrics.length / favoritePageSize));
+      return Math.max(1, Math.ceil(metrics.length / favoritePageSize()));
     }
 
     function clampFavoritePage(metrics = favoriteMetrics()) {
@@ -14225,7 +15416,7 @@
         ${favoriteCardStarMarkup(metric)}
         ${noteButtonMarkup(metric, "favorite-card-note")}
         <span class="favorite-card-top">
-          <span class="favorite-card-meta">${escapeHtml(localizedIndustry(metric.industry))} · ${escapeHtml(localizedGroup(metric.group, [metric]))}</span>
+          <span class="favorite-card-meta">${countryBadgeMarkup(metricCountryCode(metric))}${escapeHtml(localizedIndustry(metric.industry))} · ${escapeHtml(localizedGroup(metric.group, [metric]))}</span>
           <span class="favorite-card-title">${highlightSearchText(localizedField(metric, "name"))}</span>
           <span class="favorite-card-value">${escapeHtml(displayMetricValue(metric))}</span>
           ${notePreview ? `<span class="favorite-card-note-preview">${escapeHtml(notePreview)}</span>` : ""}
@@ -14239,7 +15430,8 @@
       if (!metrics.length) return "";
       const page = clampFavoritePage(metrics);
       const pageCount = favoritePageCount(metrics);
-      const pagedMetrics = metrics.slice(page * favoritePageSize, (page + 1) * favoritePageSize);
+      const pageSize = favoritePageSize();
+      const pagedMetrics = metrics.slice(page * pageSize, (page + 1) * pageSize);
       const pager = pageCount > 1 ? `<div class="favorite-metrics-pager" aria-label="${escapeHtml(t("favoriteMetrics"))}">
           <button class="favorite-page-button" type="button" data-favorite-page="${page - 1}" aria-label="${escapeHtml(t("favoritePreviousPage"))}" ${page <= 0 ? "disabled" : ""}><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
           <span class="favorite-page-indicator">${page + 1} / ${pageCount}</span>
@@ -14263,29 +15455,80 @@
 
     function calendarEvents() {
       const events = Array.isArray(DASHBOARD_DATA.calendar?.events) ? DASHBOARD_DATA.calendar.events : [];
-      return events.filter((event) => !isMetricUpdateCalendarEvent(event));
+      return events
+        .filter((event) => !isMetricUpdateCalendarEvent(event))
+        .filter((event) => matchesCountryFilter(eventCountryCode(event)))
+        .map((event) => ({ ...event, category: normalizedCalendarCategory(event.category) }));
     }
 
     const calendarCategoryColors = {
-      fed: "#dc5b5b",
-      bok: "#4f7fc8",
-      us_data: "#8b6ac9",
-      expiry: "#d08a4e",
+      policy: "#dc5b5b",
+      macro: "#8b6ac9",
+      market: "#d08a4e",
       holiday: "#8792a2",
-      earnings: "#0f9f8f",
-      future: "#2f9f8f",
+      corporate: "#0f9f8f",
+      industry: "#2f9f8f",
       event: "#8a8a8a"
     };
 
+    const calendarCategoryAliases = {
+      fed: "policy",
+      bok: "policy",
+      us_data: "macro",
+      kr_data: "macro",
+      expiry: "market",
+      earnings: "corporate",
+      future: "industry"
+    };
+
+    function normalizedCalendarCategory(category) {
+      const value = String(category || "event");
+      return calendarCategoryAliases[value] || value;
+    }
+
+    const calendarFilters = [
+      { key: "all", label: "전체", categories: null },
+      { key: "policy", label: "통화정책", categories: ["policy"] },
+      { key: "macro", label: "거시경제", categories: ["macro"] },
+      { key: "market", label: "시장일정", categories: ["market"] },
+      { key: "corporate", label: "기업", categories: ["corporate"] },
+      { key: "industry", label: "산업", categories: ["industry"] },
+      { key: "holiday", label: "휴장", categories: ["holiday"] }
+    ];
+
+    function calendarFilterLabel(filter) {
+      if (state.language !== "en") return filter.label;
+      return {
+        all: "All",
+        policy: "Policy",
+        macro: "Macro",
+        market: "Market",
+        corporate: "Corporate",
+        industry: "Industry",
+        holiday: "Holiday"
+      }[filter.key] || filter.label;
+    }
+
+    function filteredCalendarEvents(events = calendarEvents()) {
+      const filter = calendarFilters.find((item) => item.key === state.calendarCategoryFilter) || calendarFilters[0];
+      if (!filter.categories) return events;
+      return events.filter((event) => filter.categories.includes(String(event.category || "event")));
+    }
+
+    function calendarFilterMarkup() {
+      return `<div class="calendar-filter-bar" aria-label="${escapeHtml(t("marketCalendar"))}">
+        ${calendarFilters.map((filter) => `<button class="calendar-filter-button${state.calendarCategoryFilter === filter.key ? ` is-from-${state.calendarFilterDirection}` : ""}" type="button" data-calendar-filter="${filter.key}" aria-pressed="${state.calendarCategoryFilter === filter.key}">${escapeHtml(calendarFilterLabel(filter))}</button>`).join("")}
+      </div>`;
+    }
+
     function calendarCategoryLabel(category) {
       return {
-        fed: t("calendarFed"),
-        bok: t("calendarBok"),
-        us_data: t("calendarUsData"),
-        expiry: t("calendarExpiry"),
+        policy: t("calendarPolicy"),
+        macro: t("calendarMacro"),
+        market: t("calendarMarket"),
         holiday: t("calendarHoliday"),
-        earnings: t("calendarEarnings"),
-        future: t("calendarFuture")
+        corporate: t("calendarCorporate"),
+        industry: t("calendarIndustry")
       }[category] || t("calendarEvent");
     }
 
@@ -14382,15 +15625,6 @@
       return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
     }
 
-    function calendarEventsByDate() {
-      return calendarEvents().reduce((map, event) => {
-        const date = String(event.date || "");
-        if (!date) return map;
-        map.set(date, [...(map.get(date) || []), event]);
-        return map;
-      }, new Map());
-    }
-
     function calendarDayGridDates(monthKey) {
       const [year, month] = String(monthKey || "").split("-").map(Number);
       if (!year || !month) return [];
@@ -14413,7 +15647,7 @@
       return `<span class="calendar-day-dots">${categories.map((category) => `<span class="calendar-dot" style="--calendar-dot-color: ${calendarCategoryColors[category] || calendarCategoryColors.event}"></span>`).join("")}</span>`;
     }
 
-    function renderCalendarMonth(eventsByDate) {
+    function renderCalendarMonth(eventsByDate, events = calendarEvents()) {
       const monthKey = calendarViewMonthKey();
       const today = dashboardTodayKey();
       const weekdays = state.language === "en" ? ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] : ["일", "월", "화", "수", "목", "금", "토"];
@@ -14437,12 +15671,12 @@
             </button>`;
           }).join("")}
         </div>
-        ${renderCalendarLegend()}
+        ${renderCalendarLegend(events)}
       </section>`;
     }
 
-    function renderCalendarLegend() {
-      const categories = [...new Set(calendarEvents().map((event) => String(event.category || "event")))];
+    function renderCalendarLegend(events = calendarEvents()) {
+      const categories = [...new Set(events.map((event) => String(event.category || "event")))];
       return `<div class="calendar-legend">
         ${categories.map((category) => `<span class="calendar-legend-item">
           <span class="calendar-dot" style="--calendar-dot-color: ${calendarCategoryColors[category] || calendarCategoryColors.event}"></span>
@@ -14454,12 +15688,12 @@
     function calendarEventRow(event) {
       const category = String(event.category || "event");
       const todayClass = calendarEventDday(event) === 0 ? " is-today" : "";
-      const note = [localizedCalendarEventNote(event), event.country].filter(Boolean).join(" · ");
+      const note = localizedCalendarEventNote(event);
       const inner = `
         <span class="calendar-date">${escapeHtml(calendarDateLabel(event.date))}</span>
         <span class="calendar-chip calendar-${escapeHtml(category)}">${escapeHtml(calendarCategoryLabel(category))}</span>
         <span class="calendar-main">
-          <span class="calendar-name">${escapeHtml(localizedCalendarEventName(event))}</span>
+          <span class="calendar-name-line"><span class="calendar-name">${escapeHtml(localizedCalendarEventName(event))}</span>${countryBadgeMarkup(eventCountryCode(event), "calendar-country-badge")}</span>
           ${note ? `<span class="calendar-note">${escapeHtml(note)}</span>` : ""}
         </span>
         <span class="calendar-dday">${escapeHtml(calendarDdayLabel(event))}</span>
@@ -14492,13 +15726,14 @@
       const category = String(event.category || "event");
       const todayClass = calendarEventDday(event) === 0 ? " is-today" : "";
       const clickable = Boolean(event.metric_id);
-      const note = [localizedCalendarEventNote(event), event.country].filter(Boolean).join(" · ");
+      const note = localizedCalendarEventNote(event);
       const rowAttrs = clickable
         ? ` data-briefing-metric="${escapeHtml(event.metric_id)}" role="button" tabindex="0"`
         : "";
       return `<tr class="calendar-agenda-row${todayClass}${clickable ? " is-clickable" : ""}"${rowAttrs}>
         <td class="calendar-date-cell"><span class="calendar-date">${escapeHtml(calendarDateLabel(event.date))}</span></td>
         <td class="calendar-type-cell"><span class="calendar-chip calendar-${escapeHtml(category)}">${escapeHtml(calendarCategoryLabel(category))}</span></td>
+        <td class="calendar-country-cell">${countryBadgeMarkup(eventCountryCode(event), "calendar-country-badge")}</td>
         <td class="calendar-agenda-title-cell">
           <span class="calendar-agenda-event">
             <span class="calendar-name">${escapeHtml(localizedCalendarEventName(event))}</span>
@@ -14512,12 +15747,13 @@
     function calendarAgendaTable(events) {
       const rows = events.length
         ? events.map(calendarAgendaRow).join("")
-        : `<tr class="calendar-agenda-row"><td colspan="4"><span class="calendar-empty-text">${escapeHtml(t("calendarNoEvents"))}</span></td></tr>`;
+        : `<tr class="calendar-agenda-row"><td colspan="5"><span class="calendar-empty-text">${escapeHtml(t("calendarNoEvents"))}</span></td></tr>`;
       return `<div class="metric-table-wrap calendar-agenda-table-wrap">
         <table class="metric-table calendar-agenda-table">
           <colgroup>
             <col class="calendar-date-cell">
             <col class="calendar-type-cell">
+            <col class="calendar-country-cell">
             <col>
             <col class="calendar-dday-cell">
           </colgroup>
@@ -14525,6 +15761,7 @@
             <tr>
               <th scope="col" class="calendar-date-cell">${escapeHtml(t("calendarDate"))}</th>
               <th scope="col" class="calendar-type-cell">${escapeHtml(t("calendarType"))}</th>
+              <th scope="col" class="calendar-country-cell">${escapeHtml(t("calendarCountry"))}</th>
               <th scope="col">${escapeHtml(t("calendarSchedule"))}</th>
               <th scope="col" class="calendar-dday-cell">${escapeHtml(t("calendarDday"))}</th>
             </tr>
@@ -14548,9 +15785,14 @@
     }
 
     function renderEventCalendar() {
-      const events = calendarEvents();
-      const eventsByDate = calendarEventsByDate();
-      const selectedEvents = state.calendarSelectedDate ? (eventsByDate.get(state.calendarSelectedDate) || []) : null;
+      const events = filteredCalendarEvents();
+      const filteredEventsByDate = events.reduce((map, event) => {
+        const date = String(event.date || "");
+        if (!date) return map;
+        map.set(date, [...(map.get(date) || []), event]);
+        return map;
+      }, new Map());
+      const selectedEvents = state.calendarSelectedDate ? (filteredEventsByDate.get(state.calendarSelectedDate) || []) : null;
       const agendaEvents = selectedEvents || events.filter((event) => {
         const dDay = calendarEventDday(event);
         return Number.isFinite(dDay) && dDay >= 0 && dDay <= 30;
@@ -14559,10 +15801,11 @@
         <div class="industry-head">
           <div>
             <h2>${escapeHtml(t("marketCalendar"))}</h2>
+            ${calendarFilterMarkup()}
           </div>
         </div>
         <div class="calendar-layout">
-          ${renderCalendarMonth(eventsByDate)}
+          ${renderCalendarMonth(filteredEventsByDate, events)}
           ${renderCalendarAgenda(agendaEvents)}
         </div>
       </article>`;
@@ -14576,12 +15819,12 @@
         })
         .sort((a, b) => String(a.date || "").localeCompare(String(b.date || "")));
       if (!upcoming.length) return "";
-      const items = upcoming.slice(0, 16).map((event) => {
+      const items = upcoming.slice(0, mobileDrawerQuery.matches ? 3 : 16).map((event) => {
         const category = String(event.category || "event");
         const dotColor = calendarCategoryColors[category] || calendarCategoryColors.event;
         const inner = `<span class="event-snapshot-dot" style="--event-dot-color: ${escapeHtml(dotColor)}" aria-hidden="true"></span>
           <span class="event-snapshot-date">${escapeHtml(calendarSnapshotDateLabel(event))}</span>
-          <span class="event-snapshot-name">${escapeHtml(localizedCalendarEventName(event))}</span>`;
+          <span class="event-snapshot-name">${escapeHtml(localizedCalendarEventName(event))} ${countryBadgeMarkup(eventCountryCode(event), "calendar-country-badge")}</span>`;
         if (event.metric_id) {
           return `<button class="event-snapshot-row" type="button" data-briefing-metric="${escapeHtml(event.metric_id)}">${inner}</button>`;
         }
@@ -14642,7 +15885,7 @@
     }
 
     function renderRecentAlertsCard() {
-      const events = signalEvents().slice(0, 16);
+      const events = signalEvents().slice(0, mobileDrawerQuery.matches ? 3 : 16);
       const rows = events.map((event) => {
         const inner = `<span class="recent-alert-dot ${recentAlertDotClass(event)}" aria-hidden="true"></span>
           <time class="recent-alert-time">${escapeHtml(recentAlertTimeText(event))}</time>
@@ -14753,7 +15996,7 @@
       const attrs = duplicate ? ` tabindex="-1" aria-hidden="true"` : "";
       const label = `${localizedField(metric, "name")} ${displayMetricValue(metric)} ${change}`;
       return `<button class="mover-ticker-item" type="button" data-daily-update-metric="${escapeHtml(metric.id)}"${attrs} aria-label="${escapeHtml(label)}">
-        <span class="mover-ticker-name">${escapeHtml(localizedField(metric, "name"))}</span>
+        <span class="mover-ticker-name">${escapeHtml(localizedField(metric, "name"))}${countryBadgeMarkup(metricCountryCode(metric), "metric-country-badge is-compact")}</span>
         <span class="mover-ticker-value">${escapeHtml(displayMetricValue(metric))}</span>
         <span class="mover-ticker-change ${directionClass(metric.change_pct)}">${escapeHtml(change)}</span>
       </button>`;
@@ -14784,7 +16027,7 @@
 
     function renderSearchResultsCards() {
       if (!isSearchFiltering()) return "";
-      const metrics = state.searchResults || [];
+      const metrics = countryFilteredMetrics(state.searchResults || []);
       if (!metrics.length) return "";
       const top = metrics.slice(0, 12);
       const extra = Math.max(0, metrics.length - top.length);
@@ -14902,13 +16145,17 @@
       }
       const summary = DASHBOARD_DATA.daily_changes || {};
       const changes = changedMetrics();
-      const updatedCount = Number(summary.updated_count || changes.filter((metric) => metric.daily_status === "updated").length);
-      const newCount = Number(summary.new_count || changes.filter((metric) => metric.daily_status === "new").length);
+      const updatedCount = state.countryFilter === "ALL"
+        ? Number(summary.updated_count || changes.filter((metric) => metric.daily_status === "updated").length)
+        : changes.filter((metric) => metric.daily_status === "updated").length;
+      const newCount = state.countryFilter === "ALL"
+        ? Number(summary.new_count || changes.filter((metric) => metric.daily_status === "new").length)
+        : changes.filter((metric) => metric.daily_status === "new").length;
       const rows = changes.map((metric) => `
         <button class="daily-update-row" type="button" data-daily-update-metric="${escapeHtml(metric.id)}">
           <span class="daily-update-main">
             ${metricStatusMarkup(metric)}
-            <span class="daily-update-title">${escapeHtml(localizedField(metric, "name"))}</span>
+            <span class="daily-update-title">${escapeHtml(localizedField(metric, "name"))}${countryBadgeMarkup(metricCountryCode(metric), "metric-country-badge is-compact")}</span>
           </span>
           <span class="daily-update-meta">${escapeHtml(localizedIndustry(metric.industry))} · ${escapeHtml(localizedGroup(metric.group, [metric]))} · ${escapeHtml(dateText(metric.observed_label, metric))}</span>
           <span class="daily-update-value">${escapeHtml(displayMetricValue(metric))}</span>
@@ -15116,7 +16363,20 @@
     function futureStatusLabel(status) {
       if (status === "achieved") return t("futureStatusAchieved");
       if (status === "distant") return t("futureStatusDistant");
+      if (status === "watch") return t("futureStatusWatch");
       return t("futureStatusUpcoming");
+    }
+
+    function futureNatureLabel(nature) {
+      if (nature === "governance") return t("futureNatureGovernance");
+      if (nature === "product") return t("futureNatureProduct");
+      return t("futureNatureFrontier");
+    }
+
+    function futureInvestableLabel(investable) {
+      if (investable === "false") return t("futureInvestableFalse");
+      if (investable === "partial") return t("futureInvestablePartial");
+      return t("futureInvestableTrue");
     }
 
     function futureCardId(techId) {
@@ -15176,7 +16436,7 @@
       if (band === "2030년대") return 2030;
       if (band === "2040년대") return 2040;
       if (band === "먼 미래") return 9990;
-      if (band === "미정") return 9999;
+      if (band === "미정" || band === "연도 미정 트랙") return 9999;
       return 9000;
     }
 
@@ -15185,6 +16445,7 @@
       if (band === "2030년대") return "2030s";
       if (band === "2040년대") return "2040s";
       if (band === "먼 미래") return "Distant future";
+      if (band === "연도 미정 트랙") return t("futureUnknownTrack");
       if (band === "미정") return "Unscheduled";
       return band;
     }
@@ -15683,14 +16944,14 @@
       </div>`;
     }
 
-    function futureCompanySideMarkup(company) {
+    function futureCompanySideMarkup(company, indirect = false) {
       const metricId = company?.metric_id || "";
       const label = state.language === "en" ? (company?.label_en || company?.label || company?.symbol || "") : (company?.label || company?.symbol || "");
       const change = company?.change_pct_label || "";
       const tag = metricId ? "button" : "span";
       const dataAttr = metricId ? ` type="button" data-future-company="${escapeHtml(metricId)}"` : "";
       return `<${tag} class="future-company-row"${dataAttr}>
-        <span class="future-company-name">${escapeHtml(label)}</span>
+        <span class="future-company-name">${escapeHtml(label)}${indirect ? ` · ${escapeHtml(t("futureInvestablePartial"))}` : ""}</span>
         ${change ? `<span class="future-company-change ${directionClass(company.change_pct)}">${escapeHtml(change)}</span>` : ""}
       </${tag}>`;
     }
@@ -15714,6 +16975,7 @@
     }
 
     function futureDecadeLabel(tech) {
+      if (tech?.status === "watch" || tech?.predicted == null) return t("futureStatusWatch");
       const year = Number(tech?.predicted?.year);
       if (!Number.isFinite(year)) return localizedFutureBand(tech?.band || "");
       const decade = Math.floor(year / 10) * 10;
@@ -15731,16 +16993,185 @@
       </div>`;
     }
 
+    function localizedRoadmapField(item, field) {
+      if (!item) return "";
+      return state.language === "en" ? (item[`${field}_en`] || item[field] || "") : (item[field] || "");
+    }
+
+    function futureRoadmapYear(value) {
+      const number = Number(value);
+      if (!Number.isFinite(number)) return "";
+      return Number.isInteger(number) ? String(number) : number.toFixed(1);
+    }
+
+    function futureRoadmapShiftLabel(ghost) {
+      const years = Math.abs(Number(ghost?.shift_years || 0));
+      if (!years) return "";
+      const amount = Number.isInteger(years) ? years : years.toFixed(1);
+      return ghost.direction === "advanced"
+        ? `${amount}${t("futureRoadmapAdvanced")}`
+        : `${amount}${t("futureRoadmapDelayed")}`;
+    }
+
+    function futureRoadmapDetailsMarkup(tech, phase) {
+      const revisions = (phase.revisions || []).map((revision) => `<li>
+        <strong>${escapeHtml(revision.date || t("futureRoadmapInitial"))}</strong>
+        · ${escapeHtml(futureRoadmapYear(revision.start))}–${escapeHtml(futureRoadmapYear(revision.end))}
+        ${localizedRoadmapField(revision, "note") ? `· ${escapeHtml(localizedRoadmapField(revision, "note"))}` : ""}
+      </li>`).join("");
+      const ladder = phase.ladder_link || null;
+      const ladderButton = ladder?.flow_id
+        ? `<button class="future-roadmap-link" type="button" data-roadmap-ladder="${escapeHtml(ladder.flow_id)}">${escapeHtml(t("futureRoadmapLadder"))} · ${escapeHtml(localizedRoadmapField(ladder, "label"))}</button>`
+        : "";
+      const metrics = (phase.metrics || []).map((metric) => `<button class="future-roadmap-link" type="button" data-roadmap-metric="${escapeHtml(metric.id || "")}">${escapeHtml(localizedFutureField(metric, "name"))}</button>`).join("");
+      return `<section class="future-roadmap-details" id="roadmap-detail-${idSegment(tech.id)}-${idSegment(phase.id)}" data-roadmap-detail hidden>
+        <h4>${escapeHtml(localizedRoadmapField(phase, "name"))} · ${escapeHtml(futureRoadmapYear(phase.start))}–${escapeHtml(futureRoadmapYear(phase.end))}</h4>
+        <p>${escapeHtml(localizedRoadmapField(phase, "desc"))}</p>
+        <p><strong>${escapeHtml(t("futureRoadmapBasis"))}</strong> · ${escapeHtml(localizedRoadmapField(phase, "basis"))}</p>
+        ${revisions ? `<div><strong>${escapeHtml(t("futureRoadmapRevisions"))}</strong><ul class="future-roadmap-revisions">${revisions}</ul></div>` : ""}
+        ${(ladderButton || metrics) ? `<div class="future-roadmap-links">${ladderButton}${metrics}</div>` : ""}
+      </section>`;
+    }
+
+    function futureRoadmapMarkup(tech) {
+      const roadmap = tech?.roadmap;
+      if (!roadmap || tech?.nature === "governance" || !(roadmap.phases || []).length) return "";
+      const mobile = window.matchMedia("(max-width: 720px)").matches;
+      const fullStart = Math.floor(Number(roadmap.range?.start || new Date().getFullYear() - 8));
+      const fullEnd = Math.ceil(Number(roadmap.range?.end || new Date().getFullYear() + 10));
+      const currentYear = new Date().getFullYear() + (new Date().getMonth() / 12);
+      const rangeState = futureRoadmapRanges[tech.id] || { past: 0, future: 0 };
+      futureRoadmapRanges[tech.id] = rangeState;
+      const start = mobile ? Math.max(fullStart, Math.floor(currentYear - 6 - rangeState.past)) : fullStart;
+      const end = mobile ? Math.min(fullEnd, Math.ceil(currentYear + 6 + rangeState.future)) : fullEnd;
+      const width = mobile ? 350 : 900;
+      const labelWidth = mobile ? 8 : 174;
+      const plotLeft = mobile ? 8 : 186;
+      const plotRight = width - 12;
+      const plotWidth = plotRight - plotLeft;
+      const visiblePhases = (roadmap.phases || []).filter((phase) => Number(phase.end) >= start && Number(phase.start) <= end);
+      const rowHeight = mobile ? 54 : 42;
+      const axisY = 24;
+      const phaseTop = 42;
+      const markerTop = phaseTop + (visiblePhases.length * rowHeight) + 12;
+      const height = markerTop + 48;
+      const x = (year) => plotLeft + ((Number(year) - start) / Math.max(end - start, 1)) * plotWidth;
+      const clampX = (year) => Math.max(plotLeft, Math.min(plotRight, x(year)));
+      const span = Math.max(end - start, 1);
+      const tickStep = Math.max(1, Math.ceil(span / 6));
+      const tickCandidates = [];
+      for (let year = Math.ceil(start / tickStep) * tickStep; year <= end; year += tickStep) tickCandidates.push(year);
+      tickCandidates.push(start, end);
+      const ticks = [...new Set(tickCandidates)].sort((a, b) => a - b).reduce((selected, year) => {
+        const previous = selected[selected.length - 1];
+        if (previous === undefined || (x(year) - x(previous)) >= (mobile ? 34 : 42)) selected.push(year);
+        return selected;
+      }, []);
+      const techKey = idSegment(tech.id);
+      const defs = visiblePhases.filter((phase) => phase.status === "projected").map((phase) => `<linearGradient id="roadmap-gradient-${techKey}-${idSegment(phase.id)}" x1="0" x2="1">
+        <stop offset="0%" stop-color="var(--chart-up)" stop-opacity="0.04"></stop>
+        <stop offset="18%" stop-color="var(--chart-up)" stop-opacity="0.24"></stop>
+        <stop offset="82%" stop-color="var(--chart-up)" stop-opacity="0.24"></stop>
+        <stop offset="100%" stop-color="var(--chart-up)" stop-opacity="0.04"></stop>
+      </linearGradient>`).join("");
+      const grid = ticks.map((year, index) => {
+        const anchor = index === 0 ? "start" : index === ticks.length - 1 ? "end" : "middle";
+        return `<line class="future-roadmap-grid" x1="${clampX(year)}" x2="${clampX(year)}" y1="${axisY}" y2="${markerTop + 26}"></line>
+          <text class="future-roadmap-axis-label" x="${clampX(year)}" y="14" text-anchor="${anchor}">${escapeHtml(futureRoadmapYear(year))}</text>`;
+      }).join("");
+      const phases = visiblePhases.map((phase, index) => {
+        const rowY = phaseTop + (index * rowHeight);
+        const barY = rowY + (mobile ? 19 : 3);
+        const startX = clampX(phase.start);
+        const endX = clampX(phase.end);
+        const barWidth = Math.max(4, endX - startX);
+        const gradient = `roadmap-gradient-${techKey}-${idSegment(phase.id)}`;
+        const ghost = phase.ghost;
+        const ghostStart = ghost ? clampX(ghost.start) : 0;
+        const ghostEnd = ghost ? clampX(ghost.end) : 0;
+        const ghostMarkup = ghost ? `<rect class="future-roadmap-ghost" x="${ghostStart}" y="${barY - 4}" width="${Math.max(4, ghostEnd - ghostStart)}" height="22" rx="4"></rect>` : "";
+        const shift = futureRoadmapShiftLabel(ghost);
+        const statusLabel = phase.status === "projected" ? t("futureRoadmapProjected") : phase.status === "done" ? "✓" : "";
+        return `<g class="future-roadmap-phase-hit" role="button" tabindex="0" aria-label="${escapeHtml(localizedRoadmapField(phase, "name"))}" data-roadmap-phase="roadmap-detail-${techKey}-${idSegment(phase.id)}">
+          <text class="future-roadmap-phase-label" x="${mobile ? labelWidth : 4}" y="${rowY + 14}">${escapeHtml(localizedRoadmapField(phase, "name"))}</text>
+          ${ghostMarkup}
+          <rect class="future-roadmap-bar is-${escapeHtml(phase.status)}" x="${startX}" y="${barY}" width="${barWidth}" height="14" rx="4" ${phase.status === "projected" ? `fill="url(#${gradient})"` : ""}></rect>
+          ${statusLabel ? `<text class="future-roadmap-bar-label" x="${Math.min(endX - 4, startX + barWidth / 2)}" y="${barY + 10}" text-anchor="middle">${escapeHtml(statusLabel)}</text>` : ""}
+          ${shift ? `<text class="future-roadmap-shift-label" x="${Math.min(plotRight - 4, Math.max(startX, Math.min(endX, ghostEnd)))}" y="${barY + 27}" text-anchor="end">${escapeHtml(shift)}</text>` : ""}
+          <rect class="future-roadmap-click-target" x="0" y="${rowY - 2}" width="${width}" height="${rowHeight}"></rect>
+        </g>`;
+      }).join("");
+      const todayX = clampX(currentYear);
+      const markers = (roadmap.markers || []).filter((marker) => Number(marker.year) >= start && Number(marker.year) <= end).map((marker, index) => {
+        const markerX = clampX(marker.year);
+        const markerY = markerTop + ((index % 2) * 15);
+        const rawLabel = localizedRoadmapField(marker, "label");
+        const markerLabel = mobile
+          ? (marker.type === "prediction" ? t("futurePrediction") : rawLabel.slice(0, 14))
+          : (rawLabel.length > 34 ? `${rawLabel.slice(0, 32)}…` : rawLabel);
+        const alignRight = markerX > plotRight - (mobile ? 94 : 180);
+        const labelX = markerX + (alignRight ? -9 : 9);
+        return `<g class="future-roadmap-marker" aria-label="${escapeHtml(localizedRoadmapField(marker, "label"))}">
+          <path class="future-roadmap-diamond is-${escapeHtml(marker.type || "milestone")}" d="M ${markerX} ${markerY - 6} L ${markerX + 6} ${markerY} L ${markerX} ${markerY + 6} L ${markerX - 6} ${markerY} Z"></path>
+          <text class="future-roadmap-marker-label" x="${labelX}" y="${markerY + 3}" text-anchor="${alignRight ? "end" : "start"}">${escapeHtml(futureRoadmapYear(marker.year))} ${escapeHtml(markerLabel)}</text>
+        </g>`;
+      }).join("");
+      const detailPanels = (roadmap.phases || []).map((phase) => futureRoadmapDetailsMarkup(tech, phase)).join("");
+      return `<section class="future-roadmap" data-future-roadmap="${escapeHtml(tech.id)}">
+        <div class="future-roadmap-head"><h3>${escapeHtml(t("futureRoadmapTitle"))}</h3></div>
+        <p class="future-roadmap-notice">${escapeHtml(t("futureRoadmapNotice"))}</p>
+        <div class="future-roadmap-controls">
+          <button class="future-roadmap-expand" type="button" data-roadmap-expand="past" data-roadmap-tech="${escapeHtml(tech.id)}" ${start <= fullStart ? "disabled" : ""}>‹ ${escapeHtml(t("futureRoadmapEarlier"))}</button>
+          <button class="future-roadmap-expand" type="button" data-roadmap-expand="future" data-roadmap-tech="${escapeHtml(tech.id)}" ${end >= fullEnd ? "disabled" : ""}>${escapeHtml(t("futureRoadmapLater"))} ›</button>
+        </div>
+        <div class="future-roadmap-chart">
+          <svg class="future-roadmap-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(localizedFutureField(tech, "name"))} ${escapeHtml(t("futureRoadmapTitle"))}">
+            <defs>${defs}</defs>
+            ${grid}
+            <line class="future-roadmap-axis" x1="${plotLeft}" x2="${plotRight}" y1="${axisY}" y2="${axisY}"></line>
+            ${phases}
+            <line class="future-roadmap-today" x1="${todayX}" x2="${todayX}" y1="${axisY}" y2="${markerTop + 28}"></line>
+            <text class="future-roadmap-today-label" x="${todayX + 4}" y="${axisY + 10}">${escapeHtml(t("futureRoadmapToday"))}</text>
+            ${markers}
+          </svg>
+        </div>
+        <div class="future-roadmap-legend">
+          <span><i></i>${escapeHtml(t("futureRoadmapDone"))}</span>
+          <span><i class="is-active"></i>${escapeHtml(t("futureRoadmapActive"))}</span>
+          <span><i class="is-projected"></i>${escapeHtml(t("futureRoadmapProjected"))}</span>
+          <span><i class="is-ghost"></i>${escapeHtml(t("futureRoadmapGhost"))}</span>
+        </div>
+        ${detailPanels}
+      </section>`;
+    }
+
     function futureCardMarkup(tech) {
       const predicted = tech.predicted || {};
       const predictedLabel = state.language === "en"
         ? (predicted.label_en || predicted.label || predicted.year || "")
         : (predicted.label || predicted.year || "");
       const metrics = (tech.metrics || []).map(futureMetricMarkup).join("");
-      const companies = (tech.companies || []).map(futureCompanySideMarkup).join("");
+      const companies = (tech.companies || []).map((company) => futureCompanySideMarkup(company, tech.investable === "partial")).join("");
+      const privatePlayers = (tech.private_players || []).join(" · ");
+      const investable = tech.investable || "true";
+      const nature = tech.nature || "frontier";
+      const predictionValue = tech.status === "watch"
+        ? t("futureStatusWatch")
+        : String(predicted.year || predictedLabel || "");
+      const companyContent = investable === "false"
+        ? `<span class="future-company-notice">${escapeHtml(t("futureNoInvestableCompanies"))}</span>`
+        : `${companies || `<span class="future-company-change">${escapeHtml(t("futureNoCompanies"))}</span>`}
+           ${investable === "partial" ? `<span class="future-company-notice">${escapeHtml(t("futurePartialInvesting"))}</span>` : ""}`;
+      const privatePlayersMarkup = privatePlayers
+        ? `<p class="future-private-players"><strong>${escapeHtml(t("futurePrivatePlayers"))}</strong> · ${escapeHtml(privatePlayers)}</p>`
+        : "";
+      const governanceIssues = nature === "governance" && (tech.issues || []).length
+        ? `<section><span class="future-side-label">${escapeHtml(t("futureGovernanceIssues"))}</span><ul class="future-governance-issues">${tech.issues.map((item) => `<li>${escapeHtml(localizedFutureField(item, "label"))}</li>`).join("")}</ul></section>`
+        : "";
       const glossary = futureGlossaryMarkup(tech.glossary || []);
       const readings = futureReadingsMarkup(tech.readings || []);
       const breakdown = futureBreakdownMarkup(tech);
+      const roadmap = futureRoadmapMarkup(tech);
       const active = state.activeFutureId === tech.id;
       const image = tech.image || "";
       return `<article class="future-card ${tech.status === "achieved" ? "is-achieved" : ""} ${active ? "is-active" : ""}" id="${futureCardId(tech.id)}" data-future-card="${escapeHtml(tech.id)}">
@@ -15749,19 +17180,25 @@
           <button class="future-card-title" type="button" data-future-focus="${escapeHtml(tech.id)}">${escapeHtml(localizedFutureField(tech, "name"))}</button>
           <div class="future-side-pills">
             <span class="future-status-pill">${escapeHtml(futureStatusLabel(tech.status))}</span>
+            <span class="future-nature-pill is-${escapeHtml(nature)}">${escapeHtml(futureNatureLabel(nature))}</span>
+            <span class="future-investable-pill is-${escapeHtml(investable)}">${escapeHtml(futureInvestableLabel(investable))}</span>
+            ${predicted.confidence === "low" ? `<span class="future-investable-pill is-partial">${escapeHtml(t("futureForecastLow"))}</span>` : ""}
+            ${predicted.manufacturer_forecast ? `<span class="future-investable-pill">${escapeHtml(t("futureManufacturerForecast"))}</span>` : ""}
+            ${tech.stale ? `<span class="future-investable-pill is-partial">${escapeHtml(t("futureStale"))}</span>` : ""}
             ${glossary}
           </div>
           <div class="future-year-block">
             <span class="future-side-label">${escapeHtml(t("futurePrediction"))}</span>
-            <strong>${escapeHtml(String(predicted.year || predictedLabel || ""))}</strong>
+            <strong>${escapeHtml(predictionValue)}</strong>
             <small>${escapeHtml(dateText(tech.as_of || ""))}</small>
           </div>
           ${futureTrackScoreMarkup(tech)}
           <div class="future-company-panel">
             <span class="future-side-label">${escapeHtml(t("futureCompanies"))}</span>
             <div class="future-company-list" aria-label="${escapeHtml(t("futureCompanies"))}">
-              ${companies || `<span class="future-company-change">${escapeHtml(t("futureNoCompanies"))}</span>`}
+              ${companyContent}
             </div>
+            ${privatePlayersMarkup}
           </div>
         </aside>
         <div class="future-card-main">
@@ -15771,11 +17208,13 @@
             <p class="future-why">${escapeHtml(localizedFutureField(tech, "what"))}</p>
           </div>
           ${futureBottleneckMarkup(tech)}
+          ${governanceIssues}
           <div class="future-progress">
             <div class="future-metric-list" aria-label="${escapeHtml(t("futureProgress"))}">
               ${metrics || `<span class="future-metric-value">${escapeHtml(t("futureNoMetrics"))}</span>`}
             </div>
           </div>
+          ${roadmap}
           ${breakdown}
           ${readings}
           ${futureSourceMarkup(tech)}
@@ -15839,6 +17278,47 @@
       document.querySelectorAll("[data-breakdown-company]").forEach((button) => {
         button.addEventListener("click", () => openMetricDetail(button.dataset.breakdownCompany));
       });
+      document.querySelectorAll("[data-roadmap-phase]").forEach((phase) => {
+        const openDetails = () => {
+          const roadmap = phase.closest("[data-future-roadmap]");
+          const target = document.getElementById(phase.dataset.roadmapPhase || "");
+          if (!roadmap || !target) return;
+          const opening = target.hidden;
+          roadmap.querySelectorAll("[data-roadmap-detail]").forEach((detail) => { detail.hidden = true; });
+          roadmap.querySelectorAll("[data-roadmap-phase]").forEach((item) => item.setAttribute("aria-pressed", "false"));
+          target.hidden = !opening;
+          phase.setAttribute("aria-pressed", String(opening));
+        };
+        phase.addEventListener("click", openDetails);
+        phase.addEventListener("keydown", (event) => {
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          openDetails();
+        });
+      });
+      document.querySelectorAll("[data-roadmap-expand]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const techId = button.dataset.roadmapTech || "";
+          const direction = button.dataset.roadmapExpand || "";
+          const range = futureRoadmapRanges[techId] || { past: 0, future: 0 };
+          if (direction === "past") range.past += 6;
+          if (direction === "future") range.future += 6;
+          futureRoadmapRanges[techId] = range;
+          renderIndustries();
+          requestAnimationFrame(() => document.querySelector(`[data-future-roadmap="${techId}"]`)?.scrollIntoView({ block: "center" }));
+        });
+      });
+      document.querySelectorAll("[data-roadmap-ladder]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const flowId = button.dataset.roadmapLadder || "";
+          const target = [...document.querySelectorAll("[data-breakdown-row]")]
+            .find((row) => row.dataset.breakdownRow === flowId);
+          target?.scrollIntoView({ behavior: "smooth", block: "center" });
+        });
+      });
+      document.querySelectorAll("[data-roadmap-metric]").forEach((button) => {
+        button.addEventListener("click", () => openMetricDetail(button.dataset.roadmapMetric));
+      });
       document.querySelectorAll("[data-future-component]").forEach((button) => {
         button.addEventListener("click", () => {
           const componentId = button.dataset.futureComponent || "";
@@ -15889,11 +17369,11 @@
     }
 
     function renderIndustries() {
-      const metrics = DASHBOARD_DATA.metrics;
+      const metrics = countryFilteredMetrics();
       const stack = document.getElementById("industryStack");
       if (isSearchFiltering()) {
         const resultIds = searchResultIds();
-        const matched = (state.searchResults || []).filter((metric) => resultIds.has(metric.id));
+        const matched = countryFilteredMetrics(state.searchResults || []).filter((metric) => resultIds.has(metric.id));
         if (!matched.length) {
           document.getElementById("empty").style.display = "none";
           stack.innerHTML = `<div class="empty" style="display:block">『${escapeHtml(state.searchQuery)}』${escapeHtml(t("metricSearchEmpty"))}</div>`;
@@ -15975,6 +17455,11 @@
     }
 
     function toggleMetricRow(row, options = {}) {
+      if (mobileDrawerQuery.matches) {
+        const metric = metricById(row.dataset.metricId);
+        if (metric) openMetricDetail(metric.id, { updateHash: options.updateHash !== false });
+        return;
+      }
       const detail = document.getElementById(row.dataset.detailId);
       const toggle = row.querySelector("[data-metric-toggle]");
       if (!detail || !toggle) return;
@@ -16285,6 +17770,7 @@
       document.querySelectorAll("[data-metric-row]").forEach((row) => {
         row.addEventListener("click", () => toggleMetricRow(row));
       });
+      initInterpretationToggles();
       initFavoriteButtons();
       initNoteButtons();
       initCsvButtons();
@@ -16562,9 +18048,12 @@
       document.getElementById("signalDrawer")?.setAttribute("aria-label", t("signalHistoryTitle"));
       document.getElementById("signalDrawerClose")?.setAttribute("aria-label", t("signalHistoryClose"));
       document.getElementById("metricDetailDrawer")?.setAttribute("aria-label", t("metricDetailDrawerTitle"));
+      document.getElementById("metricDetailSheetHandle")?.setAttribute("aria-label", t("metricDetailDrawerClose"));
+      document.getElementById("metricDetailSheetHandle")?.setAttribute("title", t("metricDetailDrawerClose"));
       document.getElementById("metricDetailDrawerClose")?.setAttribute("aria-label", t("metricDetailDrawerClose"));
       document.getElementById("themeToggle")?.setAttribute("aria-label", t("toggleTheme"));
       document.getElementById("themeToggle")?.setAttribute("title", t("toggleTheme"));
+      updateCurrencySettingLabel();
       document.getElementById("noteModalClose")?.setAttribute("aria-label", t("close"));
       const noteModalTitle = document.getElementById("noteModalTitle");
       if (noteModalTitle) noteModalTitle.textContent = t("noteTitle");
@@ -16589,6 +18078,7 @@
       updateTimeZoneSettingLabel();
       updateThemeToggleLabel();
       updateCurrencyButton();
+      updateCountryFilterControl();
       updateLastUpdatedInline();
       renderMetricSearchHost();
     }
@@ -16600,6 +18090,7 @@
       renderFilters();
       renderDailyUpdates();
       renderIndustries();
+      if (state.activeMetricDetailId) renderMetricDetailDrawer(state.activeMetricDetailId);
     }
 
     function initLanguage() {
@@ -16614,6 +18105,7 @@
       updateLastUpdatedInline();
       if (document.body.classList.contains("signal-drawer-open")) renderSignalDrawer();
       if (document.body.classList.contains("offline-fallback")) showOfflineBanner(true);
+      if (state.activeMetricDetailId) renderMetricDetailDrawer(state.activeMetricDetailId);
     }
 
     function toggleTimeZone() {
@@ -16672,6 +18164,9 @@
       document.querySelector('[data-setting-action="theme"]').addEventListener("click", () => {
         animateThemeToggle(document.body.classList.contains("theme-dark") ? "light" : "dark");
       });
+      document.querySelector('[data-setting-action="currency"]').addEventListener("click", () => {
+        animateCurrencyToggle(state.currency === "usd" ? "krw" : "usd");
+      });
       document.querySelector('[data-setting-action="language"]').addEventListener("click", () => {
         setLanguage(state.language === "ko" ? "en" : "ko");
       });
@@ -16719,6 +18214,11 @@
       return currency === "krw" ? t("currencyKrwName") : t("currencyUsdName");
     }
 
+    function updateCurrencySettingLabel() {
+      const label = document.getElementById("currencySettingLabel");
+      if (label) label.textContent = currencyToggleLabelText();
+    }
+
     function updateCurrencyButton(options = {}) {
       const toggle = document.getElementById("currencyToggle");
       if (!toggle) return;
@@ -16735,6 +18235,7 @@
       document.body.classList.toggle("currency-usd", state.currency === "usd");
       localStorage.setItem("dashboard-currency", state.currency);
       updateCurrencyButton(options);
+      updateCurrencySettingLabel();
     }
 
     function animateCurrencyToggle(nextCurrency) {
@@ -16992,7 +18493,7 @@
     }
 
     function initMetricDetailDrawer() {
-      document.getElementById("metricDetailDrawerBack")?.addEventListener("click", () => setMetricDetailDrawerOpen(false));
+      document.getElementById("metricDetailSheetHandle")?.addEventListener("click", () => setMetricDetailDrawerOpen(false));
       document.getElementById("metricDetailDrawerClose")?.addEventListener("click", () => setMetricDetailDrawerOpen(false));
       document.getElementById("metricDetailDrawerBackdrop")?.addEventListener("click", () => setMetricDetailDrawerOpen(false));
       document.addEventListener("keydown", (event) => {
@@ -17195,6 +18696,7 @@
     initSettings();
     initTheme();
     initCurrency();
+    initCountryFilter();
     initFavoriteMetrics();
     initMetricNotes();
     initNavState();

@@ -185,3 +185,97 @@
       label_en: All-day work
       desc: 배터리와 내구성이 충분해 오래 일합니다.
       desc_en: Works for long periods with enough battery and durability.
+
+- id: quantum-maturity
+  name: 양자 컴퓨팅 성숙 단계
+  name_en: Quantum Computing Maturity
+  source: https://www.ibm.com/roadmaps/quantum/2030/
+  source_label: IBM Quantum 2030 로드맵
+  source_label_en: IBM Quantum 2030 roadmap
+  rungs:
+    - level: nisq
+      label: 잡음 있는 소규모
+      label_en: Noisy intermediate scale
+      desc: 오류를 완전히 고치지 못한 물리 큐비트로 제한된 실험을 수행합니다.
+      desc_en: Runs limited experiments on physical qubits without full error correction.
+    - level: logical-demo
+      label: 논리 큐비트 실증
+      label_en: Logical-qubit demonstration
+      desc: 여러 물리 큐비트를 묶어 오류가 줄어든 논리 큐비트를 검증합니다.
+      desc_en: Combines physical qubits to demonstrate a lower-error logical qubit.
+    - level: fault-tolerant
+      label: 결함허용 시스템
+      label_en: Fault-tolerant system
+      desc: 다수 논리 큐비트와 오류정정으로 긴 계산을 안정적으로 수행합니다.
+      desc_en: Uses multiple logical qubits and error correction for stable long computations.
+    - level: useful-advantage
+      label: 실용적 양자우위
+      label_en: Useful quantum advantage
+      desc: 고전 컴퓨터보다 실제로 유용한 문제를 더 잘 해결합니다.
+      desc_en: Solves a useful real-world problem better than classical computers.
+
+- id: bci-clinical
+  name: BCI 침습도·임상 단계
+  name_en: BCI Invasiveness and Clinical Stages
+  source: https://www.fda.gov/regulatory-information/search-fda-guidance-documents/implanted-brain-computer-interface-bci-devices-patients-paralysis-or-amputation-non-clinical-testing
+  source_label: FDA 이식형 BCI 임상 가이드
+  source_label_en: FDA implanted BCI clinical guidance
+  rungs:
+    - level: noninvasive-research
+      label: 비침습 연구
+      label_en: Non-invasive research
+      desc: 두피 밖 센서로 신호를 읽으며 수술 위험은 낮지만 해상도가 제한됩니다.
+      desc_en: Reads signals outside the skull with low surgical risk but limited resolution.
+    - level: invasive-feasibility
+      label: 이식형 초기 임상
+      label_en: Implanted early feasibility
+      desc: 소수 환자에게 이식해 안전성과 기본 기능을 확인합니다.
+      desc_en: Tests safety and basic function in a small number of implanted patients.
+    - level: pivotal-trial
+      label: 확증 임상
+      label_en: Pivotal clinical trial
+      desc: 정식 허가에 필요한 효과와 위험을 더 큰 환자군에서 검증합니다.
+      desc_en: Tests benefit and risk in a larger group for a marketing application.
+    - level: medical-approval
+      label: 의료기기 승인
+      label_en: Medical-device authorization
+      desc: 특정 의료 용도로 규제기관의 판매 허가를 받은 단계입니다.
+      desc_en: Receives regulator authorization for a defined medical use.
+    - level: augmentation
+      label: 비의료 증강
+      label_en: Non-medical augmentation
+      desc: 잃은 기능 복원을 넘어 일반인의 능력 확장에 쓰이는 가정적 단계입니다.
+      desc_en: A hypothetical stage beyond restoration into enhancement for healthy users.
+
+- id: evtol-certification
+  name: eVTOL 인증·운항 단계
+  name_en: eVTOL Certification and Operations
+  source: https://www.faa.gov/newsroom/faa-issues-implementation-plan-outlining-steps-usher-advanced-air-mobility
+  source_label: FAA Innovate28 실행계획
+  source_label_en: FAA Innovate28 implementation plan
+  rungs:
+    - level: prototype-flight
+      label: 시제기 비행
+      label_en: Prototype flight
+      desc: 시험 기체의 기본 비행 성능을 검증합니다.
+      desc_en: Demonstrates basic flight performance with prototype aircraft.
+    - level: type-certification
+      label: 형식인증 진행
+      label_en: Type certification in progress
+      desc: 기체 설계가 항공 안전 기준을 충족하는지 당국이 심사합니다.
+      desc_en: The regulator evaluates whether the aircraft design meets safety standards.
+    - level: production-approval
+      label: 생산 승인
+      label_en: Production approval
+      desc: 승인된 설계와 같은 품질로 반복 생산할 수 있음을 입증합니다.
+      desc_en: Proves the aircraft can be repeatedly built to the approved design.
+    - level: commercial-operation
+      label: 상업 운항
+      label_en: Commercial operation
+      desc: 운항자와 조종사, 노선까지 허가받아 승객 서비스를 시작합니다.
+      desc_en: Begins passenger service with operator, pilot, and route approvals.
+    - level: autonomous-scale
+      label: 자율 대규모 운항
+      label_en: Autonomous scaled operation
+      desc: 장기적으로 조종사 없이 여러 지역에서 반복 운항합니다.
+      desc_en: A long-term stage of repeated pilotless operations across many sites.

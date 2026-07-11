@@ -35,6 +35,13 @@ def test_expiry_events_2026() -> None:
     ]
     assert futures == ["2026-03-12", "2026-06-11", "2026-09-10", "2026-12-10"]
     assert quad == ["2026-03-20", "2026-06-18", "2026-09-18", "2026-12-18"]
+    assert {item["category"] for item in events} == {"market"}
+
+
+def test_manual_calendar_uses_event_type_categories() -> None:
+    categories = {item["category"] for item in load_calendar_yaml(Path("data/calendar/2026.yaml"))}
+
+    assert categories <= {"policy", "macro", "corporate", "industry", "holiday"}
 
 
 def test_event_calendar_links_manual_cpi_but_ignores_metric_updates() -> None:

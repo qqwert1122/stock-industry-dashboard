@@ -2822,7 +2822,7 @@ def copy_dashboard_assets(output_path: Path) -> None:
     if assets_source is None:
         return
 
-    for directory in ("industry-icons", "future-images"):
+    for directory in ("industry-icons", "future-images", "country-flags"):
         source = assets_source / directory
         target = output_path / "assets" / directory
         if not source.exists():
@@ -2836,6 +2836,7 @@ def copy_dashboard_assets(output_path: Path) -> None:
     for filename in (
         "marketbrief-logo.svg",
         "marketbrief-logo.png",
+        "luceforge-studio-final.png",
         "pwa-icon-192.png",
         "pwa-icon-512.png",
     ):
@@ -3118,6 +3119,7 @@ def build_dashboard_payload(
     metrics.extend(collect_reference_metrics(config))
     apply_fetch_metadata(metrics, fetched_at, previous_by_key)
     assign_market_navigation_fields(metrics)
+    assign_metric_country_fields(metrics)
     metrics = visible_dashboard_metrics(metrics)
     industries = configured_industries(config, metrics)
 
@@ -3179,6 +3181,9 @@ def collect_fred_metrics(
                 group=str(series.get("group") or ""),
                 depth=str(series.get("depth") or ""),
                 meaning=str(series.get("meaning") or ""),
+                section=str(series.get("section") or ""),
+                market_category=str(series.get("market_category") or ""),
+                also_market_category=series.get("also_market_category") or "",
             )
             for series in series_config
             if series.get("id")
@@ -3252,6 +3257,9 @@ def collect_fred_metrics(
                     depth=str(series.get("depth") or ""),
                     meaning=str(series.get("meaning") or ""),
                     history_key=history_key,
+                    section=str(series.get("section") or ""),
+                    market_category=str(series.get("market_category") or ""),
+                    also_market_category=series.get("also_market_category") or "",
                 )
             )
         except Exception as exc:  # noqa: BLE001 - keep each card independent.
@@ -8141,6 +8149,62 @@ def assign_market_navigation_fields(metrics: list[dict[str, Any]]) -> None:
         metric["also_market_category"] = normalize_market_categories(metric.get("also_market_category"))
 
 
+def infer_metric_country(metric: dict[str, Any]) -> str:
+    """Return a compact geographic code for display and client-side filtering."""
+    explicit = clean_display_text(metric.get("country") or "").upper()
+    if explicit:
+        return explicit
+
+    name = clean_display_text(metric.get("name") or "")
+    source = clean_display_text(metric.get("source") or "")
+    history_key = clean_display_text(metric.get("history_key") or "")
+    text = f"{name} {source} {history_key}"
+    lowered = text.lower()
+
+    # Region/global series must win over source-country heuristics such as FRED.
+    if any(token in lowered for token in ("worldwide", "global", "world bank", "글로벌", "전세계", "세계 ")):
+        return "GLOBAL"
+    if any(token in lowered for token in ("asia pacific", "아시아 태평양")):
+        return "APAC"
+    if any(token in lowered for token in ("americas", "미주")):
+        return "AMERICAS"
+    if any(token in text for token in ("BDI", "철광석", "구리", "알루미늄", "리튬 가격", "USDT/USDC", "비트코인", "김치프리미엄", "Phase 3 임상")):
+        return "GLOBAL"
+
+    if any(token in text for token in ("한국", "코스피", "코스닥", "원/달러", "VKOSPI", ".KS", ".KQ")) or any(
+        token in lowered for token in ("krx", "kosis", "ecos", "kofia", "data.go.kr")
+    ):
+        return "KR"
+    if any(token in text for token in ("일본", "BOJ", "엔/달러", "엔/원", ".T)")) or history_key.startswith("boj-"):
+        return "JP"
+    if any(token in text for token in ("중국", "위안", "CNY")):
+        return "CN"
+    if any(token in text for token in ("유럽", "유로시스템", "ECB", "유로존")) or history_key.startswith("ecb-"):
+        return "EU"
+    if any(token in text for token in ("TSMC", "대만")):
+        return "TW"
+    if any(token in text for token in ("ASML", "네덜란드")):
+        return "NL"
+
+    us_names = (
+        "미국", "S&P", "나스닥", "다우", "VIX", "Sahm", "GDPNow", "CNN",
+        "WTI", "연준", "TGA", "역레포", "하이일드", "Micron", "NVIDIA", "AMD(",
+        "Intel(", "Applied Materials", "Microsoft", "Amazon", "Alphabet", "Meta", "Tesla",
+        "GE Vernova", "Teradyne", "Uber", "Mobileye", "Qualcomm", "Rocket Lab", "Eli Lilly",
+    )
+    if any(token in text for token in us_names) or any(
+        token in lowered for token in ("fred", "fiscaldata", "finra", "openfda", "usaspending", "eia api", "nrel")
+    ):
+        return "US"
+    return "GLOBAL"
+
+
+def assign_metric_country_fields(metrics: list[dict[str, Any]]) -> None:
+    for metric in metrics:
+        if isinstance(metric, dict):
+            metric["country"] = infer_metric_country(metric)
+
+
 def visible_dashboard_metrics(metrics: list[dict[str, Any]]) -> list[dict[str, Any]]:
     visible: list[dict[str, Any]] = []
     for metric in metrics:
@@ -8167,6 +8231,7 @@ def visible_dashboard_metrics(metrics: list[dict[str, Any]]) -> list[dict[str, A
                     "chart_style": clean_display_text(metric.get("chart_style") or ""),
                     "exclude_from_movers": bool(metric.get("exclude_from_movers")),
                     "source": clean_display_text(metric.get("source") or ""),
+                    "country": clean_display_text(metric.get("country") or "GLOBAL"),
                     "industry": clean_display_text(metric["industry"]),
                     "industry_en": english_industry(clean_display_text(metric["industry"])),
                     "depth": clean_display_text(metric.get("depth") or ""),
@@ -8857,7 +8922,12 @@ def load_dashboard_template() -> str:
 
 def render_dashboard_html(payload: dict[str, Any]) -> str:
     json_text = json.dumps(payload, ensure_ascii=False).replace("</", "<\\/")
-    return load_dashboard_template().replace("__DASHBOARD_JSON__", json_text)
+    measurement_id = os.environ.get("GA_MEASUREMENT_ID", "").strip()
+    return (
+        load_dashboard_template()
+        .replace("__DASHBOARD_JSON__", json_text)
+        .replace("__GA_MEASUREMENT_ID__", measurement_id)
+    )
 
 
 def copy_signal_log_output(config: dict[str, Any], data_path: Path) -> None:
@@ -8877,3 +8947,6 @@ def write_admin_html(output_path: Path) -> None:
     admin_path = output_path / "admin"
     admin_path.mkdir(parents=True, exist_ok=True)
     (admin_path / "index.html").write_text(load_admin_template(), encoding="utf-8")
+    privacy_template = Path(__file__).resolve().parent / "templates" / "privacy.html"
+    if privacy_template.exists():
+        (output_path / "privacy.html").write_text(privacy_template.read_text(encoding="utf-8"), encoding="utf-8")
