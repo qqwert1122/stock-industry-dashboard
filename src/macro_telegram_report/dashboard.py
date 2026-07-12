@@ -1,24 +1,19 @@
 from __future__ import annotations
 
 import csv
-import hashlib
-import json
 import os
 import re
-import shutil
 import time
 from collections import defaultdict
 from datetime import date, datetime, timedelta, timezone
 from io import BytesIO, StringIO
 from pathlib import Path
-from statistics import median
-from typing import Any
+from typing import Any, Callable
 from urllib.parse import urljoin
 from xml.etree import ElementTree
 from zoneinfo import ZoneInfo
 
 import requests
-import yaml
 from bs4 import BeautifulSoup
 from openpyxl import load_workbook
 
@@ -32,6 +27,116 @@ from .briefing import (
     load_recent_briefing_cards,
     update_intraday_track,
     write_briefing_outputs,
+)
+from .dashboard_briefing import (
+    GEMINI_DAILY_CALL_LIMIT,
+    GEMINI_DEFAULT_MODEL,
+    GEMINI_GENERATE_URL,
+    benchmark_change_summary,
+    brief_metric,
+    briefing_generation_decision,
+    briefing_metric_changes,
+    briefing_metric_snapshot,
+    briefing_session_context,
+    build_morning_briefing,
+    compact_stock_market_narrative,
+    consecutive_low_signal_count,
+    daily_move_significance,
+    equity_lead_rows,
+    equity_market_for_metric,
+    extract_gemini_text,
+    gemini_morning_briefing_prompt,
+    industry_signal_rows,
+    is_persistent_market_metric,
+    is_representative_stock,
+    load_industry_narratives,
+    market_narrative_context,
+    metric_change_meaning,
+    metric_change_summary,
+    metric_direction,
+    metric_kind_label,
+    narrative_context_for_briefing,
+    normalize_briefing_bullets,
+    normalize_gemini_briefing,
+    normalized_metric_name,
+    observed_at_progressed,
+    parse_json_object,
+    persistent_event_threshold,
+    persistent_market_events,
+    recent_narrative_industries,
+    relevant_briefing_industries,
+    request_gemini_briefing,
+    rule_based_bullets,
+    rule_based_morning_briefing,
+    rule_based_summary,
+    short_text,
+    subject_particle,
+    top_mover_metrics,
+    topic_label,
+    topic_particle,
+)
+from .dashboard_localization import (
+    CAPEX_MEANINGS,
+    CAPEX_MEANINGS_EN,
+    EN_DEPTH_LABELS,
+    EN_EXPORT_ITEM_LABELS,
+    EN_FLOW_MEASURE_FALLBACKS,
+    EN_FREQUENCY_LABELS,
+    EN_GROUP_LABELS,
+    EN_INDUSTRY_LABELS,
+    EN_INVESTOR_FALLBACKS,
+    EN_MARKET_FALLBACKS,
+    EN_MEANING_LABELS,
+    EN_METRIC_NAME_LABELS,
+    EN_PHRASE_FALLBACKS,
+    EN_UNIT_LABELS,
+    HANGUL_RE,
+    WSTS_3MMA_MEANING,
+    WSTS_3MMA_MEANING_EN,
+    WSTS_REGION_MEANINGS,
+    WSTS_REGION_MEANINGS_EN,
+    clean_display_text,
+    contains_hangul,
+    english_depth,
+    english_export_item,
+    english_frequency,
+    english_generic_text,
+    english_group,
+    english_industry,
+    english_metric_meaning,
+    english_metric_name,
+    english_sentence_fallback,
+    english_unit,
+)
+from .dashboard_metrics import (
+    DEFAULT_INDUSTRIES,
+    assign_market_navigation_fields,
+    assign_metric_country_fields,
+    compact_date_label,
+    configured_industries,
+    export_meaning,
+    find_yoy_value,
+    format_abs_change,
+    format_value,
+    infer_export_industry,
+    infer_flow_metric_meaning,
+    infer_metric_country,
+    infer_metric_depth,
+    infer_metric_group,
+    infer_metric_meaning,
+    korea_fear_greed_meaning,
+    make_metric,
+    next_update_label,
+    normalize_market_categories,
+    period_label,
+    sec_capex_meaning,
+    set_market_category,
+    stablecoin_meaning,
+    status_label,
+    status_to_automation,
+    visible_dashboard_metrics,
+    vkospi_meaning,
+    wsts_metric_meaning,
 )
 from .history_store import (
     HistoryStore,
@@ -84,7 +189,25 @@ from .market_sentiment import (
     metric_full_points,
     missing_recent_dates,
 )
-from .utils import add_months, fmt_number, fmt_pct, fmt_signed, month_key, pct_change, to_float
+from .site_output import (
+    copy_dashboard_assets,
+    copy_signal_log_output,
+    load_admin_template,
+    load_dashboard_template,
+    render_dashboard_html,
+    write_admin_html,
+    write_dashboard_shell,
+)
+from .storage import load_json, write_json
+from .utils import (
+    add_months,
+    fmt_pct,
+    month_key,
+    numeric_values_equal,
+    parse_iso_date,
+    pct_change,
+    to_float,
+)
 from .wsts import find_wsts_xlsx_url, parse_wsts_sheet
 
 FRED_OBSERVATIONS_URL = "https://api.stlouisfed.org/fred/series/observations"
@@ -92,9 +215,6 @@ FISCALDATA_TGA_URL = (
     "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/"
     "v1/accounting/dts/operating_cash_balance"
 )
-GEMINI_DEFAULT_MODEL = "gemini-3.1-flash-lite"
-GEMINI_GENERATE_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
-GEMINI_DAILY_CALL_LIMIT = 400
 MARKET_GAUGE_HISTORY_FILENAME = "market_gauges_history.json"
 MARKET_GAUGE_HISTORY_VERSION = 1
 FETCH_LOG_HISTORY_FILENAME = "fetch_log_history.json"
@@ -125,25 +245,6 @@ FETCH_SOURCE_ENDPOINTS = {
     "시장 심리": "https://production.dataviz.cnn.io/index/fearandgreed/graphdata/{start_date}",
     "미래 타임라인": "data/future/technologies.yaml",
 }
-DEFAULT_INDUSTRIES = [
-    "반도체",
-    "데이터인프라",
-    "자동차",
-    "전기차",
-    "조선",
-    "철강/소재",
-    "화학/정유",
-    "은행/금융",
-    "건설/부동산",
-    "방산",
-    "스테이블코인",
-    "전력",
-    "로봇",
-    "우주",
-    "바이오",
-    "배터리",
-    "매크로",
-]
 INDUSTRY_ICONS = {
     "반도체": "assets/industry-icons/semiconductor.png",
     "자동차": "assets/industry-icons/auto.png",
@@ -182,409 +283,6 @@ INDUSTRY_SUMMARIES = {
     "데이터인프라": "서버와 네트워크 인프라 투자 흐름을 봅니다.",
     "매크로": "환율, 변동성, 금리로 시장 분위기를 빠르게 확인합니다.",
 }
-EN_INDUSTRY_LABELS = {
-    "반도체": "Semiconductors",
-    "데이터인프라": "Data Infrastructure",
-    "자동차": "Automobiles",
-    "전기차": "EVs",
-    "조선": "Shipbuilding",
-    "철강/소재": "Steel & Materials",
-    "화학/정유": "Chemicals & Refining",
-    "은행/금융": "Banks & Financials",
-    "건설/부동산": "Construction & Real Estate",
-    "방산": "Defense",
-    "스테이블코인": "Stablecoins",
-    "전력": "Power",
-    "로봇": "Robotics",
-    "우주": "Space",
-    "바이오": "Biotech",
-    "배터리": "Batteries",
-    "매크로": "Macro",
-}
-EN_GROUP_LABELS = {
-    "판매액": "Sales",
-    "판매액(WSTS)": "Sales (WSTS)",
-    "시장 매출": "Market Revenue",
-    "가격/수요": "Price/Demand",
-    "투자/장비": "Investment/Equipment",
-    "수출": "Exports",
-    "판매/수요": "Sales/Demand",
-    "판매량": "Sales Volume",
-    "배터리 원재료": "Battery Raw Materials",
-    "운임/해운": "Shipping Rates",
-    "선가/발주": "Newbuild Prices/Orders",
-    "원자재 가격": "Commodity Prices",
-    "중국 경기": "China Macro",
-    "에너지 가격": "Energy Prices",
-    "원유/원료": "Crude/Feedstock",
-    "화학 스프레드": "Chemical Spreads",
-    "스프레드/마진": "Spreads/Margins",
-    "금리": "Rates",
-    "스프레드": "Spreads",
-    "금리/스프레드": "Rates/Spreads",
-    "은행 건전성": "Bank Asset Quality",
-    "대출/건전성": "Lending/Asset Quality",
-    "주택 경기": "Housing Activity",
-    "건설 선행": "Construction Leads",
-    "금융비용": "Financing Costs",
-    "주택 시장": "Housing Market",
-    "환율": "FX",
-    "리스크": "Risk",
-    "시장 분위기": "Market Mood",
-    "핵심 지표": "Core Metrics",
-    "수주잔고": "Order Backlog",
-    "신규주문": "New Orders",
-    "방산 수요": "Defense Demand",
-    "유통량": "Supply",
-    "전력 수요": "Power Demand",
-    "전력 가격": "Power Prices",
-    "전력 수요/생산": "Power Demand/Generation",
-    "CAPEX": "CAPEX",
-    "산업 장비 가격": "Industrial Equipment Prices",
-    "설비투자": "Capex/Investment",
-    "항공우주 가격": "Aerospace Prices",
-    "우주/방산 생산": "Space/Defense Production",
-    "바이오 가격": "Biotech Prices",
-    "진단 가격": "Diagnostics Prices",
-    "배터리 가격": "Battery Prices",
-    "EV 수요": "EV Demand",
-    "EV 수출": "EV Exports",
-    "국방 계약": "Defense Contracts",
-    "우주 계약": "Space Contracts",
-    "제품 가격": "Product Prices",
-    "승인 이벤트": "Approval Events",
-    "임상 이벤트": "Clinical Trial Events",
-    "발사 이벤트": "Launch Events",
-    "충전 인프라": "Charging Infrastructure",
-    "주택 재고": "Housing Inventory",
-    "국내 주택": "Korea Housing",
-    "건설 허가": "Construction Permits",
-    "대표주가": "Representative Stock Prices",
-    "대표주가/시장지수": "Representative Stocks/Market Indexes",
-    "신용 스프레드": "Credit Spreads",
-    "시장지수": "Market Indexes",
-    "미국 유동성": "US Liquidity",
-    "한국 유동성": "Korea Liquidity",
-    "일본 유동성": "Japan Liquidity",
-    "유럽 유동성": "Europe Liquidity",
-    "국제 유동성": "Global Liquidity",
-}
-EN_DEPTH_LABELS = {
-    "전체 업황": "Overall Cycle",
-    "메모리 반도체": "Memory Semiconductors",
-    "AI/GPU": "AI/GPU",
-    "CPU/프로세서": "CPU/Processors",
-    "파운드리": "Foundry",
-    "장비": "Equipment",
-    "패키징/후공정": "Packaging/Back-end",
-    "소자/부품": "Devices/Components",
-}
-EN_FREQUENCY_LABELS = {
-    "일간": "Daily",
-    "주간": "Weekly",
-    "월간": "Monthly",
-    "분기": "Quarterly",
-    "연간": "Annual",
-    "비정기": "Irregular",
-    "월간/비정기": "Monthly/Irregular",
-    "연간/비정기": "Annual/Irregular",
-}
-EN_UNIT_LABELS = {
-    "$": "USD",
-    "$B": "$B",
-    "$/mt": "USD/mt",
-    "$/mmbtu": "USD/mmbtu",
-    "$/gal": "USD/gal",
-    "원": "KRW",
-    "조원": "tn KRW",
-    "€B": "€B",
-    "¥T": "¥T",
-    "지수": "Index",
-    "천건": "k",
-    "백만대": "M units",
-    "백만달러": "USD mn",
-    "건": "events",
-    "곳": "stations",
-    "개": "ports",
-}
-EN_EXPORT_ITEM_LABELS = {
-    "반도체 IC": "Semiconductor ICs",
-    "메모리 IC": "Memory ICs",
-    "프로세서/컨트롤러 IC": "Processor/Controller ICs",
-    "반도체 소자": "Semiconductor Devices",
-    "무선통신기기": "Wireless Communication Devices",
-    "승용차": "Passenger Cars",
-    "전기차": "EVs",
-    "선박": "Ships",
-    "무기류/탄약": "Arms/Ammunition",
-    "항공기/우주선": "Aircraft/Spacecraft",
-    "변압기": "Transformers",
-    "전력 케이블": "Power Cables",
-    "산업용 로봇": "Industrial Robots",
-    "백신/면역제품": "Vaccines/Immune Products",
-    "의약품": "Pharmaceuticals",
-    "축전지": "Rechargeable Batteries",
-}
-EN_METRIC_NAME_LABELS = {
-    "전체 스테이블코인 유통량": "Total Stablecoin Supply",
-    "USDT 유통량": "USDT Supply",
-    "USDC 유통량": "USDC Supply",
-    "니켈 가격": "Nickel Price",
-    "유럽 천연가스 가격": "Europe Natural Gas Price",
-    "호주 석탄 가격": "Australian Coal Price",
-    "미국 국방부 계약 의무액": "US DoD Contract Obligations",
-    "미국 방산 제조 계약 의무액": "US Defense Manufacturing Contract Obligations",
-    "미국 NASA 계약 의무액": "US NASA Contract Obligations",
-    "FDA 의약품 승인 활동": "FDA Drug Approval Activity",
-    "글로벌 Phase 3 임상 시작": "Global Phase 3 Trial Starts",
-    "글로벌 우주 발사 건수": "Global Space Launch Count",
-    "미국 EV 충전소 수": "US EV Charging Stations",
-    "미국 EV 충전 포트 수": "US EV Charging Ports",
-    "한국 미분양 주택": "Korea Unsold Homes",
-    "한국 주간 아파트 매매가격지수": "Korea Weekly Apartment Sale Price Index",
-    "한국 건축허가 동수": "Korea Building Permits Count",
-    "미국 10년 국채금리": "US 10Y Treasury Yield",
-    "미국 2년 국채금리": "US 2Y Treasury Yield",
-    "미국 10Y-2Y 금리차": "US 10Y-2Y Treasury Spread",
-    "미국 BAA 회사채-10년 국채 스프레드": "US BAA Corporate-10Y Treasury Spread",
-    "미국 투자등급 회사채 OAS": "US Investment Grade Corporate OAS",
-    "미국 BBB 회사채 OAS": "US BBB Corporate OAS",
-    "미국 하이일드 회사채 OAS": "US High Yield Corporate OAS",
-    "한국 회사채 AA- 3Y-국고채 3Y 스프레드": "Korea AA- Corporate 3Y-KTB 3Y Spread",
-    "한국 회사채 BBB- 3Y-국고채 3Y 스프레드": "Korea BBB- Corporate 3Y-KTB 3Y Spread",
-    "미국 은행 대출 연체율": "US Bank Loan Delinquency Rate",
-    "미국 상업은행 총대출": "US Commercial Bank Total Loans",
-    "미국 주택착공": "US Housing Starts",
-    "미국 건축허가": "US Building Permits",
-    "미국 30년 모기지 금리": "US 30Y Mortgage Rate",
-    "미국 주택가격지수": "US Home Price Index",
-    "WTI 유가": "WTI Crude Oil Price",
-    "Brent 유가": "Brent Crude Oil Price",
-    "미국 산업용 화학 PPI": "US Industrial Chemicals PPI",
-    "철광석 가격": "Iron Ore Price",
-    "철광석": "Iron Ore",
-    "구리 가격": "Copper Price",
-    "구리": "Copper",
-    "알루미늄 가격": "Aluminum Price",
-    "알루미늄": "Aluminum",
-    "미국 자동차 판매": "US Auto Sales",
-    "미국 반도체 PPI": "US Semiconductor PPI",
-    "미국 반도체 제조 PPI": "US Semiconductor Device Manufacturing PPI",
-    "미국 반도체 장비 PPI": "US Semiconductor Machinery PPI",
-    "미국 반도체 장비/부품 PPI": "US Semiconductor Machinery and Parts PPI",
-    "미국 반도체 패키징 PPI": "US Semiconductor IC Packaging PPI",
-    "미국 방산 자본재 신규주문": "US Defense Capital Goods New Orders",
-    "미국 방산 자본재 수주잔고": "US Defense Capital Goods Backlog",
-    "미국 전력 생산 PPI": "US Electric Power Generation PPI",
-    "미국 전기/가스 유틸리티 산업생산": "US Electric & Gas Utilities Industrial Production",
-    "미국 산업용 기계 신규주문": "US Industrial Machinery New Orders",
-    "미국 산업 제어장치 PPI": "US Industrial Control Equipment PPI",
-    "미국 방산/우주 장비 산업생산": "US Defense/Space Equipment Industrial Production",
-    "미국 항공우주 부품 PPI": "US Aerospace Parts PPI",
-    "미국 생물학적 제제 PPI": "US Biological Products PPI",
-    "미국 체외진단 물질 PPI": "US In-vitro Diagnostics PPI",
-    "미국 저장 배터리 제조 PPI": "US Storage Battery Manufacturing PPI",
-    "미국 순유동성": "US Net Liquidity",
-    "미국 역레포": "US Reverse Repo",
-    "미국 TGA": "US Treasury General Account",
-    "미국 연준 총자산": "Fed Total Assets",
-    "한국은행 총자산": "Bank of Korea Total Assets",
-    "한국 본원통화": "Korea Monetary Base",
-    "한국 M2": "Korea M2",
-    "한국 Lf": "Korea Lf",
-    "한국 L": "Korea L",
-    "일본 BOJ 총자산": "BOJ Total Assets",
-    "일본 본원통화": "Japan Monetary Base",
-    "일본 M2": "Japan M2",
-    "일본 BOJ 당좌예금": "BOJ Current Account Balances",
-    "유럽 초과유동성": "Europe Excess Liquidity",
-    "유럽 유로시스템 총자산": "Eurosystem Total Assets",
-    "유럽 M3": "Europe M3",
-    "유럽 본원통화": "Europe Base Money",
-    "원/달러 환율": "USD/KRW Exchange Rate",
-    "코스피": "KOSPI",
-    "코스닥": "KOSDAQ",
-    "나스닥": "NASDAQ Composite",
-    "S&P 500": "S&P 500",
-    "다우": "Dow Jones Industrial Average",
-    "DRAM/NAND 가격 대체 지표": "DRAM/NAND Price Proxy",
-    "HBM 수요 대체 지표": "HBM Demand Proxy",
-    "TSMC 월매출": "TSMC Monthly Revenue",
-    "ASML 수주/매출": "ASML Orders/Revenue",
-    "SEMI 장비 billings": "SEMI Equipment Billings",
-    "빅테크 CAPEX": "Big Tech CAPEX",
-    "글로벌 EV 판매량": "Global EV Sales",
-    "리튬/배터리 원재료 가격": "Lithium/Battery Raw Material Prices",
-    "주요 완성차 월별 판매": "Major Automaker Monthly Sales",
-    "신조선가/LNG선 발주량 대체 지표": "Newbuild Price/LNG Carrier Orders Proxy",
-    "해운 운임지수": "Shipping Freight Index",
-    "중국 산업생산/제조업 PMI": "China Industrial Production/Manufacturing PMI",
-    "나프타/올레핀 스프레드": "Naphtha/Olefin Spread",
-    "정제마진 대체 지표": "Refining Margin Proxy",
-    "한국 미분양/주택가격지수": "Korea Unsold Homes/Home Price Index",
-    "한국 방산 수출 수주": "Korea Defense Export Orders",
-    "USDT/USDC 준비금과 발행량": "USDT/USDC Reserves and Supply",
-    "전력 수요/예비율": "Power Demand/Reserve Margin",
-    "산업용 로봇 설치 대수": "Industrial Robot Installations",
-    "위성 발사/수주 이벤트": "Satellite Launch/Order Events",
-    "FDA 신약 승인/임상 이벤트": "FDA Drug Approval/Clinical Events",
-    "리튬/니켈/코발트 가격": "Lithium/Nickel/Cobalt Prices",
-}
-WSTS_REGION_MEANINGS = {
-    "Worldwide": (
-        "전 세계 반도체 판매액입니다. 메모리와 비메모리를 모두 합친 시장 전체의 매출 흐름이라, "
-        "반도체 업황이 커지는지 줄어드는지 볼 때 기준으로 씁니다."
-    ),
-    "Asia Pacific": (
-        "아시아·태평양 지역 반도체 판매액입니다. 한국, 대만, 중국, 일본 등 주요 생산·소비 거점의 "
-        "수요 흐름을 보는 데 유용합니다."
-    ),
-    "Americas": (
-        "미주 지역 반도체 판매액입니다. 미국을 중심으로 데이터센터, 클라우드, 기업 IT 투자 수요가 "
-        "반도체 매출에 얼마나 이어지는지 볼 때 참고합니다."
-    ),
-}
-WSTS_3MMA_MEANING = (
-    "3MMA는 최근 3개월 평균입니다. 한 달짜리 급등락을 줄여 실제 추세가 위인지 아래인지 "
-    "보기 쉽게 해줍니다."
-)
-WSTS_REGION_MEANINGS_EN = {
-    "Worldwide": (
-        "Worldwide semiconductor sales show total global semiconductor revenue across memory and non-memory. "
-        "They are the main baseline for judging whether the semiconductor cycle is expanding or slowing."
-    ),
-    "Asia Pacific": (
-        "Asia Pacific semiconductor sales show demand across major Asian electronics and semiconductor hubs "
-        "such as Korea, Taiwan, China, and Japan."
-    ),
-    "Americas": (
-        "Americas semiconductor sales show demand in the Americas, led by the US. They help check how data center, "
-        "cloud, AI, and enterprise IT demand feeds into chip revenue."
-    ),
-}
-WSTS_3MMA_MEANING_EN = (
-    "3MMA means a three-month moving average. It smooths one-month jumps and drops so the underlying trend is "
-    "easier to see."
-)
-CAPEX_MEANINGS = {
-    "Microsoft": (
-        "Microsoft의 CAPEX는 Azure와 AI 데이터센터를 짓기 위한 서버, GPU, 네트워크, 전력 설비 투자를 "
-        "보여줍니다. 금액이 커질수록 클라우드와 AI 인프라 확장 속도가 빠르다는 뜻으로 볼 수 있습니다."
-    ),
-    "Amazon": (
-        "Amazon의 CAPEX는 AWS 데이터센터와 물류 인프라에 들어가는 설비투자 규모를 보여줍니다. 특히 AWS "
-        "투자가 커질수록 클라우드·AI 서버 수요가 강하다는 신호로 볼 수 있습니다."
-    ),
-    "Alphabet": (
-        "Alphabet의 CAPEX는 Google Cloud와 AI 데이터센터, 검색·유튜브 인프라 확장을 위한 투자 규모를 "
-        "보여줍니다. AI 서비스 확대가 실제 설비투자로 이어지는지 볼 때 참고합니다."
-    ),
-    "Meta": (
-        "Meta의 CAPEX는 AI 추천·광고 시스템과 소셜 서비스 운영을 위한 데이터센터 투자를 보여줍니다. "
-        "서버와 GPU 투자 강도를 확인하는 데 유용합니다."
-    ),
-}
-CAPEX_MEANINGS_EN = {
-    "Microsoft": (
-        "Microsoft CAPEX shows investment in servers, GPUs, networking, and power equipment for Azure and AI "
-        "data centers. Rising spending suggests faster cloud and AI infrastructure buildout."
-    ),
-    "Amazon": (
-        "Amazon CAPEX shows spending on AWS data centers and logistics infrastructure. Strong AWS-related "
-        "investment is a signal of cloud and AI server demand."
-    ),
-    "Alphabet": (
-        "Alphabet CAPEX shows investment in Google Cloud, AI data centers, and Search and YouTube infrastructure. "
-        "It helps check whether AI service growth is turning into physical infrastructure spending."
-    ),
-    "Meta": (
-        "Meta CAPEX shows data center investment for AI recommendation, advertising systems, and social services. "
-        "It is useful for reading server and GPU investment intensity."
-    ),
-}
-EN_MEANING_LABELS = {
-    "반도체 업황의 현재 수요 강도와 재고 순환을 확인하는 월간 지표입니다.": "Monthly indicator for semiconductor demand strength and inventory cycles.",
-    "글로벌 반도체 매출 흐름으로 업황의 수요 강도와 재고 순환을 확인합니다.": "Tracks global semiconductor revenue to read demand strength and inventory cycles.",
-    "반도체 생산자 가격입니다. 반도체 가격이 오르는지 내리는지 볼 때 참고합니다.": "Semiconductor producer prices help show whether semiconductor prices are moving up or down.",
-    "할인율과 금융주 마진 기대를 좌우하는 시장 금리입니다.": "Market rate that drives discount rates and bank margin expectations.",
-    "경기 기대와 은행 순이자마진 방향을 함께 보여주는 지표입니다.": "Shows both growth expectations and the direction of bank net interest margins.",
-    "신용 위험과 자금 조달 여건이 얼마나 빡빡한지 확인합니다.": "Measures credit risk and how tight funding conditions are.",
-    "미국 투자등급 회사채 OAS는 우량 회사채 신용위험과 자금조달 여건을 보여주는 지표입니다.": "US investment grade corporate OAS shows credit risk and funding conditions for higher-quality corporate bonds.",
-    "BBB 회사채 OAS는 경기 둔화와 신용위험 확대에 민감한 투자등급 하단 스프레드입니다.": "BBB corporate OAS tracks the lower end of investment grade credit, which is sensitive to slowdown and credit stress.",
-    "하이일드 OAS는 위험자산 선호와 기업 부도위험 변화를 보여주는 대표 신용 스프레드입니다.": "High yield OAS is a representative credit spread for risk appetite and corporate default risk.",
-    "한국 회사채 AA- 3년 금리와 국고채 3년 금리의 차이로 국내 우량 기업 신용위험과 자금조달 여건을 확인합니다.": "Spread between Korea AA- 3Y corporate bonds and 3Y government bonds, used to read domestic high-grade credit risk and funding conditions.",
-    "한국 회사채 BBB- 3년 금리와 국고채 3년 금리의 차이로 국내 하위등급 신용위험과 위험회피 강도를 확인합니다.": "Spread between Korea BBB- 3Y corporate bonds and 3Y government bonds, used to read lower-grade credit risk and risk aversion.",
-    "대출 자산의 질과 금융 시스템 부담을 점검합니다.": "Checks loan asset quality and stress in the financial system.",
-    "은행권 신용 공급과 실물 경기의 자금 수요를 봅니다.": "Tracks bank credit supply and real-economy loan demand.",
-    "건설 경기의 실제 착공 모멘텀과 주택 공급 흐름을 보여줍니다.": "Shows actual construction momentum and the housing supply pipeline.",
-    "향후 착공과 건설 활동을 선행해서 보여주는 지표입니다.": "Leading indicator for future starts and construction activity.",
-    "주택 구매 부담과 부동산 수요에 직접 영향을 주는 비용입니다.": "Financing cost that directly affects housing affordability and real estate demand.",
-    "가계 자산 효과와 부동산 경기 방향성을 확인합니다.": "Shows household wealth effects and the direction of the housing cycle.",
-    "정유, 화학 원가와 인플레이션 압력을 동시에 움직이는 원재료 가격입니다.": "Feedstock price that affects refining, chemical costs, and inflation pressure.",
-    "석유 제품 가격입니다. 정유 제품 수요와 정유사 마진 방향을 볼 때 참고합니다.": "Oil product prices help show refined-product demand and refining-margin direction.",
-    "화학 제품 생산자 가격입니다. 제품 가격이 원가보다 빠르게 움직이는지 볼 때 참고합니다.": "Chemical producer prices help show whether selling prices are moving faster than input costs.",
-    "철강 원가와 중국 투자 수요를 반영하는 핵심 원재료입니다.": "Core raw material reflecting steel costs and Chinese investment demand.",
-    "전기화와 제조업 경기를 민감하게 반영하는 경기 민감 금속입니다.": "Cyclical metal that is sensitive to electrification and manufacturing activity.",
-    "경량 소재와 제조업 수요, 전력비 영향을 함께 받는 소재 가격입니다.": "Material price affected by lightweighting demand, manufacturing demand, and power costs.",
-    "배터리 양극재 원가에 큰 영향을 주는 원재료 가격입니다.": "Raw material price with a large impact on battery cathode costs.",
-    "니켈 가격은 배터리 양극재 원가에 큰 영향을 줍니다. 가격이 오르면 소재 업체와 배터리 업체의 수익성이 달라질 수 있습니다.": "Nickel prices have a large impact on battery cathode costs and can change margins for materials and battery companies.",
-    "전력 생산 원가와 산업 에너지 비용을 좌우하는 에너지 원료 지표입니다.": "Energy feedstock indicator that drives power generation costs and industrial energy costs.",
-    "천연가스 가격은 전력 생산 원가와 산업 에너지 비용을 좌우하는 에너지 원료 지표입니다.": "Natural gas price indicates power generation costs and industrial energy cost pressure.",
-    "석탄 가격은 화력발전 원가에 영향을 줍니다. 가격이 오르면 전력 생산 비용이 커질 수 있습니다.": "Coal prices affect thermal power generation costs and can raise power production costs when they rise.",
-    "완성차 수요와 소비 경기 흐름을 확인하는 판매 지표입니다.": "Sales indicator for automaker demand and consumer-cycle conditions.",
-    "순수 전기차 수출 흐름으로 EV 수요와 국내 전기차 생산 모멘텀을 확인합니다.": "Tracks BEV export flows to read EV demand and domestic EV production momentum.",
-    "순수 전기차 수출 흐름으로 전기차 완성차 수요와 국내 EV 생산 모멘텀을 확인합니다.": "Tracks BEV export flows to read EV demand and domestic EV production momentum.",
-    "방산 발주와 생산 사이클을 통해 방산 업체 수요가 강해지는지 확인합니다.": "Tracks whether defense-company demand is strengthening through orders and production cycles.",
-    "달러 연동 스테이블코인의 유통량 변화로 온체인 달러 유동성과 결제/거래 수요를 확인합니다.": "Tracks USD-pegged stablecoin supply to read on-chain dollar liquidity and payment/trading demand.",
-    "전력 생산과 가격 흐름으로 전력 인프라와 전력 수요 사이클을 확인합니다.": "Tracks power production and prices to read power infrastructure and demand cycles.",
-    "빅테크 CAPEX는 AI 데이터센터, 서버, 전력 인프라에 실제로 투자가 늘어나는지 보여줍니다.": "Big Tech CAPEX shows whether investment in AI data centers, servers, and power infrastructure is actually rising.",
-    "공장 자동화와 로봇 설비 투자가 늘어나는지 볼 때 참고합니다.": "Helps show whether factory automation and robotics investment is increasing.",
-    "항공우주 장비 생산과 가격 흐름입니다. 우주 산업의 주문과 비용 부담을 볼 때 참고합니다.": "Aerospace equipment production and price trends help show space-industry orders and cost pressure.",
-    "바이오 의약품과 진단 제품의 가격 사이클을 확인하는 지표입니다.": "Tracks the pricing cycle for biologics and diagnostics products.",
-    "배터리 제품 가격 흐름으로 셀/소재 밸류체인의 업황을 점검합니다.": "Checks battery cell/materials conditions through battery product price trends.",
-    "수출주 원화 환산 매출과 외국인 수급에 영향을 주는 매크로 변수입니다.": "Macro variable affecting exporters' KRW-translated revenue and foreign investor flows.",
-    "시장 위험 회피 심리와 변동성 확대 여부를 봅니다.": "Tracks risk-off sentiment and volatility expansion.",
-    "해당 품목의 대외 수요와 가격/물량 사이클을 확인합니다.": "Tracks external demand and price/volume cycles for the item.",
-    "투자 판단에 필요한 업황 변화를 확인합니다.": "Tracks industry changes relevant to investment decisions.",
-    "미국 방산 자본재 발주 흐름으로 방산 수요와 수주 모멘텀을 확인합니다.": "Tracks US defense capital goods orders to read defense demand and order momentum.",
-    "아직 매출로 인식되지 않은 방산 수주잔고의 축적과 감소를 확인합니다.": "Tracks the buildup and drawdown of defense order backlog not yet recognized as revenue.",
-    "전력 생산 가격입니다. 전기요금과 전력 회사의 수익성이 좋아질지 나빠질지 볼 때 참고합니다.": "Power producer prices help show the direction of electricity prices and utility profitability.",
-    "유틸리티 실물 생산 흐름으로 전력 수요와 경기 민감도를 확인합니다.": "Uses utilities production to read power demand and cyclical sensitivity.",
-    "자동화와 로봇 수요에 가까운 산업용 기계 발주 흐름을 확인합니다.": "Tracks industrial machinery orders tied to automation and robotics demand.",
-    "로봇과 설비투자 설비에 들어가는 산업 제어장치 가격 흐름을 확인합니다.": "Tracks industrial control equipment prices used in robotics and capex equipment.",
-    "우주와 방산 장비 생산 사이클을 함께 보여주는 월간 생산 지표입니다.": "Monthly production indicator for both space and defense equipment cycles.",
-    "항공우주 부품 가격입니다. 위성, 발사체, 항공 장비를 만드는 비용이 커지는지 볼 때 참고합니다.": "Aerospace parts prices help show whether the cost of satellites, launch vehicles, and aerospace equipment is rising.",
-    "바이오 의약품 제조 가격 흐름으로 바이오 업황의 가격 사이클을 확인합니다.": "Tracks biologics manufacturing prices to read the biotech pricing cycle.",
-    "진단 제품의 생산자 가격입니다. 진단 장비와 검사 제품 가격이 오르는지 내리는지 볼 때 참고합니다.": "Diagnostics producer prices help show whether diagnostic equipment and test-product prices are rising or falling.",
-    "저장 배터리 제조 가격입니다. 배터리 셀 업체의 원가 부담과 판매 가격 흐름을 볼 때 참고합니다.": "Storage battery manufacturing prices help show battery-cell cost pressure and selling-price trends.",
-    "연준이 공급한 돈에서 재무부 금고(TGA)와 역레포에 잠긴 돈을 뺀, 실제로 금융시장에 돌고 있는 달러 유동성입니다. 증가하면 위험자산에 우호적, 감소하면 부담이 되는 흐름으로 해석합니다. 계산은 WALCL, TGA, 역레포의 관측일이 다를 때 각 날짜 이전의 가장 최근 값을 사용합니다.": "US net liquidity subtracts cash locked in the Treasury General Account (TGA) and reverse repos from the money supplied by the Fed, approximating dollar liquidity circulating in financial markets. Rising liquidity is usually supportive for risk assets, while falling liquidity is a headwind. The calculation aligns WALCL, TGA, and reverse repo by using the latest observation available on or before each date.",
-    "재무부가 연준에 맡겨둔 현금입니다. TGA가 늘면 시중 유동성이 흡수되고, 줄면 방출됩니다. 부채한도 협상 국면에서 크게 출렁입니다.": "Cash the US Treasury keeps at the Fed. When the TGA rises, liquidity is absorbed from the market; when it falls, liquidity is released. It can swing sharply around debt-ceiling episodes.",
-    "시중 자금이 연준에 하루짜리로 파킹된 규모입니다. 줄어들면 그만큼 시장에 유동성이 풀려나오는 효과가 있습니다.": "Cash parked overnight at the Fed through reverse repos. When it falls, that cash is effectively released back toward markets.",
-    "한국은행 대차대조표의 자산 총액입니다. 중앙은행이 시장에 공급한 유동성의 큰 방향을 볼 때 기준으로 씁니다.": "Total assets on the Bank of Korea balance sheet. It is a baseline for the broad direction of central-bank liquidity supplied to markets.",
-    "현금통화와 금융기관의 중앙은행 예치금을 합친 돈의 바탕입니다. 은행 시스템에 공급된 기본 유동성이 늘고 줄어드는지 확인합니다.": "The base layer of money, combining currency in circulation and financial-institution deposits at the central bank. It shows whether basic liquidity in the banking system is expanding or contracting.",
-    "현금, 요구불예금, 수시입출식 예금 등 비교적 바로 쓸 수 있는 돈을 넓게 묶은 통화량입니다. 가계와 기업의 자금 여유를 볼 때 핵심으로 봅니다.": "Broad money covering cash, demand deposits, and liquid savings deposits. It is a key gauge of household and corporate cash availability.",
-    "M2보다 더 넓게 금융기관이 공급한 유동성을 보는 지표입니다. 은행권 밖까지 포함한 자금 여건의 폭을 확인합니다.": "A broader liquidity measure than M2 that captures financial-institution liquidity beyond the banking core.",
-    "국채, 회사채 같은 시장성 금융상품까지 포함한 가장 넓은 유동성 지표입니다. 한국 경제 전체의 돈의 양이 얼마나 넓게 풀려 있는지 볼 때 씁니다.": "The broadest Korean liquidity measure, including marketable instruments such as government and corporate bonds. It shows how widely money is available across the economy.",
-    "일본은행 대차대조표의 자산 총액입니다. 일본 중앙은행이 시장에 공급한 유동성의 큰 물줄기를 보여줍니다.": "Total assets on the Bank of Japan balance sheet. It shows the broad flow of central-bank liquidity supplied to Japanese markets.",
-    "일본의 현금통화와 일본은행 당좌예금 등을 합친 기본 통화량입니다. BOJ 정책이 실제 유동성으로 얼마나 남아 있는지 볼 때 봅니다.": "Japan's base money, including currency in circulation and BOJ current account balances. It helps show how much BOJ policy remains as actual liquidity.",
-    "일본 경제 안에서 가계와 기업이 비교적 쉽게 쓸 수 있는 돈의 규모입니다. 민간 유동성이 늘고 줄어드는지 확인합니다.": "Money that households and companies in Japan can use relatively easily. It tracks whether private-sector liquidity is expanding or contracting.",
-    "금융기관이 일본은행에 맡겨둔 당좌예금 잔액입니다. 은행 시스템 안에 남아 있는 초과 유동성의 크기를 볼 때 참고합니다.": "Current account balances that financial institutions hold at the Bank of Japan. It is a useful gauge of excess liquidity inside the banking system.",
-    "유로존 은행 시스템에 필요한 지급준비를 넘어서 남아 있는 유동성입니다. 숫자가 클수록 은행권에 여유자금이 많이 남아 있다는 뜻입니다.": "Liquidity remaining in the euro-area banking system above required reserves. A larger reading means more surplus cash is left in banks.",
-    "ECB와 유로존 중앙은행들의 총자산입니다. 양적완화와 긴축으로 중앙은행 유동성이 커지는지 줄어드는지 보여줍니다.": "Total assets of the ECB and euro-area national central banks. It shows whether central-bank liquidity is expanding or shrinking through QE or tightening.",
-    "유로존의 넓은 통화량입니다. 가계와 기업, 금융기관에 풀린 돈의 규모와 민간 유동성 흐름을 볼 때 씁니다.": "Broad euro-area money supply used to read the amount of money available to households, companies, and financial institutions.",
-    "유로존의 현금과 중앙은행 예치금을 합친 기본 통화량입니다. ECB 정책이 은행 시스템 안의 돈의 바탕을 얼마나 크게 만들고 있는지 보여줍니다.": "Euro-area base money, combining currency and central-bank deposits. It shows how large the foundation of money in the banking system is under ECB policy.",
-    "미국 국방부가 실제로 계약에 배정한 금액입니다. 방산 예산이 어느 분야로 흘러가는지 볼 때 중요합니다.": "US DoD contract obligations show where defense budget dollars are actually being committed.",
-    "미국 연방 방산/항공우주 제조업 계약 의무액으로 방산 제조 밸류체인의 수주 모멘텀을 확인합니다.": "Uses US federal defense/aerospace manufacturing obligations to read order momentum across the defense manufacturing value chain.",
-    "NASA 계약 의무액은 미국 정부가 우주 장비와 서비스에 실제로 얼마나 돈을 쓰고 있는지 보여줍니다.": "NASA contract obligations show how much the US government is actually spending on space equipment and services.",
-    "FDA 의약품 승인 관련 기록 수로 바이오 규제 이벤트와 신약 모멘텀을 확인합니다.": "Counts FDA drug approval records to read biotech regulatory events and new-drug momentum.",
-    "Phase 3 임상 시작 건수는 후기 파이프라인 활동성과 바이오 투자심리의 이벤트 밀도를 보여줍니다.": "Phase 3 trial starts show late-stage pipeline activity and event density for biotech sentiment.",
-    "글로벌 발사 건수로 우주 산업 활동성과 위성 인프라 수요를 확인합니다.": "Global launch count indicates space industry activity and satellite infrastructure demand.",
-    "미국 EV 충전소 수는 전기차를 이용하기 쉬워지고 있는지와 충전 인프라 투자 흐름을 보여줍니다.": "US EV charging station count shows whether EVs are getting easier to use and how charging infrastructure investment is moving.",
-    "미국 EV 충전 포트 수는 전기차 이용 편의성과 인프라 확장 속도를 확인하는 지표입니다.": "US EV charging port count shows EV usability and the pace of infrastructure expansion.",
-    "전국 아파트 매매가격을 매주 조사한 지수입니다. 월간 통계보다 빠르게 국내 주택가격의 상승·하락 방향과 가계 자산 심리 변화를 확인할 수 있습니다.": "A weekly index of apartment sale prices nationwide. It shows the direction of Korean home prices and household wealth sentiment faster than monthly statistics.",
-    "유로존의 현금과 중앙은행 예치금을 합친 기본 통화량의 지급준비 유지기간 평균입니다. ECB 정책이 은행 시스템 안의 돈의 바탕을 얼마나 크게 만들고 있는지 보여줍니다.": "Average euro-area base money over the reserve maintenance period, combining currency and central-bank deposits. It shows the monetary foundation available in the banking system under ECB policy.",
-}
-
 
 def build_dashboard_site(config: dict[str, Any], output_dir: str | Path, session: requests.Session) -> dict[str, Any]:
     output_path = Path(output_dir)
@@ -670,21 +368,10 @@ def build_dashboard_site(config: dict[str, Any], output_dir: str | Path, session
         copy_signal_log_output(config, data_path)
     fetch_log_history = write_fetch_log_outputs(data_path, logger)
     payload["fetch_log_summary"] = fetch_log_history.get("runs", [])[-1].get("summary", {}) if fetch_log_history.get("runs") else {}
-    json_text = json.dumps(payload, ensure_ascii=False, indent=2)
-
-    copy_dashboard_assets(output_path)
-    (data_path / "dashboard.json").write_text(json_text + "\n", encoding="utf-8")
-    (data_path / "long_history.json").write_text(
-        json.dumps(long_histories, ensure_ascii=False, separators=(",", ":")) + "\n",
-        encoding="utf-8",
-    )
-    (data_path / MARKET_GAUGE_HISTORY_FILENAME).write_text(
-        json.dumps(market_gauge_history, ensure_ascii=False, separators=(",", ":")) + "\n",
-        encoding="utf-8",
-    )
-    (output_path / "index.html").write_text(render_dashboard_html(payload), encoding="utf-8")
-    write_admin_html(output_path)
-    (output_path / ".nojekyll").write_text("", encoding="utf-8")
+    write_json(data_path / "dashboard.json", payload)
+    write_json(data_path / "long_history.json", long_histories, compact=True)
+    write_json(data_path / MARKET_GAUGE_HISTORY_FILENAME, market_gauge_history, compact=True)
+    write_dashboard_shell(output_path, payload)
     return payload
 
 
@@ -792,273 +479,18 @@ def refresh_prices_site(
 
     long_history_path = data_path / "long_history.json"
     long_histories: dict[str, Any] = {}
-    if long_history_path.exists():
-        try:
-            loaded = json.loads(long_history_path.read_text(encoding="utf-8"))
-            if isinstance(loaded, dict):
-                long_histories = loaded
-        except (OSError, json.JSONDecodeError):
-            pass
+    loaded_long_histories = load_json(long_history_path, None)
+    if isinstance(loaded_long_histories, dict):
+        long_histories = loaded_long_histories
     long_histories.update(fresh_long)
 
-    copy_dashboard_assets(output_path)
     fetch_log_history = write_fetch_log_outputs(data_path, logger)
     payload["fetch_log_summary"] = fetch_log_history.get("runs", [])[-1].get("summary", {}) if fetch_log_history.get("runs") else {}
-    (data_path / "dashboard.json").write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-    )
-    long_history_path.write_text(
-        json.dumps(long_histories, ensure_ascii=False, separators=(",", ":")) + "\n",
-        encoding="utf-8",
-    )
-    (output_path / "index.html").write_text(render_dashboard_html(payload), encoding="utf-8")
-    write_admin_html(output_path)
-    (output_path / ".nojekyll").write_text("", encoding="utf-8")
+    write_json(data_path / "dashboard.json", payload)
+    write_json(long_history_path, long_histories, compact=True)
+    write_dashboard_shell(output_path, payload)
     payload["_prices_refreshed_count"] = replaced
     return payload
-
-
-def briefing_metric_snapshot(payload: dict[str, Any]) -> dict[str, Any]:
-    snapshot: dict[str, Any] = {}
-    for metric in payload.get("metrics", []) or []:
-        if not isinstance(metric, dict):
-            continue
-        metric_id = str(metric.get("id") or "").strip()
-        if not metric_id:
-            continue
-        snapshot[metric_id] = {
-            "id": metric_id,
-            "name": str(metric.get("name") or ""),
-            "industry": str(metric.get("industry") or ""),
-            "group": str(metric.get("group") or ""),
-            "value": to_float(metric.get("value")),
-            "display_value": str(metric.get("display_value") or ""),
-            "observed_at": str(metric.get("observed_at") or ""),
-            "change_pct": to_float(metric.get("change_pct")),
-        }
-    return snapshot
-
-
-def observed_at_progressed(current: object, previous: object) -> bool:
-    current_text = str(current or "").strip()
-    previous_text = str(previous or "").strip()
-    if not current_text or current_text == previous_text:
-        return False
-    current_date = parse_iso_date(current_text)
-    previous_date = parse_iso_date(previous_text)
-    if current_date and previous_date:
-        return current_date > previous_date
-    return bool(current_text and current_text != previous_text)
-
-
-def briefing_metric_changes(
-    current_snapshot: dict[str, Any],
-    previous_snapshot: dict[str, Any] | None,
-    *,
-    limit: int = 8,
-) -> dict[str, Any]:
-    if not previous_snapshot:
-        return {
-            "changed": True,
-            "changed_count": len(current_snapshot),
-            "changes": [],
-            "changed_ids": list(current_snapshot),
-            "reason": "이전 카드 지표 스냅샷 없음",
-        }
-
-    changes: list[dict[str, Any]] = []
-    for metric_id, current in current_snapshot.items():
-        if not isinstance(current, dict):
-            continue
-        previous = previous_snapshot.get(metric_id)
-        if not isinstance(previous, dict):
-            changes.append({"id": metric_id, "name": current.get("name", ""), "reason": "신규 지표"})
-            continue
-        if observed_at_progressed(current.get("observed_at"), previous.get("observed_at")):
-            changes.append(
-                {
-                    "id": metric_id,
-                    "name": current.get("name", ""),
-                    "reason": "관측일 전진",
-                    "previous_observed_at": previous.get("observed_at", ""),
-                    "observed_at": current.get("observed_at", ""),
-                }
-            )
-            continue
-        if not numeric_values_equal(current.get("value"), previous.get("value")):
-            changes.append(
-                {
-                    "id": metric_id,
-                    "name": current.get("name", ""),
-                    "reason": "값 변화",
-                    "previous_value": previous.get("value"),
-                    "value": current.get("value"),
-                }
-            )
-
-    return {
-        "changed": bool(changes),
-        "changed_count": len(changes),
-        "changes": changes[:limit],
-        "changed_ids": [str(item.get("id") or "") for item in changes if item.get("id")],
-        "reason": f"{len(changes)}개 지표 변화" if changes else "직전 카드 이후 지표 변화 없음",
-    }
-
-
-def briefing_session_context(now: datetime) -> dict[str, Any]:
-    if now.tzinfo is None:
-        now = now.replace(tzinfo=ZoneInfo("Asia/Seoul"))
-    kst = now.astimezone(ZoneInfo("Asia/Seoul"))
-    minute = kst.hour * 60 + kst.minute
-    korea_open = 9 * 60
-    korea_close = 15 * 60 + 45
-    us_open = 23 * 60
-    us_close = 6 * 60 + 15
-    if korea_open <= minute <= korea_close:
-        return {
-            "key": "korea",
-            "label": "한국장",
-            "benchmark_names": ["코스피", "코스닥"],
-            "prompt_focus": "코스피·코스닥과 국내 수급 흐름을 중심으로 쓰고, 남은 한국장 또는 다음 한국장에 줄 함의로 마무리한다.",
-        }
-    if minute >= us_open or minute <= us_close:
-        return {
-            "key": "us",
-            "label": "미국장",
-            "benchmark_names": ["S&P 500", "S&P500 선물", "나스닥", "나스닥100 선물"],
-            "prompt_focus": "미국 지수, 환율, 미국 대표주 흐름을 중심으로 쓰고, 내일 한국장에 줄 함의로 마무리한다.",
-        }
-    return {
-        "key": "off",
-        "label": "세션 외",
-        "benchmark_names": ["코스피", "코스닥", "S&P 500", "나스닥"],
-        "prompt_focus": "새로 변한 지표만 짧게 정리하고 다음 정규장에 확인할 점으로 마무리한다.",
-    }
-
-
-def normalized_metric_name(value: object) -> str:
-    return re.sub(r"\s+", "", str(value or "")).lower()
-
-
-def benchmark_change_summary(
-    current_snapshot: dict[str, Any],
-    previous_snapshot: dict[str, Any] | None,
-    benchmark_names: list[str],
-) -> dict[str, Any]:
-    if not previous_snapshot:
-        return {"significant": False, "drivers": []}
-    targets = {normalized_metric_name(name) for name in benchmark_names}
-    drivers: list[dict[str, Any]] = []
-    for metric_id, current in current_snapshot.items():
-        if not isinstance(current, dict):
-            continue
-        if normalized_metric_name(current.get("name")) not in targets:
-            continue
-        previous = previous_snapshot.get(metric_id)
-        if not isinstance(previous, dict):
-            continue
-        current_value = to_float(current.get("value"))
-        previous_value = to_float(previous.get("value"))
-        if current_value is None or previous_value in (None, 0):
-            continue
-        change_pct = (current_value / previous_value - 1.0) * 100.0
-        if abs(change_pct) >= 0.5:
-            drivers.append(
-                {
-                    "id": metric_id,
-                    "name": current.get("name", ""),
-                    "change_pct": round(change_pct, 3),
-                    "basis": "직전 카드 대비 기준 지수 변화",
-                }
-            )
-    drivers.sort(key=lambda item: abs(float(item.get("change_pct") or 0)), reverse=True)
-    return {"significant": bool(drivers), "drivers": drivers}
-
-
-def daily_move_significance(
-    payload: dict[str, Any], changed_ids: set[str] | None = None
-) -> dict[str, Any]:
-    drivers: list[dict[str, Any]] = []
-    for metric in payload.get("metrics", []) or []:
-        if not isinstance(metric, dict):
-            continue
-        if changed_ids and str(metric.get("id") or "") not in changed_ids:
-            continue
-        change_pct = to_float(metric.get("change_pct"))
-        if change_pct is None or abs(change_pct) < 1.0:
-            continue
-        drivers.append(
-            {
-                "id": str(metric.get("id") or ""),
-                "name": str(metric.get("name") or ""),
-                "change_pct": round(change_pct, 3),
-                "basis": "당일 등락률",
-            }
-        )
-    drivers.sort(key=lambda item: abs(float(item.get("change_pct") or 0)), reverse=True)
-    return {"significant": bool(drivers), "drivers": drivers[:8]}
-
-
-def consecutive_low_signal_count(cards: list[dict[str, Any]]) -> int:
-    count = 0
-    for card in cards:
-        if not isinstance(card, dict) or not card.get("low_signal"):
-            break
-        count += 1
-    return count
-
-
-def briefing_generation_decision(
-    payload: dict[str, Any],
-    previous_card: dict[str, Any] | None,
-    recent_cards: list[dict[str, Any]],
-    now: datetime,
-) -> dict[str, Any]:
-    current_snapshot = briefing_metric_snapshot(payload)
-    previous_snapshot = (
-        previous_card.get("metric_snapshot")
-        if isinstance(previous_card, dict) and isinstance(previous_card.get("metric_snapshot"), dict)
-        else None
-    )
-    changes = briefing_metric_changes(current_snapshot, previous_snapshot)
-    session_context = briefing_session_context(now)
-    benchmark = benchmark_change_summary(
-        current_snapshot,
-        previous_snapshot,
-        list(session_context.get("benchmark_names") or []),
-    )
-    changed_ids = {str(metric_id) for metric_id in changes.get("changed_ids", []) if metric_id}
-    daily_move = daily_move_significance(payload, changed_ids or None)
-    significant = bool(benchmark["significant"] or daily_move["significant"])
-    low_signal = bool(changes["changed"] and not significant)
-    low_signal_streak = consecutive_low_signal_count(recent_cards)
-
-    skip = False
-    reason = str(changes["reason"])
-    if not changes["changed"]:
-        skip = True
-    elif low_signal and low_signal_streak >= 2:
-        skip = True
-        reason = "low_signal 카드 2회 연속 이후 유의미한 변화 없음"
-    elif significant:
-        drivers = [*benchmark.get("drivers", []), *daily_move.get("drivers", [])]
-        lead = drivers[0] if drivers else {}
-        reason = f"유의미한 변화: {lead.get('name') or '주요 지표'}"
-    elif low_signal:
-        reason = "변화는 있으나 유의미성 낮음"
-
-    return {
-        "skip": skip,
-        "reason": reason,
-        "low_signal": low_signal,
-        "low_signal_streak": low_signal_streak,
-        "significant": significant,
-        "session": session_context,
-        "changes": changes,
-        "benchmark": benchmark,
-        "daily_move": daily_move,
-        "metric_snapshot": current_snapshot,
-    }
 
 
 def write_briefing_site_outputs(
@@ -1069,14 +501,8 @@ def write_briefing_site_outputs(
 ) -> None:
     fetch_log_history = write_fetch_log_outputs(data_path, logger)
     payload["fetch_log_summary"] = fetch_log_history.get("runs", [])[-1].get("summary", {}) if fetch_log_history.get("runs") else {}
-    copy_dashboard_assets(output_path)
-    (data_path / "dashboard.json").write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
-    (output_path / "index.html").write_text(render_dashboard_html(payload), encoding="utf-8")
-    write_admin_html(output_path)
-    (output_path / ".nojekyll").write_text("", encoding="utf-8")
+    write_json(data_path / "dashboard.json", payload)
+    write_dashboard_shell(output_path, payload)
 
 
 def refresh_briefing_site(
@@ -1498,12 +924,7 @@ def enrich_metrics_with_history(
 
 
 def load_previous_dashboard_payload(path: Path) -> dict[str, Any] | None:
-    if not path.exists():
-        return None
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return None
+    payload = load_json(path, None)
     return payload if isinstance(payload, dict) else None
 
 
@@ -1914,15 +1335,6 @@ def latest_history_point(metric: dict[str, Any]) -> dict[str, Any] | None:
     return latest if isinstance(latest, dict) else None
 
 
-def numeric_values_equal(left: object, right: object) -> bool:
-    left_number = to_float(left)
-    right_number = to_float(right)
-    if left_number is None or right_number is None:
-        return left == right
-    tolerance = max(1e-9, abs(right_number) * 1e-9)
-    return abs(left_number - right_number) <= tolerance
-
-
 def daily_change_item(
     metric: dict[str, Any], previous: dict[str, Any] | None, status: str
 ) -> dict[str, Any]:
@@ -1943,916 +1355,78 @@ def daily_change_item(
     }
 
 
-def build_morning_briefing(
-    payload: dict[str, Any],
-    session: requests.Session,
+def run_dashboard_collector(
     *,
-    briefing_context: dict[str, Any] | None = None,
-    gemini_allowed: bool = True,
-    disabled_message: str | None = None,
-) -> dict[str, Any]:
-    briefing = rule_based_morning_briefing(payload, briefing_context)
-    if briefing_context:
-        briefing["briefing_context"] = briefing_context
-        briefing["low_signal"] = bool(briefing_context.get("low_signal"))
-    briefing["gemini_call_attempted"] = False
-    if not gemini_allowed:
-        briefing["status"] = "disabled"
-        briefing["status_message"] = disabled_message or "Gemini 요약 비활성화"
-        return briefing
-    if str(os.getenv("GEMINI_BRIEFING_ENABLED", "1")).strip().lower() in {"0", "false", "no", "off"}:
-        briefing["status"] = "disabled"
-        briefing["status_message"] = "Gemini 요약 비활성화"
-        return briefing
-
-    api_key = os.getenv("GEMINI_API_KEY", "").strip()
-    if not api_key:
-        briefing["status"] = "skipped"
-        briefing["status_message"] = "Gemini API 키 없음"
-        return briefing
-
-    model = os.getenv("GEMINI_MODEL", GEMINI_DEFAULT_MODEL).strip() or GEMINI_DEFAULT_MODEL
+    source_name: str,
+    collector: Callable[[], list[dict[str, Any]]],
+    metrics: list[dict[str, Any]],
+    source_status: list[dict[str, str]],
+    previous_by_key: dict[str, dict[str, Any]],
+    fetched_at: str,
+    status_requires_nonempty: bool = True,
+    status_requires_clean_metrics: bool = True,
+    include_issue_summary: bool = True,
+    error_metric_overrides: dict[str, Any] | None = None,
+) -> None:
+    """Run one source without allowing its failure to stop the dashboard build."""
+    before = len(metrics)
+    logger = current_logger()
+    started_at, started_monotonic = (
+        logger.source_started() if logger else (fetched_at, time.monotonic())
+    )
     try:
-        prompt = gemini_morning_briefing_prompt(payload, briefing)
-        briefing["gemini_call_attempted"] = True
-        raw_text = request_gemini_briefing(session, api_key, model, prompt)
-        parsed = parse_json_object(raw_text)
-        return normalize_gemini_briefing(parsed, briefing, model)
-    except Exception as exc:  # noqa: BLE001 - the dashboard should still publish without AI text.
-        briefing["status"] = "error"
-        briefing["status_message"] = f"Gemini 요약 실패: {exc}"
-        briefing["model"] = model
-        return briefing
+        source_metrics = collector()
+        metrics.extend(source_metrics)
+        ok_count = sum(1 for item in source_metrics if item.get("status") == "ok")
+        issue_summary = metric_issue_summary(source_metrics) if include_issue_summary else ""
+        message = f"{ok_count}/{len(source_metrics)}개 지표 자동 수집"
+        if issue_summary:
+            message = f"{message} ({issue_summary})"
 
+        complete = ok_count == len(source_metrics)
+        if status_requires_nonempty:
+            complete = complete and bool(source_metrics)
+        if status_requires_clean_metrics:
+            complete = complete and not issue_summary
+        source_status.append(
+            {
+                "name": source_name,
+                "status": "ok" if complete else "partial",
+                "message": sanitize_message(message),
+            }
+        )
+        record_fetch_result(
+            source_name,
+            source_metrics,
+            previous_by_key,
+            started_at,
+            started_monotonic,
+            message,
+        )
+    except Exception as exc:  # noqa: BLE001 - source failures are isolated by design.
+        source_status.append(
+            {
+                "name": source_name,
+                "status": "error",
+                "message": sanitize_message(str(exc)),
+            }
+        )
+        record_fetch_failure(source_name, started_at, started_monotonic, exc)
+        if len(metrics) != before:
+            return
 
-def rule_based_morning_briefing(
-    payload: dict[str, Any], briefing_context: dict[str, Any] | None = None
-) -> dict[str, Any]:
-    metrics = [metric for metric in payload.get("metrics", []) if isinstance(metric, dict)]
-    changed_ids = {
-        str(item.get("id") or "")
-        for item in ((briefing_context or {}).get("changed_metrics") or [])
-        if isinstance(item, dict) and item.get("id")
-    }
-    top_movers = top_mover_metrics(metrics, changed_ids=changed_ids or None)
-    improving_industries = industry_signal_rows(metrics, "change_pct", reverse=True)[:3]
-    slowing_industries = industry_signal_rows(metrics, "yoy_pct", reverse=False)[:3]
-    equity_leads = equity_lead_rows(metrics)[:3]
-    source_issues = [
-        {
-            "name": str(source.get("name") or ""),
-            "status": str(source.get("status") or ""),
-            "message": str(source.get("message") or ""),
+        error_metric = {
+            "industry": "매크로",
+            "name": f"{source_name} 수집 상태",
+            "source": source_name,
+            "source_url": "",
+            "frequency": "",
+            "automation": "부분 자동화 가능",
+            "status": "error",
+            "note": str(exc),
         }
-        for source in payload.get("source_status", [])
-        if isinstance(source, dict) and source.get("status") != "ok"
-    ]
-    narrative_candidates = ((briefing_context or {}).get("market_narrative") or {}).get("candidates") or []
-    persistent_events = (briefing_context or {}).get("persistent_events") or []
-    headline = "오늘 변한 지표가 업황에 주는 의미를 먼저 확인하세요."
-    if narrative_candidates:
-        candidate = narrative_candidates[0]
-        headline = f"{candidate.get('label') or candidate.get('industry')} 흐름이 두드러집니다."
-    elif top_movers:
-        first = top_movers[0]
-        headline = f"{first['industry']} {first['name']} 변화가 눈에 띕니다."
-    narrative_topics = [
-        f"산업:{item['industry']}"
-        for item in top_movers
-        if item.get("industry")
-    ][:3]
-    bullets = rule_based_bullets(top_movers, improving_industries, slowing_industries, equity_leads)
-    if persistent_events:
-        event = persistent_events[0]
-        change = str(event.get("change_pct_label") or "큰 폭 변동")
-        progression = str(event.get("progression") or "큰 움직임 지속")
-        bullets.append(
-            {
-                "title": "계속 볼 사건",
-                "body": (
-                    f"{event.get('industry')} {event.get('name')}가 당일 {change} 움직인 채 "
-                    f"{progression} 중입니다. 새 흐름과 함께 시장 영향이 이어지는지 확인해야 합니다."
-                ),
-                "metric_ids": [str(event.get("id") or "")],
-            }
-        )
-    return {
-        "status": "fallback",
-        "status_message": "룰 기반 요약",
-        "model": "",
-        "generated_label": str(payload.get("generated_label") or ""),
-        "headline": headline,
-        "summary": rule_based_summary(top_movers, improving_industries, slowing_industries, source_issues),
-        "bullets": bullets[:5],
-        "top_movers": top_movers,
-        "improving_industries": improving_industries,
-        "slowing_industries": slowing_industries,
-        "equity_leads": equity_leads,
-        "source_issues": source_issues,
-        "narrative_topics": list(dict.fromkeys(narrative_topics)),
-    }
-
-
-def narrative_context_for_briefing(briefing: dict[str, Any], limit: int = 6) -> dict[str, Any]:
-    narratives = load_industry_narratives()
-    if not narratives:
-        return {}
-
-    industry_order = relevant_briefing_industries(briefing, limit)
-    industry_map = narratives.get("industries") if isinstance(narratives.get("industries"), dict) else {}
-    selected = []
-    for industry in industry_order:
-        item = industry_map.get(industry) if isinstance(industry_map, dict) else None
-        if not isinstance(item, dict):
-            continue
-        selected.append(
-            {
-                "industry": industry,
-                "narrative": short_text(item.get("narrative"), "", 130),
-                "focus_metrics": [short_text(value, "", 32) for value in list(item.get("key_metrics") or [])[:4]],
-                "lens": short_text(item.get("lens"), "", 130),
-            }
-        )
-    if not selected:
-        return {}
-    return {
-        "as_of": str(narratives.get("as_of") or ""),
-        "global_frame": short_text(narratives.get("global_frame"), "", 170),
-        "common_rules": [short_text(value, "", 90) for value in list(narratives.get("common_rules") or [])[:3]],
-        "stock_market": compact_stock_market_narrative(narratives.get("stock_market")),
-        "industries": selected,
-    }
-
-
-def compact_stock_market_narrative(value: Any) -> dict[str, Any]:
-    if not isinstance(value, dict):
-        return {}
-    return {
-        "narrative": short_text(value.get("narrative"), "", 230),
-        "key_signals": [short_text(item, "", 32) for item in list(value.get("key_signals") or [])[:5]],
-        "lens": short_text(value.get("lens"), "", 170),
-        "rotation": short_text(value.get("rotation"), "", 130),
-    }
-
-
-def relevant_briefing_industries(briefing: dict[str, Any], limit: int) -> list[str]:
-    ordered: list[str] = []
-
-    def add(industry: Any) -> None:
-        text = str(industry or "").strip()
-        if text and text not in ordered:
-            ordered.append(text)
-
-    for metric in briefing.get("top_movers") or []:
-        if isinstance(metric, dict):
-            add(metric.get("industry"))
-    for section in ("improving_industries", "slowing_industries", "equity_leads"):
-        for row in briefing.get(section) or []:
-            if isinstance(row, dict):
-                add(row.get("industry"))
-                for metric in row.get("drivers") or []:
-                    if isinstance(metric, dict):
-                        add(metric.get("industry"))
-    return ordered[:limit]
-
-
-def load_industry_narratives() -> dict[str, Any]:
-    candidates = [
-        Path.cwd() / "docs" / "industry_narratives.yaml",
-        Path(__file__).resolve().parents[2] / "docs" / "industry_narratives.yaml",
-    ]
-    for path in candidates:
-        if not path.exists():
-            continue
-        try:
-            data = yaml.safe_load(path.read_text(encoding="utf-8"))
-        except (OSError, yaml.YAMLError):
-            return {}
-        return data if isinstance(data, dict) else {}
-    return {}
-
-
-def is_representative_stock(metric: dict[str, Any]) -> bool:
-    return str(metric.get("group") or "") == "대표주가" and str(metric.get("history_key") or "").startswith("equity-")
-
-
-def equity_market_for_metric(metric: dict[str, Any]) -> str:
-    history_key = str(metric.get("history_key") or "").upper()
-    return "korea" if history_key.endswith((".KS", ".KQ")) else "us"
-
-
-def recent_narrative_industries(cards: list[dict[str, Any]], limit: int = 4) -> dict[str, float]:
-    penalties: dict[str, float] = defaultdict(float)
-    for card_index, card in enumerate(cards[:limit]):
-        if not isinstance(card, dict):
-            continue
-        topics = card.get("narrative_topics")
-        if not isinstance(topics, list):
-            continue
-        weight = max(0.25, 1.15 - card_index * 0.25)
-        for topic in topics[:4]:
-            parts = str(topic or "").split(":")
-            if len(parts) >= 2 and parts[0] in {"산업", "industry"} and parts[1]:
-                penalties[parts[1]] += weight
-    return dict(penalties)
-
-
-def market_narrative_context(
-    payload: dict[str, Any],
-    session_context: dict[str, Any] | None,
-    recent_cards: list[dict[str, Any]],
-    *,
-    changed_ids: set[str] | None = None,
-) -> dict[str, Any]:
-    """Build evidence-ranked market narratives without using old prose as evidence."""
-    metrics = [item for item in payload.get("metrics", []) if isinstance(item, dict)]
-    session_key = str((session_context or {}).get("key") or "off")
-    market_filter = "korea" if session_key == "korea" else "us" if session_key == "us" else ""
-    stocks = [item for item in metrics if is_representative_stock(item)]
-    session_stocks = [item for item in stocks if not market_filter or equity_market_for_metric(item) == market_filter]
-    if len(session_stocks) >= 2:
-        stocks = session_stocks
-
-    benchmark_names = set((session_context or {}).get("benchmark_names") or [])
-    benchmark_moves = [
-        to_float(item.get("change_pct"))
-        for item in metrics
-        if str(item.get("name") or "") in benchmark_names and to_float(item.get("change_pct")) is not None
-    ]
-    benchmark_move = float(median(benchmark_moves)) if benchmark_moves else 0.0
-    by_industry: dict[str, list[dict[str, Any]]] = defaultdict(list)
-    for stock in stocks:
-        if to_float(stock.get("change_pct")) is None:
-            continue
-        industry = str(stock.get("industry") or "")
-        if industry and industry != "매크로":
-            by_industry[industry].append(stock)
-
-    repetition_penalty = recent_narrative_industries(recent_cards)
-    candidates: list[dict[str, Any]] = []
-    for industry, industry_stocks in by_industry.items():
-        if len(industry_stocks) < 2:
-            continue
-        moves = [float(to_float(item.get("change_pct")) or 0.0) for item in industry_stocks]
-        median_move = float(median(moves))
-        direction = "strong" if median_move >= 0 else "weak"
-        aligned_count = sum(1 for value in moves if value >= 0) if direction == "strong" else sum(1 for value in moves if value < 0)
-        breadth = aligned_count / len(moves)
-        relative_move = median_move - benchmark_move
-        changed_count = sum(1 for item in industry_stocks if not changed_ids or str(item.get("id") or "") in changed_ids)
-        raw_score = abs(median_move) * 0.75 + abs(relative_move) * 0.55 + max(0.0, breadth - 0.5) * 2.0
-        if changed_ids and changed_count:
-            raw_score += min(1.0, changed_count * 0.25)
-        if abs(median_move) < 0.6 and abs(relative_move) < 0.8:
-            continue
-        penalty = float(repetition_penalty.get(industry) or 0.0)
-        persistent_major = abs(median_move) >= 3.0 and breadth >= 0.67
-        if persistent_major:
-            # A market-defining move may remain relevant all day. Repetition
-            # lowers its priority, but cannot erase it from the candidate set.
-            penalty = min(penalty, raw_score * 0.25)
-        adjusted_score = raw_score - penalty
-        evidence = sorted(
-            industry_stocks,
-            key=lambda item: abs(to_float(item.get("change_pct")) or 0.0),
-            reverse=True,
-        )[:4]
-        fundamentals = [
-            item
-            for item in metrics
-            if str(item.get("industry") or "") == industry
-            and not is_representative_stock(item)
-            and item.get("status") == "ok"
-            and not item.get("is_stale")
-            and (to_float(item.get("change_pct")) is not None or to_float(item.get("yoy_pct")) is not None)
-        ]
-        fundamentals.sort(
-            key=lambda item: (bool(item.get("is_updated_today")), str(item.get("observed_at") or "")),
-            reverse=True,
-        )
-        candidates.append(
-            {
-                "topic": f"산업:{industry}:{direction}",
-                "industry": industry,
-                "direction": direction,
-                "label": f"{industry} {'주도' if direction == 'strong' else '약세'}",
-                "median_change_pct": round(median_move, 2),
-                "benchmark_change_pct": round(benchmark_move, 2),
-                "relative_change_pct_point": round(relative_move, 2),
-                "breadth": f"{aligned_count}/{len(moves)}",
-                "raw_score": round(raw_score, 3),
-                "repetition_penalty": round(penalty, 3),
-                "score": round(adjusted_score, 3),
-                "new_evidence_count": changed_count,
-                "persistent_major": persistent_major,
-                "evidence": [brief_metric(item) for item in evidence],
-                "fundamental_checks": [brief_metric(item) for item in fundamentals[:2]],
-            }
-        )
-    candidates.sort(key=lambda item: float(item.get("score") or 0.0), reverse=True)
-
-    breadth_moves = [to_float(item.get("change_pct")) for item in stocks]
-    breadth_moves = [float(value) for value in breadth_moves if value is not None]
-    cross_asset_names = {
-        "VIX", "원/달러 환율", "미국 10년 국채금리", "S&P500 선물", "나스닥100 선물",
-        "비트코인", "달러인덱스", "WTI 선물(CL)", "Brent 선물(BZ)",
-    }
-    cross_assets = [
-        brief_metric(item)
-        for item in metrics
-        if str(item.get("name") or "") in cross_asset_names and to_float(item.get("value")) is not None
-    ]
-    return {
-        "session": session_key,
-        "benchmark_change_pct": round(benchmark_move, 2),
-        "market_breadth": {
-            "positive": sum(1 for value in breadth_moves if value > 0),
-            "negative": sum(1 for value in breadth_moves if value < 0),
-            "unchanged": sum(1 for value in breadth_moves if value == 0),
-            "sample_size": len(breadth_moves),
-        },
-        "candidates": candidates[:6],
-        "cross_assets": cross_assets,
-        "freshness": payload.get("freshness_summary", {}),
-        "recent_topic_history": [
-            {"industry": industry, "penalty": round(value, 2)}
-            for industry, value in sorted(repetition_penalty.items(), key=lambda item: item[1], reverse=True)
-        ],
-        "selection_rule": "score는 당일 산업 중앙값·시장 대비 상대강도·상승/하락 종목 비율·직전 카드 이후 새 변화로 계산하며, 최근 반복 주제에는 감점을 적용합니다.",
-    }
-
-
-def persistent_event_threshold(metric: dict[str, Any]) -> float:
-    group = str(metric.get("group") or "")
-    if group == "시장지수":
-        return 2.0
-    if group == "대표주가":
-        return 5.0
-    if str(metric.get("name") or "") in {"VIX", "VKOSPI", "원/달러 환율"}:
-        return 3.0
-    return 4.0
-
-
-def persistent_market_events(
-    payload: dict[str, Any],
-    previous_snapshot: dict[str, Any] | None,
-    recent_cards: list[dict[str, Any]],
-    *,
-    limit: int = 4,
-) -> list[dict[str, Any]]:
-    recent_industries = recent_narrative_industries(recent_cards)
-    events: list[dict[str, Any]] = []
-    for metric in payload.get("metrics", []) or []:
-        if not isinstance(metric, dict):
-            continue
-        current_change = to_float(metric.get("change_pct"))
-        if current_change is None or abs(current_change) < persistent_event_threshold(metric):
-            continue
-        metric_id = str(metric.get("id") or "")
-        previous = (previous_snapshot or {}).get(metric_id)
-        previous_change = to_float(previous.get("change_pct")) if isinstance(previous, dict) else None
-        if previous_change is None:
-            progression = "신규 포착"
-        elif current_change * previous_change < 0:
-            progression = "방향 반전"
-        elif abs(current_change) - abs(previous_change) >= 0.5:
-            progression = "상승폭 확대" if current_change > 0 else "낙폭 확대"
-        elif abs(previous_change) - abs(current_change) >= 0.5:
-            progression = "상승폭 축소" if current_change > 0 else "낙폭 축소"
-        else:
-            progression = "큰 움직임 지속"
-        industry = str(metric.get("industry") or "")
-        events.append(
-            {
-                **brief_metric(metric),
-                "topic": f"산업:{industry}:{'strong' if current_change >= 0 else 'weak'}",
-                "progression": progression,
-                "previous_card_change_pct": previous_change,
-                "mentioned_recently": bool(recent_industries.get(industry)),
-                "instruction": "반복 언급 시 원인 문장을 복사하지 말고 직전 카드 이후 확대·축소·반전과 새 흐름을 설명합니다.",
-            }
-        )
-    events.sort(key=lambda item: abs(float(item.get("change_pct") or 0.0)), reverse=True)
-    return events[:limit]
-
-
-def is_persistent_market_metric(metric: dict[str, Any]) -> bool:
-    change = to_float(metric.get("change_pct"))
-    return change is not None and abs(change) >= persistent_event_threshold(metric)
-
-
-def top_mover_metrics(
-    metrics: list[dict[str, Any]], *, changed_ids: set[str] | None = None
-) -> list[dict[str, Any]]:
-    if changed_ids:
-        updated = [metric for metric in metrics if str(metric.get("id") or "") in changed_ids]
-    else:
-        updated = [metric for metric in metrics if metric.get("daily_status") in {"updated", "new"}]
-    candidates = updated or metrics
-    ranked = [
-        metric
-        for metric in candidates
-        if to_float(metric.get("change_pct")) is not None
-        and not metric.get("exclude_from_movers")
-    ]
-    ranked.sort(key=lambda metric: abs(to_float(metric.get("change_pct")) or 0.0), reverse=True)
-    if changed_ids:
-        persistent = [
-            metric
-            for metric in metrics
-            if str(metric.get("id") or "") not in changed_ids
-            and is_persistent_market_metric(metric)
-            and not metric.get("exclude_from_movers")
-        ]
-        persistent.sort(key=lambda metric: abs(to_float(metric.get("change_pct")) or 0.0), reverse=True)
-        ranked = [*ranked[:4], *persistent[:2]]
-    deduped: list[dict[str, Any]] = []
-    seen: set[str] = set()
-    for metric in ranked:
-        metric_id = str(metric.get("id") or "")
-        if metric_id in seen:
-            continue
-        seen.add(metric_id)
-        deduped.append(metric)
-    return [brief_metric(metric) for metric in deduped[:5]]
-
-
-def industry_signal_rows(
-    metrics: list[dict[str, Any]], field: str, *, reverse: bool
-) -> list[dict[str, Any]]:
-    by_industry: dict[str, list[tuple[float, dict[str, Any]]]] = defaultdict(list)
-    for metric in metrics:
-        value = to_float(metric.get(field))
-        if value is None:
-            continue
-        signal = value * metric_direction(metric)
-        by_industry[str(metric.get("industry") or "매크로")].append((signal, metric))
-
-    rows: list[dict[str, Any]] = []
-    for industry, items in by_industry.items():
-        if not items:
-            continue
-        score = sum(signal for signal, _metric in items) / len(items)
-        drivers = sorted(items, key=lambda item: abs(item[0]), reverse=True)[:2]
-        rows.append(
-            {
-                "industry": industry,
-                "score": round(score, 2),
-                "drivers": [brief_metric(metric) for _signal, metric in drivers],
-            }
-        )
-    rows.sort(key=lambda row: row["score"], reverse=reverse)
-    return rows
-
-
-def equity_lead_rows(metrics: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    by_industry: dict[str, list[dict[str, Any]]] = defaultdict(list)
-    for metric in metrics:
-        by_industry[str(metric.get("industry") or "매크로")].append(metric)
-
-    rows: list[dict[str, Any]] = []
-    for industry, items in by_industry.items():
-        equities = [metric for metric in items if str(metric.get("group") or "") == "대표주가"]
-        fundamentals = [metric for metric in items if str(metric.get("group") or "") != "대표주가"]
-        equity_values = [to_float(metric.get("change_pct")) for metric in equities]
-        fundamental_values = [to_float(metric.get("change_pct")) for metric in fundamentals]
-        equity_values = [value for value in equity_values if value is not None]
-        fundamental_values = [value for value in fundamental_values if value is not None]
-        if not equity_values or not fundamental_values:
-            continue
-        equity_score = sum(equity_values) / len(equity_values)
-        fundamental_score = sum(fundamental_values) / len(fundamental_values)
-        gap = equity_score - fundamental_score
-        if abs(equity_score) < 2 and abs(gap) < 3:
-            continue
-        if equity_score * fundamental_score > 0 and abs(gap) < 5:
-            continue
-        rows.append(
-            {
-                "industry": industry,
-                "equity_score": round(equity_score, 2),
-                "fundamental_score": round(fundamental_score, 2),
-                "gap": round(gap, 2),
-                "drivers": [
-                    brief_metric(max(equities, key=lambda metric: abs(to_float(metric.get("change_pct")) or 0.0))),
-                    brief_metric(max(fundamentals, key=lambda metric: abs(to_float(metric.get("change_pct")) or 0.0))),
-                ],
-            }
-        )
-    rows.sort(key=lambda row: abs(row["gap"]), reverse=True)
-    return rows
-
-
-def metric_direction(metric: dict[str, Any]) -> int:
-    text = " ".join(
-        str(metric.get(key) or "")
-        for key in ("name", "group", "meaning")
-    )
-    lower_is_better_keywords = (
-        "VIX",
-        "스프레드",
-        "금리",
-        "연체율",
-        "모기지",
-        "위험",
-        "리스크",
-    )
-    return -1 if any(keyword in text for keyword in lower_is_better_keywords) else 1
-
-
-def brief_metric(metric: dict[str, Any]) -> dict[str, Any]:
-    return {
-        "id": str(metric.get("id") or ""),
-        "industry": str(metric.get("industry") or ""),
-        "group": str(metric.get("group") or ""),
-        "kind": metric_kind_label(metric),
-        "name": str(metric.get("name") or ""),
-        "value": str(metric.get("display_value") or ""),
-        "observed_label": str(metric.get("observed_label") or ""),
-        "change_pct": to_float(metric.get("change_pct")),
-        "change_pct_label": str(metric.get("change_pct_label") or ""),
-        "yoy_pct": to_float(metric.get("yoy_pct")),
-        "yoy_pct_label": str(metric.get("yoy_pct_label") or ""),
-        "meaning": short_text(metric.get("meaning"), "", 120),
-    }
-
-
-def metric_kind_label(metric: dict[str, Any]) -> str:
-    group = str(metric.get("group") or "")
-    name = str(metric.get("name") or "")
-    text = f"{group} {name}"
-    if group == "대표주가":
-        return "대표주가(주식 가격)"
-    if group == "시장지수":
-        return "시장지수"
-    if "WSTS" in text or "판매액" in group:
-        return "반도체 판매액"
-    if "CAPEX" in text.upper():
-        return "설비투자(CAPEX)"
-    if any(keyword in text for keyword in ("원자재", "유가", "철광석", "구리", "알루미늄", "니켈", "석탄", "천연가스")):
-        return "원자재/에너지 가격"
-    if any(keyword in text for keyword in ("금리", "스프레드", "OAS", "연체율", "대출")):
-        return "금융여건 지표"
-    if "수출" in text:
-        return "수출 지표"
-    if any(keyword in text for keyword in ("승인", "임상", "발사", "계약", "충전")):
-        return "산업 활동 지표"
-    return group or "업황 지표"
-
-
-def metric_change_meaning(metric: dict[str, Any]) -> str:
-    group = str(metric.get("group") or "")
-    name = str(metric.get("name") or "")
-    text = f"{group} {name}"
-    change = to_float(metric.get("change_pct"))
-    improved = change is None or change * metric_direction(metric) >= 0
-
-    if group == "대표주가":
-        return "실적이 바로 바뀌었다기보다, 시장이 해당 산업의 기대와 위험을 다시 가격에 반영한 신호로 볼 수 있습니다."
-    if group == "시장지수":
-        return "개별 산업보다 전체 투자심리와 위험 선호가 움직였는지 확인하는 신호입니다."
-    if "CAPEX" in text.upper():
-        return "AI와 클라우드 인프라 투자가 앞으로도 강하게 이어질지 보여주는 단서입니다."
-    if "판매액" in group or "WSTS" in group:
-        return "반도체가 실제로 얼마나 팔리고 있는지 보여주기 때문에 업황의 바닥과 회복 속도를 보는 데 중요합니다."
-    if any(keyword in text for keyword in ("원자재", "유가", "철광석", "구리", "알루미늄", "리튬")):
-        return "소재와 제조업의 비용 부담이 커지는지 줄어드는지 확인하는 지표입니다."
-    if any(keyword in text for keyword in ("금리", "스프레드", "모기지", "연체율")):
-        return "돈을 빌리는 부담과 금융 스트레스가 완화되는지 악화되는지 보는 지표입니다."
-    if any(keyword in text for keyword in ("승인", "임상", "발사", "계약", "충전")):
-        return "해당 산업의 실제 활동량과 투자 속도가 살아나는지 확인하는 힌트입니다."
-    return "하루 가격 움직임만 보기보다, 같은 산업의 수요·투자·실적 지표와 같이 보면 의미가 더 분명해집니다." if improved else "단기 변동일 수 있으니, 같은 산업의 수요·투자·실적 지표도 함께 확인하는 편이 좋습니다."
-
-
-def metric_change_summary(metric: dict[str, Any]) -> str:
-    change = str(metric.get("change_pct_label") or "변동")
-    kind = str(metric.get("kind") or metric.get("group") or "지표")
-    name = str(metric.get("name") or "지표")
-    return (
-        f"{metric['industry']}의 {kind}인 {name}{subject_particle(name)} {change} 움직였습니다. "
-        f"{metric_change_meaning(metric)}"
-    )
-
-
-def topic_label(text: str) -> str:
-    return f"{text}{topic_particle(text)}"
-
-
-def topic_particle(text: str) -> str:
-    for char in reversed(str(text or "").strip()):
-        code = ord(char)
-        if 0xAC00 <= code <= 0xD7A3:
-            return "은" if (code - 0xAC00) % 28 else "는"
-        if char.isalnum():
-            return "는"
-    return "는"
-
-
-def subject_particle(text: str) -> str:
-    """Return the natural Korean subject particle for a metric name."""
-    for char in reversed(str(text or "").strip()):
-        code = ord(char)
-        if 0xAC00 <= code <= 0xD7A3:
-            return "이" if (code - 0xAC00) % 28 else "가"
-        if char.isalnum():
-            return "가"
-    return "가"
-
-
-def rule_based_summary(
-    top_movers: list[dict[str, Any]],
-    improving_industries: list[dict[str, Any]],
-    slowing_industries: list[dict[str, Any]],
-    source_issues: list[dict[str, Any]],
-) -> str:
-    parts = []
-    if top_movers:
-        parts.append(metric_change_summary(top_movers[0]))
-    if improving_industries:
-        industry = improving_industries[0]["industry"]
-        parts.append(f"{industry} 쪽은 최근 지표 흐름이 상대적으로 좋아져 수요나 투자 강도가 살아있는지 볼 만합니다.")
-    if slowing_industries:
-        industry = slowing_industries[0]["industry"]
-        parts.append(f"{topic_label(industry)} 전년 대비 힘이 약해진 항목이 있어, 회복이 이어지는지 한 번 더 확인하는 게 좋습니다.")
-    if source_issues:
-        parts.append("일부 지표는 아직 새 값이 들어오지 않았을 수 있어 오늘 바뀐 항목을 우선 보면 됩니다.")
-    return " ".join(parts) or "오늘 새로 해석할 만큼 크게 움직인 지표가 아직 많지 않습니다."
-
-
-def rule_based_bullets(
-    top_movers: list[dict[str, Any]],
-    improving_industries: list[dict[str, Any]],
-    slowing_industries: list[dict[str, Any]],
-    equity_leads: list[dict[str, Any]],
-) -> list[dict[str, Any]]:
-    bullets: list[dict[str, Any]] = []
-    if top_movers:
-        bullets.append(
-            {
-                "title": "급변 지표",
-                "body": metric_change_summary(top_movers[0]),
-                "metric_ids": [item["id"] for item in top_movers[:3] if item.get("id")],
-            }
-        )
-    if improving_industries:
-        row = improving_industries[0]
-        bullets.append(
-            {
-                "title": "좋아진 흐름",
-                "body": f"{topic_label(row['industry'])} 여러 지표가 상대적으로 좋아져 수요나 투자 강도가 유지되는지 볼 만합니다.",
-                "metric_ids": [item["id"] for item in row.get("drivers", []) if item.get("id")],
-            }
-        )
-    if slowing_industries:
-        row = slowing_industries[0]
-        bullets.append(
-            {
-                "title": "주의할 흐름",
-                "body": f"{topic_label(row['industry'])} 전년 대비 힘이 약해진 항목이 있어 회복 속도를 조심해서 봐야 합니다.",
-                "metric_ids": [item["id"] for item in row.get("drivers", []) if item.get("id")],
-            }
-        )
-    if equity_leads:
-        row = equity_leads[0]
-        bullets.append(
-            {
-                "title": "주가와 지표 차이",
-                "body": f"{topic_label(row['industry'])} 주가와 실제 지표의 움직임 차이가 커서 기대가 앞서가는지 확인이 필요합니다.",
-                "metric_ids": [item["id"] for item in row.get("drivers", []) if item.get("id")],
-            }
-        )
-    return bullets
-
-def gemini_morning_briefing_prompt(payload: dict[str, Any], briefing: dict[str, Any]) -> str:
-    briefing_context = briefing.get("briefing_context") if isinstance(briefing.get("briefing_context"), dict) else {}
-    session_context = briefing_context.get("session") if isinstance(briefing_context.get("session"), dict) else {}
-    session_label = str(session_context.get("label") or "세션 외")
-    prompt_focus = str(session_context.get("prompt_focus") or "")
-    low_signal = bool(briefing_context.get("low_signal"))
-    card_type = str(briefing_context.get("card_type") or "")
-    context = {
-        "generated_label": payload.get("generated_label", ""),
-        "briefing_context": {
-            key: briefing_context.get(key)
-            for key in (
-                "card_type", "low_signal", "reason", "significant", "benchmark_drivers",
-                "daily_move_drivers", "changed_metrics",
-            )
-            if key in briefing_context
-        },
-        "session_label": session_label,
-        "low_signal": low_signal,
-        "market_narrative": briefing_context.get("market_narrative") or {},
-        "structural_lenses": narrative_context_for_briefing(briefing),
-        "recent_topic_history": briefing_context.get("recent_topic_history") or [],
-        "persistent_events": briefing_context.get("persistent_events") or [],
-        "day_card_flow": briefing_context.get("day_card_flow") or [],
-        "top_movers": briefing.get("top_movers", []),
-        "improving_industries": briefing.get("improving_industries", []),
-        "slowing_industries": briefing.get("slowing_industries", []),
-        "equity_leads": briefing.get("equity_leads", []),
-        "source_issues": briefing.get("source_issues", []),
-        "daily_changes": payload.get("daily_changes", {}),
-        "upcoming_events": (payload.get("calendar", {}) or {}).get("upcoming", []),
-    }
-    session_instruction = (
-        f"현재 실행 세션은 '{session_label}'이다. {prompt_focus}\n"
-        "한국장 카드라면 코스피·코스닥과 국내 수급을 우선하고, 미국장 카드라면 미국 지수·환율·미국 대표주를 우선하라.\n"
-        "특히 미국장 카드는 마지막 문장에 내일 한국장에 줄 함의를 짧게 넣어라.\n"
-    )
-    low_signal_instruction = (
-        "이번 카드는 low_signal=true다. 변화는 있지만 유의미성이 낮으므로 과장하지 말고, headline·summary를 담백하게 쓰고 bullets는 1~2개만 사용하라.\n"
-        if low_signal
-        else ""
-    )
-    close_instruction = ""
-    if card_type == "close":
-        close_instruction = (
-            "이번 카드는 한국장 마감 카드다. day_card_flow와 changed_metrics를 함께 보고 당일 한국장 흐름을 종합하라. "
-            "코스피·코스닥·수급·환율을 우선하고 다음 거래일에 확인할 점으로 마무리하라.\n"
-        )
-    elif card_type == "us_close":
-        close_instruction = (
-            "이번 카드는 미국장 마감 카드다. 미국 지수·환율·미국 대표주 움직임을 우선하고 내일 한국장에 줄 함의로 마무리하라.\n"
-        )
-    return (
-        "너는 개인 투자자가 매일 아침 산업별 지표 대시보드를 빠르게 훑도록 돕는 한국어 브리핑 작성자다.\n"
-        "아래 JSON 데이터만 근거로 사용하고, 매수/매도 추천이나 목표가는 쓰지 마라.\n"
-        f"{session_instruction}"
-        f"{low_signal_instruction}"
-        f"{close_instruction}"
-        "가장 중요한 목표는 개별 등락을 나열하는 것이 아니라 지금 시장을 움직이는 주도 산업, 약한 산업, 수급과 교차자산의 연결을 설명하는 것이다.\n"
-        "각 지표를 언급할 때는 name만 쓰지 말고 반드시 kind와 industry를 함께 써라. 예: '로봇 대표주가(주식 가격) Teradyne(TER)'처럼 쓴다.\n"
-        "한국어 조사는 반드시 자연스럽게 맞춰라. 지표명을 주어로 쓸 때는 마지막 글자의 받침에 맞춰 이/가를 선택한다. "
-        "예: 'Phase 3 임상 시작이 +5.6% 움직였습니다'가 맞고, 'Phase 3 임상 시작가'는 쓰지 마라.\n"
-        "market_narrative.candidates는 당일 대표주 표본의 중앙 등락률, 시장 대비 상대강도, 상승·하락 종목 비율로 계산된 현재 근거다. score가 높은 후보부터 검토하되 evidence와 fundamental_checks가 실제로 뒷받침하는 범위에서만 주도/약세라고 표현하라.\n"
-        "recent_topic_history는 반복을 피하기 위한 감점 기록일 뿐 현재 시장의 증거가 아니다. 직전 카드가 방산을 다뤘다는 이유만으로 방산을 다시 고르지 말고, 새 evidence가 있으며 여전히 최상위 후보일 때만 반복하라.\n"
-        "persistent_events는 하루 종일 시장을 지배할 수 있는 급등·폭락·지수 충격이다. 여전히 극단적이면 후속 카드에도 남기되 같은 설명을 복사하지 말고 progression의 낙폭 확대·축소·반전 여부를 말하라. 새 변화가 더 중요하면 persistent event는 headline이 아니라 보조 bullet로 내려라.\n"
-        "직전 카드 이후 새로 변한 changed_metrics를 우선하고, 이전 headline이나 문장을 다음 카드의 전제로 복사하지 마라. 선두 후보가 바뀌면 headline과 summary의 주제도 바꿔라.\n"
-        "structural_lenses는 산업을 해석하는 일반 원리다. 현재 상황을 단정하는 자료가 아니므로 market_narrative와 지표 데이터가 뒷받침할 때만 적용하라.\n"
-        "structural_lenses.stock_market은 대표주가를 해석하는 일반 렌즈다. 대표주가가 움직일 때는 산업 실물지표와 밸류에이션·금리·포지셔닝을 함께 확인하라.\n"
-        "어려운 통계 용어를 피하고, 수요가 강해졌는지, 비용 부담이 커졌는지, 투자심리가 흔들렸는지처럼 사용자가 바로 이해할 수 있게 써라.\n"
-        "주가 지표는 기업 실적 자체가 아니라 시장 기대와 위험 선호가 움직인 신호라는 점을 구분해서 설명하라.\n"
-        "월간·분기 지표는 새 발표 전까지 그대로일 수 있으니, daily_changes와 top_movers를 우선해서 해석하라.\n"
-        "upcoming_events에 오늘·내일 FOMC, 금통위, CPI, 만기일 같은 큰 일정이 있으면 관망 심리나 변동성 가능성을 짧게 언급하라.\n"
-        "불확실하거나 데이터 공백이 있으면 사용자 친화적으로 짧게 말하라.\n"
-        "출력은 설명 없이 JSON 객체 하나만 반환하라.\n"
-        "스키마: {\"headline\": string, \"summary\": string, \"narrative_topics\": [string], \"bullets\": "
-        "[{\"title\": string, \"body\": string, \"metric_ids\": [string]}]}\n"
-        "headline은 40자 이내로 오늘의 핵심 변화를 쉽게 말하라.\n"
-        "narrative_topics는 실제로 다룬 주제를 '산업:반도체:strong' 같은 형식으로 최대 3개만 기록하라.\n"
-        "summary는 2문장 이내로 '무엇이 변했고 왜 봐야 하는지'를 설명하라.\n"
-        "bullets는 3~5개이며 title은 '급변 지표', '좋아진 흐름', '주의할 흐름', '주가와 지표 차이'처럼 짧은 항목명으로 쓰고, body는 '변한 지표의 종류 + 의미 + 다음에 볼 것'을 한 문장으로 써라.\n"
-        f"데이터:\n{json.dumps(context, ensure_ascii=False, separators=(',', ':'))}"
-    )
-
-
-def request_gemini_briefing(
-    session: requests.Session, api_key: str, model: str, prompt: str
-) -> str:
-    url = GEMINI_GENERATE_URL.format(model=model)
-    response = session.post(
-        url,
-        headers={
-            "x-goog-api-key": api_key,
-            "Content-Type": "application/json",
-        },
-        json={
-            "contents": [{"role": "user", "parts": [{"text": prompt}]}],
-            "generationConfig": {
-                "temperature": 0.2,
-                "maxOutputTokens": 900,
-                "responseMimeType": "application/json",
-            },
-        },
-        timeout=30,
-    )
-    response.raise_for_status()
-    text = extract_gemini_text(response.json())
-    if not text:
-        raise RuntimeError("Gemini 응답에 텍스트가 없습니다.")
-    return text
-
-
-def extract_gemini_text(payload: dict[str, Any]) -> str:
-    candidates = payload.get("candidates")
-    if not isinstance(candidates, list) or not candidates:
-        return ""
-    content = candidates[0].get("content") if isinstance(candidates[0], dict) else None
-    parts = content.get("parts") if isinstance(content, dict) else None
-    if not isinstance(parts, list):
-        return ""
-    texts = [str(part.get("text") or "") for part in parts if isinstance(part, dict)]
-    return "\n".join(text for text in texts if text).strip()
-
-
-def parse_json_object(text: str) -> dict[str, Any]:
-    cleaned = text.strip()
-    if cleaned.startswith("```"):
-        cleaned = re.sub(r"^```(?:json)?\s*", "", cleaned)
-        cleaned = re.sub(r"\s*```$", "", cleaned)
-    start = cleaned.find("{")
-    end = cleaned.rfind("}")
-    if start != -1 and end != -1 and end > start:
-        cleaned = cleaned[start : end + 1]
-    parsed = json.loads(cleaned)
-    if not isinstance(parsed, dict):
-        raise ValueError("Gemini JSON 응답이 객체가 아닙니다.")
-    return parsed
-
-
-def normalize_gemini_briefing(
-    parsed: dict[str, Any], fallback: dict[str, Any], model: str
-) -> dict[str, Any]:
-    briefing = dict(fallback)
-    briefing.update(
-        {
-            "status": "ok",
-            "status_message": "Gemini 요약",
-            "model": model,
-            "headline": short_text(parsed.get("headline"), fallback.get("headline", ""), 80),
-            "summary": short_text(parsed.get("summary"), fallback.get("summary", ""), 360),
-            "bullets": normalize_briefing_bullets(parsed.get("bullets"), fallback.get("bullets", [])),
-            "narrative_topics": [
-                short_text(topic, "", 64)
-                for topic in (
-                    parsed.get("narrative_topics")
-                    if isinstance(parsed.get("narrative_topics"), list)
-                    else fallback.get("narrative_topics", [])
-                )
-                if str(topic or "").strip()
-            ][:3],
-        }
-    )
-    return briefing
-
-
-def normalize_briefing_bullets(value: Any, fallback: Any) -> list[dict[str, Any]]:
-    items = value if isinstance(value, list) else fallback
-    bullets: list[dict[str, Any]] = []
-    for item in items[:5]:
-        if not isinstance(item, dict):
-            continue
-        metric_ids = item.get("metric_ids")
-        bullets.append(
-            {
-                "title": short_text(item.get("title"), "체크포인트", 40),
-                "body": short_text(item.get("body"), "", 220),
-                "metric_ids": [
-                    str(metric_id)
-                    for metric_id in (metric_ids if isinstance(metric_ids, list) else [])
-                    if metric_id
-                ][:3],
-            }
-        )
-    return bullets
-
-def short_text(value: Any, fallback: Any, max_length: int) -> str:
-    text = str(value if value not in (None, "") else fallback or "").strip()
-    text = re.sub(r"\s+", " ", text)
-    return text[:max_length]
-
-
-def copy_dashboard_assets(output_path: Path) -> None:
-    candidates = [
-        Path.cwd() / "assets",
-        Path(__file__).resolve().parents[2] / "assets",
-    ]
-    assets_source = next((path for path in candidates if path.exists()), None)
-    if assets_source is None:
-        return
-
-    for directory in ("industry-icons", "future-images", "country-flags"):
-        source = assets_source / directory
-        target = output_path / "assets" / directory
-        if not source.exists():
-            continue
-        if target.exists():
-            shutil.rmtree(target, ignore_errors=True)
-        shutil.copytree(source, target, dirs_exist_ok=True)
-
-    assets_target = output_path / "assets"
-    assets_target.mkdir(parents=True, exist_ok=True)
-    for filename in (
-        "marketbrief-logo.svg",
-        "marketbrief-logo.png",
-        "luceforge-studio-final.png",
-        "pwa-icon-192.png",
-        "pwa-icon-512.png",
-    ):
-        source_file = assets_source / filename
-        if source_file.exists():
-            shutil.copyfile(source_file, assets_target / filename)
-
-    manifest = assets_source / "manifest.webmanifest"
-    if manifest.exists():
-        shutil.copyfile(manifest, output_path / "manifest.webmanifest")
-
-    service_worker = assets_source / "service-worker.js"
-    if service_worker.exists():
-        build_ts = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
-        worker_text = service_worker.read_text(encoding="utf-8").replace("__BUILD_TS__", build_ts)
-        (output_path / "service-worker.js").write_text(worker_text, encoding="utf-8")
+        error_metric.update(error_metric_overrides or {})
+        metrics.append(make_metric(**error_metric))
 
 
 def build_dashboard_payload(
@@ -2890,231 +1464,72 @@ def build_dashboard_payload(
         ("시장 수급", collect_market_flow_metrics),
     ]
     for source_name, collector in collectors:
-        before = len(metrics)
-        logger = current_logger()
-        started_at, started_monotonic = logger.source_started() if logger else (fetched_at, time.monotonic())
-        try:
-            source_metrics = collector(config, session, now.date())
-            metrics.extend(source_metrics)
-            ok_count = sum(1 for item in source_metrics if item.get("status") == "ok")
-            message = f"{ok_count}/{len(source_metrics)}개 지표 자동 수집"
-            issue_summary = metric_issue_summary(source_metrics)
-            if issue_summary:
-                message = f"{message} ({issue_summary})"
-            source_status.append(
-                {
-                    "name": source_name,
-                    "status": (
-                        "ok"
-                        if source_metrics and ok_count == len(source_metrics) and not issue_summary
-                        else "partial"
-                    ),
-                    "message": sanitize_message(message),
-                }
-            )
-            record_fetch_result(
-                source_name,
-                source_metrics,
-                previous_by_key,
-                started_at,
-                started_monotonic,
-                message,
-            )
-        except Exception as exc:  # noqa: BLE001 - dashboard should survive source-level failures.
-            source_status.append({"name": source_name, "status": "error", "message": sanitize_message(str(exc))})
-            record_fetch_failure(source_name, started_at, started_monotonic, exc)
-            if len(metrics) == before:
-                metrics.append(
-                    make_metric(
-                        industry="매크로",
-                        name=f"{source_name} 수집 상태",
-                        source=source_name,
-                        source_url="",
-                        frequency="",
-                        automation="부분 자동화 가능",
-                        status="error",
-                        note=str(exc),
-                    )
-                )
+        run_dashboard_collector(
+            source_name=source_name,
+            collector=lambda collector=collector: collector(config, session, now.date()),
+            metrics=metrics,
+            source_status=source_status,
+            previous_by_key=previous_by_key,
+            fetched_at=fetched_at,
+        )
 
-    before = len(metrics)
-    logger = current_logger()
-    started_at, started_monotonic = logger.source_started() if logger else (fetched_at, time.monotonic())
-    try:
-        source_metrics = collect_us_liquidity_metrics(config, session, now.date(), metrics)
-        metrics.extend(source_metrics)
-        ok_count = sum(1 for item in source_metrics if item.get("status") == "ok")
-        message = f"{ok_count}/{len(source_metrics)}개 지표 자동 수집"
-        issue_summary = metric_issue_summary(source_metrics)
-        if issue_summary:
-            message = f"{message} ({issue_summary})"
-        source_status.append(
-            {
-                "name": "미국 유동성",
-                "status": "ok" if source_metrics and ok_count == len(source_metrics) else "partial",
-                "message": sanitize_message(message),
-            }
-        )
-        record_fetch_result(
-            "미국 유동성",
-            source_metrics,
-            previous_by_key,
-            started_at,
-            started_monotonic,
-            message,
-        )
-    except Exception as exc:  # noqa: BLE001 - liquidity failure should not block the dashboard.
-        source_status.append({"name": "미국 유동성", "status": "error", "message": sanitize_message(str(exc))})
-        record_fetch_failure("미국 유동성", started_at, started_monotonic, exc)
-        if len(metrics) == before:
-            metrics.append(
-                make_metric(
-                    industry="매크로",
-                    name="미국 유동성 수집 상태",
-                    source="미국 유동성",
-                    source_url="",
-                    frequency="",
-                    automation="무료로 안정적으로 자동화 가능",
-                    status="error",
-                    note=str(exc),
-                    group="미국 유동성",
-                    section="market",
-                    market_category=US_LIQUIDITY_CATEGORY,
-                )
-            )
-
-    before = len(metrics)
-    logger = current_logger()
-    started_at, started_monotonic = logger.source_started() if logger else (fetched_at, time.monotonic())
-    try:
-        source_metrics = collect_global_liquidity_metrics(config, session, now.date())
-        metrics.extend(source_metrics)
-        ok_count = sum(1 for item in source_metrics if item.get("status") == "ok")
-        message = f"{ok_count}/{len(source_metrics)}개 지표 자동 수집"
-        issue_summary = metric_issue_summary(source_metrics)
-        if issue_summary:
-            message = f"{message} ({issue_summary})"
-        source_status.append(
-            {
-                "name": GLOBAL_LIQUIDITY_SOURCE_NAME,
-                "status": "ok" if source_metrics and ok_count == len(source_metrics) else "partial",
-                "message": sanitize_message(message),
-            }
-        )
-        record_fetch_result(
-            GLOBAL_LIQUIDITY_SOURCE_NAME,
-            source_metrics,
-            previous_by_key,
-            started_at,
-            started_monotonic,
-            message,
-        )
-    except Exception as exc:  # noqa: BLE001 - global liquidity failure should not block the dashboard.
-        source_status.append({"name": GLOBAL_LIQUIDITY_SOURCE_NAME, "status": "error", "message": sanitize_message(str(exc))})
-        record_fetch_failure(GLOBAL_LIQUIDITY_SOURCE_NAME, started_at, started_monotonic, exc)
-        if len(metrics) == before:
-            metrics.append(
-                make_metric(
-                    industry="매크로",
-                    name="국제 유동성 수집 상태",
-                    source=GLOBAL_LIQUIDITY_SOURCE_NAME,
-                    source_url="",
-                    frequency="",
-                    automation="무료 공식 API 자동 수집",
-                    status="error",
-                    note=str(exc),
-                    group=GLOBAL_LIQUIDITY_SOURCE_NAME,
-                    section="market",
-                    market_category=US_LIQUIDITY_CATEGORY,
-                )
-            )
-
-    before = len(metrics)
-    logger = current_logger()
-    started_at, started_monotonic = logger.source_started() if logger else (fetched_at, time.monotonic())
-    try:
-        source_metrics = collect_market_sentiment_metrics(config, session, now.date(), metrics)
-        metrics.extend(source_metrics)
-        ok_count = sum(1 for item in source_metrics if item.get("status") == "ok")
-        message = f"{ok_count}/{len(source_metrics)}개 지표 자동 수집"
-        issue_summary = metric_issue_summary(source_metrics)
-        if issue_summary:
-            message = f"{message} ({issue_summary})"
-        source_status.append(
-            {
-                "name": "시장 심리",
-                "status": "ok" if source_metrics and ok_count == len(source_metrics) else "partial",
-                "message": sanitize_message(message),
-            }
-        )
-        record_fetch_result(
-            "시장 심리",
-            source_metrics,
-            previous_by_key,
-            started_at,
-            started_monotonic,
-            message,
-        )
-    except Exception as exc:  # noqa: BLE001 - sentiment failure should not block the dashboard.
-        source_status.append({"name": "시장 심리", "status": "error", "message": sanitize_message(str(exc))})
-        record_fetch_failure("시장 심리", started_at, started_monotonic, exc)
-        if len(metrics) == before:
-            metrics.append(
-                make_metric(
-                    industry="매크로",
-                    name="시장 심리 수집 상태",
-                    source="시장 심리",
-                    source_url="",
-                    frequency="",
-                    automation="부분 자동화 가능",
-                    status="error",
-                    note=str(exc),
-                    group="공포탐욕",
-                )
-            )
-
-    before = len(metrics)
-    logger = current_logger()
-    started_at, started_monotonic = logger.source_started() if logger else (fetched_at, time.monotonic())
-    try:
-        source_metrics = collect_market_derived_metrics(config, session, now.date(), metrics)
-        metrics.extend(source_metrics)
-        ok_count = sum(1 for item in source_metrics if item.get("status") == "ok")
-        message = f"{ok_count}/{len(source_metrics)}개 지표 자동 수집"
-        source_status.append(
-            {
-                "name": "시장 파생지표",
-                "status": "ok" if ok_count == len(source_metrics) else "partial",
-                "message": sanitize_message(message),
-            }
-        )
-        record_fetch_result(
-            "시장 파생지표",
-            source_metrics,
-            previous_by_key,
-            started_at,
-            started_monotonic,
-            message,
-        )
-    except Exception as exc:  # noqa: BLE001
-        source_status.append({"name": "시장 파생지표", "status": "error", "message": sanitize_message(str(exc))})
-        record_fetch_failure("시장 파생지표", started_at, started_monotonic, exc)
-        if len(metrics) == before:
-            metrics.append(
-                make_metric(
-                    industry="매크로",
-                    name="시장 파생지표 수집 상태",
-                    source="시장 파생지표",
-                    source_url="",
-                    frequency="",
-                    automation="부분 자동화 가능",
-                    status="error",
-                    note=str(exc),
-                    group="시장 분위기",
-                    section="market",
-                    market_category="심리·변동성",
-                )
-            )
+    run_dashboard_collector(
+        source_name="미국 유동성",
+        collector=lambda: collect_us_liquidity_metrics(config, session, now.date(), metrics),
+        metrics=metrics,
+        source_status=source_status,
+        previous_by_key=previous_by_key,
+        fetched_at=fetched_at,
+        status_requires_clean_metrics=False,
+        error_metric_overrides={
+            "automation": "무료로 안정적으로 자동화 가능",
+            "group": "미국 유동성",
+            "section": "market",
+            "market_category": US_LIQUIDITY_CATEGORY,
+        },
+    )
+    run_dashboard_collector(
+        source_name=GLOBAL_LIQUIDITY_SOURCE_NAME,
+        collector=lambda: collect_global_liquidity_metrics(config, session, now.date()),
+        metrics=metrics,
+        source_status=source_status,
+        previous_by_key=previous_by_key,
+        fetched_at=fetched_at,
+        status_requires_clean_metrics=False,
+        error_metric_overrides={
+            "name": "국제 유동성 수집 상태",
+            "automation": "무료 공식 API 자동 수집",
+            "group": GLOBAL_LIQUIDITY_SOURCE_NAME,
+            "section": "market",
+            "market_category": US_LIQUIDITY_CATEGORY,
+        },
+    )
+    run_dashboard_collector(
+        source_name="시장 심리",
+        collector=lambda: collect_market_sentiment_metrics(config, session, now.date(), metrics),
+        metrics=metrics,
+        source_status=source_status,
+        previous_by_key=previous_by_key,
+        fetched_at=fetched_at,
+        status_requires_clean_metrics=False,
+        error_metric_overrides={"group": "공포탐욕"},
+    )
+    run_dashboard_collector(
+        source_name="시장 파생지표",
+        collector=lambda: collect_market_derived_metrics(config, session, now.date(), metrics),
+        metrics=metrics,
+        source_status=source_status,
+        previous_by_key=previous_by_key,
+        fetched_at=fetched_at,
+        status_requires_nonempty=False,
+        status_requires_clean_metrics=False,
+        include_issue_summary=False,
+        error_metric_overrides={
+            "group": "시장 분위기",
+            "section": "market",
+            "market_category": "심리·변동성",
+        },
+    )
 
     metrics.extend(collect_reference_metrics(config))
     apply_fetch_metadata(metrics, fetched_at, previous_by_key)
@@ -5433,10 +3848,6 @@ def stablecoin_billions(value: float | None) -> float | None:
     return value / 1_000_000_000 if value is not None else None
 
 
-def stablecoin_meaning() -> str:
-    return "달러 연동 스테이블코인의 유통량 변화로 온체인 달러 유동성과 결제/거래 수요를 확인합니다."
-
-
 def collect_world_bank_commodity_metrics(
     config: dict[str, Any], session: requests.Session, today: date
 ) -> list[dict[str, Any]]:
@@ -5778,26 +4189,9 @@ def sec_capex_points(payload: dict[str, Any], tags: list[str] | None = None) -> 
     return best_points
 
 
-def parse_iso_date(value: object) -> date | None:
-    try:
-        return date.fromisoformat(str(value))
-    except (TypeError, ValueError):
-        return None
-
-
 def is_quarter_duration(start_date: date, end_date: date) -> bool:
     days = (end_date - start_date).days + 1
     return 70 <= days <= 110
-
-
-def sec_capex_meaning(company_name: str = "빅테크") -> str:
-    display_name = company_name.replace(" CAPEX", "").strip() or "빅테크"
-    if display_name in CAPEX_MEANINGS:
-        return CAPEX_MEANINGS[display_name]
-    return (
-        f"{display_name}의 CAPEX는 데이터센터, 서버, AI 인프라 같은 장기 설비투자 규모를 보여줍니다. "
-        "투자가 커질수록 클라우드와 AI 인프라 수요가 강하다는 신호로 볼 수 있습니다."
-    )
 
 
 def collect_usaspending_metrics(
@@ -6866,13 +5260,6 @@ def wsts_metric_name(region: str, is_3mma: bool) -> str:
     return f"3MMA - {region}" if is_3mma else region
 
 
-def wsts_metric_meaning(region: str, is_3mma: bool) -> str:
-    base = WSTS_REGION_MEANINGS.get(region) or (
-        f"{region} 지역 반도체 판매액입니다. 지역별 수요가 반도체 업황에 어떻게 반영되는지 볼 때 참고합니다."
-    )
-    return f"{base} {WSTS_3MMA_MEANING}" if is_3mma else base
-
-
 def collect_wsts_metrics(
     config: dict[str, Any], session: requests.Session, today: date
 ) -> list[dict[str, Any]]:
@@ -7544,20 +5931,6 @@ def flow_metric_meaning(market_label: str, investor: str, measure_label: str) ->
     )
 
 
-def infer_flow_metric_meaning(name: str) -> str:
-    text = str(name or "").strip()
-    flow_match = re.match(r"^(.+?)\s+(.+?)\s+(20일 누적 순매수|순매수|매수|매도)$", text)
-    if not flow_match:
-        return ""
-    market_label, investor, measure_label = flow_match.groups()
-    if measure_label == "20일 누적 순매수":
-        return (
-            f"{market_label}에서 {investor}이 최근 20거래일 동안 순매수한 금액의 합계입니다. "
-            "하루짜리 수급보다 잡음이 적어서, 같은 주체가 시장을 꾸준히 사는지 파는지 볼 때 씁니다."
-        )
-    return flow_metric_meaning(market_label, investor, measure_label)
-
-
 def metric_by_name(metrics: list[dict[str, Any]], name: str) -> dict[str, Any] | None:
     for metric in metrics:
         if isinstance(metric, dict) and str(metric.get("name") or "") == name and metric.get("status") == "ok":
@@ -7957,21 +6330,6 @@ def collect_korea_fear_greed_metrics(
     return metrics
 
 
-def korea_fear_greed_meaning(label: str) -> str:
-    return (
-        f"{label} 시장의 가격 추세, 상승·하락 종목 수, 52주 신고가·신저가, 변동성을 합쳐 "
-        "투자심리가 공포 쪽인지 탐욕 쪽인지 보여줍니다. 0에 가까우면 공포, "
-        "100에 가까우면 탐욕이 강한 구간입니다."
-    )
-
-
-def vkospi_meaning() -> str:
-    return (
-        "VKOSPI는 코스피200 옵션 가격에 반영된 예상 변동성입니다. 숫자가 높아질수록 "
-        "국내 주식시장이 앞으로 크게 흔들릴 수 있다고 보는 투자자가 많다는 뜻입니다."
-    )
-
-
 def collect_reference_metrics(config: dict[str, Any]) -> list[dict[str, Any]]:
     reference_metrics = config.get("dashboard", {}).get("reference_metrics", [])
     metrics: list[dict[str, Any]] = []
@@ -7992,961 +6350,3 @@ def collect_reference_metrics(config: dict[str, Any]) -> list[dict[str, Any]]:
             )
         )
     return metrics
-
-
-def make_metric(
-    *,
-    industry: str,
-    name: str,
-    source: str,
-    source_url: str,
-    frequency: str,
-    automation: str,
-    status: str,
-    value: float | None = None,
-    unit: str = "",
-    observed_at: str = "",
-    previous_value: float | None = None,
-    yoy_value: float | None = None,
-    history: list[tuple[date, float]] | None = None,
-    note: str = "",
-    group: str = "",
-    depth: str = "",
-    meaning: str = "",
-    history_key: str = "",
-    history_merge: str = "full",
-    metric_id: str = "",
-    section: str = "",
-    market_category: str = "",
-    also_market_category: str | list[str] = "",
-    refresh_scope: str = "",
-    chart_style: str = "",
-    exclude_from_movers: bool = False,
-) -> dict[str, Any]:
-    change_abs = value - previous_value if value is not None and previous_value is not None else None
-    change_pct = pct_change(value, previous_value) if value is not None else None
-    yoy_pct = pct_change(value, yoy_value) if value is not None else None
-    resolved_id = metric_id or hashlib.sha1(f"{industry}|{name}|{source}".encode("utf-8")).hexdigest()[:12]
-    history_points = [
-        {"date": observed_date.isoformat(), "value": observed_value}
-        for observed_date, observed_value in (history or [])
-    ]
-    resolved_group = group or infer_metric_group(industry, name)
-    resolved_meaning = meaning or infer_metric_meaning(industry, name)
-    resolved_depth = depth or infer_metric_depth(industry, name, resolved_group)
-
-    return {
-        "id": resolved_id,
-        "industry": industry,
-        "section": section,
-        "market_category": market_category,
-        "also_market_category": also_market_category,
-        "refresh_scope": refresh_scope,
-        "chart_style": chart_style,
-        "exclude_from_movers": exclude_from_movers,
-        "depth": resolved_depth,
-        "group": resolved_group,
-        "name": name,
-        "meaning": resolved_meaning,
-        "source": source,
-        "source_url": source_url,
-        "frequency": frequency,
-        "automation": automation,
-        "status": status,
-        "status_label": status_label(status),
-        "value": value,
-        "unit": unit,
-        "display_value": format_value(value, unit) if value is not None else "대기",
-        "observed_at": observed_at,
-        "observed_label": compact_date_label(observed_at),
-        "next_update_label": next_update_label(observed_at, frequency),
-        "previous_value": previous_value,
-        "change_abs": change_abs,
-        "change_pct": change_pct,
-        "change_abs_label": format_abs_change(change_abs, unit),
-        "change_pct_label": fmt_pct(change_pct),
-        "yoy_pct": yoy_pct,
-        "yoy_pct_label": fmt_pct(yoy_pct),
-        "history": history_points,
-        "period_label": period_label(history_points, observed_at),
-        "note": note,
-        "history_key": history_key,
-        "history_merge": history_merge,
-    }
-
-
-def configured_industries(config: dict[str, Any], metrics: list[dict[str, Any]]) -> list[str]:
-    configured = list(config.get("dashboard", {}).get("industries") or DEFAULT_INDUSTRIES)
-    seen = set(configured)
-    for metric in metrics:
-        if str(metric.get("section") or "") == "market":
-            continue
-        industry = str(metric.get("industry") or "매크로")
-        if industry not in seen:
-            configured.append(industry)
-            seen.add(industry)
-    return configured
-
-
-def normalize_market_categories(value: Any) -> list[str]:
-    if isinstance(value, list):
-        return [clean_display_text(item) for item in value if clean_display_text(item)]
-    text = clean_display_text(value)
-    return [text] if text else []
-
-
-def set_market_category(metric: dict[str, Any], category: str, *, primary: bool = False) -> None:
-    if primary:
-        metric["section"] = "market"
-        metric["market_category"] = category
-        return
-    existing = normalize_market_categories(metric.get("also_market_category"))
-    if category and category != metric.get("market_category") and category not in existing:
-        existing.append(category)
-    metric["also_market_category"] = existing
-
-
-def assign_market_navigation_fields(metrics: list[dict[str, Any]]) -> None:
-    """Map existing market-level indicators into the new 시황 navigation.
-
-    Explicit collector/config fields win. These heuristics keep legacy payloads
-    useful without changing metric names or history keys.
-    """
-    for metric in metrics:
-        if not isinstance(metric, dict):
-            continue
-        name = str(metric.get("name") or "")
-        group = str(metric.get("group") or "")
-        industry = str(metric.get("industry") or "")
-        source = str(metric.get("source") or "")
-        section = str(metric.get("section") or "")
-        primary_category = str(metric.get("market_category") or "")
-
-        if section == "market" and primary_category:
-            metric["also_market_category"] = normalize_market_categories(metric.get("also_market_category"))
-            continue
-
-        if group == "시장지수" or name in {"코스피", "코스닥", "나스닥", "S&P 500", "다우"}:
-            set_market_category(metric, "종합", primary=True)
-        elif any(token in name for token in ("원/달러", "USD/KRW", "엔/달러", "엔/원", "S&P500 선물", "나스닥100 선물", "KOSPI200 선물", "KOSPI200 베이시스")):
-            set_market_category(metric, "종합", primary=True)
-        elif name in {"VIX", "VKOSPI"} or group == "공포탐욕" or "공포탐욕" in name:
-            set_market_category(metric, "심리·변동성", primary=True)
-        elif group in {"수급", "프로그램", "공매도"} or str(metric.get("chart_style") or "") == "flow_bars":
-            set_market_category(metric, "수급", primary=True)
-        elif group == "수급 과열" or "FINRA" in source or any(token in name for token in ("신용융자", "투자자예탁금", "CMA")):
-            set_market_category(metric, "신용·예탁금", primary=True)
-        elif group == "밸류에이션" and (industry == "매크로" or name.startswith(("코스피", "코스닥", "S&P 500"))):
-            set_market_category(metric, "밸류에이션", primary=True)
-        elif any(token in name for token in ("달러인덱스", "금 선물", "금 가격", "천연가스", "BTC", "ETH", "비트코인", "이더리움", "김치프리미엄")):
-            set_market_category(metric, "원자재·크립토", primary=True)
-        else:
-            if group in {"금리", "신용 스프레드", "스프레드", "금리/스프레드"} or any(token in name for token in ("국채", "금리차", "기준금리", "회사채")):
-                set_market_category(metric, "금리·채권")
-            if industry in {"화학/정유", "철강/소재", "스테이블코인"} and any(token in name for token in ("유가", "WTI", "Brent", "구리", "스테이블코인")):
-                set_market_category(metric, "원자재·크립토")
-
-        metric["also_market_category"] = normalize_market_categories(metric.get("also_market_category"))
-
-
-def infer_metric_country(metric: dict[str, Any]) -> str:
-    """Return a compact geographic code for display and client-side filtering."""
-    explicit = clean_display_text(metric.get("country") or "").upper()
-    if explicit:
-        return explicit
-
-    name = clean_display_text(metric.get("name") or "")
-    source = clean_display_text(metric.get("source") or "")
-    history_key = clean_display_text(metric.get("history_key") or "")
-    text = f"{name} {source} {history_key}"
-    lowered = text.lower()
-
-    # Region/global series must win over source-country heuristics such as FRED.
-    if any(token in lowered for token in ("worldwide", "global", "world bank", "글로벌", "전세계", "세계 ")):
-        return "GLOBAL"
-    if any(token in lowered for token in ("asia pacific", "아시아 태평양")):
-        return "APAC"
-    if any(token in lowered for token in ("americas", "미주")):
-        return "AMERICAS"
-    if any(token in text for token in ("BDI", "철광석", "구리", "알루미늄", "리튬 가격", "USDT/USDC", "비트코인", "김치프리미엄", "Phase 3 임상")):
-        return "GLOBAL"
-
-    if any(token in text for token in ("한국", "코스피", "코스닥", "원/달러", "VKOSPI", ".KS", ".KQ")) or any(
-        token in lowered for token in ("krx", "kosis", "ecos", "kofia", "data.go.kr")
-    ):
-        return "KR"
-    if any(token in text for token in ("일본", "BOJ", "엔/달러", "엔/원", ".T)")) or history_key.startswith("boj-"):
-        return "JP"
-    if any(token in text for token in ("중국", "위안", "CNY")):
-        return "CN"
-    if any(token in text for token in ("유럽", "유로시스템", "ECB", "유로존")) or history_key.startswith("ecb-"):
-        return "EU"
-    if any(token in text for token in ("TSMC", "대만")):
-        return "TW"
-    if any(token in text for token in ("ASML", "네덜란드")):
-        return "NL"
-
-    us_names = (
-        "미국", "S&P", "나스닥", "다우", "VIX", "Sahm", "GDPNow", "CNN",
-        "WTI", "연준", "TGA", "역레포", "하이일드", "Micron", "NVIDIA", "AMD(",
-        "Intel(", "Applied Materials", "Microsoft", "Amazon", "Alphabet", "Meta", "Tesla",
-        "GE Vernova", "Teradyne", "Uber", "Mobileye", "Qualcomm", "Rocket Lab", "Eli Lilly",
-    )
-    if any(token in text for token in us_names) or any(
-        token in lowered for token in ("fred", "fiscaldata", "finra", "openfda", "usaspending", "eia api", "nrel")
-    ):
-        return "US"
-    return "GLOBAL"
-
-
-def assign_metric_country_fields(metrics: list[dict[str, Any]]) -> None:
-    for metric in metrics:
-        if isinstance(metric, dict):
-            metric["country"] = infer_metric_country(metric)
-
-
-def visible_dashboard_metrics(metrics: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    visible: list[dict[str, Any]] = []
-    for metric in metrics:
-        value = metric.get("value")
-        if metric.get("status") == "ok" and isinstance(value, (int, float)):
-            visible.append(
-                {
-                    "id": metric["id"],
-                    "status": metric["status"],
-                    "history_key": metric.get("history_key", ""),
-                    "history_merge": metric.get("history_merge", "full"),
-                    "section": clean_display_text(metric.get("section") or ""),
-                    "market_category": clean_display_text(metric.get("market_category") or ""),
-                    "also_market_category": [
-                        clean_display_text(item)
-                        for item in (
-                            metric.get("also_market_category")
-                            if isinstance(metric.get("also_market_category"), list)
-                            else [metric.get("also_market_category")]
-                        )
-                        if clean_display_text(item)
-                    ],
-                    "refresh_scope": clean_display_text(metric.get("refresh_scope") or ""),
-                    "chart_style": clean_display_text(metric.get("chart_style") or ""),
-                    "exclude_from_movers": bool(metric.get("exclude_from_movers")),
-                    "source": clean_display_text(metric.get("source") or ""),
-                    "country": clean_display_text(metric.get("country") or "GLOBAL"),
-                    "industry": clean_display_text(metric["industry"]),
-                    "industry_en": english_industry(clean_display_text(metric["industry"])),
-                    "depth": clean_display_text(metric.get("depth") or ""),
-                    "depth_en": english_depth(clean_display_text(metric.get("depth") or "")),
-                    "group": clean_display_text(metric["group"]),
-                    "group_en": english_group(clean_display_text(metric["group"])),
-                    "name": clean_display_text(metric["name"]),
-                    "name_en": english_metric_name(clean_display_text(metric["name"])),
-                    "meaning": clean_display_text(metric["meaning"]),
-                    "meaning_en": english_metric_meaning(
-                        clean_display_text(metric["meaning"]),
-                        clean_display_text(metric["industry"]),
-                    ),
-                    "value": metric["value"],
-                    "unit": clean_display_text(metric["unit"]),
-                    "unit_en": english_unit(clean_display_text(metric["unit"])),
-                    "display_value": metric["display_value"],
-                    "frequency": clean_display_text(metric["frequency"]),
-                    "frequency_en": english_frequency(clean_display_text(metric["frequency"])),
-                    "observed_at": metric["observed_at"],
-                    "observed_label": metric["observed_label"],
-                    "fetched_at": metric.get("fetched_at", ""),
-                    "fetch_status": metric.get("fetch_status", ""),
-                    "fetch_status_label": metric.get("fetch_status_label", ""),
-                    "next_update_label": metric["next_update_label"],
-                    "change_abs": metric["change_abs"],
-                    "change_pct": metric["change_pct"],
-                    "change_abs_label": metric["change_abs_label"],
-                    "change_pct_label": metric["change_pct_label"],
-                    "yoy_pct": metric["yoy_pct"],
-                    "yoy_pct_label": metric["yoy_pct_label"],
-                    "history": metric["history"],
-                    "period_label": metric["period_label"],
-                    "interpretation": metric.get("interpretation") or {},
-                }
-            )
-    return visible
-
-
-def clean_display_text(value: object) -> str:
-    text = str(value or "")
-    replacements = {
-        "자동화 장비": "산업 장비",
-        "자동화 설비": "설비투자",
-        "자동화와": "설비투자와",
-        "자동화": "설비투자",
-    }
-    for source, target in replacements.items():
-        text = text.replace(source, target)
-    return text
-
-
-HANGUL_RE = re.compile(r"[가-힣]")
-EN_MARKET_FALLBACKS = {
-    "코스피": "KOSPI",
-    "코스닥": "KOSDAQ",
-    "K200 선물": "K200 Futures",
-    "선물": "Futures",
-    "한국": "Korea",
-    "미국": "US",
-    "중국": "China",
-    "일본": "Japan",
-    "유럽": "Europe",
-    "동남아": "Southeast Asia",
-    "글로벌": "Global",
-    "전세계": "Global",
-}
-EN_INVESTOR_FALLBACKS = {
-    "개인": "Retail Investors",
-    "외국인": "Foreign Investors",
-    "기관합계": "Institutions Total",
-    "기관": "Institutions",
-    "금융투자": "Financial Investment",
-    "보험": "Insurance",
-    "투신": "Investment Trusts",
-    "사모": "Private Funds",
-    "은행": "Banks",
-    "기타금융": "Other Financials",
-    "연기금": "Pension Funds",
-    "기타법인": "Other Corporations",
-}
-EN_FLOW_MEASURE_FALLBACKS = {
-    "20일 누적 순매수": "20d Net Buying",
-    "순매수": "Net Buying",
-    "매수": "Buying",
-    "매도": "Selling",
-}
-EN_PHRASE_FALLBACKS = {
-    "한국장 마감": "Korea market close",
-    "미국장 마감": "US market close",
-    "공포탐욕지수": "Fear & Greed Index",
-    "경기침체": "Recession",
-    "시장온도계": "Market Thermometer",
-    "시장 온도계": "Market Thermometer",
-    "종합": "Overview",
-    "수급": "Flows",
-    "신용·예탁금": "Credit/Cash",
-    "금리·채권": "Rates/Bonds",
-    "유동성": "Liquidity",
-    "원자재·크립토": "Commodities/Crypto",
-    "심리·변동성": "Sentiment/Volatility",
-    "밸류에이션": "Valuation",
-    "캘린더": "Calendar",
-    "대표주가": "Representative Stocks",
-    "대표 주가": "Representative Stocks",
-    "시장지수": "Market Indexes",
-    "월매출": "Monthly Revenue",
-    "판매액": "Sales",
-    "판매량": "Sales Volume",
-    "매출": "Revenue",
-    "수출": "Exports",
-    "가격": "Price",
-    "기준금리": "Policy Rate",
-    "국채금리": "Treasury Yield",
-    "금리차": "Yield Spread",
-    "회사채": "Corporate Bond",
-    "하이일드": "High Yield",
-    "스프레드": "Spread",
-    "환율": "Exchange Rate",
-    "유가": "Crude Oil Price",
-    "철광석": "Iron Ore",
-    "구리": "Copper",
-    "알루미늄": "Aluminum",
-    "리튬": "Lithium",
-    "배터리": "Battery",
-    "전력수요": "Power Demand",
-    "전력 수요": "Power Demand",
-    "주택착공": "Housing Starts",
-    "건축허가": "Building Permits",
-    "미분양 주택": "Unsold Homes",
-    "주택가격지수": "House Price Index",
-    "발표": "Release",
-    "결정": "Decision",
-    "휴장": "Holiday",
-    "만기": "Expiry",
-    "갱신 예정": "Scheduled update",
-    "갱신": "Update",
-    "예정": "Scheduled",
-    "최근": "Recent",
-    "누적": "Cumulative",
-    "증가율": "Growth Rate",
-    "변화율": "Change Rate",
-    "변화": "Change",
-    "지표": "Metric",
-    "흐름": "Trend",
-    "위험": "Risk",
-    "주의": "Watch",
-    "안정": "Stable",
-    "낮음": "Low",
-    "보통": "Moderate",
-    "높음": "High",
-}
-
-
-def contains_hangul(value: object) -> bool:
-    return bool(HANGUL_RE.search(str(value or "")))
-
-
-def english_sentence_fallback(text: str) -> str:
-    if re.search(r"순매수|매수|매도|수급|외국인|개인|기관", text):
-        return "Tracks investor trading flows and helps show which group is buying or selling the market."
-    if re.search(r"공포|탐욕|심리|변동성", text):
-        return "Shows market sentiment and risk appetite."
-    if re.search(r"침체|경기|실업|성장", text):
-        return "Helps read the economic cycle and recession risk."
-    if re.search(r"금리|스프레드|채권|회사채", text):
-        return "Tracks rates, credit conditions, and funding stress."
-    if re.search(r"환율|원/달러", text):
-        return "Tracks currency moves that affect exporters, foreign flows, and market liquidity."
-    if re.search(r"가격|원자재|유가|철광석|구리|알루미늄|리튬", text):
-        return "Tracks price movements that affect costs, margins, and demand expectations."
-    if re.search(r"판매|매출|수출|CAPEX|투자", text):
-        return "Tracks demand and investment momentum for the related industry."
-    if re.search(r"캘린더|일정|발표|결정|휴장|만기", text):
-        return "Scheduled market event."
-    return "Market indicator used to track investment conditions."
-
-
-def english_generic_text(value: object, fallback: str = "Market indicator") -> str:
-    text = str(value or "").strip()
-    if not text:
-        return ""
-    if not contains_hangul(text):
-        return text
-    exact = (
-        EN_MEANING_LABELS.get(text)
-        or EN_METRIC_NAME_LABELS.get(text)
-        or EN_INDUSTRY_LABELS.get(text)
-        or EN_GROUP_LABELS.get(text)
-        or EN_DEPTH_LABELS.get(text)
-        or EN_FREQUENCY_LABELS.get(text)
-    )
-    if exact:
-        return exact
-
-    flow_match = re.match(
-        r"^(코스피|코스닥|K200 선물|선물)?\s*"
-        r"(개인|외국인|기관합계|기관|금융투자|보험|투신|사모|은행|기타금융|연기금|기타법인)\s+"
-        r"(20일 누적 순매수|순매수|매수|매도)$",
-        text,
-    )
-    if flow_match:
-        market, investor, measure = flow_match.groups()
-        prefix = f"{EN_MARKET_FALLBACKS.get(market, market)} " if market else ""
-        return f"{prefix}{EN_INVESTOR_FALLBACKS.get(investor, investor)} {EN_FLOW_MEASURE_FALLBACKS.get(measure, measure)}".strip()
-
-    export_match = re.match(r"^한국 수출 (.+)\(([^)]+)\)$", text)
-    if export_match:
-        item = english_export_item(export_match.group(1))
-        if contains_hangul(item):
-            item = english_generic_text(item, "Export Item")
-        return f"Korea Exports: {item} ({export_match.group(2)})"
-
-    stock_match = re.match(r"^(.+) 주가$", text)
-    if stock_match:
-        company = EN_METRIC_NAME_LABELS.get(stock_match.group(1)) or english_generic_text(stock_match.group(1), "Company")
-        return f"{company} Stock Price"
-
-    release_match = re.match(r"^미국 (.+) 발표$", text)
-    if release_match:
-        return f"US {english_generic_text(release_match.group(1), 'Data')} release"
-
-    translated = text
-    replacements: dict[str, str] = {}
-    replacements.update(EN_INVESTOR_FALLBACKS)
-    replacements.update(EN_FLOW_MEASURE_FALLBACKS)
-    replacements.update(EN_PHRASE_FALLBACKS)
-    replacements.update(EN_MARKET_FALLBACKS)
-    for source, target in sorted(replacements.items(), key=lambda item: len(item[0]), reverse=True):
-        translated = translated.replace(source, target)
-    translated = re.sub(r"(\d+)일", r"\1d", translated)
-    translated = re.sub(r"(\d+)년", r"\1y", translated)
-    translated = re.sub(r"(\d+)개월", r"\1mo", translated)
-    translated = translated.replace("에서", " in ").replace("동안", " for ")
-    translated = re.sub(r"입니다|합니다|하세요|됩니다", "", translated)
-    translated = HANGUL_RE.sub("", translated)
-    translated = translated.replace("·", "/")
-    translated = re.sub(r"\s*/\s*", "/", translated)
-    translated = re.sub(r"\s+", " ", translated).strip()
-    if translated and not contains_hangul(translated):
-        return translated
-    return fallback or english_sentence_fallback(text)
-
-
-def english_industry(industry: str) -> str:
-    value = EN_INDUSTRY_LABELS.get(industry, industry)
-    return english_generic_text(value, "Industry") if contains_hangul(value) else value
-
-
-def english_group(group: str) -> str:
-    value = EN_GROUP_LABELS.get(group, group)
-    return english_generic_text(value, "Group") if contains_hangul(value) else value
-
-
-def english_depth(depth: str) -> str:
-    value = EN_DEPTH_LABELS.get(depth, depth)
-    return english_generic_text(value, "Section") if contains_hangul(value) else value
-
-
-def english_frequency(frequency: str) -> str:
-    if not frequency:
-        return ""
-    compact = frequency.replace(" ", "")
-    if compact in EN_FREQUENCY_LABELS:
-        return EN_FREQUENCY_LABELS[compact]
-    parts = [EN_FREQUENCY_LABELS.get(part, part) for part in compact.split("/") if part]
-    return "/".join(parts) if parts else frequency
-
-
-def english_unit(unit: str) -> str:
-    value = EN_UNIT_LABELS.get(unit, unit)
-    return english_generic_text(value, "Unit") if contains_hangul(value) else value
-
-
-def english_export_item(name: str) -> str:
-    value = EN_EXPORT_ITEM_LABELS.get(name, name)
-    return english_generic_text(value, "Export Item") if contains_hangul(value) else value
-
-
-def english_metric_name(name: str) -> str:
-    if name in EN_METRIC_NAME_LABELS:
-        return EN_METRIC_NAME_LABELS[name]
-
-    wsts_match = re.match(r"^WSTS 반도체 판매액( 3MMA)? - (.+)$", name)
-    if wsts_match:
-        suffix = " 3MMA" if wsts_match.group(1) else ""
-        return f"WSTS Semiconductor Sales{suffix} - {wsts_match.group(2)}"
-
-    export_match = re.match(r"^한국 수출 (.+)\\(([^)]+)\\)$", name)
-    if export_match:
-        item = english_export_item(export_match.group(1))
-        return f"Korea Exports: {item} ({export_match.group(2)})"
-
-    stock_match = re.match(r"^(.+) 주가$", name)
-    if stock_match:
-        company = english_metric_name(stock_match.group(1))
-        return f"{company} Stock Price"
-
-    return english_generic_text(name, "Metric") if contains_hangul(name) else name
-
-
-def english_metric_meaning(meaning: str, industry: str = "") -> str:
-    if meaning in EN_MEANING_LABELS:
-        return EN_MEANING_LABELS[meaning]
-
-    for region, korean_meaning in WSTS_REGION_MEANINGS.items():
-        english_meaning = WSTS_REGION_MEANINGS_EN[region]
-        if meaning == korean_meaning:
-            return english_meaning
-        if meaning == f"{korean_meaning} {WSTS_3MMA_MEANING}":
-            return f"{english_meaning} {WSTS_3MMA_MEANING_EN}"
-
-    for company, korean_meaning in CAPEX_MEANINGS.items():
-        if meaning == korean_meaning:
-            return CAPEX_MEANINGS_EN[company]
-
-    export_match = re.match(
-        r"^(.+) 수출은 해당 품목의 대외 수요와 가격/물량 사이클을 확인하는 지표입니다\\.$",
-        meaning,
-    )
-    if export_match:
-        item = english_export_item(export_match.group(1))
-        return f"{item} exports track external demand and price/volume cycles for the item."
-
-    stock_match = re.match(r"^(.+) 주가는 시장이 해당 기업의 성장성과 위험을 어떻게 평가하는지 보여줍니다\\.$", meaning)
-    if stock_match:
-        return f"{stock_match.group(1)} stock price shows how the market values the company's growth and risk."
-
-    capex_match = re.match(
-        r"^(.+)의 CAPEX는 데이터센터, 서버, AI 인프라 같은 장기 설비투자 규모를 보여줍니다\. "
-        r"투자가 커질수록 클라우드와 AI 인프라 수요가 강하다는 신호로 볼 수 있습니다\.$",
-        meaning,
-    )
-    if capex_match:
-        return (
-            f"{capex_match.group(1)} CAPEX shows long-term investment in data centers, "
-            "servers, and AI infrastructure. Rising investment can signal stronger cloud "
-            "and AI infrastructure demand."
-        )
-
-    industry_match = re.match(r"^(.+) 흐름을 이해할 때 참고하는 보조 지표입니다\\.$", meaning)
-    if industry_match:
-        target_industry = english_industry(industry_match.group(1) or industry)
-        return f"Supplementary indicator for understanding {target_industry} industry trends."
-
-    return english_sentence_fallback(meaning) if contains_hangul(meaning) else meaning
-
-
-def infer_export_industry(hs_code: str) -> str:
-    if hs_code.startswith(("8541", "8542")):
-        return "반도체"
-    if hs_code.startswith("870380"):
-        return "전기차"
-    if hs_code.startswith("8703"):
-        return "자동차"
-    if hs_code.startswith("8901"):
-        return "조선"
-    return "매크로"
-
-
-def infer_metric_group(industry: str, name: str) -> str:
-    if "수출" in name:
-        return "수출"
-    if name in WSTS_REGION_MEANINGS or name.startswith("3MMA - "):
-        return "판매액(WSTS)"
-    if "WSTS" in name or "반도체 판매" in name:
-        return "판매액(WSTS)"
-    if industry == "방산":
-        if "수주잔고" in name:
-            return "수주잔고"
-        if "신규주문" in name:
-            return "신규주문"
-        return "방산 수요"
-    if industry == "스테이블코인":
-        return "유통량"
-    if industry == "전력":
-        if "천연가스" in name or "석탄" in name:
-            return "에너지 가격"
-        if "판매량" in name or "발전량" in name:
-            return "전력 수요"
-        if "PPI" in name:
-            return "전력 가격"
-        return "전력 수요/생산"
-    if industry == "데이터인프라":
-        return "CAPEX"
-    if industry == "로봇":
-        if "PPI" in name:
-            return "산업 장비 가격"
-        return "설비투자"
-    if industry == "우주":
-        if "PPI" in name:
-            return "항공우주 가격"
-        return "우주/방산 생산"
-    if industry == "바이오":
-        return "바이오 가격"
-    if industry == "배터리":
-        if "니켈" in name or "리튬" in name or "코발트" in name:
-            return "배터리 원재료"
-        return "배터리 가격"
-    if industry == "은행/금융":
-        if "금리차" in name or "스프레드" in name:
-            return "스프레드"
-        if "연체" in name or "대출" in name:
-            return "은행 건전성"
-        return "금리"
-    if industry == "건설/부동산":
-        if "모기지" in name:
-            return "금융비용"
-        return "주택 경기"
-    if industry == "철강/소재":
-        return "원자재 가격"
-    if industry == "화학/정유":
-        if "유가" in name:
-            return "에너지 가격"
-        return "화학 스프레드"
-    if industry == "자동차":
-        return "판매/수요"
-    if industry == "전기차":
-        return "EV 수요"
-    if industry == "매크로":
-        if "환율" in name:
-            return "환율"
-        if "VIX" in name:
-            return "리스크"
-    return "핵심 지표"
-
-
-def infer_metric_depth(industry: str, name: str, group: str = "") -> str:
-    if industry != "반도체":
-        return ""
-
-    text = f"{name} {group}"
-    if name in WSTS_REGION_MEANINGS or name.startswith("3MMA - ") or "전체" in text:
-        return "전체 업황"
-    if any(keyword in text for keyword in ["메모리", "DRAM", "NAND", "HBM", "SK하이닉스", "Micron", "삼성전자"]):
-        return "메모리 반도체"
-    if any(keyword in text for keyword in ["NVIDIA", "엔비디아", "GPU"]):
-        return "AI/GPU"
-    if "AMD" in text:
-        return "AI/GPU"
-    if any(keyword in text for keyword in ["CPU", "프로세서", "컨트롤러", "Intel"]):
-        return "CPU/프로세서"
-    if any(keyword in text for keyword in ["TSMC", "파운드리"]):
-        return "파운드리"
-    if any(keyword in text for keyword in ["ASML", "Applied Materials", "Lam Research", "장비"]):
-        return "장비"
-    if any(keyword in text for keyword in ["패키징", "후공정", "패키지"]):
-        return "패키징/후공정"
-    if any(keyword in text for keyword in ["소자", "부품", "트랜지스터", "다이오드", "웨이퍼"]):
-        return "소자/부품"
-    return "전체 업황"
-
-
-def infer_metric_meaning(industry: str, name: str) -> str:
-    flow_meaning = infer_flow_metric_meaning(name)
-    if flow_meaning:
-        return flow_meaning
-    wsts_old_match = re.match(r"^WSTS 반도체 판매액( 3MMA)? - (.+)$", name)
-    if wsts_old_match:
-        return wsts_metric_meaning(wsts_old_match.group(2), bool(wsts_old_match.group(1)))
-    if name.startswith("3MMA - "):
-        return wsts_metric_meaning(name.removeprefix("3MMA - "), True)
-    if name in WSTS_REGION_MEANINGS:
-        return wsts_metric_meaning(name, False)
-    if "WSTS" in name:
-        return wsts_metric_meaning("Worldwide", False)
-    if name in {"코스피", "코스닥", "S&P 500", "나스닥", "다우"}:
-        market_meanings = {
-            "코스피": "한국 대형주 중심의 대표 주가지수입니다. 국내 증시 전체 방향과 외국인 자금 흐름을 볼 때 기준점으로 씁니다.",
-            "코스닥": "한국 성장주와 중소형주 비중이 큰 주가지수입니다. 개인투자자 심리와 성장주 위험 선호를 확인할 때 봅니다.",
-            "S&P 500": "미국 대형주 500개로 구성된 대표 지수입니다. 글로벌 위험 선호와 미국 증시의 넓은 방향을 보는 기준입니다.",
-            "나스닥": "기술주 비중이 높은 미국 주가지수입니다. AI, 반도체, 소프트웨어 같은 성장주 투자심리를 확인할 때 봅니다.",
-            "다우": "미국 우량 대형주 중심의 주가지수입니다. 경기민감 대형주의 흐름과 미국 증시의 전통 산업 쪽 분위기를 볼 때 참고합니다.",
-        }
-        return market_meanings[name]
-    if "Sahm Rule" in name:
-        return "실업률이 최근 저점보다 얼마나 높아졌는지 보는 경기침체 신호입니다. 0.5%p를 넘으면 과거에는 침체 진입 가능성이 커진 경우가 많았습니다."
-    if "GDPNow" in name:
-        return "애틀랜타 연은이 실시간 경제지표를 반영해 추정하는 미국 GDP 성장률 전망입니다. 경기 기대가 좋아지는지 식는지 빠르게 볼 때 씁니다."
-    if name == "미국 CPI" or "소비자물가" in name:
-        return "미국 소비자물가 상승률입니다. 인플레이션 압력과 연준 금리 기대를 움직여 주식, 채권, 환율에 모두 영향을 줍니다."
-    if "반도체 PPI" in name:
-        return "반도체 생산자 가격입니다. 반도체 가격이 오르는지 내리는지 볼 때 참고합니다."
-    if "기준금리" in name:
-        return "중앙은행이 정하는 정책금리입니다. 예금·대출금리, 기업 조달비용, 주식시장 할인율에 영향을 주는 기본 금리입니다."
-    if "국채금리" in name:
-        return "할인율과 금융주 마진 기대를 좌우하는 시장 금리입니다."
-    if "금리차" in name:
-        return "경기 기대와 은행 순이자마진 방향을 함께 보여주는 지표입니다."
-    if "회사채" in name:
-        return "신용 위험과 자금 조달 여건이 얼마나 빡빡한지 확인합니다."
-    if "연체" in name:
-        return "대출 자산의 질과 금융 시스템 부담을 점검합니다."
-    if "총대출" in name:
-        return "은행권 신용 공급과 실물 경기의 자금 수요를 봅니다."
-    if "주택착공" in name:
-        return "건설 경기의 실제 착공 모멘텀과 주택 공급 흐름을 보여줍니다."
-    if "건축허가" in name:
-        return "향후 착공과 건설 활동을 선행해서 보여주는 지표입니다."
-    if "모기지" in name:
-        return "주택 구매 부담과 부동산 수요에 직접 영향을 주는 비용입니다."
-    if "주택가격" in name:
-        return "가계 자산 효과와 부동산 경기 방향성을 확인합니다."
-    if "유가" in name:
-        return "정유, 화학 원가와 인플레이션 압력을 동시에 움직이는 원재료 가격입니다."
-    if "휘발유" in name or "디젤" in name:
-        return "석유 제품 가격입니다. 정유 제품 수요와 정유사 마진 방향을 볼 때 참고합니다."
-    if "화학 PPI" in name:
-        return "화학 제품 생산자 가격입니다. 제품 가격이 원가보다 빠르게 움직이는지 볼 때 참고합니다."
-    if "철광석" in name:
-        return "철강 원가와 중국 투자 수요를 반영하는 핵심 원재료입니다."
-    if "구리" in name:
-        return "전기화와 제조업 경기를 민감하게 반영하는 경기 민감 금속입니다."
-    if "알루미늄" in name:
-        return "경량 소재와 제조업 수요, 전력비 영향을 함께 받는 소재 가격입니다."
-    if "니켈" in name:
-        return "배터리 양극재 원가에 큰 영향을 주는 원재료 가격입니다."
-    if "천연가스" in name or "석탄" in name:
-        return "전력 생산 원가와 산업 에너지 비용을 좌우하는 에너지 원료 지표입니다."
-    if "자동차 판매" in name:
-        return "완성차 수요와 소비 경기 흐름을 확인하는 판매 지표입니다."
-    if "전기차" in name:
-        return "순수 전기차 수출 흐름으로 EV 수요와 국내 전기차 생산 모멘텀을 확인합니다."
-    if "방산" in name:
-        return "방산 발주와 생산 사이클을 통해 방산 업체 수요가 강해지는지 확인합니다."
-    if "스테이블코인" in name or "USDT" in name or "USDC" in name:
-        return stablecoin_meaning()
-    if "전력" in name or "유틸리티" in name:
-        return "전력 생산과 가격 흐름으로 전력 인프라와 전력 수요 사이클을 확인합니다."
-    if industry == "데이터인프라" or "CAPEX" in name.upper():
-        return sec_capex_meaning(name)
-    if "산업용 기계" in name or "산업 제어" in name:
-        return "공장 자동화와 로봇 설비 투자가 늘어나는지 볼 때 참고합니다."
-    if "우주" in name or "항공우주" in name:
-        return "항공우주 장비 생산과 가격 흐름입니다. 우주 산업의 주문과 비용 부담을 볼 때 참고합니다."
-    if "생물학적" in name or "체외진단" in name:
-        return "바이오 의약품과 진단 제품의 가격 사이클을 확인하는 지표입니다."
-    if "배터리" in name:
-        return "배터리 제품 가격 흐름으로 셀/소재 밸류체인의 업황을 점검합니다."
-    if "고객예탁금" in name or "투자자예탁금" in name:
-        return "증권계좌에 대기 중인 현금입니다. 늘어나면 주식시장으로 들어올 수 있는 대기 자금이 많아졌다는 뜻으로 봅니다."
-    if "신용융자" in name:
-        return "투자자가 빚을 내서 주식을 산 잔고입니다. 빠르게 늘면 과열 신호가 될 수 있고, 급감하면 반대매매 압력을 의심할 수 있습니다."
-    if "환율" in name:
-        return "수출주 원화 환산 매출과 외국인 수급에 영향을 주는 매크로 변수입니다."
-    if "VIX" in name:
-        return "시장 위험 회피 심리와 변동성 확대 여부를 봅니다."
-    if "VKOSPI" in name:
-        return vkospi_meaning()
-    if "공포탐욕" in name:
-        if "코스피" in name:
-            return korea_fear_greed_meaning("코스피")
-        if "코스닥" in name:
-            return korea_fear_greed_meaning("코스닥")
-        return "여러 시장 심리 지표를 묶어 투자심리가 공포 쪽인지 탐욕 쪽인지 보여줍니다. 낮을수록 공포, 높을수록 탐욕에 가깝습니다."
-    if "비트코인" in name:
-        return "대표적인 위험자산이자 크립토 유동성 지표입니다. 글로벌 유동성, 위험 선호, 크립토 시장 분위기를 빠르게 확인할 때 봅니다."
-    if "PBR" in name:
-        return "주가를 장부가치와 비교한 밸류에이션 지표입니다. 낮을수록 시장이 자산가치 대비 싸게 거래되는지 볼 때 참고합니다."
-    if "CAPE" in name or "Shiller" in name:
-        return "경기순환을 감안한 장기 이익 대비 주가 수준입니다. 미국 증시가 장기 평균보다 비싼지 싼지 판단할 때 봅니다."
-    if "수출" in name:
-        return "해당 품목의 대외 수요와 가격/물량 사이클을 확인합니다."
-    if industry:
-        return f"{industry} 흐름을 이해할 때 참고하는 보조 지표입니다."
-    return "투자 판단에 필요한 업황 변화를 확인합니다."
-
-
-def export_meaning(name: str) -> str:
-    return f"{name} 수출은 해당 품목의 대외 수요와 가격/물량 사이클을 확인하는 지표입니다."
-
-
-def period_label(history_points: list[dict[str, Any]], observed_at: str) -> str:
-    if history_points:
-        start = compact_date_label(str(history_points[0]["date"]))
-        end = compact_date_label(str(history_points[-1]["date"]))
-        return start if start == end else f"{start} - {end}"
-    return compact_date_label(observed_at)
-
-
-def compact_date_label(value: str) -> str:
-    if not value:
-        return ""
-    try:
-        parsed = date.fromisoformat(value[:10])
-    except ValueError:
-        return value[:10]
-    if parsed.day == 1:
-        return f"{parsed.year}.{parsed.month:02d}"
-    return f"{parsed.year}.{parsed.month:02d}.{parsed.day:02d}"
-
-
-def next_update_label(observed_at: str, frequency: str) -> str:
-    if not observed_at:
-        return "비정기"
-    try:
-        observed_date = date.fromisoformat(observed_at[:10])
-    except ValueError:
-        return "비정기"
-
-    compact_frequency = frequency.replace(" ", "")
-    if not compact_frequency or "비정기" in compact_frequency:
-        return "비정기"
-    if "일간" in compact_frequency:
-        return compact_date_label((observed_date + timedelta(days=1)).isoformat())
-    if "주간" in compact_frequency and "월간" not in compact_frequency:
-        return compact_date_label((observed_date + timedelta(days=7)).isoformat())
-    if "월간" in compact_frequency:
-        return compact_date_label(add_months(observed_date, 1).isoformat())
-    if "분기" in compact_frequency:
-        return compact_date_label(add_months(observed_date, 3).isoformat())
-    if "연간" in compact_frequency:
-        return compact_date_label(add_months(observed_date, 12).isoformat())
-    return "비정기"
-
-
-def find_yoy_value(points: list[tuple[date, float]], latest_date: date) -> float | None:
-    exact_month = next(
-        (
-            value
-            for observed_date, value in reversed(points)
-            if observed_date.year == latest_date.year - 1 and observed_date.month == latest_date.month
-        ),
-        None,
-    )
-    if exact_month is not None:
-        return exact_month
-
-    threshold = latest_date - timedelta(days=365)
-    older_points = [(observed_date, value) for observed_date, value in points if observed_date <= threshold]
-    return older_points[-1][1] if older_points else None
-
-
-def format_value(value: float | None, unit: str) -> str:
-    if value is None:
-        return "대기"
-    if unit == "$B":
-        return f"${fmt_number(value)}B"
-    if unit == "$":
-        return f"${fmt_number(value)}"
-    if unit == "%":
-        return f"{fmt_number(value)}%"
-    if unit == "원":
-        return f"{value:,.0f}원" if float(value).is_integer() else f"{fmt_number(value)}원"
-    if unit:
-        return f"{fmt_number(value)} {unit}"
-    return fmt_number(value)
-
-
-def format_abs_change(value: float | None, unit: str) -> str:
-    if value is None:
-        return "n/a"
-    if unit == "$B":
-        return f"{fmt_signed(value)}B"
-    if unit == "$":
-        return f"${fmt_signed(value)}"
-    if unit == "%":
-        return f"{fmt_signed(value)}%p"
-    if unit == "원":
-        return f"{value:+,.0f}원" if float(value).is_integer() else f"{fmt_signed(value)}원"
-    if unit:
-        return f"{fmt_signed(value)} {unit}"
-    return fmt_signed(value)
-
-
-def status_label(status: str) -> str:
-    return {
-        "ok": "자동 수집",
-        "needs_key": "키 필요",
-        "partial": "부분 자동화",
-        "manual": "수작업",
-        "error": "오류",
-    }.get(status, status)
-
-
-def status_to_automation(status: str) -> str:
-    if status == "manual":
-        return "수작업 입력 필요"
-    if status == "ok":
-        return "무료로 안정적으로 자동화 가능"
-    return "부분 자동화 가능"
-
-
-def load_dashboard_template() -> str:
-    template_path = Path(__file__).resolve().parent / "templates" / "dashboard.html"
-    return template_path.read_text(encoding="utf-8")
-
-
-def render_dashboard_html(payload: dict[str, Any]) -> str:
-    json_text = json.dumps(payload, ensure_ascii=False).replace("</", "<\\/")
-    measurement_id = os.environ.get("GA_MEASUREMENT_ID", "").strip()
-    return (
-        load_dashboard_template()
-        .replace("__DASHBOARD_JSON__", json_text)
-        .replace("__GA_MEASUREMENT_ID__", measurement_id)
-    )
-
-
-def copy_signal_log_output(config: dict[str, Any], data_path: Path) -> None:
-    signal_path = Path(str((config.get("alerts", {}) or {}).get("signal_log_file") or "data/signal_log.json"))
-    if not signal_path.exists():
-        return
-    data_path.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile(signal_path, data_path / "signal_log.json")
-
-
-def load_admin_template() -> str:
-    template_path = Path(__file__).resolve().parent / "templates" / "admin.html"
-    return template_path.read_text(encoding="utf-8")
-
-
-def write_admin_html(output_path: Path) -> None:
-    admin_path = output_path / "admin"
-    admin_path.mkdir(parents=True, exist_ok=True)
-    (admin_path / "index.html").write_text(load_admin_template(), encoding="utf-8")
-    privacy_template = Path(__file__).resolve().parent / "templates" / "privacy.html"
-    if privacy_template.exists():
-        (output_path / "privacy.html").write_text(privacy_template.read_text(encoding="utf-8"), encoding="utf-8")

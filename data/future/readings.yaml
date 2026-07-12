@@ -1,4 +1,8 @@
 - technology: _common
+  defaults: &reading_defaults
+    lang: EN
+    checked_at: 2026-07-12
+    curated_by: human
   items:
     - title: 기술 변화를 읽는 기본 틀
       title_en: A Baseline Framework for Reading Technology Change
@@ -70,6 +74,18 @@
       why_en: Tracks compute, model scale, and benchmark trends for measuring AI progress.
       checked_at: 2026-07-10
       curated_by: human
+    - {<<: *reading_defaults, title: "NIST AI 위험관리 프레임워크", title_en: "NIST AI Risk Management Framework", url: "https://www.nist.gov/itl/ai-risk-management-framework", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "AI 발전을 성능만이 아니라 신뢰성·안전·책임성과 함께 보는 기본 틀입니다.", why_en: "A baseline for reading AI progress together with trustworthiness, safety, and accountability."}
+    - {<<: *reading_defaults, title: "Our World in Data AI", title_en: "Our World in Data: Artificial Intelligence", url: "https://ourworldindata.org/artificial-intelligence", type: "데이터", level: "입문", effort: "20분", effort_en: "20 min", why: "AI 성능·투자·활용 변화를 장기 데이터로 보며 크게 어디로 가는지 잡습니다.", why_en: "Uses long-run data to show the direction of AI capability, investment, and adoption."}
+    - {<<: *reading_defaults, title: "국제 AI 안전 보고서 개요", title_en: "International AI Safety Report Overview", url: "https://internationalaisafetyreport.org/", type: "리포트", level: "입문", effort: "15분", effort_en: "15 min", why: "일반목적 AI의 현재 능력과 위험을 여러 국가 전문가의 공통 정리로 읽습니다.", why_en: "A multinational expert synthesis of current general-purpose AI capabilities and risks."}
+    - {<<: *reading_defaults, title: "OECD AI 원칙", title_en: "OECD AI Principles", url: "https://oecd.ai/en/ai-principles", type: "공식문서", level: "입문", effort: "10분", effort_en: "10 min", why: "AI가 산업과 정책에 퍼질 때 국가들이 공통으로 보는 원칙을 쉽게 확인합니다.", why_en: "Shows the shared policy principles governments use as AI spreads through the economy."}
+    - {<<: *reading_defaults, title: "NIST AI 리소스 센터", title_en: "NIST AI Resource Center", url: "https://airc.nist.gov/", type: "공식문서", level: "중급", effort: "25분", effort_en: "25 min", why: "AI 평가·검증·위험관리가 제품 운영에서 어떻게 구체화되는지 볼 수 있습니다.", why_en: "Shows how evaluation, verification, and risk management become operating practice."}
+    - {<<: *reading_defaults, title: "NIST 생성형 AI 프로파일", title_en: "NIST Generative AI Profile", url: "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence", type: "리포트", level: "중급", effort: "40분", effort_en: "40 min", why: "생성형 AI의 오류·오용·데이터 위험을 어떤 범주로 관리하는지 정리합니다.", why_en: "Organizes the main error, misuse, and data risks specific to generative AI."}
+    - {<<: *reading_defaults, title: "METR AI 업무 시간폭 연구", title_en: "METR AI Task-Horizon Research", url: "https://metr.org/research/", type: "데이터", level: "중급", effort: "30분", effort_en: "30 min", why: "AI가 사람 감독 없이 얼마나 긴 업무를 완수하는지를 실제 과제로 추적합니다.", why_en: "Tracks how long a real task AI can complete without human supervision."}
+    - {<<: *reading_defaults, title: "OECD AI 사고 모니터", title_en: "OECD AI Incidents Monitor", url: "https://oecd.ai/en/site/incidents", type: "데이터", level: "중급", effort: "20분", effort_en: "20 min", why: "모델 발표보다 실제 활용에서 발생한 문제를 보며 확산의 부작용을 파악합니다.", why_en: "Uses real incidents rather than model launches to track the side effects of adoption."}
+    - {<<: *reading_defaults, title: "국제 AI 안전 보고서 2026", title_en: "International AI Safety Report 2026", url: "https://internationalaisafetyreport.org/publication/international-ai-safety-report-2026", type: "리포트", level: "심화", effort: "1시간+", effort_en: "1h+", why: "능력·위험·완화 근거에 대한 최신 합의와 남은 불확실성을 함께 보여줍니다.", why_en: "A detailed synthesis of capability, risk, mitigation evidence, and remaining uncertainty."}
+    - {<<: *reading_defaults, title: "Google DeepMind 프런티어 안전 프레임워크", title_en: "Google DeepMind Frontier Safety Framework", url: "https://deepmind.google/blog/introducing-the-frontier-safety-framework/", type: "공식문서", level: "심화", effort: "30분", effort_en: "30 min", why: "개발사가 고위험 능력을 어떤 기준으로 측정하는지 보되 자사 정책임을 감안합니다.", why_en: "Shows one developer's high-risk capability thresholds; treat it as a self-reported policy."}
+    - {<<: *reading_defaults, title: "OpenAI Preparedness Framework", title_en: "OpenAI Preparedness Framework", url: "https://openai.com/index/updating-our-preparedness-framework/", type: "공식문서", level: "심화", effort: "30분", effort_en: "30 min", why: "사이버·생물학·자율성 등 심각한 능력을 배포 전에 어떻게 판단하는지 보여줍니다.", why_en: "Shows one developer's pre-release process for cyber, biological, and autonomy risks."}
+    - {<<: *reading_defaults, title: "Anthropic 프런티어 안전 로드맵", title_en: "Anthropic Frontier Safety Roadmap", url: "https://www.anthropic.com/responsible-scaling-policy/roadmap", type: "공식문서", level: "심화", effort: "30분", effort_en: "30 min", why: "능력 향상에 따라 보안과 통제를 어떻게 높이려는지 보되 자사 약속임을 분리해 읽습니다.", why_en: "Shows one developer's planned controls as capability rises; separate commitments from evidence."}
 
 - technology: robotaxi
   items:
@@ -114,6 +130,18 @@
       why_en: Goes deeper into safety, simulation, and city-scale deployment problems.
       checked_at: 2026-07-10
       curated_by: human
+    - {<<: *reading_defaults, title: "NHTSA 자동화 차량 안전 안내", title_en: "NHTSA Automated Vehicle Safety", url: "https://www.nhtsa.gov/vehicle-safety/automated-vehicles-safety", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "운전자 보조와 무인 자율주행을 구분하고 현재 규제 위치를 쉽게 잡습니다.", why_en: "Separates driver assistance from driverless automation and explains the current regulatory position."}
+    - {<<: *reading_defaults, title: "미 교통부 자동화차량 프로그램", title_en: "U.S. DOT Automated Vehicles", url: "https://www.transportation.gov/AV", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "차량 기술만이 아니라 도로·법·공공안전이 함께 움직이는 큰 흐름을 보여줍니다.", why_en: "Shows the broader policy direction across vehicles, roads, law, and public safety."}
+    - {<<: *reading_defaults, title: "CPUC 자율주행 승객서비스", title_en: "CPUC Autonomous Vehicle Passenger Service Programs", url: "https://www.cpuc.ca.gov/regulatory-services/licensing/transportation-licensing-and-analysis-branch/autonomous-vehicle-programs", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "실제 승객을 태우는 서비스가 시험에서 유료 운행으로 넘어가는 절차를 보여줍니다.", why_en: "Shows how passenger service moves from testing to paid driverless operation."}
+    - {<<: *reading_defaults, title: "Waymo 안전 영향 대시보드", title_en: "Waymo Safety Impact Dashboard", url: "https://waymo.com/safety/impact/", type: "데이터", level: "입문", effort: "15분", effort_en: "15 min", why: "제조사 자체 분석이라는 한계를 감안하면서 사고률을 어떻게 제시하는지 볼 수 있습니다.", why_en: "Shows how one operator presents crash-rate evidence; account for self-reporting bias."}
+    - {<<: *reading_defaults, title: "NHTSA 자동화주행 사고 보고", title_en: "NHTSA Standing General Order Crash Reporting", url: "https://www.nhtsa.gov/laws-regulations/standing-general-order-crash-reporting", type: "데이터", level: "중급", effort: "30분", effort_en: "30 min", why: "공개 사고 데이터와 회사간 단순 비교가 왜 위험한지를 규제기관의 주석과 함께 읽습니다.", why_en: "Pairs public crash data with the regulator's warnings about invalid operator comparisons."}
+    - {<<: *reading_defaults, title: "캘리포니아 DMV 자율주행 사고 보고", title_en: "California DMV Autonomous-Vehicle Incident Reporting", url: "https://www.dmv.ca.gov/portal/vehicle-industry-services/autonomous-vehicles/autonomous-vehicles-incident-reporting/", type: "데이터", level: "중급", effort: "25분", effort_en: "25 min", why: "실제 도로 사고 보고와 신고 절차를 보며 안전 근거가 어떻게 축적되는지 확인합니다.", why_en: "Shows how real-road incidents are reported and accumulated as safety evidence."}
+    - {<<: *reading_defaults, title: "캘리포니아 DMV 자율주행 성능 보고 기준", title_en: "California DMV Autonomous-Vehicle Reporting Requirements", url: "https://www.dmv.ca.gov/portal/vehicle-industry-services/autonomous-vehicles/autonomous-vehicles-program-permit-resources/", type: "공식문서", level: "중급", effort: "25분", effort_en: "25 min", why: "2026년 개편된 주행거리·제동·충돌·시스템 오류 보고를 보며, 단순 해제 횟수로 업체를 비교하면 안 되는 이유를 이해합니다.", why_en: "Explains the 2026 mileage, braking, collision, and system-failure reporting framework and why raw disengagement counts are not a league table."}
+    - {<<: *reading_defaults, title: "NTSB 차량 자동화 안전", title_en: "NTSB Vehicle Automation Safety", url: "https://www.ntsb.gov/Advocacy/safety-topics/Pages/Vehicle-Automation.aspx", type: "공식문서", level: "중급", effort: "20분", effort_en: "20 min", why: "사고조사 관점에서 인간 감독·시스템 설계·안전관리의 연결을 볼 수 있습니다.", why_en: "Connects human supervision, system design, and safety management through crash investigations."}
+    - {<<: *reading_defaults, title: "NHTSA ADS 사고보고 요약", title_en: "NHTSA ADS Crash Reporting Summary", url: "https://www.nhtsa.gov/sites/nhtsa.gov/files/2022-06/ADS-SGO-Report-June-2022.pdf", type: "리포트", level: "심화", effort: "40분", effort_en: "40 min", why: "사고 데이터의 수집 범위·중복·노출량 문제를 원문으로 확인합니다.", why_en: "Explains collection scope, duplication, and exposure limits in ADS crash data."}
+    - {<<: *reading_defaults, title: "RAND 자율주행 안전성 측정", title_en: "RAND Driving to Safety", url: "https://www.rand.org/pubs/research_reports/RR1478.html", type: "리포트", level: "심화", effort: "50분", effort_en: "50 min", why: "사고률을 통계적으로 입증하기 위해 왜 많은 주행거리가 필요한지 설명합니다.", why_en: "Explains why credible statistical safety claims require very large driving exposure."}
+    - {<<: *reading_defaults, title: "Waymo 안전 방법론", title_en: "Waymo Safety Methodologies", url: "https://waymo.com/safety/methodologies/", type: "리포트", level: "심화", effort: "40분", effort_en: "40 min", why: "시뮬레이션·실도로·사고재구성을 어떻게 묶는지 보되 운영사 자체 방법임을 감안합니다.", why_en: "Shows how one operator combines simulation, road testing, and crash reconstruction; note the vendor perspective."}
+    - {<<: *reading_defaults, title: "미 교통부 자동화차량 종합계획", title_en: "U.S. DOT Automated Vehicles Comprehensive Plan", url: "https://www.transportation.gov/av/avcp", type: "리포트", level: "심화", effort: "40분", effort_en: "40 min", why: "연방정부가 기술개발·규제·인프라를 어떤 순서로 연결하는지 보여줍니다.", why_en: "Shows how federal policy connects technology, regulation, and infrastructure over time."}
 
 - technology: humanoid-robots
   items:
@@ -158,6 +186,19 @@
       why_en: Shows how far humanoid joints, hands, and product-level pricing have moved toward real products.
       checked_at: 2026-07-10
       curated_by: human
+    - {<<: *reading_defaults, title: "OSHA 로봇 안전 개요", title_en: "OSHA Robotics Overview", url: "https://www.osha.gov/robotics", type: "공식문서", level: "입문", effort: "10분", effort_en: "10 min", why: "로봇이 사람 옆에서 일할 때 생기는 위험과 기본 안전 원칙을 쉽게 잡습니다.", why_en: "A simple baseline for the hazards and safety principles of robots working near people."}
+    - {<<: *reading_defaults, title: "NIST 휴머노이드 기초 성능 벤치마크", title_en: "NIST Humanoid Baseline Performance Benchmark", url: "https://www.nist.gov/el/intelligent-systems-division-73500/humanoid-robot-baseline-performance-benchmark", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "데모 영상이 아니라 보행·조작을 공통 과제로 비교해야 하는 이유를 보여줍니다.", why_en: "Explains why locomotion and manipulation need common tests rather than demo videos."}
+    - {<<: *reading_defaults, title: "NIST 지능형 시스템 부서", title_en: "NIST Intelligent Systems Division", url: "https://www.nist.gov/el/intelligent-systems-division-73500", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "로봇 확산의 핵심이 보행만이 아니라 인지·조작·평가·표준임을 보여줍니다.", why_en: "Shows that adoption depends on cognition, manipulation, evaluation, and standards, not walking alone."}
+    - {<<: *reading_defaults, title: "IFR 서비스 로봇 흐름", title_en: "IFR Service Robots", url: "https://ifr.org/service-robots", type: "리포트", level: "입문", effort: "15분", effort_en: "15 min", why: "휴머노이드를 전체 서비스 로봇 시장 속에서 보며 활용처를 구분합니다.", why_en: "Places humanoids within the broader service-robot market and its real use cases."}
+    - {<<: *reading_defaults, title: "NIST 로봇 손 성능 평가", title_en: "NIST Grasping Performance Metrics", url: "https://www.nist.gov/el/intelligent-systems-division-73500/robotic-grasping-and-manipulation-assembly/grasping", type: "공식문서", level: "중급", effort: "30분", effort_en: "30 min", why: "손가락 수보다 힘·정확도·다양한 물체 조작을 어떻게 측정하는지 보여줍니다.", why_en: "Shows how dexterity is measured through force, precision, and varied-object handling."}
+    - {<<: *reading_defaults, title: "NIST 로봇 조립 성능 평가", title_en: "NIST Assembly Performance Metrics", url: "https://www.nist.gov/el/intelligent-systems-division-73500/robotic-grasping-and-manipulation-assembly/assembly", type: "공식문서", level: "중급", effort: "30분", effort_en: "30 min", why: "공장 도입을 결정하는 작은 부품 조립·작업 재설정 능력을 읽습니다.", why_en: "Focuses on small-parts assembly and retasking that determine factory adoption."}
+    - {<<: *reading_defaults, title: "OSHA 로봇 안전 표준", title_en: "OSHA Robotics Standards", url: "https://www.osha.gov/robotics/standards", type: "공식문서", level: "중급", effort: "25분", effort_en: "25 min", why: "산업용·협동 로봇의 현재 안전 표준과 휴머노이드에 남은 빈틈을 확인합니다.", why_en: "Maps current industrial and collaborative robot standards and the gaps for humanoids."}
+    - {<<: *reading_defaults, title: "NIST 로봇 민첩성 평가", title_en: "NIST Agility Performance of Robotic Systems", url: "https://www.nist.gov/programs-projects/agility-performance-robotic-systems", type: "공식문서", level: "심화", effort: "35분", effort_en: "35 min", why: "작업과 환경이 바뀌었을 때 로봇이 얼마나 빠르게 재설정되는지를 평가합니다.", why_en: "Evaluates how quickly robots adapt when tasks and environments change."}
+    - {<<: *reading_defaults, title: "ISO TC 299 Robotics", title_en: "ISO Technical Committee 299 Robotics", url: "https://www.iso.org/committee/5915511.html", type: "공식문서", level: "심화", effort: "30분", effort_en: "30 min", why: "로봇 안전·성능·용어 표준이 어느 방향으로 생기는지 국제 표준 체계로 보여줍니다.", why_en: "Shows the international direction of robot safety, performance, and terminology standards."}
+    - {<<: *reading_defaults, title: "ASTM F45 무인 산업차량 표준", title_en: "ASTM Committee F45 on Driverless Automatic Guided Industrial Vehicles", url: "https://www.astm.org/get-involved/technical-committees/committee-f45", type: "공식문서", level: "심화", effort: "25분", effort_en: "25 min", why: "사람 근처에서 움직이는 자동화 장비의 성능·안전 표준화 흐름을 보여줍니다.", why_en: "Tracks standardization for performance and safety of mobile industrial autonomy near people."}
+    - {<<: *reading_defaults, title: "OSHA 로봇 위험 인식", title_en: "OSHA Robotics Hazard Recognition", url: "https://www.osha.gov/robotics/hazards", type: "공식문서", level: "심화", effort: "25분", effort_en: "25 min", why: "유지보수·설정·장애 복구 중 사고가 왜 생기는지 현장 위험 관점에서 읽습니다.", why_en: "Explains why maintenance, setup, and recovery create much of the real field risk."}
+    - {<<: *reading_defaults, title: "NIST 차세대 로봇·자동화 프로그램", title_en: "NIST Next-Generation Robotics and Automation Program", url: "https://www.nist.gov/document/next-generation-robotics-and-automationpdf", type: "리포트", level: "심화", effort: "40분", effort_en: "40 min", why: "지각·파지·계획·안전 평가가 상용화로 어떻게 연결되는지 전체 로드맵을 보여줍니다.", why_en: "Connects perception, grasping, planning, and safety measurement into a commercialization roadmap."}
+    - {<<: *reading_defaults, title: "NIST 지능형 시스템 성능평가", title_en: "NIST Performance Evaluation of Intelligent Systems", url: "https://www.nist.gov/el/intelligent-systems-division-73500/performance-evaluation-and-benchmarking-intelligent-systems", type: "리포트", level: "심화", effort: "40분", effort_en: "40 min", why: "시연을 반복 가능한 측정으로 바꾸는 성능평가의 원칙을 정리합니다.", why_en: "Explains the measurement principles that turn demonstrations into repeatable evidence."}
 
 - technology: longevity-escape
   items:
@@ -166,7 +207,7 @@
       url: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6777448/
       type: 글
       type_en: Article
-      level: 입문
+      level: 심화
       lang: EN
       effort: 30분
       effort_en: 30 min
@@ -176,7 +217,7 @@
       curated_by: human
     - title: ClinicalTrials.gov
       title_en: ClinicalTrials.gov
-      url: https://clinicaltrials.gov/search
+      url: https://clinicaltrials.gov/search?cond=Aging
       type: 데이터
       type_en: Data
       level: 중급
@@ -187,19 +228,34 @@
       why_en: Lets you check whether trials in aging, cancer, and rare diseases are actually expanding.
       checked_at: 2026-07-10
       curated_by: human
-    - title: Nature Biotechnology
-      title_en: Nature Biotechnology
-      url: https://www.nature.com/nbt/
-      type: 글
-      type_en: Article
+    - title: NIA 노화생물학 연구 프로그램
+      title_en: NIA Division of Aging Biology
+      url: https://www.nia.nih.gov/research/dab/division-aging-biology-notices-funding-opportunities
+      type: 공식문서
+      type_en: Official
       level: 심화
       lang: EN
       effort: 30분+
       effort_en: 30 min+
-      why: 바이오 기술이 실험실에서 산업으로 넘어가는 과정을 논문과 업계 뉴스로 함께 볼 수 있습니다.
-      why_en: Useful for tracking how biotech moves from lab work toward industrial applications.
+      why: 노화 기전·바이오마커·중개연구가 어떤 방향으로 가는지 NIH 프로그램으로 확인합니다.
+      why_en: Shows NIH priorities across aging mechanisms, biomarkers, and translation.
       checked_at: 2026-07-10
       curated_by: human
+    - {<<: *reading_defaults, title: "NIA 건강한 노화 안내", title_en: "NIA What Do We Know About Healthy Aging?", url: "https://www.nia.nih.gov/health/what-do-we-know-about-healthy-aging", type: "공식문서", level: "입문", effort: "12분", effort_en: "12 min", why: "수명보다 건강수명이 왜 중요한지와 현재 확실히 알려진 범위를 잡습니다.", why_en: "Explains why healthspan matters more than lifespan and what is actually established today."}
+    - {<<: *reading_defaults, title: "WHO 건강한 노화 10년", title_en: "WHO Decade of Healthy Ageing", url: "https://www.who.int/initiatives/decade-of-healthy-ageing", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "노화 기술을 의약품만이 아니라 기능·돌봄·환경 개선과 함께 보게 합니다.", why_en: "Places longevity technology within function, care, and social environments rather than drugs alone."}
+    - {<<: *reading_defaults, title: "NIA 노화 연구 지형", title_en: "NIA Research Programs", url: "https://www.nia.nih.gov/research", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "노화생물학·임상·치매·사회연구가 어떻게 나뉘는지 큰 지형을 보여줍니다.", why_en: "Maps the field across biology, clinical studies, dementia, and social research."}
+    - {<<: *reading_defaults, title: "NIH 거로사이언스 관심그룹", title_en: "NIH Geroscience Interest Group", url: "https://www.nia.nih.gov/research/gsig", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "노화 기전을 여러 만성질환의 공통 출발점으로 보는 연구 방향을 정리합니다.", why_en: "Explains the research direction that treats aging mechanisms as shared roots of chronic disease."}
+    - {<<: *reading_defaults, title: "NIA 노화생물학의 다음 단계", title_en: "NIA: A Bright Future for Aging Biology Research", url: "https://www.nia.nih.gov/research/blog/2024/12/bright-future-aging-biology-research", type: "글", level: "입문", effort: "12분", effort_en: "12 min", why: "NIH가 중재법 검증·동물대체·생체자원에 어디에 힘을 주는지 쉽게 보여줍니다.", why_en: "A readable view of NIH priorities in intervention testing, alternatives, and biological resources."}
+    - {<<: *reading_defaults, title: "미 국립의학한림원 건강수명 로드맵", title_en: "National Academies Global Roadmap for Healthy Longevity", url: "https://www.nationalacademies.org/read/26144/chapter/2", type: "리포트", level: "입문", effort: "25분", effort_en: "25 min", why: "건강수명을 약 하나의 문제가 아니라 예방·보건의료·노동·생활환경을 함께 바꾸는 장기 경로로 보여줍니다.", why_en: "Frames healthy longevity as a long-term path across prevention, health systems, work, and living environments rather than one drug."}
+    - {<<: *reading_defaults, title: "NIA 중재법 검증 프로그램", title_en: "NIA Interventions Testing Program", url: "https://www.nia.nih.gov/research/dab/interventions-testing-program-itp/about-itp", type: "공식문서", level: "중급", effort: "25분", effort_en: "25 min", why: "수명 연장 주장을 여러 기관에서 같은 방법으로 검증하는 과정을 보여줍니다.", why_en: "Shows how longevity claims are tested under the same protocol across multiple sites."}
+    - {<<: *reading_defaults, title: "NIA 노화 중개연구 프로그램", title_en: "NIA Translational Research Branch", url: "https://www.nia.nih.gov/research/dab/translational-research-branch-and-programs", type: "공식문서", level: "중급", effort: "25분", effort_en: "25 min", why: "동물 결과를 사람의 바이오마커·모델·임상으로 옮기는 핵심 작업을 정리합니다.", why_en: "Maps the translation from animal results to human biomarkers, models, and clinical work."}
+    - {<<: *reading_defaults, title: "NIA Nathan Shock 노화연구 센터", title_en: "NIA Nathan Shock Centers", url: "https://www.nia.nih.gov/research/dab/nathan-shock-centers-excellence-basic-biology-aging", type: "공식문서", level: "중급", effort: "20분", effort_en: "20 min", why: "세포노화·미토콘드리아·스트레스 회복력 등 핵심 연구축을 센터별로 볼 수 있습니다.", why_en: "Shows the major research axes across senescence, mitochondria, and resilience."}
+    - {<<: *reading_defaults, title: "NIA 노화생물학 워크숍·보고서", title_en: "NIA Aging Biology Workshops and Reports", url: "https://www.nia.nih.gov/research/dab/workshops", type: "리포트", level: "중급", effort: "30분", effort_en: "30 min", why: "단일 치료제보다 연구계가 어떤 공통 문제를 다음 의제로 삼는지 보여줍니다.", why_en: "Shows the cross-cutting problems the field selects as its next research agenda."}
+    - {<<: *reading_defaults, title: "WHO 건강한 노화 측정 프레임워크", title_en: "WHO Healthy Ageing Measurement Framework", url: "https://www.who.int/publications/i/item/9789240104181", type: "리포트", level: "중급", effort: "35분", effort_en: "35 min", why: "단순 수명이 아니라 신체·인지·생활 기능의 개선을 어떻게 측정할지 보여줍니다.", why_en: "Shows how progress is measured through physical, cognitive, and functional ability rather than lifespan alone."}
+    - {<<: *reading_defaults, title: "ITP 공개 실험 데이터", title_en: "Interventions Testing Program Data", url: "https://phenome.jax.org/projects/ITP", type: "데이터", level: "심화", effort: "40분", effort_en: "40 min", why: "성공과 실패 모두를 공개한 생존·건강 데이터로 재현성을 직접 확인합니다.", why_en: "Lets readers inspect public survival and health data, including negative results."}
+    - {<<: *reading_defaults, title: "NIA 노화 임상연구 프로그램", title_en: "NIA Clinical Research Programs", url: "https://www.nia.nih.gov/research/labs/lci", type: "공식문서", level: "심화", effort: "35분", effort_en: "35 min", why: "장기 코호트·신체기능·대사 연구가 사람의 노화 측정으로 연결되는 방향을 보여줍니다.", why_en: "Connects long cohorts, physical function, and metabolism to human aging measurement."}
+    - {<<: *reading_defaults, title: "NIA 노화 생물자원", title_en: "NIA Biological Resources for Aging Research", url: "https://www.nia.nih.gov/research/dab/biological-resources-aging-research", type: "데이터", level: "심화", effort: "30분", effort_en: "30 min", why: "노화 연구의 재현성을 받침하는 세포·조직·동물모델 공유 인프라를 보여줍니다.", why_en: "Shows the shared cells, tissues, and models that support reproducible aging research."}
+    - {<<: *reading_defaults, title: "FDA 바이오마커 적격성 프로그램", title_en: "FDA Biomarker Qualification Program", url: "https://www.fda.gov/drugs/drug-development-tool-ddt-qualification-programs/biomarker-qualification-program", type: "공식문서", level: "심화", effort: "35분", effort_en: "35 min", why: "노화 시계라고 부르는 수치가 신약 개발의 유효한 평가도구가 되려면 어떤 증거와 용도 한정이 필요한지 보여줍니다.", why_en: "Shows the evidence and defined context needed before a proposed aging clock can become a reliable drug-development tool."}
 
 - technology: gene-therapy-mainstream
   items:
@@ -233,7 +289,7 @@
       curated_by: human
     - title: ClinicalTrials.gov
       title_en: ClinicalTrials.gov
-      url: https://clinicaltrials.gov/search
+      url: https://clinicaltrials.gov/search?term=gene%20therapy
       type: 데이터
       type_en: Data
       level: 심화
@@ -244,6 +300,18 @@
       why_en: Lets you search pipeline depth by disease area and trial phase.
       checked_at: 2026-07-10
       curated_by: human
+    - {<<: *reading_defaults, title: "FDA 유전자치료 소비자 안내", title_en: "FDA How Gene Therapy Can Cure or Treat Diseases", url: "https://www.fda.gov/consumers/consumer-updates/how-gene-therapy-can-cure-or-treat-diseases", type: "공식문서", level: "입문", effort: "10분", effort_en: "10 min", why: "유전자 추가·교체·편집이 치료에서 어떻게 다른지 쉽게 구분합니다.", why_en: "Clearly separates gene addition, replacement, and editing in treatment."}
+    - {<<: *reading_defaults, title: "FDA 세포·유전자치료 허브", title_en: "FDA Cellular and Gene Therapy Products", url: "https://www.fda.gov/vaccines-blood-biologics/cellular-gene-therapy-products", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "실제 허가제품·안전성·지침으로 연결되는 규제 지형을 한눈에 보여줍니다.", why_en: "A map from approved products to safety information and regulatory guidance."}
+    - {<<: *reading_defaults, title: "NIH 게놈 편집이란", title_en: "NIH What Is Genome Editing?", url: "https://www.genome.gov/about-genomics/policy-issues/what-is-Genome-Editing", type: "공식문서", level: "입문", effort: "12분", effort_en: "12 min", why: "유전자치료 안에서 게놈 편집이 어떤 역할을 하고 어떤 윤리 문제를 낳는지 설명합니다.", why_en: "Explains genome editing's role within gene therapy and the ethical questions it creates."}
+    - {<<: *reading_defaults, title: "EMA 첨단치료제 개요", title_en: "EMA Advanced Therapy Medicinal Products", url: "https://www.ema.europa.eu/en/human-regulatory-overview/advanced-therapy-medicinal-products-overview", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "유전자·세포·조직공학 치료를 유럽 규제가 어떻게 묶어 보는지 보여줍니다.", why_en: "Shows how European regulation groups gene, cell, and tissue-engineered therapies."}
+    - {<<: *reading_defaults, title: "FDA 허가 세포·유전자치료 목록", title_en: "FDA Approved Cellular and Gene Therapy Products", url: "https://www.fda.gov/vaccines-blood-biologics/cellular-gene-therapy-products/approved-cellular-and-gene-therapy-products", type: "데이터", level: "중급", effort: "20분", effort_en: "20 min", why: "승인 건수보다 질환·전달방식·제조형태가 어떻게 넓어지는지 추적합니다.", why_en: "Tracks expansion across diseases, delivery methods, and manufacturing forms rather than counts alone."}
+    - {<<: *reading_defaults, title: "FDA 세포·유전자치료 가이던스", title_en: "FDA Cellular and Gene Therapy Guidances", url: "https://www.fda.gov/vaccines-blood-biologics/biologics-guidances/cellular-gene-therapy-guidances", type: "공식문서", level: "중급", effort: "35분", effort_en: "35 min", why: "전달체·제조·임상·장기안전성이 허가의 어떤 관문인지 목록으로 보여줍니다.", why_en: "Maps delivery, manufacturing, clinical evidence, and long-term safety as approval gates."}
+    - {<<: *reading_defaults, title: "CMS 세포·유전자치료 접근 모델", title_en: "CMS Cell and Gene Therapy Access Model", url: "https://www.cms.gov/priorities/innovation/innovation-models/cgt", type: "공식문서", level: "중급", effort: "25분", effort_en: "25 min", why: "고가 일회성 치료의 비용을 성과와 연결하려는 지급제도의 방향을 보여줍니다.", why_en: "Shows the payment direction for linking high one-time costs to treatment outcomes."}
+    - {<<: *reading_defaults, title: "EMA 첨단치료제 규제 지원", title_en: "EMA Support for Advanced Therapies", url: "https://www.ema.europa.eu/en/human-regulatory-overview/advanced-therapy-medicinal-products-overview/advanced-therapies-research-development", type: "공식문서", level: "중급", effort: "25분", effort_en: "25 min", why: "초기 개발사가 과학자문·우선심사를 통해 제품화로 이동하는 경로를 보여줍니다.", why_en: "Shows how early developers move toward products through scientific advice and priority pathways."}
+    - {<<: *reading_defaults, title: "FDA 유전자치료 장기 추적", title_en: "FDA Long-Term Follow-Up for Gene Therapy", url: "https://www.fda.gov/media/113768/download", type: "공식문서", level: "심화", effort: "45분", effort_en: "45 min", why: "영구적·장기 변화가 만드는 지연 부작용을 어떤 기간과 방법으로 보는지 설명합니다.", why_en: "Explains how delayed risks from durable genetic changes are followed over time."}
+    - {<<: *reading_defaults, title: "FDA 유전자치료 CMC 정보", title_en: "FDA CMC Information for Gene Therapy INDs", url: "https://www.fda.gov/media/113760/download", type: "공식문서", level: "심화", effort: "50분", effort_en: "50 min", why: "배치 품질·역가·순도가 임상 성공만큼 중요한 제조 관문임을 보여줍니다.", why_en: "Shows why batch quality, potency, and purity are commercialization gates alongside clinical success."}
+    - {<<: *reading_defaults, title: "FDA 게놈 편집 안전성 평가", title_en: "FDA Safety Assessment of Genome Editing", url: "https://www.fda.gov/media/191966/download", type: "공식문서", level: "심화", effort: "45분", effort_en: "45 min", why: "의도하지 않은 편집과 유전체 변화를 허가 전에 어떻게 찾는지 보여줍니다.", why_en: "Shows how unintended edits and genomic changes are assessed before approval."}
+    - {<<: *reading_defaults, title: "WHO 인간 게놈 편집 권고", title_en: "WHO Human Genome Editing Recommendations", url: "https://www.who.int/publications/i/item/9789240030381", type: "리포트", level: "심화", effort: "50분", effort_en: "50 min", why: "치료 편집과 유전되는 편집을 구분하고 국제 감독·등록 방향을 제시합니다.", why_en: "Separates therapeutic from heritable editing and sets directions for international oversight."}
 
 - technology: fusion-power
   items:
@@ -271,23 +339,35 @@
       effort_en: 30 min
       cadence: 연간
       cadence_en: Annual
-      why: 민간 핵융합 기업의 투자, 목표 일정, 기술 방식이 어떻게 움직이는지 한 번에 볼 수 있습니다.
-      why_en: Tracks private fusion funding, target timelines, and technology approaches.
+      why: 민간 핵융합 기업의 투자·목표 일정·기술 방식을 한 번에 보되, 업계 협회가 집계한 자체보고 전망임을 감안합니다.
+      why_en: Tracks private fusion funding, timelines, and approaches; treat forecasts as industry self-reporting.
       checked_at: 2026-07-10
       curated_by: human
-    - title: Fusion Industry Association - About Fusion
+    - title: FIA 핵융합 입문
       title_en: Fusion Industry Association - About Fusion
       url: https://www.fusionindustryassociation.org/about-fusion/
       type: 글
       type_en: Article
-      level: 심화
+      level: 입문
       lang: EN
       effort: 20분
       effort_en: 20 min
-      why: 핵융합 산업의 주요 방식과 병목을 더 넓은 산업 관점으로 볼 수 있습니다.
-      why_en: Adds an industry view of fusion approaches and bottlenecks.
+      why: 산업협회의 낙관적 관점을 감안하면서 핵융합 방식과 상용화 경로를 쉽게 잡습니다.
+      why_en: A simple industry overview; read with awareness of the association's optimistic bias.
       checked_at: 2026-07-10
       curated_by: human
+    - {<<: *reading_defaults, title: "IAEA 핵융합 에너지 개요", title_en: "IAEA Fusion Energy Overview", url: "https://www.iaea.org/topics/fusion-energy", type: "공식문서", level: "입문", effort: "12분", effort_en: "12 min", why: "토카막·스텔러레이터·관성가두기 방식을 국제기관의 중립적 설명으로 잡습니다.", why_en: "A neutral overview of magnetic and inertial fusion approaches from an international agency."}
+    - {<<: *reading_defaults, title: "ITER 핵융합이란", title_en: "ITER What Is Fusion?", url: "https://www.iter.org/sci/whatisfusion", type: "공식문서", level: "입문", effort: "12분", effort_en: "12 min", why: "핵분열과의 차이, 플라스마, 에너지 이득을 대형 실험 맥락에서 설명합니다.", why_en: "Explains fission, plasma, and energy gain in the context of a large experiment."}
+    - {<<: *reading_defaults, title: "ITER가 정리한 핵융합 발전소의 난제", title_en: "ITER: Making Fusion Work", url: "https://www.iter.org/fusion-energy/making-it-work", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "핵융합이 발전소로 가려면 플라스마 외에 소재·연료·열배출·정비가 필요함을 보여줍니다.", why_en: "Shows that a power plant needs materials, fuel, heat exhaust, and maintainability in addition to plasma physics."}
+    - {<<: *reading_defaults, title: "DOE 핵융합 에너지 전략", title_en: "DOE Fusion Energy Strategy 2024", url: "https://www.energy.gov/articles/doe-announces-new-decadal-fusion-energy-strategy", type: "리포트", level: "중급", effort: "25분", effort_en: "25 min", why: "과학 난제·상용 배치·민관협력을 파일럿 발전소로 연결하는 미국의 방향입니다.", why_en: "Connects science gaps, deployment, and public-private work to a fusion pilot plant."}
+    - {<<: *reading_defaults, title: "DOE 핵융합 과학기술 로드맵", title_en: "DOE Fusion Science and Technology Roadmap", url: "https://www.energy.gov/fusion/fusion-energy", type: "리포트", level: "중급", effort: "45분", effort_en: "45 min", why: "연료순환·소재·플랜트 공학·공급망의 우선순위를 하나의 로드맵으로 보여줍니다.", why_en: "Prioritizes fuel cycle, materials, plant engineering, and supply chain in one roadmap."}
+    - {<<: *reading_defaults, title: "ITER 프로젝트 요약", title_en: "ITER in a Few Lines", url: "https://www.iter.org/proj/inafewlines", type: "공식문서", level: "중급", effort: "20분", effort_en: "20 min", why: "ITER가 전기를 파는 발전소가 아니라 어떤 기술 관문을 검증하는 실험인지 구분합니다.", why_en: "Clarifies which technology gates ITER tests and why it is not a commercial power station."}
+    - {<<: *reading_defaults, title: "IAEA 핵융합 정보 허브", title_en: "IAEA Fusion Information Resources", url: "https://www.iaea.org/resources/databases/fusion-device-information-system", type: "데이터", level: "중급", effort: "25분", effort_en: "25 min", why: "세계 핵융합 장치가 어떤 방식과 목표로 운영되는지 장치 단위로 볼 수 있습니다.", why_en: "Lets readers compare the purposes and approaches of fusion devices worldwide."}
+    - {<<: *reading_defaults, title: "미 국립학술원 핵융합 전력망 경로", title_en: "National Academies: Bringing Fusion to the U.S. Grid", url: "https://nap.nationalacademies.org/catalog/25991/bringing-fusion-to-the-us-grid", type: "리포트", level: "심화", effort: "1시간+", effort_en: "1h+", why: "파일럿 발전소, 소재 시험, 규제, 산업계 역할을 전력망 진입 순서로 정리합니다.", why_en: "Orders pilot plants, materials testing, regulation, and industry roles on a path to the grid."}
+    - {<<: *reading_defaults, title: "NRC 핵융합 에너지 규제", title_en: "U.S. NRC Fusion Regulation", url: "https://www.nrc.gov/materials/fusion", type: "공식문서", level: "심화", effort: "35분", effort_en: "35 min", why: "핵분열 원전과 다른 핵융합 허가 체계가 어떻게 형성되는지 추적합니다.", why_en: "Tracks how a fusion-specific licensing approach differs from fission regulation."}
+    - {<<: *reading_defaults, title: "ITER 삼중수소 증식 블랭킷", title_en: "ITER Tritium Breeding Blankets", url: "https://www.iter.org/machine/supporting-systems/tritium-breeding", type: "공식문서", level: "심화", effort: "30분", effort_en: "30 min", why: "삼중수소를 발전소 내부에서 만들어야 하는 이유와 실증 방식을 보여줍니다.", why_en: "Explains why a plant must breed tritium and how that fuel-cycle step will be tested."}
+    - {<<: *reading_defaults, title: "ITER 원격 유지보수", title_en: "ITER Remote Handling", url: "https://www.iter.org/machine/supporting-systems/remote-handling", type: "공식문서", level: "심화", effort: "30분", effort_en: "30 min", why: "방사화된 부품을 사람 대신 교체하는 정비 기술이 가동률을 좌우함을 보여줍니다.", why_en: "Shows why robotic maintenance of activated components determines plant availability."}
+    - {<<: *reading_defaults, title: "EUROfusion DEMO 프로그램", title_en: "EUROfusion DEMO Programme", url: "https://euro-fusion.org/programme/demo/", type: "공식문서", level: "심화", effort: "35분", effort_en: "35 min", why: "ITER 다음의 발전 실증로 넘어가며 전기생산·연료·정비를 어떻게 묶는지 보여줍니다.", why_en: "Shows how the post-ITER demonstration stage combines electricity, fuel, and maintenance."}
 
 - technology: commercial-space
   items:
@@ -334,6 +414,18 @@
       why_en: A quick way to follow contracts, launch schedules, and funding in commercial space.
       checked_at: 2026-07-10
       curated_by: human
+    - {<<: *reading_defaults, title: "NASA 저궤도 상업경제란", title_en: "NASA What Is the Commercial LEO Economy?", url: "https://www.nasa.gov/humans-in-space/commercial-space/what-is-the-commercial-low-earth-orbit-economy/", type: "공식문서", level: "입문", effort: "12분", effort_en: "12 min", why: "정부가 유일 고객인 연구소에서 다양한 고객이 있는 우주 경제로 가려는 방향을 설명합니다.", why_en: "Explains the shift from a government-only station toward a multi-customer orbital economy."}
+    - {<<: *reading_defaults, title: "FAA 상업우주교통국", title_en: "FAA Office of Commercial Space Transportation", url: "https://www.faa.gov/space", type: "공식문서", level: "입문", effort: "12분", effort_en: "12 min", why: "미국 민간 발사와 재진입을 누가 어떻게 허가하는지 기본 구조를 보여줍니다.", why_en: "Shows the basic licensing structure for U.S. commercial launch and reentry."}
+    - {<<: *reading_defaults, title: "NASA 민간 달 페이로드 서비스", title_en: "NASA Commercial Lunar Payload Services", url: "https://www.nasa.gov/clps/", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "정부가 기체를 소유하기보다 운송 서비스를 구매하는 상업화 모델을 보여줍니다.", why_en: "Shows commercialization through government purchase of transport services rather than vehicle ownership."}
+    - {<<: *reading_defaults, title: "ESA 우주 상업화", title_en: "ESA Commercialisation", url: "https://commercialisation.esa.int/", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "발사만이 아니라 위성데이터·통신·궤도 서비스로 상업화 범위를 넓혀 보게 합니다.", why_en: "Broadens commercial space beyond launch to data, communications, and in-orbit services."}
+    - {<<: *reading_defaults, title: "FAA 상업우주 데이터", title_en: "FAA Commercial Space Data", url: "https://www.faa.gov/data_research/commercial_space_data", type: "데이터", level: "중급", effort: "25분", effort_en: "25 min", why: "전망보다 실제 허가·발사·재진입 횟수로 산업의 확장 속도를 보여줍니다.", why_en: "Tracks expansion through actual licenses, launches, and reentries rather than forecasts."}
+    - {<<: *reading_defaults, title: "NASA 민간 저궤도 정거장 FAQ", title_en: "NASA Commercial Low-Earth-Orbit Destinations FAQ", url: "https://www.nasa.gov/humans-in-space/leo-economy-frequently-asked-questions/", type: "공식문서", level: "중급", effort: "20분", effort_en: "20 min", why: "ISS 이후 민간 정거장의 개발·수요·NASA 계약이 어떻게 연결되는지 보여줍니다.", why_en: "Connects post-ISS station development, demand, and NASA procurement."}
+    - {<<: *reading_defaults, title: "OECD 우주경제 측정 핸드북", title_en: "OECD Handbook on Measuring the Space Economy", url: "https://www.oecd.org/en/publications/handbook-on-measuring-the-space-economy-2nd-edition_8bfef437-en.html", type: "리포트", level: "중급", effort: "45분", effort_en: "45 min", why: "로켓·위성·지상장비·파생서비스를 어디까지 우주경제로 잡을지 기준을 제시합니다.", why_en: "Defines how to measure launch, satellites, ground systems, and downstream services consistently."}
+    - {<<: *reading_defaults, title: "NASA 우주 지속가능성 전략", title_en: "NASA Space Sustainability Strategy", url: "https://www.nasa.gov/spacesustainability/", type: "리포트", level: "심화", effort: "45분", effort_en: "45 min", why: "위성 급증에 따른 충돌·폐기물·관측 문제를 산업 지속가능성의 핵심으로 다룹니다.", why_en: "Treats collision, debris, and observation as core conditions for a durable space economy."}
+    - {<<: *reading_defaults, title: "NASA 궤도폐기물 프로그램", title_en: "NASA Orbital Debris Program Office", url: "https://orbitaldebris.jsc.nasa.gov/", type: "데이터", level: "심화", effort: "35분", effort_en: "35 min", why: "폐기물 환경·모델·분기 뉴스로 충돌 위험이 어떻게 변하는지 추적합니다.", why_en: "Tracks changes in the debris environment through models, data, and quarterly updates."}
+    - {<<: *reading_defaults, title: "FCC Space Bureau", title_en: "FCC Space Bureau", url: "https://www.fcc.gov/space", type: "공식문서", level: "심화", effort: "25분", effort_en: "25 min", why: "대형 위성망·주파수·궤도 폐기 규칙이 시장 확대에 맞춰 변하는 흐름을 보여줍니다.", why_en: "Tracks how constellation, spectrum, and disposal rules evolve with market scale."}
+    - {<<: *reading_defaults, title: "NOAA 상업 원격탐사 규제", title_en: "NOAA Commercial Remote Sensing Regulatory Affairs", url: "https://www.nesdis.noaa.gov/commercial-space/regulatory-affairs", type: "공식문서", level: "심화", effort: "25분", effort_en: "25 min", why: "지구관측 해상도가 높아질수록 안보·허가·데이터 활용 기준이 어떻게 바뀌는지 보여줍니다.", why_en: "Shows how higher-resolution Earth observation changes licensing, security, and data-use rules."}
+    - {<<: *reading_defaults, title: "UNOOSA 우주폐기물 안내", title_en: "UNOOSA Space Debris", url: "https://www.unoosa.org/oosa/en/ourwork/topics/space-debris/index.html", type: "공식문서", level: "심화", effort: "30분", effort_en: "30 min", why: "국제 폐기물 저감 가이드라인과 국가 실행 사이의 간극을 보여줍니다.", why_en: "Shows the gap between international debris-mitigation guidelines and national implementation."}
 
 - technology: singularity-2045
   items:
@@ -361,8 +453,8 @@
       effort_en: 15 min
       cadence: 비정기
       cadence_en: Irregular
-      why: 특이점 논의가 어떤 기술 뉴스와 연결되어 해석되는지 흐름을 따라볼 수 있습니다.
-      why_en: Helps track how singularity arguments connect to current technology news.
+      why: 특이점 주장자가 현재 기술 뉴스를 어떻게 해석하는지 보되, 독립적 검증 자료가 아닌 낙관 시나리오의 원전임을 분리해 읽습니다.
+      why_en: Shows how singularity advocates interpret current news; use it as a primary source for the optimistic scenario, not independent validation.
       checked_at: 2026-07-10
       curated_by: human
     - title: Epoch AI Trends
@@ -378,6 +470,18 @@
       why_en: Adds data on compute, capability, and cost curves behind singularity debates.
       checked_at: 2026-07-10
       curated_by: human
+    - {<<: *reading_defaults, title: "Our World in Data AI 장기 추세", title_en: "Our World in Data: Artificial Intelligence", url: "https://ourworldindata.org/artificial-intelligence", type: "데이터", level: "입문", effort: "20분", effort_en: "20 min", why: "2045년 예측을 보기 전에 성능·투자·활용의 실제 장기 추세를 확인합니다.", why_en: "Checks real long-run capability, investment, and adoption trends before accepting a 2045 scenario."}
+    - {<<: *reading_defaults, title: "Stanford AI Index", title_en: "Stanford AI Index", url: "https://aiindex.stanford.edu/report/", type: "리포트", level: "입문", effort: "35분", effort_en: "35 min", why: "특이점의 하나의 숫자보다 능력·비용·채택·규제가 같이 움직이는지 보게 합니다.", why_en: "Replaces one date with a broad view of capability, cost, adoption, and policy."}
+    - {<<: *reading_defaults, title: "NIST AI 위험관리 프레임워크", title_en: "NIST AI Risk Management Framework", url: "https://www.nist.gov/itl/ai-risk-management-framework", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "능력 가속 시나리오에서도 안전·투명성·책임성을 같이 보는 기본 틀입니다.", why_en: "Keeps safety, transparency, and accountability inside any acceleration scenario."}
+    - {<<: *reading_defaults, title: "미 국가정보위원회 Global Trends 2040", title_en: "U.S. National Intelligence Council Global Trends 2040", url: "https://www.dni.gov/index.php/gt2040-home", type: "리포트", level: "입문", effort: "30분", effort_en: "30 min", why: "기술·인구·기후·지정학을 함께 보는 복수 미래 시나리오의 작성법을 보여줍니다.", why_en: "Demonstrates multi-scenario foresight across technology, demography, climate, and geopolitics."}
+    - {<<: *reading_defaults, title: "국제 AI 안전 보고서 2026", title_en: "International AI Safety Report 2026", url: "https://internationalaisafetyreport.org/publication/international-ai-safety-report-2026", type: "리포트", level: "중급", effort: "45분", effort_en: "45 min", why: "현재 능력과 미래 위험 예측을 근거·불확실성과 함께 구분해 읽게 합니다.", why_en: "Separates current evidence from future risk forecasts and their uncertainty."}
+    - {<<: *reading_defaults, title: "OECD 고용전망 2023 AI와 노동시장", title_en: "OECD Employment Outlook 2023: AI and the Labour Market", url: "https://www.oecd.org/en/publications/oecd-employment-outlook-2023_08785bba-en.html", type: "리포트", level: "중급", effort: "40분", effort_en: "40 min", why: "자동화가 일자리를 없애는지만이 아니라 업무·임금·교육을 어떻게 바꾸는지 보여줍니다.", why_en: "Looks beyond job loss to changes in tasks, wages, and training."}
+    - {<<: *reading_defaults, title: "ILO 생성형 AI와 일자리", title_en: "ILO Generative AI and Jobs", url: "https://www.ilo.org/publications/generative-ai-and-jobs-global-analysis-potential-effects-job-quantity-and", type: "리포트", level: "중급", effort: "35분", effort_en: "35 min", why: "국가·소득·성별에 따라 AI 노출이 다르다는 점을 보며 편익 분배를 생각합니다.", why_en: "Shows how AI exposure and benefits differ across countries, income groups, and gender."}
+    - {<<: *reading_defaults, title: "METR AI 업무 시간폭 연구", title_en: "METR AI Task-Horizon Research", url: "https://metr.org/research/", type: "데이터", level: "중급", effort: "30분", effort_en: "30 min", why: "능력 폭발을 막연한 인상이 아니라 자율 업무 시간의 변화로 확인합니다.", why_en: "Tests acceleration through changes in autonomous task duration rather than impressions."}
+    - {<<: *reading_defaults, title: "Epoch AI 데이터", title_en: "Epoch AI Data", url: "https://epoch.ai/data", type: "데이터", level: "심화", effort: "30분", effort_en: "30 min", why: "연산량·모델·시스템의 장기 추세를 직접 보며 가속 가정을 검사합니다.", why_en: "Lets readers inspect long-run compute, model, and system trends behind acceleration claims."}
+    - {<<: *reading_defaults, title: "Google DeepMind 프런티어 안전 프레임워크", title_en: "Google DeepMind Frontier Safety Framework", url: "https://deepmind.google/blog/introducing-the-frontier-safety-framework/", type: "공식문서", level: "심화", effort: "30분", effort_en: "30 min", why: "특정 개발사가 자율성·사이버 위험 임계를 어떻게 설정하는지 비판적으로 읽습니다.", why_en: "A critical read of one developer's thresholds for autonomy and cyber risk."}
+    - {<<: *reading_defaults, title: "OpenAI Preparedness Framework", title_en: "OpenAI Preparedness Framework", url: "https://openai.com/index/updating-our-preparedness-framework/", type: "공식문서", level: "심화", effort: "30분", effort_en: "30 min", why: "고위험 능력 측정과 배포 판단을 연결하는 회사 자체 통제체계를 보여줍니다.", why_en: "Shows a company framework linking high-risk capability tests to deployment decisions."}
+    - {<<: *reading_defaults, title: "NIST 생성형 AI 위험 프로파일", title_en: "NIST Generative AI Profile", url: "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence", type: "리포트", level: "심화", effort: "45분", effort_en: "45 min", why: "폭발적 시나리오와 별개로 현재 시스템에 적용할 수 있는 구체적 위험 관리를 제시합니다.", why_en: "Provides concrete present-day risk management separate from explosive-growth scenarios."}
 - technology: quantum
   items:
     - title: IBM Quantum 2030 로드맵
@@ -395,15 +499,57 @@
       why_en: Shows the manufacturer's fault-tolerant milestones and target dates.
       checked_at: 2026-07-12
       curated_by: human
+    - title: NIST 양자내성암호 프로젝트
+      title_en: NIST Post-Quantum Cryptography Project
+      url: https://csrc.nist.gov/projects/post-quantum-cryptography
+      type: 공식문서
+      type_en: Official
+      level: 중급
+      lang: EN
+      effort: 20분
+      effort_en: 20 min
+      cadence: 비정기
+      cadence_en: Irregular
+      why: 양자컴퓨터가 오기 전에 이미 진행 중인 암호 교체 작업을 표준화 기관의 원문으로 볼 수 있습니다.
+      why_en: The primary source for the cryptography migration already underway before quantum computers arrive.
+      checked_at: 2026-07-12
+      curated_by: human
+    - title: DOE 양자정보과학 로드맵 모음
+      title_en: DOE Quantum Information Science Reports
+      url: https://science.osti.gov/Initiatives/QIS/Community-Resources/SC-Sponsored-Reports
+      type: 리포트
+      type_en: Report
+      level: 심화
+      lang: EN
+      effort: 30분+
+      effort_en: 30 min+
+      cadence: 수시
+      cadence_en: Ongoing
+      why: 컴퓨팅·센싱·네트워크의 실용 이정표를 미국 공공 연구 로드맵으로 비교합니다.
+      why_en: Compares public roadmaps for useful milestones in quantum computing, sensing, and networks.
+      checked_at: 2026-07-12
+      curated_by: human
+    - {<<: *reading_defaults, title: "NIST 양자내성암호란", title_en: "NIST What Is Post-Quantum Cryptography?", url: "https://www.nist.gov/cybersecurity-and-privacy/what-post-quantum-cryptography", type: "공식문서", level: "입문", effort: "10분", effort_en: "10 min", why: "양자컴퓨터가 오기 전에도 왜 현재 암호를 바꾸기 시작해야 하는지 설명합니다.", why_en: "Explains why cryptography migration begins before a powerful quantum computer exists."}
+    - {<<: *reading_defaults, title: "미국 National Quantum Initiative", title_en: "U.S. National Quantum Initiative", url: "https://www.quantum.gov/", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "컴퓨팅만이 아니라 센싱·통신·인력·공급망을 함께 보는 국가 전략을 정리합니다.", why_en: "Shows the national direction across computing, sensing, networking, workforce, and supply chains."}
+    - {<<: *reading_defaults, title: "DOE 양자정보과학 개요", title_en: "DOE Quantum Information Science", url: "https://science.osti.gov/Initiatives/QIS", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "양자컴퓨팅·시뮬레이션·네트워크·센싱의 서로 다른 활용 방향을 구분합니다.", why_en: "Separates the directions of quantum computing, simulation, networking, and sensing."}
+    - {<<: *reading_defaults, title: "NSF 양자정보과학", title_en: "NSF Quantum Information Science", url: "https://www.nsf.gov/focus-areas/quantum", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "기초연구·시험장·인력양성이 어떻게 기술 생태계를 만드는지 보여줍니다.", why_en: "Shows how basic research, testbeds, and workforce build the technology ecosystem."}
+    - {<<: *reading_defaults, title: "IBM Quantum 하드웨어 현황", title_en: "IBM Quantum Hardware", url: "https://www.ibm.com/quantum/hardware", type: "데이터", level: "중급", effort: "20분", effort_en: "20 min", why: "제조사 수치를 물리 큐비트·오류율·모듈화로 나누어 보는 방법을 익힙니다.", why_en: "Teaches how to separate vendor claims into physical qubits, errors, and modularity."}
+    - {<<: *reading_defaults, title: "NIST PQC 이전 FAQ", title_en: "NIST Post-Quantum Migration FAQ", url: "https://pages.nist.gov/nccoe-migration-post-quantum-cryptography/", type: "공식문서", level: "중급", effort: "30분", effort_en: "30 min", why: "암호 자산 파악부터 새 표준 적용까지 실제 조직의 전환 순서를 보여줍니다.", why_en: "Shows the practical migration sequence from cryptographic inventory to deployment."}
+    - {<<: *reading_defaults, title: "NIST IR 8547 PQC 전환 계획", title_en: "NIST IR 8547 Transition to PQC Standards", url: "https://csrc.nist.gov/pubs/ir/8547/ipd", type: "리포트", level: "중급", effort: "40분", effort_en: "40 min", why: "취약한 표준이 언제 어떤 양자내성 표준으로 바뀌는지 시간표를 제시합니다.", why_en: "Sets a transition timeline from vulnerable standards to quantum-resistant replacements."}
+    - {<<: *reading_defaults, title: "DOE 국가 양자연구 센터", title_en: "DOE National Quantum Information Science Research Centers", url: "https://science.osti.gov/Initiatives/QIS/QIS-Centers", type: "공식문서", level: "중급", effort: "25분", effort_en: "25 min", why: "소재·모듈·네트워크·알고리즘의 공통 난제를 센터별 역할로 보여줍니다.", why_en: "Maps cross-cutting materials, modularity, networking, and algorithm work across national centers."}
+    - {<<: *reading_defaults, title: "DOE 2024 양자응용 로드맵", title_en: "DOE 2024 Quantum Information Science Applications Roadmap", url: "https://science.osti.gov/-/media/QIS/pdf/DOE_QIS_Roadmap_Final.pdf", type: "리포트", level: "심화", effort: "1시간+", effort_en: "1h+", why: "화학·에너지·센싱·네트워크의 실용 이정표와 불확실성을 함께 제시합니다.", why_en: "Sets application milestones and uncertainty across chemistry, energy, sensing, and networks."}
+    - {<<: *reading_defaults, title: "NIST NCCoE PQC 이전 프로젝트", title_en: "NIST NCCoE Migration to Post-Quantum Cryptography", url: "https://www.nccoe.nist.gov/projects/implementations/migration-post-quantum-cryptography", type: "공식문서", level: "심화", effort: "40분", effort_en: "40 min", why: "표준 확정 후 제품·프로토콜·기존 시스템을 실제로 교체하는 실증을 보여줍니다.", why_en: "Moves from standards to practical replacement across products, protocols, and legacy systems."}
+    - {<<: *reading_defaults, title: "NSA 양자내성 사이버보안 자료", title_en: "NSA Post-Quantum Cybersecurity Resources", url: "https://www.nsa.gov/Cybersecurity/Post-Quantum-Cybersecurity-Resources/", type: "공식문서", level: "심화", effort: "35분", effort_en: "35 min", why: "국가안보 시스템의 알고리즘 선택과 전환 요구를 통해 실제 일정을 보여줍니다.", why_en: "Shows real algorithm choices and migration requirements for national-security systems."}
+    - {<<: *reading_defaults, title: "DOE 양자 인터넷 블루프린트", title_en: "DOE Blueprint for a Quantum Internet", url: "https://www.energy.gov/articles/us-department-energy-unveils-blueprint-quantum-internet-launch-future-quantum-internet", type: "리포트", level: "심화", effort: "35분", effort_en: "35 min", why: "단일 컴퓨터를 넘어 양자반복기·언탱글먼트·통신으로 확장하는 경로를 보여줍니다.", why_en: "Extends the direction beyond standalone computers to repeaters, entanglement, and networks."}
 
 - technology: bci
   items:
     - title: FDA 이식형 BCI 임상 가이드
       title_en: FDA Implanted BCI Clinical Guidance
-      url: https://www.fda.gov/regulatory-information/search-fda-guidance-documents/implanted-brain-computer-interface-bci-devices-patients-paralysis-or-amputation-non-clinical-testing
+      url: https://www.fda.gov/media/120362/download
       type: 공식문서
       type_en: Official
-      level: 입문
+      level: 심화
       lang: EN
       effort: 20분
       effort_en: 20 min
@@ -413,6 +559,48 @@
       why_en: Explains why safety and clinical evidence matter more than demonstrations.
       checked_at: 2026-07-12
       curated_by: human
+    - title: ClinicalTrials.gov BCI 임상 검색
+      title_en: ClinicalTrials.gov BCI Trial Search
+      url: https://clinicaltrials.gov/search?term=brain-computer%20interface
+      type: 데이터
+      type_en: Data
+      level: 중급
+      lang: EN
+      effort: 20분
+      effort_en: 20 min
+      cadence: 수시
+      cadence_en: Ongoing
+      why: 이식형 BCI 임상이 실제로 몇 건, 어느 단계까지 진행 중인지 등록 데이터로 직접 확인할 수 있습니다.
+      why_en: Lets you check directly how many implanted-BCI trials exist and how far they have progressed.
+      checked_at: 2026-07-12
+      curated_by: human
+    - title: Nature 뇌-기계 인터페이스 연구 모음
+      title_en: Nature Brain-Machine Interface Collection
+      url: https://www.nature.com/subjects/brain-machine-interface
+      type: 글
+      type_en: Article
+      level: 심화
+      lang: EN
+      effort: 30분+
+      effort_en: 30 min+
+      cadence: 수시
+      cadence_en: Ongoing
+      why: 신호 안정성과 해독 성능 같은 기술 병목의 실제 연구 진도를 논문 단위로 볼 수 있습니다.
+      why_en: Paper-level progress on the real bottlenecks such as signal stability and decoding performance.
+      checked_at: 2026-07-12
+      curated_by: human
+    - {<<: *reading_defaults, title: "NIH BRAIN Initiative 개요", title_en: "NIH BRAIN Initiative Overview", url: "https://braininitiative.nih.gov/about/overview", type: "공식문서", level: "입문", effort: "12분", effort_en: "12 min", why: "BCI를 하나의 제품이 아니라 뇌 측정·이해·치료 기술의 큰 흐름 속에서 보게 합니다.", why_en: "Places BCI inside the broader direction of measuring, understanding, and treating the brain."}
+    - {<<: *reading_defaults, title: "NIH BRAIN Initiative 비전", title_en: "NIH BRAIN Initiative Vision", url: "https://www.nih.gov/brain-initiative/about/vision", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "신경기술이 측정 도구에서 환자 기능 복원으로 이어지는 연구 순서를 보여줍니다.", why_en: "Shows the research path from neural measurement tools toward restored patient function."}
+    - {<<: *reading_defaults, title: "GAO BCI 기술평가", title_en: "GAO Brain-Computer Interface Technology Assessment", url: "https://www.gao.gov/products/gao-25-106952", type: "리포트", level: "입문", effort: "20분", effort_en: "20 min", why: "의료 효과·뇌데이터·보험·장기 지원을 기술 확산의 핵심 조건으로 쉽게 정리합니다.", why_en: "A readable assessment of clinical benefit, neural data, insurance, and long-term support."}
+    - {<<: *reading_defaults, title: "UNESCO 뇌신경기술 윤리", title_en: "UNESCO Ethics of Neurotechnology", url: "https://www.unesco.org/en/ethics-neurotech", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "뇌 신호를 개인정보보다 더 민감한 데이터로 보는 국제 윤리 방향을 설명합니다.", why_en: "Explains the international ethical direction for neural signals as exceptionally sensitive data."}
+    - {<<: *reading_defaults, title: "NIH BRAIN 학습 자료", title_en: "NIH BRAIN Initiative Resources", url: "https://braininitiative.nih.gov/about/resources", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "뇌과학·측정기술·임상 전환을 설명하는 공개 자료로 기본 용어를 잡습니다.", why_en: "A public resource hub for the basic language of neuroscience, measurement, and translation."}
+    - {<<: *reading_defaults, title: "NIH BRAIN 우선 연구분야", title_en: "NIH BRAIN Initiative Priority Areas", url: "https://braininitiative.nih.gov/vision/priority-areas", type: "공식문서", level: "중급", effort: "25분", effort_en: "25 min", why: "세포·회로·인간뇌·통합기술의 우선순위가 BCI와 어떻게 연결되는지 보여줍니다.", why_en: "Connects cellular, circuit, human-brain, and integrated-tool priorities to BCI progress."}
+    - {<<: *reading_defaults, title: "NIH BRAIN 전략 보고서 모음", title_en: "NIH BRAIN Initiative Reports", url: "https://www.braininitiative.nih.gov/vision/nih-brain-initiative-reports", type: "리포트", level: "중급", effort: "30분", effort_en: "30 min", why: "초기 기술개발에서 치료·인간연구·윤리로 중점이 이동하는 과정을 보여줍니다.", why_en: "Shows the shift from tool building toward therapy, human studies, and ethics."}
+    - {<<: *reading_defaults, title: "NIH BRAIN 뇌신경윤리 프로그램", title_en: "NIH BRAIN Neuroethics", url: "https://braininitiative.nih.gov/research/neuroethics", type: "공식문서", level: "중급", effort: "25분", effort_en: "25 min", why: "연구참가자 보호·정체성·자율성·데이터 권리를 기술개발과 함께 다룹니다.", why_en: "Integrates participant protection, identity, autonomy, and data rights with technology development."}
+    - {<<: *reading_defaults, title: "FDA·NIH BCI 임상결과 워크숍 녹취록", title_en: "FDA-NIH Workshop on BCI Clinical Outcomes", url: "https://www.fda.gov/media/182567/download", type: "공식문서", level: "중급", effort: "35분", effort_en: "35 min", why: "커서 속도보다 환자의 의사소통·자립성을 어떻게 임상 성공으로 측정할지 다룹니다.", why_en: "Focuses on measuring communication and independence rather than cursor speed alone."}
+    - {<<: *reading_defaults, title: "BRAIN 2025 과학 비전", title_en: "BRAIN 2025: A Scientific Vision", url: "https://braininitiative.nih.gov/vision/nih-brain-initiative-reports/brain-2025-scientific-vision", type: "리포트", level: "심화", effort: "1시간+", effort_en: "1h+", why: "뇌 지도화·신경활동 측정·회로 조절을 장기 연구 순서로 제시합니다.", why_en: "Sets a long-run sequence for mapping, measuring, and modulating brain circuits."}
+    - {<<: *reading_defaults, title: "BRAIN 2.0 세포에서 치료까지", title_en: "BRAIN 2.0: From Cells to Circuits, Toward Cures", url: "https://braininitiative.nih.gov/vision/nih-brain-initiative-reports/brain-20-cells-circuits-toward-cures", type: "리포트", level: "심화", effort: "1시간+", effort_en: "1h+", why: "기술 시연을 임상 치료와 지속적 기능 개선으로 옮기기 위한 다음 단계를 보여줍니다.", why_en: "Shows the next steps from technical demonstrations toward clinical cures and durable function."}
+    - {<<: *reading_defaults, title: "BRAIN 2.0 뇌신경윤리 로드맵", title_en: "BRAIN 2.0 Neuroethics Roadmap", url: "https://www.braininitiative.nih.gov/vision/nih-brain-initiative-reports/brain-20-neuroethics-enabling-and-enhancing-neuroscience", type: "리포트", level: "심화", effort: "50분", effort_en: "50 min", why: "뇌신경기술의 연구 우선순위와 윤리·사회적 문제를 같은 로드맵에 놓습니다.", why_en: "Places scientific priorities and ethical or social questions on the same roadmap."}
 
 - technology: future-food
   items:
@@ -431,6 +619,48 @@
       why_en: Clarifies the real U.S. regulatory process without overstating the word approval.
       checked_at: 2026-07-12
       curated_by: human
+    - title: GFI 배양육의 과학
+      title_en: GFI The Science of Cultivated Meat
+      url: https://gfi.org/science/the-science-of-cultivated-meat/
+      type: 리포트
+      type_en: Report
+      level: 중급
+      lang: EN
+      effort: 40분
+      effort_en: 40 min
+      cadence: 비정기
+      cadence_en: Irregular
+      why: 배양배지 비용, 생물반응기 규모 같은 원가 병목이 왜 승인보다 어려운 관문인지 산업 관점에서 정리해 줍니다.
+      why_en: Frames why cost bottlenecks like culture media and bioreactor scale are a harder gate than approval.
+      checked_at: 2026-07-12
+      curated_by: human
+    - title: FAO 세포배양·정밀발효 글로벌 대화
+      title_en: FAO Global Dialogue on Cell-Based Food and Precision Fermentation
+      url: https://doi.org/10.4060/cd7836en
+      type: 리포트
+      type_en: Report
+      level: 심화
+      lang: EN
+      effort: 30분+
+      effort_en: 30 min+
+      cadence: 수시
+      cadence_en: Ongoing
+      why: 정부·학계·산업계가 본 식품안전·규제 장벽을 시장 확산 관점에서 읽습니다.
+      why_en: Maps food-safety and regulatory barriers through a multi-stakeholder global dialogue.
+      checked_at: 2026-07-12
+      curated_by: human
+    - {<<: *reading_defaults, title: "FAO 세포배양·정밀발효 안전 허브", title_en: "FAO Cell-Based Food and Precision Fermentation Hub", url: "https://www.fao.org/food-safety/scientific-advice/biotechnology--gmo-and-gm-foods/cell-based-food-and-precision-fermentation/ensuring-the-food-safety-of-cell-based-food/en", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "배양육과 정밀발효를 구분하고 국가들이 어떤 식품안전 문제를 보는지 정리합니다.", why_en: "Separates cultivated food from precision fermentation and maps regulators' safety questions."}
+    - {<<: *reading_defaults, title: "FAO 세포배양식품 안전 영상", title_en: "FAO Ensuring the Safety of Cell-Based Food", url: "https://www.fao.org/aphca/resources/multimedia/video-detail/ensuring-the-food-safety-of-cell-based-food/en", type: "강의", level: "입문", effort: "10분", effort_en: "10 min", why: "세포 확보부터 배양·수확·가공까지 식품안전 관리를 짧게 보여줍니다.", why_en: "A short visual walkthrough of safety from cell sourcing through cultivation and processing."}
+    - {<<: *reading_defaults, title: "USDA 배양육·가금류 규제 안내", title_en: "USDA Cultivated Meat and Poultry", url: "https://www.fsis.usda.gov/food-safety/safe-food-handling-and-preparation/meat/cultivated-meat-and-poultry", type: "공식문서", level: "입문", effort: "12분", effort_en: "12 min", why: "FDA 안전성 협의 후 USDA 시설검사·표시로 이어지는 미국 절차를 보여줍니다.", why_en: "Shows the U.S. handoff from FDA safety review to USDA inspection and labeling."}
+    - {<<: *reading_defaults, title: "EU 신규식품 규제 개요", title_en: "European Commission Novel Food", url: "https://food.ec.europa.eu/food-safety/novel-food_en", type: "공식문서", level: "입문", effort: "12분", effort_en: "12 min", why: "세포배양·정밀발효 제품이 유럽에서 신규식품으로 어떻게 평가되는지 보여줍니다.", why_en: "Explains how cell-based and precision-fermented products enter Europe's novel-food pathway."}
+    - {<<: *reading_defaults, title: "FAO 정밀발효 식품안전", title_en: "FAO Precision Fermentation Food Safety", url: "https://doi.org/10.4060/cd4448en", type: "리포트", level: "중급", effort: "35분", effort_en: "35 min", why: "미생물·유전자조작·정제공정에서 안전성을 어떻게 확인하는지 정리합니다.", why_en: "Maps safety checks across microbes, genetic engineering, and purification."}
+    - {<<: *reading_defaults, title: "FAO 2026 글로벌 식품기술 대화", title_en: "FAO Global Dialogue on New Food Technologies", url: "https://www.fao.org/food-safety/news/detail/from-precision-fermentation-to-cell-based-fat--laying-the-groundwork-for-food-safety-assurance/en", type: "글", level: "중급", effort: "20분", effort_en: "20 min", why: "국가별 역량과 규제 차이가 시장 확산을 어떻게 다르게 만드는지 보여줍니다.", why_en: "Shows how regulatory capacity and national differences shape market expansion."}
+    - {<<: *reading_defaults, title: "USDA ERS 세포농업 경제성", title_en: "USDA ERS Economics of Cellular Agriculture", url: "https://ers.usda.gov/publications/110622", type: "리포트", level: "중급", effort: "45분", effort_en: "45 min", why: "원가 모형의 가정과 실제 상업 원가를 구분하며 규모화 경제를 보여줍니다.", why_en: "Separates modeled assumptions from real commercial cost while explaining scale economics."}
+    - {<<: *reading_defaults, title: "GFI 배양육 산업 보고서", title_en: "GFI Cultivated Meat State of the Industry", url: "https://gfi.org/resource/cultivated-meat-eggs-and-dairy-state-of-the-industry-report/", type: "리포트", level: "중급", effort: "40분", effort_en: "40 min", why: "투자·시설·허가·제품 흐름을 한번에 보되 산업 육성기관의 낙관 편향을 감안합니다.", why_en: "Combines investment, facilities, regulation, and products; account for the advocacy group's optimism."}
+    - {<<: *reading_defaults, title: "FAO·WHO 세포배양식품 안전 보고서", title_en: "FAO-WHO Food Safety Aspects of Cell-Based Food", url: "https://doi.org/10.4060/cc4855en", type: "리포트", level: "심화", effort: "1시간+", effort_en: "1h+", why: "원료세포·배양배지·오염·알레르기 등 전 공정의 위험을 체계적으로 정리합니다.", why_en: "Systematically maps hazards across source cells, media, contamination, and allergens."}
+    - {<<: *reading_defaults, title: "Codex 세포배양·정밀발효 국제 논의", title_en: "Codex Discussion on Cell-Based Food and Precision Fermentation", url: "https://www.fao.org/fao-who-codexalimentarius/sh-proxy/en/?lnk=1&url=https%253A%252F%252Fworkspace.fao.org%252Fsites%252Fcodex%252FMeetings%252FCX-701-47%252FCRDs%252Fcac47_crd04x.pdf", type: "리포트", level: "심화", effort: "45분", effort_en: "45 min", why: "국제 식품표준에서 어떤 위험과 용어를 공통으로 다루려는지 보여줍니다.", why_en: "Shows which risks and terms international food-standard bodies are trying to align."}
+    - {<<: *reading_defaults, title: "GFI 배양육 환경영향·원가 가정", title_en: "GFI Cultivated-Meat LCA and TEA", url: "https://gfi.org/resource/cultivated-meat-lca-and-tea-policy-recommendations/", type: "리포트", level: "심화", effort: "40분", effort_en: "40 min", why: "전력구성·배지·시설규모 가정이 환경영향과 원가를 어떻게 바꾸는지 보되, 산업 육성단체가 발주한 모델임을 감안합니다.", why_en: "Shows how power, media, and scale assumptions change modeled impact and cost; note that an industry-advocacy group commissioned it."}
+    - {<<: *reading_defaults, title: "FAO 세포배양·정밀발효 규제 로드맵", title_en: "FAO Regulatory Frameworks for Cell-Based Food and Precision Fermentation", url: "https://doi.org/10.4060/cd8165en", type: "리포트", level: "심화", effort: "50분", effort_en: "50 min", why: "국가별 식품안전·표시·시장진입 규칙을 비교해 기술이 어느 경로로 시장에 들어갈지 보여줍니다.", why_en: "Compares food-safety, labeling, and market-entry frameworks to show how the technology can reach markets."}
 
 - technology: uam
   items:
@@ -449,6 +679,48 @@
       why_en: Shows why aircraft, certification, pilots, routes, and infrastructure must progress together.
       checked_at: 2026-07-12
       curated_by: human
+    - title: FAA 에어택시 인증 현황
+      title_en: FAA Air Taxis
+      url: https://www.faa.gov/air-taxis
+      type: 공식문서
+      type_en: Official
+      level: 중급
+      lang: EN
+      effort: 20분
+      effort_en: 20 min
+      cadence: 비정기
+      cadence_en: Irregular
+      why: 형식인증이 어느 단계까지 왔는지, 왜 가장 밀리기 쉬운 관문인지 규제기관 원문으로 확인할 수 있습니다.
+      why_en: Shows how far type certification has advanced and why it is the gate most prone to slipping.
+      checked_at: 2026-07-12
+      curated_by: human
+    - title: NASA 첨단 항공 모빌리티(AAM)
+      title_en: NASA Advanced Air Mobility
+      url: https://www.nasa.gov/mission/aam/
+      type: 공식문서
+      type_en: Official
+      level: 심화
+      lang: EN
+      effort: 30분
+      effort_en: 30 min
+      cadence: 비정기
+      cadence_en: Irregular
+      why: 소음, 교통관리, 자율비행 같은 확장기 병목을 연구 프로그램 관점에서 더 깊게 볼 수 있습니다.
+      why_en: A research-program view of scaling bottlenecks such as noise, traffic management, and autonomy.
+      checked_at: 2026-07-12
+      curated_by: human
+    - {<<: *reading_defaults, title: "미국 AAM 국가전략 2025", title_en: "U.S. Advanced Air Mobility National Strategy 2025", url: "https://www.transportation.gov/briefing-room/advanced-air-mobility-national-strategy-2025", type: "리포트", level: "입문", effort: "20분", effort_en: "20 min", why: "기체·인증·전력망·이착륙장·지역사회를 하나의 교통체계로 보여줍니다.", why_en: "Frames aircraft, certification, grids, vertiports, and communities as one transport system."}
+    - {<<: *reading_defaults, title: "NASA 미래 AAM 공역", title_en: "NASA Envisioning a Future Airspace with AAM", url: "https://www.nasa.gov/aeronautics/envisioning-a-future-airspace-with-advanced-air-mobility/", type: "글", level: "입문", effort: "12분", effort_en: "12 min", why: "에어택시가 기존 비행기와 같이 나라기 위해 항로·통신·관제가 필요함을 쉽게 설명합니다.", why_en: "Explains why routes, communications, and traffic management must evolve with air taxis."}
+    - {<<: *reading_defaults, title: "FAA Powered-Lift FAQ", title_en: "FAA Powered-Lift FAQ", url: "https://www.faa.gov/air-taxis/FAQ", type: "공식문서", level: "입문", effort: "12분", effort_en: "12 min", why: "eVTOL이 헬리콥터와 비행기의 성격을 함께 갖는 새 항공기 범주인 이유를 설명합니다.", why_en: "Explains why eVTOL creates a new powered-lift category between helicopter and airplane rules."}
+    - {<<: *reading_defaults, title: "EASA 에어택시 소음 기준 소개", title_en: "EASA Air Taxi Noise Proposal", url: "https://www.easa.europa.eu/en/newsroom-and-events/press-releases/easa-publishes-worlds-first-proposal-assessment-and-limitation", type: "공식문서", level: "입문", effort: "12분", effort_en: "12 min", why: "안전 인증만 통과해서는 안 되고 도심 소음 수용성이 보급을 좌우함을 보여줍니다.", why_en: "Shows why community noise acceptance can limit adoption even after aircraft certification."}
+    - {<<: *reading_defaults, title: "FAA AAM 인프라 가이드", title_en: "FAA Advanced Air Mobility Infrastructure", url: "https://www.faa.gov/airports/new_entrants/aam_infrastructure", type: "공식문서", level: "중급", effort: "30분", effort_en: "30 min", why: "버티포트·충전·주차·유도로가 공항과 도심에 어떻게 편입되는지 보여줍니다.", why_en: "Shows how vertiports, charging, parking, and approach paths fit into airports and cities."}
+    - {<<: *reading_defaults, title: "FAA Powered-Lift 운항 최종 규칙", title_en: "FAA Powered-Lift Pilot and Operations Final Rule", url: "https://www.faa.gov/newsroom/integration-powered-lift-pilot-certification-and-operations-miscellaneous-amendments", type: "공식문서", level: "중급", effort: "35분", effort_en: "35 min", why: "조종사·교관·운항규칙을 신규 기체에 맞춰 바꾸는 실제 규제 진전을 보여줍니다.", why_en: "Shows concrete regulatory progress on pilots, instructors, and powered-lift operations."}
+    - {<<: *reading_defaults, title: "NASA AAM 생태계 워킹그룹", title_en: "NASA AAM Ecosystem Working Groups", url: "https://nari.arc.nasa.gov/aam/", type: "공식문서", level: "중급", effort: "25분", effort_en: "25 min", why: "기체·공역·인프라·지역사회 이해관계자가 공통 요구조건을 만드는 과정을 보여줍니다.", why_en: "Shows stakeholders aligning requirements across vehicles, airspace, infrastructure, and communities."}
+    - {<<: *reading_defaults, title: "NASA AAM 지역사회 통합 플레이북", title_en: "NASA AAM Community Integration Playbook", url: "https://ntrs.nasa.gov/citations/20230010184", type: "리포트", level: "중급", effort: "40분", effort_en: "40 min", why: "지방정부가 소음·형평성·토지이용·주민소통을 어떻게 준비하는지 정리합니다.", why_en: "Shows how local governments prepare for noise, equity, land use, and public engagement."}
+    - {<<: *reading_defaults, title: "NASA AAM 공역 워킹그룹", title_en: "NASA AAM Airspace Working Group", url: "https://nari.arc.nasa.gov/aam-portal/airspace/", type: "데이터", level: "심화", effort: "35분", effort_en: "35 min", why: "고빈도 운항에 필요한 전략적 충돌관리·통신·예측가능성 연구를 추적합니다.", why_en: "Tracks research on conflict management, communications, and predictability for high-tempo operations."}
+    - {<<: *reading_defaults, title: "NASA AAM 시스템 모델", title_en: "NASA AAM System-of-Systems Model", url: "https://nari.arc.nasa.gov/aam-portal/model/aam-system-of-systems-model-description-uam-focused/", type: "리포트", level: "심화", effort: "45분", effort_en: "45 min", why: "기체만 개선해서는 안 되는 이유를 운항사·공역·인프라 연결구조로 보여줍니다.", why_en: "Maps why aircraft progress alone is insufficient without operators, airspace, and infrastructure."}
+    - {<<: *reading_defaults, title: "EASA eVTOL 소음 기술기준", title_en: "EASA Noise for VTOL-Capable Aircraft", url: "https://www.easa.europa.eu/en/domains/environment/drones-and-vertical-take-and-landing-capable-aircraft-vca", type: "공식문서", level: "심화", effort: "30분", effort_en: "30 min", why: "비행·호버링 소음을 어떻게 측정하고 지역 허가에 연결할지 제시합니다.", why_en: "Shows how flight and hover noise are measured and connected to local authorization."}
+    - {<<: *reading_defaults, title: "NASA 다중기체 관제 워킹그룹", title_en: "NASA Multi-Vehicle Control Working Group", url: "https://nari.arc.nasa.gov/ttt-ram/multi-vehicle/", type: "공식문서", level: "심화", effort: "35분", effort_en: "35 min", why: "조종사 한 명과 기체 하나의 초기 모델을 넘어 다중 기체 운영으로 가는 병목을 다룹니다.", why_en: "Explores the barriers to moving beyond one-pilot-one-aircraft operations."}
 
 - technology: carbon-capture
   items:
@@ -467,6 +739,48 @@
       why_en: Explains why capture energy and storage cost must be counted together.
       checked_at: 2026-07-12
       curated_by: human
+    - title: CDR Primer — 이산화탄소 제거 입문
+      title_en: CDR Primer
+      url: https://cdrprimer.org/
+      type: 글
+      type_en: Article
+      level: 중급
+      lang: EN
+      effort: 40분
+      effort_en: 40 min
+      cadence: 비정기
+      cadence_en: Irregular
+      why: 직접공기포집을 자연 기반 흡수·광물화 등 다른 제거 방식과 비교해 전체 지형에서 위치를 잡아줍니다.
+      why_en: Places direct air capture within the wider landscape of carbon-removal approaches.
+      checked_at: 2026-07-12
+      curated_by: human
+    - title: Frontier — 탄소제거 선구매 시장
+      title_en: Frontier Climate
+      url: https://frontierclimate.com/
+      type: 데이터
+      type_en: Data
+      level: 심화
+      lang: EN
+      effort: 20분
+      effort_en: 20 min
+      cadence: 수시
+      cadence_en: Ongoing
+      why: 선구매(AMC) 계약과 톤당 가격으로 초기 시장을 추적하되, 자체가 구매자이자 시장 조성자라는 점을 감안합니다.
+      why_en: Tracks early advance-purchase deals and prices, while noting that Frontier is both a buyer and a market maker.
+      checked_at: 2026-07-12
+      curated_by: human
+    - {<<: *reading_defaults, title: "IEA 직접공기포집 개요", title_en: "IEA Direct Air Capture", url: "https://www.iea.org/energy-system/carbon-capture-utilisation-and-storage/direct-air-capture", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "직접공기포집의 현재 규모·계획된 프로젝트·비용 하락 목표를 중립적으로 정리합니다.", why_en: "A neutral overview of current scale, planned projects, and cost-reduction goals."}
+    - {<<: *reading_defaults, title: "EPA Class VI 이산화탄소 저장정", title_en: "EPA Class VI CO2 Storage Wells", url: "https://www.epa.gov/uic/class-vi-wells-used-geologic-sequestration-carbon-dioxide", type: "공식문서", level: "입문", effort: "18분", effort_en: "18 min", why: "탄소를 포집한 뒤 어디에 어떻게 저장하고 지하수를 보호하는지 보여줍니다.", why_en: "Shows how captured CO2 is stored underground while protecting drinking-water sources."}
+    - {<<: *reading_defaults, title: "미 국립학술원 탄소제거 개요", title_en: "National Academies Negative Emissions Technologies", url: "https://nap.nationalacademies.org/catalog/25259/negative-emissions-technologies-and-reliable-sequestration-a-research-agenda", type: "리포트", level: "입문", effort: "30분", effort_en: "30 min", why: "DAC를 산림·토양·광물화 등 다른 탄소제거 방법과 비교해 위치를 잡습니다.", why_en: "Places direct air capture among forests, soils, mineralization, and other removal paths."}
+    - {<<: *reading_defaults, title: "DOE Carbon Negative Shot", title_en: "DOE Carbon Negative Shot Strategy", url: "https://www.energy.gov/hgeo/carbon-negative-shot-strategy", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "톤당 100달러·대규모·장기 저장이라는 미국의 목표가 무엇을 포함하는지 설명합니다.", why_en: "Explains what the U.S. target of $100 per ton, scale, and durable storage actually includes."}
+    - {<<: *reading_defaults, title: "DOE 탄소관리 상용화 경로", title_en: "DOE Carbon Management Deployment Path", url: "https://www.energy.gov/cmei/oced/carbon-management-0", type: "리포트", level: "중급", effort: "45분", effort_en: "45 min", why: "포집·수송·저장·실증 프로그램이 함께 있어야 상용 프로젝트가 반복될 수 있음을 보여줍니다.", why_en: "Shows why capture, transport, storage, and demonstration programs must advance together for repeatable projects."}
+    - {<<: *reading_defaults, title: "EPA Subpart RR 지중저장 MRV", title_en: "EPA Subpart RR Geologic Sequestration MRV", url: "https://www.epa.gov/ghgreporting/subpart-rr-geologic-sequestration-carbon-dioxide", type: "공식문서", level: "중급", effort: "30분", effort_en: "30 min", why: "주입량과 누출·회수량을 어떻게 측정해 순저장량으로 보고하는지 보여줍니다.", why_en: "Shows how injection, leakage, and recovery are measured to report net stored carbon."}
+    - {<<: *reading_defaults, title: "EPA 지중저장 공개 데이터", title_en: "EPA Geologic Sequestration Data", url: "https://www.epa.gov/ghgreporting/supply-underground-injection-and-geologic-sequestration-carbon-dioxide", type: "데이터", level: "중급", effort: "25분", effort_en: "25 min", why: "전망치가 아니라 시설이 보고한 연간·누적 지중저장량을 직접 확인합니다.", why_en: "Uses facility-reported annual and cumulative storage rather than project forecasts."}
+    - {<<: *reading_defaults, title: "IEA CCUS 프로젝트 현황", title_en: "IEA Carbon Capture Utilisation and Storage", url: "https://www.iea.org/energy-system/carbon-capture-utilisation-and-storage", type: "데이터", level: "중급", effort: "25분", effort_en: "25 min", why: "DAC와 배출원 포집을 구분하고 가동·건설·계획 프로젝트의 차이를 보여줍니다.", why_en: "Separates DAC from point-source capture and operating projects from plans."}
+    - {<<: *reading_defaults, title: "DOE DACS 전과정평가 모범규범", title_en: "DOE DACS Life-Cycle Assessment Best Practices", url: "https://www.energy.gov/hgeo/best-practices-life-cycle-assessment-direct-air-capture-storage-dacs", type: "리포트", level: "심화", effort: "50분", effort_en: "50 min", why: "열·전력·소재·수송·저장을 모두 빼야 실제 순제거량이 나온다는 계산법을 보여줍니다.", why_en: "Shows how heat, power, materials, transport, and storage determine true net removal."}
+    - {<<: *reading_defaults, title: "DOE 직접공기포집 허브", title_en: "DOE Regional Direct Air Capture Hubs", url: "https://www.energy.gov/oced/DACHubs", type: "공식문서", level: "심화", effort: "35분", effort_en: "35 min", why: "기술 단위를 넘어 전력·저장·지역사회·일자리를 묶은 대형 실증의 방향을 보여줍니다.", why_en: "Shows large demonstrations combining technology, power, storage, communities, and jobs."}
+    - {<<: *reading_defaults, title: "미 국립학술원 탄소제거 연구의제", title_en: "National Academies Carbon Dioxide Removal Research Agenda", url: "https://nap.nationalacademies.org/read/25259/chapter/1", type: "리포트", level: "심화", effort: "1시간+", effort_en: "1h+", why: "방법별 잠재량·비용·환경위험·연구공백을 같은 기준으로 비교합니다.", why_en: "Compares potential, cost, environmental risk, and research gaps across removal methods."}
+    - {<<: *reading_defaults, title: "IRS 45Q 탄소저장 세액공제", title_en: "IRS Carbon Oxide Sequestration Credit", url: "https://www.irs.gov/forms-pubs/about-form-8933", type: "공식문서", level: "심화", effort: "25분", effort_en: "25 min", why: "포집·활용·영구저장의 경제성을 실제로 바꾸는 45Q 세제 인센티브의 현재 신청 구조를 확인합니다.", why_en: "Shows the current filing structure for the 45Q incentive that materially changes capture and storage economics."}
 
 - technology: geoengineering
   items:
@@ -485,6 +799,48 @@
       why_en: Covers potential effects alongside risks and international governance.
       checked_at: 2026-07-12
       curated_by: human
+    - title: 미국 국립학술원 — 태양복사 조절 연구 권고
+      title_en: National Academies — Reflecting Sunlight
+      url: https://nap.nationalacademies.org/catalog/25762/reflecting-sunlight-recommendations-for-solar-geoengineering-research-and-research-governance
+      type: 리포트
+      type_en: Report
+      level: 중급
+      lang: EN
+      effort: 40분
+      effort_en: 40 min
+      cadence: 비정기
+      cadence_en: Irregular
+      why: 성층권 에어로졸 같은 방식의 연구 필요성과 거버넌스 장치를 권위 있는 과학 자문 기구의 권고로 볼 수 있습니다.
+      why_en: An authoritative science-advisory view of research needs and governance for approaches like stratospheric aerosols.
+      checked_at: 2026-07-12
+      curated_by: human
+    - title: NOAA 화학과학연구소 — 지구복사수지
+      title_en: NOAA Chemical Sciences Laboratory
+      url: https://csl.noaa.gov/research/erb/
+      type: 데이터
+      type_en: Data
+      level: 심화
+      lang: EN
+      effort: 30분
+      effort_en: 30 min
+      cadence: 수시
+      cadence_en: Ongoing
+      why: 실제 대기 관측·모델링으로 개입의 효과와 부작용을 어떻게 검증하는지 연구 현장 관점에서 볼 수 있습니다.
+      why_en: A research-lab view of how intervention effects and side effects are validated through observation and modeling.
+      checked_at: 2026-07-12
+      curated_by: human
+    - {<<: *reading_defaults, title: "UNEP 태양복사수정 위험과 불확실성", title_en: "UNEP Risks and Uncertainties of Solar Radiation Modification", url: "https://www.unep.org/ocs/Solar-radiation-modification", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "빠른 냉각 가능성과 함께 오존·강수·정치·윤리 위험을 함께 보게 합니다.", why_en: "Pairs possible rapid cooling with ozone, rainfall, political, and ethical risks."}
+    - {<<: *reading_defaults, title: "미 의회조사국 태양지구공학 개요", title_en: "CRS Solar Geoengineering and Climate Change", url: "https://www.congress.gov/crs-product/R47551", type: "리포트", level: "입문", effort: "25분", effort_en: "25 min", why: "방식·효과·부작용·미국법·국제 협약의 현재 위치를 중립적으로 정리합니다.", why_en: "A neutral map of methods, effects, risks, U.S. law, and international agreements."}
+    - {<<: *reading_defaults, title: "생물다양성협약과 지구공학", title_en: "Convention on Biological Diversity and Geoengineering", url: "https://www.cbd.int/climate/geoengineering", type: "공식문서", level: "입문", effort: "18분", effort_en: "18 min", why: "기술 효과보다 생태계·사회·문화 위험에 예방원칙을 적용하는 국제 입장을 보여줍니다.", why_en: "Shows the international precautionary stance on ecological, social, and cultural risks."}
+    - {<<: *reading_defaults, title: "NASA 지구 복사수지 설명", title_en: "NASA Earth's Radiation Budget", url: "https://science.nasa.gov/ems/13_radiationbudget/", type: "공식문서", level: "입문", effort: "12분", effort_en: "12 min", why: "햇빛의 유입과 지구의 열 방출 균형을 이해해 태양복사수정의 원리를 잡습니다.", why_en: "Explains the energy balance that solar radiation modification would try to alter."}
+    - {<<: *reading_defaults, title: "미국 SRM 연구·거버넌스 계획", title_en: "U.S. Solar Radiation Modification Research Plan", url: "https://www.epa.gov/geoengineering/government-action", type: "리포트", level: "중급", effort: "45분", effort_en: "45 min", why: "미국 정부의 연구계획과 초기 거버넌스 문서를 통해 통제·투명성·공중참여 조건을 보여줍니다.", why_en: "Links the U.S. research plan and initial governance framework, including controls, transparency, and public engagement."}
+    - {<<: *reading_defaults, title: "CBD COP XI/20 지구공학 결정", title_en: "CBD COP Decision XI/20 on Geoengineering", url: "https://www.cbd.int/decision/cop/default.shtml?id=13181", type: "공식문서", level: "중급", effort: "25분", effort_en: "25 min", why: "국제 결정이 어떤 과학적 근거·영향평가·협의를 요구하는지 원문으로 보여줍니다.", why_en: "Shows the scientific evidence, impact assessment, and consultation required in an international decision."}
+    - {<<: *reading_defaults, title: "CRS 태양지구공학 기술·정책 분석", title_en: "CRS Solar Geoengineering Technical and Policy Analysis", url: "https://www.congress.gov/crs_external_products/R/HTML/R47551.web.html", type: "리포트", level: "중급", effort: "45분", effort_en: "45 min", why: "성층권 에어로졸·해양구름밝히기·규제 공백을 방식별로 비교합니다.", why_en: "Compares stratospheric aerosols, marine cloud brightening, and governance gaps."}
+    - {<<: *reading_defaults, title: "WMO 오존층 과학평가", title_en: "WMO Scientific Assessment of Ozone Depletion", url: "https://public.wmo.int/media/17403", type: "리포트", level: "중급", effort: "40분", effort_en: "40 min", why: "성층권 에어로졸이 손대는 오존화학과 현재 관측체계를 이해하게 합니다.", why_en: "Provides the ozone chemistry and observation context affected by stratospheric aerosols."}
+    - {<<: *reading_defaults, title: "IPCC AR6 미래 기후 시나리오", title_en: "IPCC AR6 Future Global Climate", url: "https://www.ipcc.ch/report/ar6/wg1/chapter/chapter-4/", type: "리포트", level: "심화", effort: "1시간+", effort_en: "1h+", why: "배출경로·탄소제거·일시적 온도 오버슛을 지구공학 논의의 기본선으로 제시합니다.", why_en: "Provides the emissions, removals, and overshoot baseline against which geoengineering is discussed."}
+    - {<<: *reading_defaults, title: "GeoMIP 기후모델 국제비교", title_en: "Geoengineering Model Intercomparison Project", url: "https://climate.envsci.rutgers.edu/GeoMIP/", type: "데이터", level: "심화", effort: "40분", effort_en: "40 min", why: "같은 개입 시나리오를 여러 기후모델에 넣었을 때 지역별 결과가 얼마나 다른지 보여줍니다.", why_en: "Shows how regional outcomes differ across climate models under the same intervention scenario."}
+    - {<<: *reading_defaults, title: "미 국립학술원 태양반사 연구의제", title_en: "National Academies Solar Geoengineering Research Agenda", url: "https://www.nationalacademies.org/our-work/developing-a-research-agenda-and-research-governance-approaches-for-climate-intervention-strategies-that-reflect-sunlight-to-cool-earth", type: "리포트", level: "심화", effort: "45분", effort_en: "45 min", why: "연구 필요성과 함께 배치를 의미하지 않는 거버넌스 조건을 분명히 구분합니다.", why_en: "Clearly separates a research agenda from endorsement of deployment and sets governance conditions."}
+    - {<<: *reading_defaults, title: "UNEP 오존 과학평가패널", title_en: "UNEP Ozone Scientific Assessment Panel", url: "https://ozone.unep.org/science/assessment/sap", type: "공식문서", level: "심화", effort: "35분", effort_en: "35 min", why: "성층권 개입의 오존 부작용을 평가할 때 사용하는 국제 과학 검토 체계를 보여줍니다.", why_en: "Shows the international scientific assessment system relevant to ozone side effects."}
 
 - technology: spatial
   items:
@@ -503,3 +859,45 @@
       why_en: Shows how optics, weight, and cost shape consumer AR glasses.
       checked_at: 2026-07-12
       curated_by: human
+    - title: Apple visionOS 개발자 문서
+      title_en: Apple visionOS for Developers
+      url: https://developer.apple.com/visionos/
+      type: 공식문서
+      type_en: Official
+      level: 중급
+      lang: EN
+      effort: 20분
+      effort_en: 20 min
+      cadence: 비정기
+      cadence_en: Irregular
+      why: 공간 컴퓨팅이 어떤 상호작용과 앱 형태를 전제로 설계되는지 플랫폼 제공자의 원문으로 볼 수 있습니다.
+      why_en: Shows the interaction model and app shape that a spatial-computing platform is designed around.
+      checked_at: 2026-07-12
+      curated_by: human
+    - title: NIST 몰입형 기술 보안·프라이버시
+      title_en: NIST Immersive Technology Security and Privacy Workshop Report
+      url: https://www.nist.gov/publications/report-virtual-workshop-usable-cybersecurity-and-privacy-immersive-technologies
+      type: 리포트
+      type_en: Report
+      level: 심화
+      lang: EN
+      effort: 20분
+      effort_en: 20 min
+      cadence: 비정기
+      cadence_en: Irregular
+      why: 시선·손·공간 데이터가 만드는 보안과 프라이버시 병목을 표준기관 관점에서 보여줍니다.
+      why_en: Frames the security and privacy bottlenecks created by gaze, hand, and spatial data.
+      checked_at: 2026-07-12
+      curated_by: human
+    - {<<: *reading_defaults, title: "W3C Immersive Web 소개", title_en: "W3C Immersive Web Working Group", url: "https://www.w3.org/immersive-web/", type: "공식문서", level: "입문", effort: "12분", effort_en: "12 min", why: "웹에서 증강·가상현실을 기기와 브라우저에 가두지 않고 연결하려는 표준 방향을 보여줍니다.", why_en: "Shows the standards direction for XR experiences that are not locked to one device or browser."}
+    - {<<: *reading_defaults, title: "W3C WebXR Device API", title_en: "W3C WebXR Device API", url: "https://www.w3.org/TR/webxr/", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "헤드셋·안경·센서를 웹이 공통 방식으로 다루기 위한 핵심 역할을 설명합니다.", why_en: "Explains the common web layer for headsets, glasses, and spatial sensors."}
+    - {<<: *reading_defaults, title: "Khronos OpenXR 개요", title_en: "Khronos OpenXR", url: "https://www.khronos.org/openxr/", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "앱이 서로 다른 XR 기기에서 돌아가게 하는 플랫폼 호환성의 기본을 보여줍니다.", why_en: "Explains the interoperability layer that lets apps run across different XR devices."}
+    - {<<: *reading_defaults, title: "Android XR 개발 플랫폼", title_en: "Android XR Developer Platform", url: "https://developer.android.com/develop/xr", type: "공식문서", level: "입문", effort: "15분", effort_en: "15 min", why: "헤드셋과 안경형 기기에서 안드로이드 생태계가 어떤 앱 경험을 지향하는지 보여줍니다.", why_en: "Shows the app and ecosystem direction for Android-based headsets and glasses."}
+    - {<<: *reading_defaults, title: "OECD 몰입형 기술 정책 프라이머", title_en: "OECD Immersive Technologies Policy Primer", url: "https://www.oecd.org/content/dam/oecd/en/publications/reports/2025/03/an-immersive-technologies-policy-primer_aa2e7910/cf39863d-en.pdf", type: "리포트", level: "중급", effort: "35분", effort_en: "35 min", why: "산업 활용처와 프라이버시·안전·접근성·호환성 과제를 함께 보며 플랫폼 홍보에서 벗어납니다.", why_en: "Balances use cases with privacy, safety, access, and interoperability, avoiding a single-platform view."}
+    - {<<: *reading_defaults, title: "Apple visionOS 디자인 원칙", title_en: "Apple Designing for visionOS", url: "https://developer.apple.com/design/human-interface-guidelines/designing-for-visionos", type: "공식문서", level: "중급", effort: "25분", effort_en: "25 min", why: "시선·손·거리·멀미·접근성이 공간 상호작용을 어떻게 바꾸는지 정리합니다.", why_en: "Shows how gaze, hands, distance, motion comfort, and accessibility shape spatial interaction."}
+    - {<<: *reading_defaults, title: "OpenXR 표준 레지스트리", title_en: "Khronos OpenXR Registry", url: "https://registry.khronos.org/OpenXR/", type: "공식문서", level: "중급", effort: "30분", effort_en: "30 min", why: "표준·확장·적합성 시험이 어떻게 기기간 호환성을 유지하는지 보여줍니다.", why_en: "Shows how specifications, extensions, and conformance testing maintain device interoperability."}
+    - {<<: *reading_defaults, title: "W3C WebXR 표준 이력", title_en: "W3C WebXR Standards History", url: "https://www.w3.org/standards/history/webxr/", type: "데이터", level: "중급", effort: "20분", effort_en: "20 min", why: "웹 XR 표준이 초안에서 후보권고로 성숙하는 속도와 변경 이력을 보여줍니다.", why_en: "Tracks how quickly the open web XR standard matures and changes."}
+    - {<<: *reading_defaults, title: "Apple visionOS 프라이버시 모범규범", title_en: "Apple visionOS Privacy Best Practices", url: "https://developer.apple.com/documentation/visionos/adopting-best-practices-for-privacy", type: "공식문서", level: "심화", effort: "30분", effort_en: "30 min", why: "시선·손·주변환경 데이터를 최소화하고 권한을 설명하는 플랫폼 방식을 보여줍니다.", why_en: "Shows one platform's approach to minimizing gaze, hand, and environment data."}
+    - {<<: *reading_defaults, title: "OECD 국가별 몰입형 기술 전략", title_en: "OECD National Strategies for Immersive Technologies", url: "https://www.oecd.org/en/publications/2026/02/an-overview-of-national-strategies-and-policies-for-immersive-technologies_c1bf93e7.html", type: "리포트", level: "심화", effort: "40분", effort_en: "40 min", why: "23개국과 EU의 지원·표준·보안·책임혁신 정책을 비교해 기술 확산의 실제 방향을 보여줍니다.", why_en: "Compares funding, standards, security, and responsible-innovation policies across 23 countries and the EU."}
+    - {<<: *reading_defaults, title: "OpenXR 적합성 시험 FAQ", title_en: "OpenXR Conformance Process FAQ", url: "https://www.khronos.org/openxr/openxr-standardization-process-faq", type: "공식문서", level: "심화", effort: "30분", effort_en: "30 min", why: "서로 다른 런타임이 같은 표준을 제대로 구현했는지 시험하는 구조를 설명합니다.", why_en: "Explains how conformance testing checks that different runtimes implement the same standard."}
+    - {<<: *reading_defaults, title: "Immersive Web 보안·프라이버시 모델", title_en: "Immersive Web Security and Privacy", url: "https://immersive-web.github.io/webxr/privacy-security-explainer.html", type: "공식문서", level: "심화", effort: "35분", effort_en: "35 min", why: "센서 지문·공간추적·권한·사용자 의도를 열린 웹 표준의 위협모델로 보여줍니다.", why_en: "Models sensor fingerprinting, spatial tracking, permissions, and user intent for the open web."}

@@ -126,17 +126,6 @@
       font-size: 12px;
       font-weight: 600;
     }
-    .analytics-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.45fr) minmax(280px, 1fr);
-      gap: 12px;
-      padding: 14px 16px 16px;
-    }
-    .analytics-card { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--sidebar); }
-    .analytics-card-title { padding: 11px 12px; font-size: 13px; font-weight: 750; border-bottom: 1px solid var(--line); }
-    .analytics-chart { display: flex; align-items: end; gap: 3px; height: 170px; padding: 20px 12px 12px; }
-    .analytics-bar { flex: 1; min-width: 3px; border-radius: 4px 4px 1px 1px; background: #2563eb; opacity: .82; }
-    .analytics-note { padding: 18px 16px; color: var(--muted); font-size: 13px; }
     .table-wrap {
       width: 100%;
       overflow-x: auto;
@@ -232,7 +221,6 @@
       .summary-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .record-panel { overflow-x: auto; }
       table { min-width: 760px; }
-      .analytics-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -251,7 +239,6 @@
       <label><input type="checkbox" id="failedOnly"> 실패만 보기</label>
     </div>
     <section class="admin-stack">
-      <div class="admin-section" id="analyticsPanel"></div>
       <div class="admin-section" id="freshnessPanel"></div>
       <div class="admin-section" id="runList"></div>
       <div class="record-panel" id="recordPanel"></div>
@@ -263,7 +250,6 @@
     const state = {
       history: null,
       dashboard: null,
-      analytics: null,
       selectedRunId: "",
       failedOnly: false,
       runPage: 0,
@@ -298,38 +284,6 @@
         minute: "2-digit",
         hour12: false,
       }).format(date);
-    }
-
-    function metric(value) {
-      return Number(value || 0).toLocaleString("ko-KR", { maximumFractionDigits: 0 });
-    }
-
-    function renderAnalytics() {
-      const panel = document.getElementById("analyticsPanel");
-      const data = state.analytics;
-      if (!data) {
-        panel.innerHTML = `<div class="section-head"><div><div class="section-title">이용 지표</div><div class="muted">Pageview와 click 집계를 아직 불러오지 못했습니다.</div></div></div><div class="analytics-note">GA4 설정 후 집계 작업을 실행하면 최근 30일 지표가 여기에 표시됩니다.</div>`;
-        return;
-      }
-      const summary = data.summary || {};
-      const daily = Array.isArray(data.daily) ? data.daily : [];
-      const max = Math.max(1, ...daily.map((item) => Number(item.screenPageViews || 0)));
-      const bars = daily.map((item) => `<span class="analytics-bar" style="height:${Math.max(3, Number(item.screenPageViews || 0) / max * 100)}%" title="${escapeHtml(item.date)} · ${metric(item.screenPageViews)} PV"></span>`).join("");
-      const pageRows = (data.pages || []).slice(0, 8).map((item) => `<tr><td>${escapeHtml(item.pagePath || "-")}</td><td>${metric(item.screenPageViews)}</td><td>${metric(item.totalUsers)}</td></tr>`).join("");
-      const clickRows = (data.clicks || []).slice(0, 8).map((item) => `<tr><td>${escapeHtml(item["customEvent:element_label"] || "(라벨 없음)")}</td><td>${metric(item.eventCount)}</td></tr>`).join("");
-      panel.innerHTML = `<div class="section-head"><div><div class="section-title">이용 지표 · ${escapeHtml(data.period || "최근 30일")}</div><div class="muted">마지막 집계 ${escapeHtml(formatDate(data.generated_at))}</div></div></div>
-        <div class="summary-cards">
-          <div class="summary-card"><strong>${metric(summary.screenPageViews)}</strong><span>Pageviews</span></div>
-          <div class="summary-card"><strong>${metric(summary.totalUsers)}</strong><span>Users</span></div>
-          <div class="summary-card"><strong>${metric(summary.sessions)}</strong><span>Sessions</span></div>
-          <div class="summary-card"><strong>${metric((data.clicks || []).reduce((sum, item) => sum + Number(item.eventCount || 0), 0))}</strong><span>Clicks</span></div>
-          <div class="summary-card"><strong>${summary.totalUsers ? (Number(summary.screenPageViews || 0) / Number(summary.totalUsers)).toFixed(1) : "-"}</strong><span>PV / User</span></div>
-        </div>
-        <div class="analytics-grid">
-          <div class="analytics-card"><div class="analytics-card-title">일별 Pageviews</div><div class="analytics-chart" aria-label="일별 Pageviews 차트">${bars || '<span class="muted">데이터 없음</span>'}</div></div>
-          <div class="analytics-card"><div class="analytics-card-title">인기 페이지</div><div class="table-wrap"><table><thead><tr><th>페이지</th><th>PV</th><th>사용자</th></tr></thead><tbody>${pageRows}</tbody></table></div></div>
-          <div class="analytics-card"><div class="analytics-card-title">많이 클릭한 항목</div><div class="table-wrap"><table><thead><tr><th>항목</th><th>클릭</th></tr></thead><tbody>${clickRows}</tbody></table></div></div>
-        </div>`;
     }
 
     function runSummary(run) {
@@ -547,10 +501,9 @@
 
     async function load() {
       try {
-        const [logResponse, dashboardResponse, analyticsResponse] = await Promise.all([
+        const [logResponse, dashboardResponse] = await Promise.all([
           fetch("../data/fetch_log.json", { cache: "no-store" }),
           fetch("../data/dashboard.json", { cache: "no-store" }),
-          fetch("../data/analytics.json", { cache: "no-store" }),
         ]);
         if (!logResponse.ok) throw new Error(`fetch_log HTTP ${logResponse.status}`);
         state.history = await logResponse.json();
@@ -559,15 +512,12 @@
         } else {
           state.dashboard = {};
         }
-        state.analytics = analyticsResponse.ok ? await analyticsResponse.json() : null;
         document.getElementById("updatedAt").textContent = `최근 갱신: ${formatDate(state.history.updated_at)}`;
       } catch (error) {
         state.history = { runs: [] };
         state.dashboard = {};
-        state.analytics = null;
         document.getElementById("updatedAt").textContent = `수집 로그를 불러오지 못했습니다: ${error.message}`;
       }
-      renderAnalytics();
       renderFreshness();
       renderRuns();
       renderRecords();

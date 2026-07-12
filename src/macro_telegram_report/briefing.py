@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import hashlib
-import json
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+
+from .storage import load_json, write_json
 
 BRIEFINGS_DIRNAME = "briefings"
 BRIEFING_INDEX_FILENAME = "index.json"
@@ -20,20 +21,6 @@ CARD_LABELS = {
     "close": "한국장 마감",
     "us_close": "미국장 마감",
 }
-
-
-def load_json(path: Path, fallback: Any) -> Any:
-    if not path.exists():
-        return fallback
-    try:
-        return json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return fallback
-
-
-def write_json(path: Path, value: Any) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def briefing_date_key(generated_at: str) -> str:

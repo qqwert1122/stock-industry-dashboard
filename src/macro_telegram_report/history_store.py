@@ -8,11 +8,12 @@
 
 from __future__ import annotations
 
-import json
 import re
 from datetime import date, timedelta
 from pathlib import Path
 from typing import Any
+
+from .storage import load_json, write_json
 
 STORE_VERSION = 1
 SNAPSHOT_MODE = "latest"
@@ -39,13 +40,9 @@ class HistoryStore:
             return self._cache[safe_key]
         path = self.path_for(safe_key)
         document: dict[str, Any] = {"version": STORE_VERSION, "key": safe_key, "points": []}
-        if path.exists():
-            try:
-                loaded = json.loads(path.read_text(encoding="utf-8"))
-                if isinstance(loaded, dict) and isinstance(loaded.get("points"), list):
-                    document = loaded
-            except (json.JSONDecodeError, OSError):
-                pass
+        loaded = load_json(path, None)
+        if isinstance(loaded, dict) and isinstance(loaded.get("points"), list):
+            document = loaded
         self._cache[safe_key] = document
         return document
 
@@ -109,11 +106,7 @@ class HistoryStore:
             if path.exists():
                 path.unlink()
             return
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(
-            json.dumps(document, ensure_ascii=False, separators=(",", ":")) + "\n",
-            encoding="utf-8",
-        )
+        write_json(path, document, compact=True)
 
     def save_all(self) -> None:
         for key in list(self._cache):

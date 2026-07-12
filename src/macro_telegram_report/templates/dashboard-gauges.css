@@ -1,0 +1,763 @@
+    /* ---------- 시장 온도계 / 침체 시그널 / 백분위 ---------- */
+    .market-diagnosis {
+      display: grid;
+      gap: 14px;
+      margin: var(--overview-title-top-gap) 0 18px;
+    }
+    .market-diagnosis-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: flex-start;
+      gap: 7px;
+      padding: 0;
+    }
+    .market-diagnosis-head h2 {
+      margin: 0;
+      color: #111827;
+      font-size: 20px;
+      line-height: 1.12;
+      font-weight: 600;
+    }
+
+    body.theme-dark .schedule-alerts-head h2,
+    body.theme-dark .market-diagnosis-head h2 {
+      color: var(--text);
+    }
+    .market-gauges {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0;
+      margin: 0;
+    }
+    .gauge-card {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 16px 18px 18px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      display: grid;
+      align-content: start;
+      gap: 14px;
+      min-height: 206px;
+    }
+    .market-diagnosis .gauge-card {
+      min-height: 0;
+      padding: 4px 24px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+    .market-diagnosis .gauge-card:first-child {
+      padding-left: 0;
+    }
+    .market-diagnosis .gauge-card:last-child {
+      padding-right: 0;
+    }
+    .market-diagnosis .gauge-card + .gauge-card {
+      border-left: 1px solid color-mix(in srgb, var(--line) 74%, transparent);
+    }
+    .gauge-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 0;
+    }
+    .gauge-card-head h3 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.2;
+      font-weight: 600;
+    }
+    .gauge-card-actions {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 6px;
+      min-width: 0;
+    }
+    .gauge-history-toggle,
+    .gauge-history-range {
+      border: 1px solid var(--line);
+      border-radius: var(--chip-radius);
+      background: var(--menu);
+      color: var(--muted);
+      font-size: 11.5px;
+      line-height: 1;
+      padding: 6px 8px;
+      cursor: pointer;
+    }
+    .gauge-history-toggle:hover,
+    .gauge-history-toggle.is-active,
+    .gauge-history-range:hover,
+    .gauge-history-range.is-active {
+      background: var(--menu-active);
+      color: var(--text);
+    }
+    .gauge-history-panel {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+    .gauge-history-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .gauge-history-title {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .gauge-history-ranges {
+      display: inline-flex;
+      gap: 5px;
+    }
+    .gauge-history-empty {
+      padding: 18px 10px;
+      border-radius: 8px;
+      background: var(--menu);
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+    .gauge-history-chart {
+      width: 100%;
+      min-height: 150px;
+    }
+    .gauge-history-chart svg {
+      width: 100%;
+      height: 150px;
+      overflow: visible;
+    }
+    .gauge-history-band {
+      opacity: 0.16;
+    }
+    .gauge-history-band.band-low { fill: var(--gauge-cool); }
+    .gauge-history-band.band-mid { fill: var(--gauge-neutral); }
+    .gauge-history-band.band-high { fill: var(--gauge-hot); }
+    .gauge-history-line {
+      fill: none;
+      stroke: var(--chart-down);
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .gauge-history-point {
+      fill: var(--surface);
+      stroke: var(--chart-down);
+      stroke-width: 2;
+    }
+    .gauge-history-axis,
+    .gauge-history-grid {
+      stroke: var(--line);
+      stroke-width: 1;
+    }
+    .gauge-history-label {
+      fill: var(--muted);
+      font-size: 10px;
+    }
+    .thermometer-score {
+      font-weight: 700;
+      font-size: 13px;
+      padding: 4px 12px;
+      border-radius: var(--chip-radius);
+      background: var(--menu);
+      white-space: nowrap;
+    }
+    .gauge-status-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      padding: 4px 10px;
+      border-radius: var(--chip-radius);
+      background: transparent;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .thermometer-score.heat-hot { background: color-mix(in srgb, var(--gauge-hot) 16%, transparent); color: color-mix(in srgb, var(--gauge-hot) 78%, var(--text)); }
+    .gauge-status-badge.heat-hot,
+    .fear-greed-label.heat-hot { color: color-mix(in srgb, var(--gauge-hot) 78%, var(--text)); }
+    .thermometer-score.heat-warm { background: color-mix(in srgb, var(--gauge-warm) 16%, transparent); color: color-mix(in srgb, var(--gauge-warm) 78%, var(--text)); }
+    .gauge-status-badge.heat-warm,
+    .fear-greed-label.heat-warm { color: color-mix(in srgb, var(--gauge-warm) 78%, var(--text)); }
+    .thermometer-score.heat-neutral { background: color-mix(in srgb, var(--gauge-neutral) 18%, transparent); color: color-mix(in srgb, var(--gauge-neutral) 70%, var(--text)); }
+    .gauge-status-badge.heat-neutral,
+    .fear-greed-label.heat-neutral { color: color-mix(in srgb, var(--gauge-neutral) 70%, var(--text)); }
+    .thermometer-score.heat-cool { background: color-mix(in srgb, var(--gauge-cool) 16%, transparent); color: color-mix(in srgb, var(--gauge-cool) 78%, var(--text)); }
+    .gauge-status-badge.heat-cool,
+    .fear-greed-label.heat-cool { color: color-mix(in srgb, var(--gauge-cool) 78%, var(--text)); }
+    .thermometer-score.heat-cold { background: color-mix(in srgb, var(--gauge-cold) 16%, transparent); color: color-mix(in srgb, var(--gauge-cold) 78%, var(--text)); }
+    .gauge-status-badge.heat-cold,
+    .fear-greed-label.heat-cold { color: color-mix(in srgb, var(--gauge-cold) 78%, var(--text)); }
+    .gauge-primary {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      margin: -2px 0 12px;
+      min-width: 0;
+    }
+    .gauge-primary-number {
+      color: var(--text);
+      font-size: 34px;
+      line-height: 0.94;
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+    .gauge-primary-unit {
+      margin-bottom: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 520;
+    }
+    .gauge-primary-text {
+      color: var(--text);
+      font-size: 26px;
+      line-height: 1;
+      font-weight: 500;
+    }
+    .thermometer-track {
+      position: relative;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--gauge-gradient);
+    }
+    .thermometer-marker {
+      position: absolute;
+      top: 50%;
+      width: 18px;
+      height: 18px;
+      border: 1px solid var(--gauge-marker-border);
+      border-radius: 999px;
+      background: var(--gauge-marker-bg);
+      transform: translate(-50%, -50%);
+      box-shadow: var(--gauge-marker-shadow);
+    }
+    .gauge-main-area { min-height: 0; }
+    .gauge-comment { margin: 12px 0 0; font-size: 13px; color: var(--muted); line-height: 1.55; }
+    .market-diagnosis .gauge-comment { display: none; }
+    .fear-greed-gauge-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 10px;
+      overflow: hidden;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+    }
+    .market-diagnosis .fear-greed-gauge-list {
+      max-height: none;
+      overflow: visible;
+      padding-right: 0;
+      scrollbar-width: auto;
+    }
+    .fear-greed-gauge-item {
+      width: 100%;
+      display: grid;
+      gap: 6px;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+    }
+    .fear-greed-gauge-list li:first-child .fear-greed-gauge-item {
+      padding-top: 0;
+    }
+    .fear-greed-gauge-list li:last-child .fear-greed-gauge-item {
+      padding-bottom: 0;
+    }
+    .fear-greed-gauge-list li + li {
+      border-top: 0;
+    }
+    .fear-greed-gauge-static { cursor: default; }
+    .fear-greed-gauge-item:focus-visible {
+      outline: 2px solid var(--text);
+      outline-offset: -3px;
+      border-radius: 16px;
+    }
+    .fear-greed-row-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-width: 0;
+    }
+    .fear-greed-name-line {
+      min-width: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .fear-greed-name {
+      min-width: 0;
+      font-size: 13px;
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .fear-greed-label {
+      flex: 0 0 auto;
+      padding: 3px 7px;
+      border-radius: var(--chip-radius);
+      font-size: 10.5px;
+      line-height: 1;
+      font-weight: 650;
+      background: transparent;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .fear-greed-name-line .fear-greed-label { display: none; }
+    .fear-greed-score-line {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      min-width: 0;
+    }
+    .fear-greed-score {
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1;
+      font-weight: 720;
+      white-space: nowrap;
+    }
+    .fear-greed-gauge-item .thermometer-track {
+      height: 6px;
+    }
+    .fear-greed-gauge-item .thermometer-marker {
+      width: 16px;
+      height: 16px;
+    }
+    .fear-greed-score-line .gauge-component-change {
+      display: none;
+    }
+
+    @media (max-width: 1180px) {
+      .market-gauges {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .market-diagnosis .gauge-card,
+      .market-diagnosis .gauge-card:first-child,
+      .market-diagnosis .gauge-card:last-child {
+        padding: 18px 0;
+      }
+      .market-diagnosis .gauge-card + .gauge-card {
+        border-top: 1px solid color-mix(in srgb, var(--line) 74%, transparent);
+        border-left: 0;
+      }
+    }
+
+    @media (min-width: 761px) and (max-width: 1180px) {
+      .favorite-metrics.is-paged .favorite-metrics-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .market-diagnosis {
+        margin-top: var(--overview-title-top-gap-mobile);
+      }
+      .market-diagnosis-head h2 {
+        font-size: 18px;
+      }
+      .market-gauges {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .gauge-basis { margin-top: 0; font-size: 12px; }
+    .gauge-basis-title {
+      display: block;
+      margin: 0 0 9px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 650;
+    }
+    .gauge-component-list {
+      position: relative;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 8px;
+      overflow: visible;
+      cursor: default;
+    }
+    .market-diagnosis .gauge-component-list {
+      max-height: 75px;
+      overflow-y: auto;
+      padding-right: 4px;
+      scrollbar-width: thin;
+      scrollbar-color: color-mix(in srgb, var(--muted) 28%, transparent) transparent;
+    }
+    .market-diagnosis .thermometer-card .gauge-component-list,
+    .market-diagnosis .recession-card .gauge-component-list {
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 10px, #000 calc(100% - 10px), transparent 100%);
+      mask-image: linear-gradient(to bottom, transparent 0, #000 10px, #000 calc(100% - 10px), transparent 100%);
+    }
+    .gauge-component-list.is-dragging {
+      cursor: grabbing;
+      user-select: none;
+    }
+    .gauge-component-list.is-dragging button {
+      cursor: grabbing;
+    }
+    .gauge-component-list::-webkit-scrollbar {
+      display: none;
+    }
+    .market-diagnosis .gauge-component-list::-webkit-scrollbar,
+    .market-diagnosis .fear-greed-gauge-list::-webkit-scrollbar {
+      display: block;
+      width: 4px;
+      height: 4px;
+    }
+    .market-diagnosis .gauge-component-list::-webkit-scrollbar-thumb,
+    .market-diagnosis .fear-greed-gauge-list::-webkit-scrollbar-thumb {
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--muted) 26%, transparent);
+    }
+    .market-diagnosis .gauge-component-list::-webkit-scrollbar-track,
+    .market-diagnosis .fear-greed-gauge-list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .gauge-component-list li {
+      min-width: 0;
+    }
+    .gauge-component-list button,
+    .gauge-component-static,
+    .signal-chip {
+      width: 100%;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      align-items: center;
+      align-content: center;
+      gap: 8px;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 0;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 12px;
+      text-align: left;
+    }
+    .gauge-component-static,
+    .signal-chip-static { cursor: default; }
+    .gauge-component-name {
+      min-width: 0;
+      font-size: 11.5px;
+      font-weight: 400;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: normal;
+      line-height: 1.25;
+    }
+    .gauge-component-value {
+      color: #111827;
+      font-size: 11.5px;
+      line-height: 1.1;
+      font-weight: 400;
+      overflow-wrap: anywhere;
+      text-align: right;
+      white-space: nowrap;
+    }
+    body.theme-dark .gauge-component-value { color: var(--text); }
+    .gauge-component-change {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.2;
+      font-weight: 400;
+      width: auto;
+      justify-self: end;
+      border-radius: var(--chip-radius);
+      background: var(--menu);
+      padding: 3px 6px;
+      white-space: nowrap;
+    }
+    .gauge-trend-icon {
+      width: 12px;
+      height: 12px;
+      flex: 0 0 12px;
+      stroke: currentColor;
+    }
+    .gauge-component-change.positive {
+      background: color-mix(in srgb, var(--chart-up) 10%, transparent);
+      color: var(--chart-up) !important;
+    }
+    .gauge-component-change.negative {
+      background: color-mix(in srgb, var(--chart-down) 10%, transparent);
+      color: var(--chart-down) !important;
+    }
+    .gauge-component-heat { color: var(--muted); font-size: 10.5px; line-height: 1.25; width: 100%; }
+    .signal-chip .signal-value { font-weight: 400; font-size: 11.5px; }
+    .metric-stale-badge {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 2px 6px;
+      border-radius: var(--chip-radius);
+      font-size: 10px;
+      font-weight: 700;
+      background: rgba(245, 158, 11, 0.15);
+      color: #b45309;
+      white-space: nowrap;
+    }
+    .pct-band { fill: rgba(59, 130, 246, 0.08); }
+    body.theme-dark .pct-band { fill: rgba(96, 165, 250, 0.1); }
+    .pct-band-median { stroke: rgba(59, 130, 246, 0.55); stroke-width: 1; stroke-dasharray: 4 4; }
+    .detail-range-toggle { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
+    .detail-range-toggle[hidden] { display: none; }
+    .detail-range-toggle button {
+      border: 1px solid var(--line);
+      background: var(--menu);
+      border-radius: var(--chip-radius);
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--muted);
+    }
+    .detail-range-toggle button.is-active { background: var(--menu-active); color: var(--text); font-weight: 500; }
+
+    .metric-detail-drawer .detail-range-toggle button,
+    .metric-detail-drawer .compare-chip,
+    .metric-detail-drawer .compare-chip-remove {
+      font-weight: 400;
+    }
+
+    @media (max-width: 760px) {
+      body {
+        font-size: 17px;
+      }
+
+      .schedule-alerts-head h2,
+      .market-diagnosis-head h2,
+      .favorite-metrics .favorite-metrics-head h2,
+      .daily-heatmap-head h2 {
+        font-size: 20px;
+      }
+
+      .market-diagnosis .thermometer-card .gauge-basis-title,
+      .market-diagnosis .recession-card .gauge-basis-title,
+      .market-diagnosis .thermometer-card .gauge-component-name,
+      .market-diagnosis .recession-card .gauge-component-name,
+      .market-diagnosis .thermometer-card .gauge-component-value,
+      .market-diagnosis .recession-card .gauge-component-value,
+      .market-diagnosis .thermometer-card .gauge-component-change,
+      .market-diagnosis .recession-card .gauge-component-change {
+        font-size: 13px;
+      }
+
+      .market-diagnosis .thermometer-card .gauge-component-list,
+      .market-diagnosis .recession-card .gauge-component-list {
+        padding: 8px 4px 8px 0;
+      }
+
+      .market-diagnosis .gauge-status-badge {
+        font-size: 16px;
+      }
+
+      .daily-updates.is-overview-content > .overview-hero > .morning-briefing-section,
+      .daily-updates.is-overview-content > .favorite-metrics,
+      .daily-updates.is-overview-content > .market-diagnosis,
+      .daily-updates.is-overview-content > .overview-hero > .schedule-alerts {
+        gap: 14px;
+      }
+
+      .daily-updates.is-overview-content > .overview-hero > .morning-briefing-section .morning-briefing {
+        margin-bottom: 18px;
+      }
+
+      .daily-updates.is-overview-content > .favorite-metrics,
+      .daily-updates.is-overview-content > .market-diagnosis,
+      .daily-updates.is-overview-content > .overview-hero > .schedule-alerts {
+        margin: var(--overview-title-top-gap-mobile) 0 18px;
+      }
+
+      .daily-updates.is-overview-content > .daily-update-details {
+        margin: var(--overview-title-top-gap-mobile) 0 0;
+      }
+
+      .daily-updates.is-overview-content > .favorite-metrics {
+        padding-bottom: 0;
+      }
+
+      .event-snapshot-title,
+      .fear-greed-name,
+      .gauge-component-name,
+      .daily-update-title {
+        font-size: 18px;
+      }
+
+      .event-snapshot-copy,
+      .event-snapshot-name,
+      .recent-alert-title,
+      .recent-alert-empty,
+      .briefing-summary-list,
+      .briefing-bullet-body,
+      .daily-update-summary,
+      .metric-current-value,
+      .metric-mobile-description,
+      .gauge-component-value,
+      .signal-chip .signal-value {
+        font-size: 16px;
+      }
+
+      .event-snapshot-date,
+      .recent-alert-time,
+      .gauge-status-badge,
+      .thermometer-score,
+      .fear-greed-score,
+      .fear-greed-label,
+      .gauge-component-change,
+      .daily-update-meta,
+      .daily-update-value,
+      .daily-update-change,
+      .detail-updated-at,
+      .detail-meta-value,
+      .detail-chart-legend {
+        font-size: 13px;
+      }
+
+      .metric-table th[data-mobile-label]::after,
+      .detail-label,
+      .gauge-component-heat,
+      .metric-change-badge,
+      .metric-stale-badge {
+        font-size: 12px;
+      }
+
+      .metric-table td,
+      .metric-table th,
+      .calendar-agenda-table td,
+      .calendar-agenda-table th,
+      .side-menu button {
+        font-size: 15px;
+      }
+
+      .metric-table th:not([data-mobile-label]),
+      .metric-table th[data-mobile-label]::after,
+      .metric-table .metric-name {
+        font-size: 16px;
+      }
+
+      .side-menu .menu-depth-button {
+        font-size: 13.5px;
+      }
+
+      .mover-ticker-viewport {
+        padding-top: 2px;
+        padding-bottom: calc(2px + env(safe-area-inset-bottom));
+      }
+
+      .mover-ticker-item {
+        height: 17px;
+        font-size: 11px;
+      }
+
+      .briefing-summary-list,
+      .briefing-bullet-body {
+        font-size: 16px;
+      }
+
+      .future-page-head h2 {
+        font-size: 20px;
+      }
+
+      .future-card-title,
+      .calendar-month-title,
+      .calendar-agenda-title,
+      .calendar-section-head h3,
+      .gauge-card-head h3,
+      .favorite-card-title,
+      .depth-title,
+      .depth-section .group-title,
+      .group-title {
+        font-size: 18px;
+      }
+
+      .favorite-card-value {
+        font-size: 18px;
+      }
+
+      .event-snapshot-copy,
+      .recent-alert-empty,
+      .future-copy,
+      .detail-description,
+      .detail-interpretation-content,
+      .calendar-empty-text {
+        font-size: 16px;
+      }
+
+      .signal-card {
+        gap: 6px;
+        padding: 14px;
+      }
+
+      .signal-card-title {
+        font-size: 14px;
+      }
+
+      .signal-card p {
+        font-size: 13px;
+      }
+
+      .signal-filter-row {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        margin: 0 -2px;
+        padding: 6px 2px 8px;
+        background: var(--signal-drawer-bg);
+      }
+
+      .calendar-name {
+        font-size: 16px;
+      }
+
+      .favorite-card-meta,
+      .calendar-date,
+      .calendar-note {
+        font-size: 13px;
+      }
+    }
+    .consent-banner {
+      position: fixed;
+      z-index: 1000;
+      right: 20px;
+      bottom: 20px;
+      width: min(430px, calc(100vw - 32px));
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+    .consent-banner strong { display: block; margin-bottom: 7px; font-size: 15px; }
+    .consent-banner p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .consent-actions { display: flex; gap: 8px; margin-top: 14px; }
+    .consent-button { border: 1px solid var(--line); border-radius: 999px; min-height: 36px; padding: 0 13px; background: var(--menu); color: var(--text); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .consent-button.primary { border-color: var(--text); background: var(--text); color: var(--bg); }
+    @media (max-width: 560px) { .consent-banner { right: 16px; bottom: 16px; } }

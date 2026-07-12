@@ -7,19 +7,21 @@
   <style>
     :root { color-scheme: light; --bg:#fff; --panel:#f7f7f7; --text:#171717; --muted:#6d6d6d; --line:#e6e6e6; }
     @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --bg:#111; --panel:#1d1d1d; --text:#f2f2f2; --muted:#a7a7a7; --line:#303030; } }
-    * { box-sizing:border-box; } body { margin:0; background:var(--bg); color:var(--text); font-family:Inter,Pretendard,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; } main { width:min(720px,100%); margin:0 auto; padding:42px 20px 72px; } img { width:126px; height:auto; } h1 { margin:28px 0 8px; font-size:26px; } h2 { margin:30px 0 10px; font-size:17px; } p,li { color:var(--muted); font-size:14px; line-height:1.7; } .notice { padding:14px 16px; border:1px solid var(--line); border-radius:14px; background:var(--panel); } a { color:inherit; } .back { display:inline-block; margin-top:28px; font-size:14px; font-weight:700; }
+    * { box-sizing:border-box; } body { margin:0; background:var(--bg); color:var(--text); font-family:Inter,Pretendard,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; } main { width:min(720px,100%); margin:0 auto; padding:20px 20px 72px; } .page-header { display:flex; align-items:center; gap:10px; min-height:42px; } .page-header a { width:38px; height:38px; display:grid; place-items:center; border:1px solid var(--line); border-radius:50%; color:var(--text); } .page-header a:hover { background:var(--panel); } .page-header svg { width:20px; height:20px; } h1 { margin:0; font-size:20px; } h2 { margin:30px 0 10px; font-size:17px; } p,li { color:var(--muted); font-size:14px; line-height:1.7; } .notice { padding:14px 16px; border:1px solid var(--line); border-radius:14px; background:var(--panel); } a { color:inherit; }
   </style>
 </head>
 <body>
   <main>
-    <img src="assets/marketbrief-logo.svg" alt="Market Brief">
-    <h1>개인정보처리방침</h1>
+    <header class="page-header">
+      <a href="./" aria-label="대시보드로 돌아가기" title="대시보드로 돌아가기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
+      <h1>개인정보처리방침</h1>
+    </header>
     <p>시행일: 2026년 7월 12일</p>
     <p>Market Brief(이하 “서비스”)는 이용자의 개인정보와 온라인 활동정보를 보호하기 위해 아래와 같이 개인정보처리방침을 공개합니다.</p>
     <h2>1. 처리하는 정보와 목적</h2>
     <p>서비스는 회원가입, 결제, 댓글 등 직접 식별정보를 수집하지 않습니다. 이용자가 분석에 동의한 경우에만 Google Analytics 4를 이용하여 페이지 방문, 버튼 클릭, 접속 일시, 브라우저·기기 관련 정보 및 온라인 식별자를 서비스 이용 현황 분석과 개선 목적으로 처리합니다.</p>
     <h2>2. 분석 동의와 철회</h2>
-    <p>분석 정보 처리는 이용자의 선택적 동의를 근거로 합니다. 동의를 거부해도 서비스의 주요 기능을 이용할 수 있으며, 화면 오른쪽 아래의 ‘분석 설정’에서 언제든 동의 상태를 변경할 수 있습니다. 동의 여부는 같은 브라우저의 로컬 저장소에만 기록되며, 이 기록은 분석 목적에 사용하지 않습니다.</p>
+    <p>분석 정보 처리는 이용자의 선택적 동의를 근거로 합니다. 동의를 거부해도 서비스의 주요 기능을 이용할 수 있으며, 메뉴의 ‘설정’ 안에 있는 ‘분석 설정’에서 언제든 동의 상태를 변경할 수 있습니다. 동의 여부는 같은 브라우저의 로컬 저장소에만 기록되며, 이 기록은 분석 목적에 사용하지 않습니다.</p>
     <h2>3. 제3자 제공 및 국외 처리</h2>
     <p>분석에 동의한 경우 Google Analytics 4 제공사인 Google의 서비스 인프라를 통해 정보가 처리될 수 있습니다. 처리 목적은 서비스 이용 분석이며, 처리 항목은 제1항의 분석 정보입니다. Google의 처리 국가·보유 기간·보호조치는 Google의 개인정보처리방침 및 서비스 설정에 따릅니다.</p>
     <h2>4. 보유 및 파기</h2>
@@ -28,8 +30,7 @@
     <p>서비스는 분석 동의 시 Google Analytics 관련 기술을 사용할 수 있습니다. 이용자는 분석 설정에서 동의를 거부하거나 철회할 수 있고, 브라우저 설정에서 쿠키·사이트 데이터를 삭제 또는 차단할 수 있습니다. 단, 브라우저 설정에 따라 일부 편의 기능의 저장 상태가 초기화될 수 있습니다.</p>
     <h2>6. 문의 및 권리 행사</h2>
     <p>개인정보 관련 열람·정정·삭제·처리정지 또는 기타 문의는 아래 연락처로 요청할 수 있습니다.</p>
-    <div class="notice"><strong>운영자 연락처를 입력하세요</strong><p>운영자명: luceforge studio<br>이메일 또는 문의 페이지: 배포 전 실제 연락처로 교체 필요</p></div>
-    <a class="back" href="./">← 대시보드로 돌아가기</a>
+    <div class="notice"><strong>luceforge studio</strong><p>이메일: <a href="mailto:luceforge.studio@gmail.com">luceforge.studio@gmail.com</a></p></div>
   </main>
 </body>
 </html>

@@ -1,0 +1,399 @@
+# 단위는 명목 미 달러 십억(USD B)이다. 공개 이력이 있는 구간은 연말 시가총액,
+# 챕터 경계와 버블 고점·저점은 해당 월의 실제 시가총액을 쓴다. 오래된·소멸
+# 기업은 공시와 인수가액으로 복원한 근사치이며 confidence/source_label에 밝힌다.
+- id: semiconductor
+  name: 반도체 — 누가 살아남았나
+  name_en: Semiconductors — Who Survived
+  track_record: newell-simon-chess
+  as_of: 2026
+  intro: 트랜지스터에서 AI 칩까지, 산업의 주인공이 여러 번 바뀌었습니다.
+  intro_en: From transistors to AI chips, the industry's lead role changed repeatedly.
+  chapters:
+    - {from: 1953, to: 1979, note: TI와 모스텍이 트랜지스터·메모리 시장을 넓혔지만 모스텍은 정점 직후 인수됩니다., note_en: TI and Mostek expand transistors and memory, but Mostek is acquired just after its peak.}
+    - {from: 1979, to: 2001, note: 인텔·AMD의 CPU 경쟁과 닷컴 버블이 반도체 기업의 순위를 바꿉니다., note_en: The Intel-AMD CPU race and dot-com bubble reorder chip leaders.}
+    - {from: 2001, to: 2026, note: 엔비디아가 게임 GPU에서 AI 가속기로 무게중심을 옮기며 새 선두가 됩니다., note_en: Nvidia shifts from gaming GPUs to AI accelerators and becomes the new leader.}
+  companies:
+    - symbol: TXN
+      name: 텍사스인스트루먼트
+      name_en: Texas Instruments
+      summary: 트랜지스터 상업화 초기부터 이어진 아날로그 반도체 강자입니다.
+      summary_en: An analog-chip leader whose roots reach the early commercialization of transistors.
+      listed: 1953
+      end: ongoing
+      metric: market_cap
+      unit: usd_billion
+      confidence: approx
+      source_url: https://companiesmarketcap.com/texas-instruments/marketcap/
+      source_label: CompaniesMarketCap 연말 시가총액(1996~), 이전은 역사적 발행주식·시세 기반 저자 근사
+      source_label_en: CompaniesMarketCap year-end market cap since 1996; earlier values are author estimates from historical shares and quotations
+      series: [{y: 1953, v: 0.18}, {y: 1960, v: 0.55}, {y: 1970, v: 2.1}, {y: 1972, v: 2.8}, {y: 1975, v: 2.4}, {y: 1980, v: 3.8}, {y: 1985, v: 4.7}, {y: 1990, v: 6.2}, {y: 1995, v: 10.8}, {y: 1996, v: 12.129}, {y: 2000, v: 81.9563}, {y: 2002, v: 25.9761}, {y: 2005, v: 51.2026}, {y: 2010, v: 37.9419}, {y: 2015, v: 55.4276}, {y: 2020, v: 150.6618}, {y: 2025, v: 160.8082}, {y: 2026, v: 283.4575}]
+    - symbol: INTC
+      name: 인텔
+      name_en: Intel
+      summary: 메모리에서 CPU로 전환해 PC 시대를 지배했지만 AI 전환에서 뒤처졌습니다.
+      summary_en: It pivoted from memory to CPUs and ruled the PC era, then fell behind in the AI transition.
+      listed: 1971
+      end: ongoing
+      metric: market_cap
+      unit: usd_billion
+      confidence: approx
+      source_url: https://companiesmarketcap.com/intel/marketcap/
+      source_label: CompaniesMarketCap 시가총액(1996~), 이전은 역사적 발행주식·시세 기반 저자 근사
+      source_label_en: CompaniesMarketCap market cap since 1996; earlier values are author estimates from historical shares and quotations
+      turning_points: [{y: 2000, kind: peak}]
+      series: [{y: 1971, v: 0.14}, {y: 1975, v: 0.35}, {y: 1980, v: 1.2}, {y: 1985, v: 4.2}, {y: 1990, v: 14.0}, {y: 1995, v: 75.0}, {y: 1996, v: 107.505}, {y: 1999, v: 274.4349}, {y: 2000, v: 502.7108, kind: peak, date: 2000-08-31, label: 닷컴 고점 약 $503B, label_en: Dot-com peak near $503B}, {y: 2002, v: 102.3728}, {y: 2005, v: 147.7382}, {y: 2010, v: 115.8963}, {y: 2015, v: 162.7763}, {y: 2020, v: 204.1624}, {y: 2025, v: 172.674}, {y: 2026, v: 552.0558}]
+    - symbol: AMD
+      name: AMD
+      name_en: AMD
+      summary: 장기간 2위였지만 설계 집중 전략과 Zen 아키텍처로 다시 성장했습니다.
+      summary_en: A longtime runner-up that revived through a fabless focus and the Zen architecture.
+      listed: 1972
+      end: ongoing
+      metric: market_cap
+      unit: usd_billion
+      confidence: approx
+      source_url: https://companiesmarketcap.com/amd/marketcap/
+      source_label: CompaniesMarketCap 연말 시가총액(1996~), 이전은 역사적 발행주식·시세 기반 저자 근사
+      source_label_en: CompaniesMarketCap year-end market cap since 1996; earlier values are author estimates from historical shares and quotations
+      series: [{y: 1972, v: 0.1}, {y: 1975, v: 0.2}, {y: 1980, v: 0.6}, {y: 1985, v: 1.3}, {y: 1990, v: 0.8}, {y: 1995, v: 3.0}, {y: 1996, v: 3.5427}, {y: 2000, v: 4.3392}, {y: 2002, v: 2.2257}, {y: 2005, v: 13.3271}, {y: 2010, v: 5.5869}, {y: 2015, v: 2.273}, {y: 2020, v: 110.4257}, {y: 2025, v: 350.0127}, {y: 2026, v: 909.6958}]
+    - symbol: NVDA
+      name: 엔비디아
+      name_en: Nvidia
+      summary: 게임용 GPU를 병렬 컴퓨팅과 AI 가속기의 표준으로 확장했습니다.
+      summary_en: It expanded gaming GPUs into a standard platform for parallel computing and AI acceleration.
+      listed: 1999
+      end: ongoing
+      metric: market_cap
+      unit: usd_billion
+      confidence: exact
+      source_url: https://companiesmarketcap.com/nvidia/marketcap/
+      source_label: CompaniesMarketCap 명목 연말 시가총액
+      source_label_en: CompaniesMarketCap nominal year-end market cap
+      series: [{y: 1999, v: 0.9607}, {y: 2000, v: 2.2244}, {y: 2001, v: 6.448}, {y: 2002, v: 1.2092}, {y: 2005, v: 6.2582}, {y: 2010, v: 8.9474}, {y: 2015, v: 17.7325}, {y: 2020, v: 323.2418}, {y: 2025, v: 4638.8342}, {y: 2026, v: 5109.6621}]
+    - symbol: MOSTEK
+      name: 모스텍
+      name_en: Mostek
+      summary: 1970년대 DRAM 선두였지만 정점 직후 UTC에 인수되고 결국 사업이 사라졌습니다.
+      summary_en: A 1970s DRAM leader acquired by UTC near its peak before the business disappeared.
+      listed: 1974
+      end: acquired
+      end_year: 1979
+      end_note: United Technologies가 약 3억4500만달러에 인수
+      end_note_en: Acquired by United Technologies for about $345 million
+      metric: market_cap
+      unit: usd_billion
+      confidence: approx
+      source_url: https://www.semi.org/en/Oral-History-Interview-Robert-Palmer
+      source_label: SEMI 구술사와 1979년 UTC 인수가액을 바탕으로 복원한 명목 시가총액 근사
+      source_label_en: Nominal market-cap approximation reconstructed from SEMI oral history and UTC's 1979 acquisition value
+      series: [{y: 1974, v: 0.05}, {y: 1975, v: 0.1}, {y: 1976, v: 0.18}, {y: 1977, v: 0.28}, {y: 1979, v: 0.345}]
+  events:
+    - {year: 1958, label: IC 발명, label_en: Integrated circuit invented}
+    - {year: 1979, label: UTC가 모스텍 인수, label_en: UTC acquires Mostek}
+    - {year: 1985, label: 인텔 메모리 철수, label_en: Intel exits memory}
+    - {year: 2000, label: 닷컴 고점, label_en: Dot-com peak}
+    - {year: 2023, label: 생성형 AI 붐, label_en: Generative AI boom}
+
+- id: internet
+  name: 인터넷 — 버블 뒤에 남은 기업
+  name_en: Internet — Who Remained After the Bubble
+  track_record: kurzweil-ebooks
+  as_of: 2026
+  intro: 같은 인터넷 성장에 올라탔어도 인프라·상거래·포털 기업의 결말은 달랐습니다.
+  intro_en: Infrastructure, commerce, and portal companies met very different outcomes on the same internet wave.
+  chapters:
+    - {from: 1990, to: 1999, note: 브라우저와 포털, 네트워크 장비가 동시에 상장하며 인터넷 기대가 폭발합니다., note_en: Browsers, portals, and networking firms list as internet expectations explode.}
+    - {from: 1999, to: 2002, note: 닷컴 버블 붕괴 뒤 사업모델과 현금흐름이 생존을 가릅니다., note_en: After the dot-com bust, business models and cash flow separate survivors from casualties.}
+    - {from: 2002, to: 2026, note: 아마존은 플랫폼으로 확장했지만 야후는 독립 기업으로 남지 못했습니다., note_en: Amazon expands into a platform while Yahoo fails to remain independent.}
+  companies:
+    - symbol: CSCO
+      name: 시스코
+      name_en: Cisco
+      summary: 인터넷 장비의 대표 수혜주였지만 2000년의 과도한 기대를 소화하는 데 수십 년이 걸렸습니다.
+      summary_en: The emblematic internet infrastructure winner took decades to digest its 2000 expectations.
+      listed: 1990
+      end: ongoing
+      metric: market_cap
+      unit: usd_billion
+      confidence: exact
+      source_url: https://companiesmarketcap.com/cisco/marketcap/
+      source_label: CompaniesMarketCap 명목 시가총액(변곡점 연도는 월간 고점·저점)
+      source_label_en: CompaniesMarketCap nominal market cap; monthly highs and lows for turning-point years
+      turning_points: [{y: 2000, kind: peak}, {y: 2002, kind: trough}]
+      series: [{y: 1990, v: 0.224}, {y: 1995, v: 18.0}, {y: 1996, v: 41.7182}, {y: 1999, v: 355.1227}, {y: 2000, v: 536.369, kind: peak, date: 2000-03-31, label: 닷컴 고점 약 $536B, label_en: Dot-com peak near $536B}, {y: 2002, v: 76.3563, kind: trough, date: 2002-09-30, label: 버블 저점 약 $76B, label_en: Post-bubble low near $76B}, {y: 2005, v: 105.1604}, {y: 2010, v: 112.1301}, {y: 2015, v: 137.8409}, {y: 2020, v: 189.0918}, {y: 2025, v: 308.8176}, {y: 2026, v: 478.1354}]
+    - symbol: AMZN
+      name: 아마존
+      name_en: Amazon
+      summary: 닷컴 붕괴의 큰 낙폭을 버티고 전자상거래와 클라우드 플랫폼으로 확장했습니다.
+      summary_en: It survived a deep dot-com drawdown and expanded into commerce and cloud platforms.
+      listed: 1997
+      end: ongoing
+      metric: market_cap
+      unit: usd_billion
+      confidence: exact
+      source_url: https://companiesmarketcap.com/amazon/marketcap/
+      source_label: CompaniesMarketCap 명목 시가총액(변곡점 연도는 월간 고점·저점)
+      source_label_en: CompaniesMarketCap nominal market cap; monthly highs and lows for turning-point years
+      turning_points: [{y: 1999, kind: peak}, {y: 2001, kind: trough}]
+      series: [{y: 1997, v: 1.4437}, {y: 1999, v: 28.8563, kind: peak, date: 1999-11-30, label: 닷컴 고점 약 $29B, label_en: Dot-com peak near $29B}, {y: 2000, v: 5.558}, {y: 2001, v: 2.2194, kind: trough, date: 2001-09-28, label: 고점 대비 약 -92%, label_en: Roughly 92% below the peak}, {y: 2005, v: 19.6144}, {y: 2010, v: 81.18}, {y: 2015, v: 318.3442}, {y: 2020, v: 1634.1685}, {y: 2025, v: 2485.689}, {y: 2026, v: 2639.1494}]
+    - symbol: NSCP
+      name: 넷스케이프
+      name_en: Netscape
+      summary: 웹 브라우저 시대를 열었지만 상장 4년 만에 AOL에 인수됐습니다.
+      summary_en: It opened the browser era but was acquired by AOL four years after listing.
+      listed: 1995
+      end: acquired
+      end_year: 1999
+      end_note: AOL이 약 42억달러 규모의 주식 거래로 인수
+      end_note_en: Acquired by AOL in an all-stock deal valued around $4.2 billion
+      metric: market_cap
+      unit: usd_billion
+      confidence: approx
+      source_url: https://www.sec.gov/Archives/edgar/data/1105705/000104746906001488/a2167198zex-3.htm
+      source_label: SEC에 수록된 발행주식·거래 범위와 AOL 42억달러 인수가액 기반 시가총액 근사
+      source_label_en: Market-cap approximation from SEC share counts and trading ranges, anchored to AOL's $4.2 billion acquisition value
+      series: [{y: 1995, v: 2.9}, {y: 1996, v: 3.5}, {y: 1997, v: 1.6}, {y: 1998, v: 2.8}, {y: 1999, v: 4.2}]
+    - symbol: YHOO
+      name: 야후
+      name_en: Yahoo
+      summary: 초기 포털의 중심이었지만 검색과 모바일 전환에서 밀려 핵심 사업이 매각됐습니다.
+      summary_en: The early portal leader lost the search and mobile transitions and sold its core business.
+      listed: 1996
+      end: acquired
+      end_year: 2017
+      end_note: 버라이즌이 야후의 영업 사업을 인수
+      end_note_en: Verizon acquired Yahoo's operating business
+      metric: market_cap
+      unit: usd_billion
+      confidence: approx
+      source_url: https://www.verizon.com/about/sites/default/files/2018-Verizon-Annual-Report-Financial-Section.pdf
+      source_label: Yahoo SEC 발행주식·거래 범위와 Verizon 영업사업 인수가액 기반 명목 시가총액 근사
+      source_label_en: Nominal market-cap approximation from Yahoo SEC share counts and trading ranges, plus Verizon's operating-business acquisition value
+      series: [{y: 1996, v: 0.85}, {y: 1999, v: 90.0}, {y: 2000, v: 125.0}, {y: 2001, v: 10.0}, {y: 2005, v: 50.0}, {y: 2010, v: 22.0}, {y: 2015, v: 30.0}, {y: 2017, v: 4.48}]
+  events:
+    - {year: 1995, label: 넷스케이프 IPO, label_en: Netscape IPO}
+    - {year: 2000, label: 닷컴 버블 고점, label_en: Dot-com bubble peak}
+    - {year: 2002, label: 아마존 고점 대비 약 -94%, label_en: Amazon roughly 94% below its peak}
+    - {year: 2017, label: 버라이즌의 야후 인수 완료, label_en: Verizon completes Yahoo acquisition}
+
+- id: radio-tv
+  name: 라디오에서 TV까지 — 기술은 남고 기업은 바뀌었다
+  name_en: Radio to TV — The Technology Stayed, Companies Changed
+  track_record: att-picturephone
+  as_of: 2026
+  intro: 방송 기술의 대중화가 초기 선도 기업의 영구 생존을 보장하지 않았던 사례입니다.
+  intro_en: Mass adoption of broadcasting did not guarantee permanent survival for its early leaders.
+  chapters:
+    - {from: 1919, to: 1932, note: 라디오 열풍으로 RCA가 급등했지만 대공황 뒤 고점을 회복하지 못합니다., note_en: Radio mania sends RCA soaring, but it never regains its peak after the Depression.}
+    - {from: 1932, to: 1970, note: 텔레비전 보급으로 RCA·제니스·모토로라가 가정용 전자 시장을 넓힙니다., note_en: Television adoption expands the consumer electronics market for RCA, Zenith, and Motorola.}
+    - {from: 1970, to: 2026, note: 일본 기업과의 경쟁 속에 RCA와 제니스는 인수되고 모토로라는 사업 구성이 달라집니다., note_en: Amid Japanese competition, RCA and Zenith are acquired while Motorola changes its business mix.}
+  companies:
+    - symbol: RCA
+      name: RCA
+      name_en: RCA
+      summary: 라디오와 TV 대중화를 이끌었지만 1929년 버블 고점을 되찾지 못한 채 GE에 인수됐습니다.
+      summary_en: It led radio and TV adoption but never regained its 1929 bubble peak before GE acquired it.
+      listed: 1919
+      end: acquired
+      end_year: 1986
+      end_note: GE가 보통주 주당 66.50달러에 인수
+      end_note_en: Acquired by GE for $66.50 per common share
+      metric: market_cap
+      unit: usd_billion
+      confidence: approx
+      source_url: https://fraser.stlouisfed.org/title/commercial-financial-chronicle-1339
+      source_label: FRASER 시세표·역사적 발행주식과 GE 64억달러 인수가액 기반 명목 시가총액 근사
+      source_label_en: Nominal market-cap approximation from FRASER quotations, historical shares, and GE's $6.4 billion acquisition value
+      series: [{y: 1919, v: 0.025}, {y: 1921, v: 0.1}, {y: 1923, v: 0.4}, {y: 1925, v: 1.2}, {y: 1927, v: 3.0}, {y: 1929, v: 11.0}, {y: 1932, v: 0.25}, {y: 1940, v: 0.5}, {y: 1950, v: 1.5}, {y: 1960, v: 3.0}, {y: 1970, v: 4.0}, {y: 1980, v: 3.0}, {y: 1986, v: 6.4}]
+    - symbol: ZENITH
+      name: 제니스
+      name_en: Zenith
+      summary: 미국 TV 대표 제조사였지만 재무구조 조정 끝에 LG전자 완전 자회사가 됐습니다.
+      summary_en: A major US television maker that became a wholly owned LG Electronics subsidiary after restructuring.
+      listed: 1929
+      end: acquired
+      end_year: 1999
+      end_note: 1999년 LG전자 완전 자회사로 편입
+      end_note_en: Became a wholly owned LG Electronics subsidiary in 1999
+      metric: market_cap
+      unit: usd_billion
+      confidence: approx
+      source_url: https://solutions.lg.com/us/business/zenith-electronics
+      source_label: 제니스 연차보고서의 발행주식·시세와 LG 인수 기록 기반 명목 시가총액 근사
+      source_label_en: Nominal market-cap approximation from Zenith annual-report shares and quotations plus LG acquisition records
+      series: [{y: 1929, v: 0.05}, {y: 1935, v: 0.08}, {y: 1945, v: 0.15}, {y: 1955, v: 0.45}, {y: 1965, v: 1.2}, {y: 1975, v: 2.0}, {y: 1985, v: 1.0}, {y: 1995, v: 0.3}, {y: 1999, v: 0.1}]
+    - symbol: MSI
+      name: 모토로라 솔루션
+      name_en: Motorola Solutions
+      summary: 라디오 제조에서 출발한 모토로라 계열 중 공공안전 통신 사업이 남은 회사입니다.
+      summary_en: The surviving public-safety communications business descended from radio pioneer Motorola.
+      listed: 1970
+      end: ongoing
+      metric: market_cap
+      unit: usd_billion
+      confidence: approx
+      source_url: https://companiesmarketcap.com/motorola-solutions/marketcap/
+      source_label: CompaniesMarketCap 시가총액(1996~), 이전 모토로라 계보는 연차보고서 기반 저자 근사
+      source_label_en: CompaniesMarketCap market cap since 1996; earlier Motorola-lineage values are author estimates from annual reports
+      series: [{y: 1970, v: 2.0}, {y: 1975, v: 3.0}, {y: 1980, v: 5.0}, {y: 1985, v: 10.0}, {y: 1990, v: 18.0}, {y: 1995, v: 35.0}, {y: 1996, v: 36.3455}, {y: 2000, v: 44.372}, {y: 2005, v: 56.4998}, {y: 2010, v: 21.3517}, {y: 2015, v: 11.9308}, {y: 2020, v: 28.8291}, {y: 2025, v: 62.8163}, {y: 2026, v: 70.1962}]
+  events:
+    - {year: 1929, label: 대공황 — RCA 고점 형성, label_en: Great Depression — RCA peak}
+    - {year: 1939, label: 뉴욕 세계박람회 TV 시연, label_en: Television demonstrated at New York World's Fair}
+    - {year: 1954, label: 컬러TV 판매 시작, label_en: Color TV sales begin}
+    - {year: 1986, label: GE가 RCA 인수, label_en: GE acquires RCA}
+    - {year: 1999, label: LG가 제니스 완전 인수, label_en: LG fully acquires Zenith}
+
+- id: pc
+  name: PC — 하드웨어에서 소프트웨어로
+  name_en: PCs — From Hardware to Software
+  track_record: kurzweil-portable-computers
+  as_of: 2026
+  intro: PC 시장을 연 IBM과 컴팩보다 운영체제와 생태계를 쥔 기업이 더 오래 성장했습니다.
+  intro_en: Companies controlling operating systems and ecosystems outgrew the hardware pioneers that opened the PC market.
+  chapters:
+    - {from: 1962, to: 1983, note: IBM이 메인프레임에서 PC 시장을 열고 애플이 개인용 컴퓨터를 대중화합니다., note_en: IBM moves from mainframes into PCs while Apple popularizes personal computing.}
+    - {from: 1983, to: 2002, note: 컴팩 호환기와 마이크로소프트 소프트웨어가 가치의 중심을 하드웨어 밖으로 옮깁니다., note_en: Compaq clones and Microsoft software move value beyond hardware.}
+    - {from: 2002, to: 2026, note: 컴팩은 사라지고 IBM은 PC를 매각했지만 애플과 마이크로소프트는 생태계로 확장합니다., note_en: Compaq disappears and IBM sells PCs, while Apple and Microsoft expand through ecosystems.}
+  companies:
+    - symbol: IBM
+      name: IBM
+      name_en: IBM
+      summary: PC 표준을 만들었지만 2005년 PC 사업을 레노버에 매각하고 기업용 사업에 집중했습니다.
+      summary_en: It established the PC standard, then sold the business to Lenovo in 2005 and focused on enterprise markets.
+      listed: 1962
+      end: ongoing
+      metric: market_cap
+      unit: usd_billion
+      confidence: approx
+      source_url: https://companiesmarketcap.com/ibm/marketcap/
+      source_label: CompaniesMarketCap 연말 시가총액(1996~), 이전은 역사적 발행주식·시세 기반 저자 근사
+      source_label_en: CompaniesMarketCap year-end market cap since 1996; earlier values are author estimates from historical shares and quotations
+      series: [{y: 1962, v: 20.0}, {y: 1965, v: 30.0}, {y: 1970, v: 35.0}, {y: 1975, v: 25.0}, {y: 1980, v: 35.0}, {y: 1985, v: 70.0}, {y: 1990, v: 65.0}, {y: 1995, v: 65.0}, {y: 1996, v: 76.9591}, {y: 2000, v: 148.1464}, {y: 2005, v: 128.8331}, {y: 2010, v: 180.2203}, {y: 2015, v: 132.9036}, {y: 2020, v: 112.1663}, {y: 2025, v: 285.1784}, {y: 2026, v: 270.2734}]
+    - symbol: AAPL
+      name: 애플
+      name_en: Apple
+      summary: 1990년대 위기를 넘고 하드웨어·소프트웨어·서비스를 묶은 생태계로 부활했습니다.
+      summary_en: It survived a 1990s crisis and revived through an integrated hardware, software, and services ecosystem.
+      listed: 1980
+      end: ongoing
+      metric: market_cap
+      unit: usd_billion
+      confidence: approx
+      source_url: https://companiesmarketcap.com/apple/marketcap/
+      source_label: CompaniesMarketCap 연말 시가총액(1996~), 이전은 IPO·연차보고서 기반 저자 근사
+      source_label_en: CompaniesMarketCap year-end market cap since 1996; earlier values are author estimates from IPO and annual-report records
+      series: [{y: 1980, v: 1.78}, {y: 1985, v: 2.0}, {y: 1990, v: 5.0}, {y: 1995, v: 4.0}, {y: 1996, v: 2.6008}, {y: 2000, v: 5.1368}, {y: 2005, v: 60.7914}, {y: 2010, v: 297.0918}, {y: 2015, v: 583.6127}, {y: 2020, v: 2255.9691}, {y: 2025, v: 3997.0768}, {y: 2026, v: 4631.2173}]
+    - symbol: MSFT
+      name: 마이크로소프트
+      name_en: Microsoft
+      summary: PC 운영체제의 표준을 장악한 뒤 클라우드와 기업 소프트웨어로 확장했습니다.
+      summary_en: It controlled the PC operating-system standard, then expanded into cloud and enterprise software.
+      listed: 1986
+      end: ongoing
+      metric: market_cap
+      unit: usd_billion
+      confidence: approx
+      source_url: https://companiesmarketcap.com/microsoft/marketcap/
+      source_label: CompaniesMarketCap 연말 시가총액(1996~), 이전은 IPO·연차보고서 기반 저자 근사
+      source_label_en: CompaniesMarketCap year-end market cap since 1996; earlier values are author estimates from IPO and annual-report records
+      series: [{y: 1986, v: 0.78}, {y: 1990, v: 8.0}, {y: 1995, v: 35.0}, {y: 1996, v: 99.4192}, {y: 1999, v: 604.4148}, {y: 2000, v: 230.8037}, {y: 2002, v: 276.6308}, {y: 2005, v: 271.5416}, {y: 2010, v: 234.5277}, {y: 2015, v: 439.679}, {y: 2020, v: 1681.6055}, {y: 2025, v: 3625.2295}, {y: 2026, v: 2860.6904}]
+    - symbol: CPQ
+      name: 컴팩
+      name_en: Compaq
+      summary: IBM 호환 PC 1위까지 성장했지만 가격 경쟁과 통합 부담 끝에 HP에 합병됐습니다.
+      summary_en: It became the top IBM-compatible PC maker but merged into HP after price competition and integration strain.
+      listed: 1983
+      end: acquired
+      end_year: 2002
+      end_note: HP 합병이 2002년 5월 3일 효력 발생
+      end_note_en: The HP merger became effective on May 3, 2002
+      metric: market_cap
+      unit: usd_billion
+      confidence: approx
+      source_url: https://www.sec.gov/Archives/edgar/data/47217/000091205702035524/a2088541z10-q.htm
+      source_label: HP SEC 합병 공시와 Compaq 연차보고서의 발행주식·거래 범위 기반 명목 시가총액 근사
+      source_label_en: Nominal market-cap approximation from HP's SEC merger filing and Compaq annual-report shares and trading ranges
+      series: [{y: 1983, v: 0.1}, {y: 1985, v: 0.5}, {y: 1990, v: 3.0}, {y: 1995, v: 10.0}, {y: 1998, v: 40.0}, {y: 2000, v: 20.0}, {y: 2002, v: 25.0}]
+  events:
+    - {year: 1981, label: IBM PC 출시, label_en: IBM PC launches}
+    - {year: 1986, label: 마이크로소프트 IPO, label_en: Microsoft IPO}
+    - {year: 1997, label: 애플 구조조정과 잡스 복귀, label_en: Apple restructures and Jobs returns}
+    - {year: 2002, label: HP·컴팩 합병, label_en: HP-Compaq merger}
+    - {year: 2005, label: IBM PC 사업 매각, label_en: IBM sells PC business}
+
+- id: electric-vehicle
+  name: 전기차 — 다음 승자는 아직 정해지지 않았다
+  name_en: Electric Vehicles — The Next Winner Is Not Settled
+  track_record: kurzweil-intelligent-roads
+  as_of: 2026
+  intro: 전기차 시장은 성장했지만 상장 시점의 기대와 기업의 생존은 크게 달랐습니다.
+  intro_en: The EV market grew, but listing-day expectations and company survival diverged sharply.
+  chapters:
+    - {from: 2002, to: 2020, note: BYD와 테슬라가 배터리·완성차를 결합하며 전기차 시장을 만듭니다., note_en: BYD and Tesla combine batteries and vehicles to build the EV market.}
+    - {from: 2020, to: 2022, note: 저금리와 SPAC 열풍 속에 니콜라·리비안까지 높은 기대를 받습니다., note_en: Low rates and SPAC mania lift expectations for Nikola and Rivian.}
+    - {from: 2022, to: 2026, note: 가격 경쟁과 자금 조달 부담이 커지며 니콜라는 파산하고 경쟁은 계속됩니다., note_en: Price competition and funding pressure intensify; Nikola fails while the contest continues.}
+  companies:
+    - symbol: TSLA
+      name: 테슬라
+      name_en: Tesla
+      summary: 전기차 대중화와 충전 생태계를 주도했지만 높은 기대만큼 변동성도 컸습니다.
+      summary_en: It led EV adoption and charging infrastructure, with volatility matching its high expectations.
+      listed: 2010
+      end: ongoing
+      metric: market_cap
+      unit: usd_billion
+      confidence: exact
+      source_url: https://companiesmarketcap.com/tesla/marketcap/
+      source_label: CompaniesMarketCap 명목 연말 시가총액
+      source_label_en: CompaniesMarketCap nominal year-end market cap
+      series: [{y: 2010, v: 2.5274}, {y: 2015, v: 31.5433}, {y: 2020, v: 668.9051}, {y: 2021, v: 1061.287}, {y: 2022, v: 388.9717}, {y: 2023, v: 789.898}, {y: 2024, v: 1385.6545}, {y: 2025, v: 1580.3961}, {y: 2026, v: 1531.434}]
+    - symbol: 1211.HK
+      name: BYD
+      name_en: BYD
+      summary: 배터리에서 출발해 전기차와 플러그인 하이브리드를 대규모로 생산하는 기업이 됐습니다.
+      summary_en: It grew from batteries into a scaled producer of EVs and plug-in hybrids.
+      listed: 2002
+      end: ongoing
+      metric: market_cap
+      unit: usd_billion
+      confidence: approx
+      source_url: https://companiesmarketcap.com/byd/marketcap/
+      source_label: CompaniesMarketCap 명목 연말 시가총액(USD), 2011년 이전은 상장·연차보고서 기반 근사
+      source_label_en: CompaniesMarketCap nominal year-end market cap in USD; pre-2011 values are estimates from listing and annual-report records
+      series: [{y: 2002, v: 1.0}, {y: 2005, v: 1.5}, {y: 2010, v: 12.0}, {y: 2011, v: 7.365}, {y: 2015, v: 20.5528}, {y: 2020, v: 78.0339}, {y: 2025, v: 132.9358}, {y: 2026, v: 121.3074}]
+    - symbol: RIVN
+      name: 리비안
+      name_en: Rivian
+      summary: 대형 IPO 뒤 생산 확대와 현금 소진을 동시에 겪는 현재진행형 기업입니다.
+      summary_en: A still-unfolding company balancing production growth against cash burn after a huge IPO.
+      listed: 2021
+      end: ongoing
+      metric: market_cap
+      unit: usd_billion
+      confidence: exact
+      source_url: https://companiesmarketcap.com/rivian/marketcap/
+      source_label: CompaniesMarketCap 명목 연말 시가총액
+      source_label_en: CompaniesMarketCap nominal year-end market cap
+      series: [{y: 2021, v: 93.3539}, {y: 2022, v: 16.2811}, {y: 2023, v: 22.4681}, {y: 2024, v: 13.9321}, {y: 2025, v: 25.6216}, {y: 2026, v: 25.3}]
+    - symbol: NKLA
+      name: 니콜라
+      name_en: Nikola
+      summary: SPAC 열풍의 대표 기업이었지만 사업 지연과 자금난 끝에 파산 절차에 들어갔습니다.
+      summary_en: A flagship SPAC-era EV story that entered bankruptcy after delays and funding stress.
+      listed: 2020
+      end: bankrupt
+      end_year: 2025
+      end_note: 2025년 2월 Chapter 11 신청 뒤 자산 매각·청산 절차 진행
+      end_note_en: Filed Chapter 11 in February 2025, followed by asset sales and liquidation proceedings
+      metric: market_cap
+      unit: usd_billion
+      confidence: approx
+      source_url: https://nikolamotor.com/wp-content/uploads/2025/09/Final-Notice.pdf
+      source_label: Nikola SEC 발행주식·연말 시세와 법원 공지 기반 명목 시가총액 근사
+      source_label_en: Nominal market-cap approximation from Nikola SEC share counts, year-end prices, and court notices
+      series: [{y: 2020, v: 5.9}, {y: 2021, v: 3.7}, {y: 2022, v: 0.85}, {y: 2023, v: 0.42}, {y: 2024, v: 0.08}, {y: 2025, v: 0.01}]
+  events:
+    - {year: 2010, label: 테슬라 IPO, label_en: Tesla IPO}
+    - {year: 2020, label: EV·SPAC 열풍, label_en: EV and SPAC boom}
+    - {year: 2021, label: 리비안 IPO, label_en: Rivian IPO}
+    - {year: 2025, label: 니콜라 Chapter 11, label_en: Nikola Chapter 11}

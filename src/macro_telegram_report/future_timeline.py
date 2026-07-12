@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 import re
 from datetime import date
 from pathlib import Path
@@ -8,6 +7,8 @@ from typing import Any
 from urllib.parse import urlparse
 
 import yaml
+
+from .storage import load_json, write_json
 
 FUTURE_DATA_VERSION = 1
 DEFAULT_FUTURE_DIR = Path("data/future")
@@ -72,9 +73,12 @@ LADDER_REQUIRED_FIELDS = ("id", "name", "source", "rungs")
 BREAKDOWN_REQUIREMENT_REQUIRED_FIELDS = ("id", "name", "what", "gap", "confidence", "as_of", "source")
 BREAKDOWN_CONFIDENCE_LEVELS = {"high", "medium", "low"}
 FUTURE_INVESTABLE_LEVELS = {"true", "partial", "false"}
-FUTURE_NATURE_LEVELS = {"frontier", "product", "governance"}
+FUTURE_NATURE_LEVELS = {"frontier", "product", "governance", "scenario"}
 ROADMAP_PHASE_STATUSES = {"done", "active", "projected"}
 ROADMAP_MARKER_TYPES = {"prediction", "achieved", "milestone"}
+COMPANY_ARC_END_TYPES = {"ongoing", "bankrupt", "acquired", "delisted"}
+COMPANY_ARC_CONFIDENCE_LEVELS = {"exact", "approx"}
+COMPANY_ARC_POINT_KINDS = {"year_end", "peak", "trough", "milestone"}
 DEFAULT_TRUSTED_DOMAINS = {
     "ai.gov",
     "aiindex.stanford.edu",
@@ -912,6 +916,206 @@ def build_future_roadmaps(
         "by_tech": by_tech,
         "summary": {"technology_count": len(by_tech), "phase_count": phase_count},
     }
+
+
+def build_future_company_arcs(
+    base_dir: Path,
+    track_record: dict[str, Any],
+    *,
+    warnings: list[dict[str, str]],
+) -> list[dict[str, Any]]:
+    known_track_ids = {
+        str(item.get("id") or "")
+        for item in track_record.get("items", [])
+        if isinstance(item, dict) and item.get("id")
+    }
+    arcs: list[dict[str, Any]] = []
+    for raw_arc in load_future_yaml(base_dir / "company_arcs.yaml"):
+        arc_id = str(raw_arc.get("id") or raw_arc.get("name") or "company-arc").strip()
+        as_of = int_or_none(raw_arc.get("as_of"))
+        if not raw_arc.get("id") or not raw_arc.get("name") or as_of is None:
+            warnings.append(warning_record("future_company_arc", arc_id, "id, name, as_of 필드를 확인하세요."))
+            continue
+        track_id = str(raw_arc.get("track_record") or "").strip()
+        if track_id and track_id not in known_track_ids:
+            warnings.append(warning_record("future_company_arc_track", arc_id, f"track_record={track_id} 항목을 찾을 수 없습니다."))
+
+        raw_companies = raw_arc.get("companies") if isinstance(raw_arc.get("companies"), list) else []
+        if not 3 <= len(raw_companies) <= 6:
+            warnings.append(warning_record("future_company_arc_count", arc_id, "기업 수는 3~6개가 권장됩니다."))
+        companies: list[dict[str, Any]] = []
+        for index, raw_company in enumerate(raw_companies):
+            if not isinstance(raw_company, dict):
+                continue
+            symbol = str(raw_company.get("symbol") or f"company-{index + 1}").strip()
+            item_id = f"{arc_id}:{symbol}"
+            end = str(raw_company.get("end") or "ongoing").strip().lower()
+            if end not in COMPANY_ARC_END_TYPES:
+                warnings.append(warning_record("future_company_arc_end", item_id, f"end={end} 값을 알 수 없습니다."))
+                end = "ongoing"
+            confidence = str(raw_company.get("confidence") or "approx").strip().lower()
+            if confidence not in COMPANY_ARC_CONFIDENCE_LEVELS:
+                warnings.append(warning_record("future_company_arc_confidence", item_id, f"confidence={confidence} 값을 알 수 없습니다."))
+                confidence = "approx"
+            metric = str(raw_company.get("metric") or "market_cap").strip().lower()
+            metric_label = str(raw_company.get("metric_label") or "").strip()
+            if metric == "price":
+                warnings.append(warning_record("future_company_arc_metric", item_id, "기업 간 비교에는 주당 가격 대신 시가총액을 사용하세요."))
+            if metric not in {"market_cap", "price"} and not metric_label:
+                warnings.append(warning_record("future_company_arc_metric", item_id, "대체 지표 라벨이 없습니다."))
+            if not raw_company.get("source_url"):
+                warnings.append(warning_record("future_company_arc_source", item_id, "source_url이 없습니다."))
+
+            raw_series = raw_company.get("series") if isinstance(raw_company.get("series"), list) else []
+            series: list[dict[str, Any]] = []
+            for point in raw_series:
+                if not isinstance(point, dict):
+                    continue
+                year = int_or_none(point.get("y"))
+                try:
+                    value = float(point.get("v"))
+                except (TypeError, ValueError):
+                    value = 0.0
+                if year is None or value <= 0:
+                    warnings.append(warning_record("future_company_arc_series", item_id, "series는 연도와 0보다 큰 값이 필요합니다."))
+                    continue
+                point_kind = str(point.get("kind") or "year_end").strip().lower()
+                if point_kind not in COMPANY_ARC_POINT_KINDS:
+                    warnings.append(warning_record("future_company_arc_turning", item_id, f"kind={point_kind} 값을 알 수 없습니다."))
+                    point_kind = "year_end"
+                observed_on = str(point.get("date") or "").strip()
+                if point_kind != "year_end" and not observed_on:
+                    warnings.append(warning_record("future_company_arc_turning", item_id, f"{year}년 {point_kind} 포인트에 date가 없습니다."))
+                series.append({
+                    "y": year,
+                    "v": value,
+                    "kind": point_kind,
+                    "date": observed_on,
+                    "label": str(point.get("label") or ""),
+                    "label_en": str(point.get("label_en") or point.get("label") or ""),
+                })
+            years = [int(point["y"]) for point in series]
+            if len(series) < 3:
+                warnings.append(warning_record("future_company_arc_series", item_id, "series는 최소 3점이 필요합니다."))
+            if years != sorted(years) or len(years) != len(set(years)):
+                warnings.append(warning_record("future_company_arc_series", item_id, "series 연도는 중복 없이 오름차순이어야 합니다."))
+                series.sort(key=lambda point: int(point["y"]))
+            listed = int_or_none(raw_company.get("listed"))
+            first_year = int(series[0]["y"]) if series else None
+            if listed is not None and first_year is not None and listed != first_year:
+                warnings.append(warning_record("future_company_arc_year", item_id, "listed와 series 첫 연도가 다릅니다."))
+            end_year = int_or_none(raw_company.get("end_year"))
+            if end_year is not None and end_year > as_of:
+                warnings.append(warning_record("future_company_arc_year", item_id, "end_year가 as_of보다 늦습니다."))
+            if end != "ongoing" and end_year is None:
+                warnings.append(warning_record("future_company_arc_year", item_id, "종료된 기업에 end_year가 없습니다."))
+
+            turning_points = []
+            for raw_turning in raw_company.get("turning_points") or []:
+                if not isinstance(raw_turning, dict):
+                    continue
+                turning_year = int_or_none(raw_turning.get("y") or raw_turning.get("year"))
+                turning_kind = str(raw_turning.get("kind") or "").strip().lower()
+                if turning_year is None or turning_kind not in {"peak", "trough", "milestone"}:
+                    warnings.append(warning_record("future_company_arc_turning", item_id, "turning_points의 연도와 kind를 확인하세요."))
+                    continue
+                turning_points.append({"y": turning_year, "kind": turning_kind})
+                if not any(point["y"] == turning_year and point["kind"] == turning_kind for point in series):
+                    warnings.append(warning_record("future_company_arc_turning", item_id, f"필수 변곡점 {turning_year}:{turning_kind}가 series에 없습니다."))
+
+            market_cap_series = []
+            for point in series:
+                market_cap_point: dict[str, Any] = {
+                    "y": int(point["y"]),
+                    "v": round(float(point["v"]), 6),
+                }
+                if point["kind"] != "year_end":
+                    market_cap_point.update({
+                        "kind": str(point["kind"]),
+                        "date": str(point["date"]),
+                        "label": str(point["label"]),
+                        "label_en": str(point["label_en"]),
+                    })
+                market_cap_series.append(market_cap_point)
+            companies.append({
+                "symbol": symbol,
+                "name": str(raw_company.get("name") or symbol),
+                "name_en": str(raw_company.get("name_en") or raw_company.get("name") or symbol),
+                "summary": str(raw_company.get("summary") or ""),
+                "summary_en": str(raw_company.get("summary_en") or raw_company.get("summary") or ""),
+                "listed": listed,
+                "end": end,
+                "end_year": end_year,
+                "end_note": str(raw_company.get("end_note") or ""),
+                "end_note_en": str(raw_company.get("end_note_en") or raw_company.get("end_note") or ""),
+                "metric": metric,
+                "metric_label": metric_label,
+                "metric_label_en": str(raw_company.get("metric_label_en") or metric_label),
+                "unit": str(raw_company.get("unit") or ("usd_billion" if metric == "market_cap" else "")),
+                "confidence": confidence,
+                "source_url": str(raw_company.get("source_url") or ""),
+                "source_label": str(raw_company.get("source_label") or ""),
+                "source_label_en": str(raw_company.get("source_label_en") or raw_company.get("source_label") or ""),
+                "turning_points": turning_points,
+                "series": market_cap_series,
+            })
+        if companies and not any(company["end"] != "ongoing" for company in companies):
+            warnings.append(warning_record("future_company_arc_survivorship", arc_id, "사라진 기업이 없어 생존 편향을 설명하기 어렵습니다."))
+
+        events = []
+        for index, raw_event in enumerate(raw_arc.get("events") or []):
+            if not isinstance(raw_event, dict):
+                continue
+            year = int_or_none(raw_event.get("year"))
+            if year is None:
+                continue
+            events.append({
+                "id": str(raw_event.get("id") or f"{arc_id}-event-{index + 1}"),
+                "year": year,
+                "label": str(raw_event.get("label") or year),
+                "label_en": str(raw_event.get("label_en") or raw_event.get("label") or year),
+            })
+        chapters = []
+        available_years = {
+            int(point["y"])
+            for company in companies
+            for point in company.get("series", [])
+        }
+        for raw_chapter in raw_arc.get("chapters") or []:
+            if not isinstance(raw_chapter, dict):
+                continue
+            start = int_or_none(raw_chapter.get("from"))
+            end = int_or_none(raw_chapter.get("to"))
+            if start is None or end is None or end < start:
+                warnings.append(warning_record("future_company_arc_chapter", arc_id, "chapter의 from/to 범위를 확인하세요."))
+                continue
+            for boundary in (start, end):
+                if boundary not in available_years:
+                    warnings.append(warning_record("future_company_arc_chapter_point", arc_id, f"챕터 경계 {boundary}년 포인트가 없습니다."))
+            chapters.append({
+                "from": start,
+                "to": end,
+                "note": str(raw_chapter.get("note") or ""),
+                "note_en": str(raw_chapter.get("note_en") or raw_chapter.get("note") or ""),
+            })
+        all_years = [int(point["y"]) for company in companies for point in company["series"]]
+        arcs.append({
+            "id": arc_id,
+            "name": str(raw_arc.get("name") or arc_id),
+            "name_en": str(raw_arc.get("name_en") or raw_arc.get("name") or arc_id),
+            "track_record": track_id,
+            "as_of": as_of,
+            "intro": str(raw_arc.get("intro") or ""),
+            "intro_en": str(raw_arc.get("intro_en") or raw_arc.get("intro") or ""),
+            "chapters": chapters,
+            "companies": companies,
+            "events": sorted(events, key=lambda event: int(event["year"])),
+            "range": {
+                "start": min(all_years, default=as_of),
+                "end": max([as_of, *all_years]),
+            },
+        })
+    return arcs
 def slug_key(value: Any, fallback: str = "unknown") -> str:
     text = str(value or "").strip().lower()
     text = re.sub(r"[^a-z0-9가-힣]+", "-", text).strip("-")
@@ -998,7 +1202,11 @@ def normalize_track_record_item(
     actual_year = int_or_none(raw.get("actual_year"))
     calculated_status = track_record_status(predicted_for_year, actual_year, today)
     manual_status = str(raw.get("status") or "").strip()
-    if manual_status and manual_status != calculated_status:
+    status = calculated_status
+    if manual_status == "missed" and calculated_status == "pending" and actual_year is None:
+        # 예측 주체 소멸 등으로 실패가 확정된 항목은 10년 경과 전에도 수기 missed를 인정한다.
+        status = "missed"
+    elif manual_status and manual_status != calculated_status:
         warnings.append(
             warning_record(
                 "track_record_status",
@@ -1006,7 +1214,6 @@ def normalize_track_record_item(
                 f"수기 status={manual_status}와 계산 status={calculated_status}가 다릅니다.",
             )
         )
-    status = calculated_status
     error_years = track_record_error_years(predicted_for_year, actual_year, status, today)
     by_id = str(raw.get("by_id") or slug_key(raw.get("predicted_by"))).strip()
     predicted_by = str(raw.get("predicted_by") or by_id)
@@ -1393,12 +1600,7 @@ def load_readings_by_technology(
 
 
 def load_link_status(path: Path) -> dict[str, Any]:
-    if not path.exists():
-        return {"version": 1, "links": {}}
-    try:
-        loaded = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return {"version": 1, "links": {}}
+    loaded = load_json(path, None)
     if not isinstance(loaded, dict):
         return {"version": 1, "links": {}}
     links = loaded.get("links")
@@ -1409,8 +1611,7 @@ def load_link_status(path: Path) -> dict[str, Any]:
 
 
 def write_link_status(path: Path, document: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(document, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    write_json(path, document)
 
 
 def should_check_reading_links(config: dict[str, Any], today: date) -> bool:
@@ -1512,6 +1713,7 @@ def build_future_timeline(
         today=today,
         warnings=warnings,
     )
+    company_arcs = build_future_company_arcs(base_dir, track_record, warnings=warnings)
     track_subjects = {
         str(subject.get("id") or ""): subject
         for subject in track_record.get("subjects", [])
@@ -1643,6 +1845,7 @@ def build_future_timeline(
             "summary": future_breakdown.get("summary", {}),
         },
         "roadmap": {"summary": future_roadmaps.get("summary", {})},
+        "company_arcs": company_arcs,
         "technologies": technologies,
         "summary": {
             "technology_count": len(technologies),
@@ -1658,5 +1861,4 @@ def build_future_timeline(
 
 
 def write_future_timeline(path: Path, document: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(document, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    write_json(path, document)

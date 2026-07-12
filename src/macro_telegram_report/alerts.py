@@ -6,7 +6,6 @@
 
 from __future__ import annotations
 
-import json
 from datetime import date, datetime
 from pathlib import Path
 from typing import Any
@@ -14,42 +13,31 @@ from typing import Any
 import requests
 
 from .history_store import parse_stored_points, safe_history_key
+from .storage import load_json, write_json
 from .telegram import send_telegram
 from .utils import to_float
 
 
 def load_alert_state(path: Path) -> dict[str, Any]:
-    if not path.exists():
-        return {}
-    try:
-        loaded = json.loads(path.read_text(encoding="utf-8"))
-        return loaded if isinstance(loaded, dict) else {}
-    except (OSError, json.JSONDecodeError):
-        return {}
+    loaded = load_json(path, {})
+    return loaded if isinstance(loaded, dict) else {}
 
 
 def save_alert_state(path: Path, state: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    write_json(path, state)
 
 
 def load_signal_log(path: Path) -> dict[str, Any]:
-    if not path.exists():
-        return {"version": 1, "events": []}
-    try:
-        loaded = json.loads(path.read_text(encoding="utf-8"))
-        if isinstance(loaded, dict) and isinstance(loaded.get("events"), list):
-            loaded.setdefault("version", 1)
-            return loaded
-    except (OSError, json.JSONDecodeError):
-        pass
+    loaded = load_json(path, {})
+    if isinstance(loaded, dict) and isinstance(loaded.get("events"), list):
+        loaded.setdefault("version", 1)
+        return loaded
     return {"version": 1, "events": []}
 
 
 def save_signal_log(path: Path, document: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
     document["events"] = sorted(document.get("events", []), key=lambda item: str(item.get("observed_at") or item.get("ts") or ""))
-    path.write_text(json.dumps(document, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    write_json(path, document)
 
 
 def find_metric_by_fragment(metrics: list[dict[str, Any]], fragment: str) -> dict[str, Any] | None:
@@ -180,9 +168,8 @@ def initialize_signal_log_backfill(
         path = history_dir / f"{safe_history_key(key)}.json"
         if not path.exists():
             continue
-        try:
-            loaded = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError):
+        loaded = load_json(path, {})
+        if not isinstance(loaded, dict):
             continue
         previous: bool | None = None
         for point_date, point_value in parse_stored_points(loaded.get("points")):

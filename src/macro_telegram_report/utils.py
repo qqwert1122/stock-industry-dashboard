@@ -21,6 +21,22 @@ def to_float(value: object) -> float | None:
         return None
 
 
+def parse_iso_date(value: object) -> date | None:
+    try:
+        return date.fromisoformat(str(value))
+    except (TypeError, ValueError):
+        return None
+
+
+def numeric_values_equal(left: object, right: object) -> bool:
+    left_number = to_float(left)
+    right_number = to_float(right)
+    if left_number is None or right_number is None:
+        return left == right
+    tolerance = max(1e-9, abs(right_number) * 1e-9)
+    return abs(left_number - right_number) <= tolerance
+
+
 def fmt_number(value: float, digits: int = 2) -> str:
     if abs(value) >= 100:
         return f"{value:,.1f}"

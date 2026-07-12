@@ -7,13 +7,14 @@ scores are transparent, local composites built from index momentum, breadth,
 
 from __future__ import annotations
 
-import json
 import math
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
 import requests
+
+from .storage import load_json, write_json
 
 from .history_store import HistoryStore, parse_stored_points, percentile_of
 from .utils import to_float
@@ -165,12 +166,7 @@ def load_snapshot_document(path: Path, market: str) -> dict[str, Any]:
         "breadth": {},
         "empty_dates": [],
     }
-    if not path.exists():
-        return document
-    try:
-        loaded = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return document
+    loaded = load_json(path, None)
     if not isinstance(loaded, dict):
         return document
     if isinstance(loaded.get("dates"), dict):
@@ -183,11 +179,7 @@ def load_snapshot_document(path: Path, market: str) -> dict[str, Any]:
 
 
 def save_snapshot_document(path: Path, document: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps(document, ensure_ascii=False, separators=(",", ":")) + "\n",
-        encoding="utf-8",
-    )
+    write_json(path, document, compact=True)
 
 
 def snapshot_known_dates(document: dict[str, Any]) -> set[str]:

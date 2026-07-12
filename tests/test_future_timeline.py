@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import Counter
 from datetime import date
 from pathlib import Path
 from textwrap import dedent
@@ -8,9 +9,11 @@ from macro_telegram_report.dashboard import make_metric
 from macro_telegram_report.future_timeline import (
     build_future_timeline,
     check_reading_links,
+    load_future_yaml,
     track_record_status,
     write_future_timeline,
 )
+from macro_telegram_report.site_output import load_dashboard_template
 
 
 def write_yaml(path: Path, text: str) -> None:
@@ -626,13 +629,7 @@ def test_future_expansion_investability_and_governance_rules() -> None:
 
 
 def test_future_expansion_template_reuses_cards_with_new_branches() -> None:
-    template = (
-        Path(__file__).resolve().parents[1]
-        / "src"
-        / "macro_telegram_report"
-        / "templates"
-        / "dashboard.html"
-    ).read_text(encoding="utf-8")
+    template = load_dashboard_template()
 
     assert 'tech.status === "watch"' in template
     assert 'futureNoInvestableCompanies' in template
@@ -797,7 +794,7 @@ def test_future_roadmap_real_content_and_svg_contract() -> None:
         today=date(2026, 7, 12),
     )
     technologies = {item["id"]: item for item in document["technologies"]}
-    template = (root / "src" / "macro_telegram_report" / "templates" / "dashboard.html").read_text(encoding="utf-8")
+    template = load_dashboard_template()
 
     assert document["roadmap"]["summary"] == {"technology_count": 12, "phase_count": 50}
     assert technologies["robotaxi"]["roadmap"]["phases"]
@@ -806,3 +803,283 @@ def test_future_roadmap_real_content_and_svg_contract() -> None:
     assert "stroke-dasharray: 5 4" in template
     assert "roadmap-gradient-" in template
     assert "future-roadmap-ghost" in template
+
+
+def test_future_company_arc_preserves_market_caps_endings_and_alternates(tmp_path: Path) -> None:
+    future_dir = tmp_path / "future"
+    write_yaml(
+        future_dir / "company_arcs.yaml",
+        """
+        - id: chips
+          name: 반도체
+          as_of: 2026
+          companies:
+            - symbol: LIVE
+              name: 생존 기업
+              listed: 2000
+              end: ongoing
+              metric: market_cap
+              unit: usd_billion
+              confidence: exact
+              source_url: https://example.com/live
+              series: [{y: 2000, v: 2}, {y: 2001, v: 4}, {y: 2002, v: 1}]
+            - symbol: DEAD
+              name: 사라진 기업
+              listed: 1998
+              end: acquired
+              end_year: 2002
+              end_note: 경쟁사에 인수
+              metric: market_cap
+              unit: usd_billion
+              confidence: approx
+              source_url: https://example.com/dead
+              series: [{y: 1998, v: 10}, {y: 2000, v: 30}, {y: 2002, v: 12}]
+            - symbol: SALES
+              name: 매출 기업
+              listed: 1999
+              end: ongoing
+              metric: revenue
+              metric_label: 매출 기준
+              confidence: exact
+              source_url: https://example.com/sales
+              series: [{y: 1999, v: 5}, {y: 2000, v: 6}, {y: 2001, v: 9}]
+        """,
+    )
+
+    document = build_future_timeline({"future": {"dir": str(future_dir)}}, [], today=date(2026, 7, 12))
+    arc = document["company_arcs"][0]
+
+    assert arc["companies"][0]["series"] == [
+        {"y": 2000, "v": 2.0},
+        {"y": 2001, "v": 4.0},
+        {"y": 2002, "v": 1.0},
+    ]
+    assert arc["companies"][1]["end"] == "acquired"
+    assert arc["companies"][0]["metric"] == "market_cap"
+    assert arc["companies"][0]["unit"] == "usd_billion"
+    assert arc["companies"][2]["metric_label"] == "매출 기준"
+    assert not any(warning["kind"] == "future_company_arc_survivorship" for warning in document["warnings"])
+
+
+def test_future_company_arc_warns_for_sources_survivorship_and_year_conflicts(tmp_path: Path) -> None:
+    future_dir = tmp_path / "future"
+    write_yaml(
+        future_dir / "company_arcs.yaml",
+        """
+        - id: warning-arc
+          name: 경고 아크
+          as_of: 2025
+          companies:
+            - symbol: A
+              name: A
+              listed: 2002
+              end: ongoing
+              metric: price
+              series: [{y: 2000, v: 1}, {y: 2001, v: 2}, {y: 2002, v: 3}]
+            - symbol: B
+              name: B
+              listed: 2000
+              end: ongoing
+              metric: revenue
+              source_url: https://example.com/b
+              series: [{y: 2000, v: 1}, {y: 2001, v: 2}, {y: 2002, v: 3}]
+            - symbol: C
+              name: C
+              listed: 2000
+              end: ongoing
+              metric: price
+              source_url: https://example.com/c
+              series: [{y: 2000, v: 1}, {y: 2001, v: 2}, {y: 2002, v: 3}]
+        """,
+    )
+
+    document = build_future_timeline({"future": {"dir": str(future_dir)}}, [], today=date(2026, 7, 12))
+    warning_kinds = {warning["kind"] for warning in document["warnings"]}
+
+    assert "future_company_arc_source" in warning_kinds
+    assert "future_company_arc_metric" in warning_kinds
+    assert "future_company_arc_survivorship" in warning_kinds
+    assert "future_company_arc_year" in warning_kinds
+
+
+def test_future_company_arc_real_content_and_svg_contract() -> None:
+    root = Path(__file__).resolve().parents[1]
+    document = build_future_timeline(
+        {"future": {"dir": str(root / "data" / "future")}},
+        [],
+        today=date(2026, 7, 12),
+    )
+    template = load_dashboard_template()
+    arcs = document["company_arcs"]
+
+    assert len(arcs) == 5
+    assert sum(len(arc["companies"]) for arc in arcs) == 20
+    assert all(any(company["end"] != "ongoing" for company in arc["companies"]) for arc in arcs)
+    assert all(company["metric"] == "market_cap" for arc in arcs for company in arc["companies"])
+    assert all(company["unit"] == "usd_billion" for arc in arcs for company in arc["companies"])
+    assert all(point["v"] > 0 for arc in arcs for company in arc["companies"] for point in company["series"])
+    assert not any(warning["kind"].startswith("future_company_arc") for warning in document["warnings"])
+    assert "company-arc-svg" in template
+    assert 'company.metric !== "market_cap" ? "is-alternate"' in template
+    assert "yFor(point.v)" in template
+    assert 'futureCompanyArcIndex: "시가총액 · USD · 로그축"' in template
+    assert "company-arc-scale-point" in template
+    assert "visibleCompanyArcValues" in template
+    assert "renderVisibleCompanyArcScale" in template
+    assert "data-company-arc-plot" in template
+    assert "--detail-chart-width:${width}px" in template
+    assert "detailChartAvailableWidth()," in template
+    assert "data-company-arc-step" in template
+    assert 'companyArcEndMarker(company.end)' in template
+
+    by_arc = {arc["id"]: arc for arc in arcs}
+    internet_companies = {company["symbol"]: company for company in by_arc["internet"]["companies"]}
+    semiconductor_companies = {company["symbol"]: company for company in by_arc["semiconductor"]["companies"]}
+    assert next(point for point in internet_companies["CSCO"]["series"] if point["y"] == 2000) == {
+        "y": 2000,
+        "v": 536.369,
+        "kind": "peak",
+        "date": "2000-03-31",
+        "label": "닷컴 고점 약 $536B",
+        "label_en": "Dot-com peak near $536B",
+    }
+    assert next(point for point in internet_companies["CSCO"]["series"] if point["y"] == 2002)["kind"] == "trough"
+    assert next(point for point in internet_companies["AMZN"]["series"] if point["y"] == 2001)["v"] == 2.2194
+    assert next(point for point in semiconductor_companies["INTC"]["series"] if point["y"] == 2000)["kind"] == "peak"
+    assert all(arc["track_record"] for arc in arcs)
+    assert "company-arc-turning" in template
+
+
+def test_future_company_arc_warns_when_required_turning_or_chapter_point_is_missing(tmp_path: Path) -> None:
+    future_dir = tmp_path / "future"
+    write_yaml(
+        future_dir / "company_arcs.yaml",
+        """
+        - id: missing-anchor
+          name: 변곡점 누락
+          as_of: 2003
+          chapters:
+            - {from: 2000, to: 2003, note: 테스트}
+          companies:
+            - symbol: A
+              name: A
+              listed: 2000
+              end: ongoing
+              metric: price
+              source_url: https://example.com/a
+              turning_points: [{y: 2001, kind: peak}]
+              series: [{y: 2000, v: 1}, {y: 2001, v: 3}, {y: 2002, v: 2}]
+            - symbol: B
+              name: B
+              listed: 2000
+              end: acquired
+              end_year: 2002
+              metric: price
+              source_url: https://example.com/b
+              series: [{y: 2000, v: 1}, {y: 2001, v: 2}, {y: 2002, v: 1}]
+            - symbol: C
+              name: C
+              listed: 2000
+              end: ongoing
+              metric: price
+              source_url: https://example.com/c
+              series: [{y: 2000, v: 1}, {y: 2001, v: 2}, {y: 2002, v: 3}]
+        """,
+    )
+
+    document = build_future_timeline({"future": {"dir": str(future_dir)}}, [], today=date(2026, 7, 12))
+    warning_kinds = {warning["kind"] for warning in document["warnings"]}
+
+    assert "future_company_arc_turning" in warning_kinds
+    assert "future_company_arc_chapter_point" in warning_kinds
+
+
+def test_future_expansion_has_images_three_level_readings_and_fresh_bci() -> None:
+    root = Path(__file__).resolve().parents[1]
+    document = build_future_timeline(
+        {"future": {"dir": str(root / "data" / "future")}},
+        [],
+        today=date(2026, 7, 12),
+    )
+    expected = {"quantum", "bci", "future-food", "uam", "carbon-capture", "geoengineering", "spatial"}
+    technologies = {item["id"]: item for item in document["technologies"] if item["id"] in expected}
+
+    assert set(technologies) == expected
+    for technology in technologies.values():
+        image_path = root / technology["image"]
+        assert image_path.exists() and image_path.stat().st_size > 0
+        assert {reading["level"] for reading in technology["readings"]} == {"입문", "중급", "심화"}
+    assert technologies["bci"]["as_of"] == "2026-07-12"
+    assert technologies["bci"]["stale"] is False
+
+
+def test_future_track_record_backlog_is_empty_after_verified_migrations() -> None:
+    root = Path(__file__).resolve().parents[1]
+    backlog = load_future_yaml(root / "data" / "future" / "track_record_backlog.yaml")
+    document = build_future_timeline(
+        {"future": {"dir": str(root / "data" / "future")}},
+        [],
+        today=date(2026, 7, 12),
+    )
+
+    assert backlog == []
+    assert any(item["id"] == "quantum-kookaburra-2025" and item["status"] == "missed" for item in document["track_record"]["items"])
+
+
+def test_every_future_technology_has_breakdown_and_five_readings_per_level() -> None:
+    root = Path(__file__).resolve().parents[1] / "data" / "future"
+    technologies = load_future_yaml(root / "technologies.yaml")
+    breakdowns = load_future_yaml(root / "breakdown.yaml")
+    reading_blocks = load_future_yaml(root / "readings.yaml")
+    technology_ids = {str(item["id"]) for item in technologies}
+    breakdown_ids = {str(item.get("tech") or item.get("technology") or "") for item in breakdowns}
+    readings_by_tech = {
+        str(block.get("technology") or ""): block.get("items") or []
+        for block in reading_blocks
+        if str(block.get("technology") or "") != "_common"
+    }
+
+    assert breakdown_ids == technology_ids
+    assert set(readings_by_tech) == technology_ids
+    for tech_id, readings in readings_by_tech.items():
+        counts = Counter(str(item.get("level") or "") for item in readings)
+        assert counts["입문"] >= 5, tech_id
+        assert counts["중급"] >= 5, tech_id
+        assert counts["심화"] >= 5, tech_id
+        assert all(count <= 8 for count in counts.values()), tech_id
+        urls = [str(item.get("url") or "") for item in readings]
+        assert len(urls) == len(set(urls)), tech_id
+
+
+def test_future_readings_exclude_known_generic_or_retired_pages() -> None:
+    root = Path(__file__).resolve().parents[1] / "data" / "future"
+    reading_blocks = load_future_yaml(root / "readings.yaml")
+    urls = {
+        str(item.get("url") or "")
+        for block in reading_blocks
+        for item in (block.get("items") or [])
+    }
+
+    assert urls.isdisjoint(
+        {
+            "https://www.nature.com/nbt/",
+            "https://www.nature.com/natfood/",
+            "https://www.nature.com/npjqi/",
+            "https://www.idc.com/promo/arvr/",
+            "https://www.dmv.ca.gov/portal/vehicle-industry-services/autonomous-vehicles/disengagement-reports/",
+            "https://gfi.org/resource/environmental-impact-of-cultivated-meat/",
+            "https://immersive-web.github.io/security-privacy/",
+        }
+    )
+
+
+def test_future_singularity_is_a_non_investable_scenario_and_fusion_excludes_fission() -> None:
+    root = Path(__file__).resolve().parents[1] / "data" / "future"
+    technologies = {item["id"]: item for item in load_future_yaml(root / "technologies.yaml")}
+
+    singularity = technologies["singularity-2045"]
+    assert singularity["nature"] == "scenario"
+    assert singularity["investable"] is False
+    assert singularity["companies"] == []
+    assert "LEV" in technologies["longevity-escape"]["name"]
+    assert "OKLO" not in technologies["fusion-power"].get("companies", [])

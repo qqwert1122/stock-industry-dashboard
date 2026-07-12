@@ -3,12 +3,13 @@ from __future__ import annotations
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass
 from datetime import datetime
-import json
 import time
 from pathlib import Path
 from typing import Any, Iterator
 from urllib.parse import urlsplit, urlunsplit
 from zoneinfo import ZoneInfo
+
+from .storage import load_json, write_json
 
 
 FETCH_LOG_VERSION = 1
@@ -172,12 +173,7 @@ def empty_history() -> dict[str, Any]:
 
 def load_fetch_log_history(path: str | Path) -> dict[str, Any]:
     target = Path(path)
-    if not target.exists():
-        return empty_history()
-    try:
-        loaded = json.loads(target.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return empty_history()
+    loaded = load_json(target, None)
     if not isinstance(loaded, dict):
         return empty_history()
     runs = loaded.get("runs")
@@ -214,8 +210,4 @@ def append_fetch_log_run(
 
 def save_fetch_log_history(path: str | Path, history: dict[str, Any]) -> None:
     target = Path(path)
-    target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text(
-        json.dumps(history, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    write_json(target, history)

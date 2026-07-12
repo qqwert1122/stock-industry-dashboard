@@ -50,26 +50,49 @@
       source_label_en: Waymo service expansion plan
       gap_score: 3
 
-    - id: supervised-fsd-gap
-      name: 운전자 감독 제거
-      name_en: Removing driver supervision
-      ladder: sae-autonomy
-      required_rung: L4
-      current_rung: L2
-      what: 대중형 로보택시가 되려면 운전자가 계속 감시하는 기능이 아니라 차가 책임지고 운행하는 기능이어야 합니다.
-      what_en: A mass-market robotaxi needs the vehicle to take responsibility, not a feature that still requires driver supervision.
-      gap: Tesla FSD는 현재 운전자 감독이 필요한 기능으로 안내되고 있어 무인 유료 운행과는 단계 차이가 큽니다.
-      gap_en: Tesla FSD is still described as requiring active driver supervision, so it remains far from paid driverless operation.
+    - id: safety-evidence
+      name: 안전 근거
+      name_en: Safety evidence
+      target_label: 인간 운전과 비교 가능한 주행거리 대비 사고률을 여러 도시에서 재현
+      target_label_en: Reproduce human-comparable crash rates per mile across multiple cities
+      current_label: 일부 운영사의 안전 결과와 정부 사고 보고는 축적 중이나 비교 기준은 아직 불완전
+      current_label_en: Operator studies and government crash reports are accumulating, but comparison baselines remain incomplete
+      what: 로보택시는 데모가 아니라 실제 운행거리와 사고 심각도로 안전성을 입증해야 합니다.
+      what_en: Robotaxi safety must be demonstrated with real operating miles and crash severity, not demonstrations.
+      gap: NHTSA 자료는 보고 범위와 운행 노출량이 회사별로 달라 단순 사고 건수 비교를 피해야 합니다.
+      gap_en: NHTSA warns that reporting scope and exposure differ by operator, so raw crash counts are not directly comparable.
       pursuing:
+        - { label: Waymo, label_en: Waymo }
+        - { label: Zoox, label_en: Zoox }
         - { label: Tesla, label_en: Tesla, symbol: TSLA }
-      metric_ref: Tesla(TSLA)
-      metric: Tesla(TSLA)
-      metric_en: Tesla(TSLA)
-      confidence: high
-      as_of: 2026-07-10
-      source: https://www.tesla.com/support/fsd
-      source_label: Tesla FSD 감독 안내
-      source_label_en: Tesla FSD supervision notice
+      metric: 주행거리 대비 인적피해 사고율·정부 신고 사고
+      metric_en: Injury crashes per mile and government-reported incidents
+      confidence: medium
+      as_of: 2026-07-12
+      source: https://www.nhtsa.gov/laws-regulations/standing-general-order-crash-reporting
+      source_label: NHTSA 자율주행 사고 보고
+      source_label_en: NHTSA automated-driving crash reporting
+      gap_score: 3
+
+    - id: operating-scale
+      name: 운영 규모·가동률
+      name_en: Operating scale and utilization
+      target_label: 여러 대도시에서 높은 가동률로 반복 운영
+      target_label_en: Repeatable high-utilization operations across many large cities
+      current_label: 일부 도시에서 유료 서비스를 늘리는 단계
+      current_label_en: Paid service is scaling in a limited set of cities
+      what: 도시 하나의 성공보다 차량을 빠르게 늘리고 원격관제·청소·정비를 같이 운영하는 능력이 중요합니다.
+      what_en: Scaling vehicles together with remote assistance, cleaning, and maintenance matters more than success in one city.
+      gap: 새 도시마다 지도·차고지·정비·현지 허가를 다시 구축해야 하는 문제가 남아 있습니다.
+      gap_en: Each new city still requires mapping, depots, maintenance, and local approvals.
+      pursuing: [Waymo, Baidu Apollo Go, Zoox]
+      metric: 유료 운행 도시·주간 탑승·차량 가동률
+      metric_en: Paid-service cities, weekly trips, and fleet utilization
+      confidence: medium
+      as_of: 2026-07-12
+      source: https://waymo.com/blog/2025/05/scaling-our-fleet-through-us-manufacturing/
+      source_label: Waymo 차량·서비스 확장
+      source_label_en: Waymo fleet and service scaling
       gap_score: 2
 
     - id: vehicle-cost
@@ -225,6 +248,48 @@
       source_label_en: Stanford AI Index
       gap_score: 2
 
+    - id: capability-generalization
+      name: 범용성·장기 과제
+      name_en: Generalization and long-horizon work
+      target_label: 처음 보는 여러 분야의 장기 업무를 사람 감독 없이 완수
+      target_label_en: Complete unfamiliar long-horizon work across domains without human supervision
+      current_label: 짧고 검증 가능한 과제는 향상됐지만 긴 업무에서 오류가 누적
+      current_label_en: Short verifiable tasks have improved, while errors still compound over long work
+      what: AGI에 가까워지려면 특정 시험 점수가 아니라 새로운 일을 배워 끝까지 해내는 능력이 필요합니다.
+      what_en: Progress toward AGI requires learning unfamiliar work and finishing it, not merely scoring well on a specific test.
+      gap: 벤치마크 포화와 학습 데이터 오염 때문에 실제 업무를 따로 평가해야 합니다.
+      gap_en: Benchmark saturation and training-data contamination make separate real-work evaluation necessary.
+      pursuing: [OpenAI, Anthropic, Google DeepMind, METR]
+      metric: 감독 없이 완수하는 업무 시간·실패률
+      metric_en: Autonomous task horizon and failure rate
+      confidence: medium
+      as_of: 2026-07-12
+      source: https://metr.org/research/
+      source_label: METR AI 업무 시간폭 연구
+      source_label_en: METR AI task-horizon research
+      gap_score: 3
+
+    - id: safety-control
+      name: 안전성·통제 가능성
+      name_en: Safety and controllability
+      target_label: 고위험 기능을 배포 전에 평가하고 중단·제한 가능
+      target_label_en: Evaluate high-risk capability before release and reliably constrain or stop it
+      current_label: 공통 위험관리 틀과 기업별 프레임워크가 병존
+      current_label_en: Public risk frameworks coexist with differing company-specific approaches
+      what: 능력이 커질수록 오용, 사이버, 자율행동 위험을 배포 전에 발견하고 제한해야 합니다.
+      what_en: As capability grows, misuse, cyber, and autonomous-action risks need testing and controls before release.
+      gap: 일관된 평가 방법과 검증 결과 공개 범위에 대한 사회적 합의가 아직 부족합니다.
+      gap_en: There is no settled consensus on evaluation methods or how much evidence should be disclosed.
+      pursuing: [NIST, 각국 AI 안전기관, OpenAI, Anthropic, Google DeepMind]
+      metric: 프런티어 평가 범위·고위험 실패·사고 보고
+      metric_en: Frontier-evaluation coverage, high-risk failures, and incident reporting
+      confidence: medium
+      as_of: 2026-07-12
+      source: https://www.nist.gov/itl/ai-risk-management-framework
+      source_label: NIST AI 위험관리 프레임워크
+      source_label_en: NIST AI Risk Management Framework
+      gap_score: 2
+
 - tech: humanoid-robots
   requirements:
     - id: locomotion
@@ -280,9 +345,10 @@
     - id: battery-runtime
       name: 배터리·가동시간
       name_en: Battery and runtime
-      ladder: robot-locomotion
-      required_rung: all-day
-      current_rung: dynamic
+      target_label: 교대 시간 동안 작업하고 자동 충전·교체
+      target_label_en: Work through a shift with autonomous charging or swapping
+      current_label: 제품별 수시간 가동을 제시하지만 실제 현장 가동률은 제한적으로 공개
+      current_label_en: Vendors cite multi-hour runtime, while field utilization is disclosed only selectively
       what: 사람 대신 일하려면 데모가 아니라 교대 시간에 맞춰 오래 움직이고 스스로 충전해야 합니다.
       what_en: Replacing labor requires shift-length operation and autonomous charging, not short demonstrations.
       gap: Atlas는 자체 배터리 교체와 4시간 배터리 수명을 내세우지만 하루 종일 일하는 비용 구조는 아직 검증 중입니다.
@@ -323,6 +389,562 @@
       source_label: Unitree G1 공식 제품 페이지
       source_label_en: Unitree G1 official product page
       gap_score: 2
+
+    - id: field-reliability-safety
+      name: 현장 신뢰성·안전
+      name_en: Field reliability and safety
+      target_label: 사람 옆에서 수천 시간 장애 없이 작업
+      target_label_en: Thousands of failure-free work hours around people
+      current_label: 제한된 작업장 실증과 공통 성능평가 기준 수립 단계
+      current_label_en: Controlled-site pilots and common performance benchmarks under development
+      what: 휴머노이드는 멋진 데모보다 오랜 작업시간, 장애 복구, 사람 근처 안전이 확산을 좌우합니다.
+      what_en: Long work hours, recovery from failures, and safety near people matter more for adoption than polished demos.
+      gap: NIST도 제조사간 비교 가능한 휴머노이드 최소 성능 벤치마크를 2026년에 새로 제안했을 만큼 공통 현장 근거가 부족합니다.
+      gap_en: Comparable field evidence remains limited enough that NIST proposed a new baseline humanoid benchmark in 2026.
+      pursuing: [NIST, Boston Dynamics, Figure AI, Agility Robotics, Tesla]
+      metric: 작업 성공률·평균 장애간격·안전 사고
+      metric_en: Task success, mean time between failures, and safety incidents
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.nist.gov/el/intelligent-systems-division-73500/humanoid-robot-baseline-performance-benchmark
+      source_label: NIST 휴머노이드 기초 성능 벤치마크
+      source_label_en: NIST humanoid baseline performance benchmark
+      gap_score: 3
+- tech: longevity-escape
+  requirements:
+    - id: aging-biomarkers
+      name: 생물학적 나이 측정
+      name_en: Biological-age measurement
+      target_label: 건강수명 개선을 짧은 임상에서 예측하는 검증된 지표
+      target_label_en: Validated markers that predict healthspan benefit in shorter trials
+      current_label: 여러 에피게놈·단백질·기능 지표가 연구 중이나 단일 대체지표는 미확립
+      current_label_en: Epigenetic, proteomic, and functional markers are studied, but no single surrogate is established
+      what: 수명 연장을 수십 년 기다리지 않고 판단하려면 질병과 기능 저하를 믿을 수 있게 예측하는 지표가 필요합니다.
+      what_en: Credible biomarkers are needed to judge benefit without waiting decades for lifespan outcomes.
+      gap: 측정값이 변해도 사람이 더 오래 건강하게 산다는 인과관계가 충분히 입증되지 않았습니다.
+      gap_en: A changed marker has not yet been shown consistently to cause longer healthy human life.
+      pursuing: [NIH NIA, 노화 바이오마커 연구자]
+      metric: 지표 반복성·질병발생·신체기능 예측력
+      metric_en: Reproducibility and prediction of disease and function
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.nia.nih.gov/research/dab/translational-research-branch-and-programs
+      source_label: NIA 노화 중개연구 프로그램
+      source_label_en: NIA translational aging research programs
+      gap_score: 2
+
+    - id: intervention-replication
+      name: 노화 개입 재현성
+      name_en: Replication of aging interventions
+      target_label: 여러 기관·유전적 배경에서 건강수명 증가를 반복 재현
+      target_label_en: Replicate healthspan gains across sites and genetic backgrounds
+      current_label: 동물모델에서 일부 개입이 수명·건강수명을 개선
+      current_label_en: Some interventions improve lifespan or healthspan in animal models
+      what: 한 연구실의 결과보다 여러 조건에서 같은 효과가 나오는지가 중요합니다.
+      what_en: Results need to reproduce across conditions, not only in one laboratory.
+      gap: 생쥐에서 재현된 효과도 사람에서는 크기와 안전성이 다를 수 있습니다.
+      gap_en: Even replicated mouse effects may differ in magnitude and safety in humans.
+      achieved_by: [NIA Interventions Testing Program]
+      metric: 다기관 재현·건강수명·이상반응
+      metric_en: Multi-site replication, healthspan, and adverse effects
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.nia.nih.gov/research/dab/interventions-testing-program-itp/about-itp
+      source_label: NIA 중재법 검증 프로그램
+      source_label_en: NIA Interventions Testing Program
+      gap_score: 2
+
+    - id: human-clinical-evidence
+      name: 사람 장기 임상 근거
+      name_en: Long-term human clinical evidence
+      target_label: 여러 노화 관련 질환과 기능저하를 느리게 하는 임상 근거
+      target_label_en: Clinical evidence that delays multiple age-related diseases and functional decline
+      current_label: 개별 질환·대체지표 중심의 소규모 임상이 다수
+      current_label_en: Many small trials focus on single diseases or surrogate markers
+      what: 수치가 아니라 사람이 더 오래 건강하게 산다는 결과를 보여야 합니다.
+      what_en: The field needs evidence of longer healthy life, not biomarker movement alone.
+      gap: 노화는 기간이 길고 영향 요인이 많아 큰 임상에 오랜 시간과 비용이 듭니다.
+      gap_en: Aging outcomes are slow and confounded, requiring large, long, expensive trials.
+      pursuing: [노화연구 임상기관, 바이오텍]
+      metric: 건강수명·복합 질환발생·신체기능
+      metric_en: Healthspan, multimorbidity, and physical function
+      confidence: medium
+      as_of: 2026-07-12
+      source: https://clinicaltrials.gov/search?cond=Aging
+      source_label: ClinicalTrials.gov 노화 임상 검색
+      source_label_en: ClinicalTrials.gov aging studies
+      gap_score: 3
+
+    - id: safety-durability
+      name: 장기 안전성
+      name_en: Long-term safety
+      target_label: 건강한 사람의 수년·수십 년 사용에서 이득이 위험보다 큼
+      target_label_en: Benefit exceeds risk over years or decades in otherwise healthy people
+      current_label: 질환 치료 임상과 단기 안전성 자료 중심
+      current_label_en: Evidence centers on disease treatment and shorter safety windows
+      what: 건강한 사람이 오래 복용하는 치료는 매우 낮은 위험까지 확인해야 합니다.
+      what_en: Preventive use by healthy people demands evidence about even rare long-term harms.
+      gap: 면역, 암, 대사에 대한 느린 부작용은 짧은 임상으로 파악하기 어렵습니다.
+      gap_en: Slow effects on immunity, cancer, and metabolism are difficult to detect in short trials.
+      pursuing: [NIH NIA, 임상연구기관, 규제기관]
+      metric: 중대 이상반응·중단률·장기 추적
+      metric_en: Serious adverse events, discontinuation, and long-term follow-up
+      confidence: medium
+      as_of: 2026-07-12
+      source: https://www.nia.nih.gov/research/gsig
+      source_label: NIH 거로사이언스 관심그룹
+      source_label_en: NIH Geroscience Interest Group
+      gap_score: 3
+
+    - id: clinical-regulatory-path
+      name: 임상·허가 경로
+      name_en: Clinical and regulatory path
+      target_label: 건강수명 개선을 평가하는 적응증·시험·보험 기준
+      target_label_en: Indication, trial, and coverage pathways for healthspan improvement
+      current_label: 노화 자체보다 개별 질환 예방·치료 경로 중심
+      current_label_en: Development follows individual disease prevention or treatment paths rather than aging itself
+      what: 어떤 결과를 성공으로 볼지와 누가 비용을 낼지가 정해져야 제품이 확산됩니다.
+      what_en: Products need agreed endpoints and a payer before they can scale.
+      gap: 건강수명은 하나의 질병이 아니어서 임상 종료점과 보험 가치 판단이 어렵습니다.
+      gap_en: Healthspan is not a single disease, complicating endpoints and reimbursement.
+      pursuing: [규제기관, 보험자, 노화연구 임상자]
+      metric: 허가 적응증·인정 종료점·보험 보장
+      metric_en: Accepted indications, endpoints, and coverage
+      confidence: medium
+      as_of: 2026-07-12
+      source: https://www.who.int/initiatives/decade-of-healthy-ageing
+      source_label: WHO 건강한 노화 10년
+      source_label_en: WHO Decade of Healthy Ageing
+      gap_score: 2
+
+- tech: gene-therapy-mainstream
+  requirements:
+    - id: delivery-targeting
+      name: 전달체·표적화
+      name_en: Delivery and targeting
+      target_label: 원하는 조직에 충분한 용량을 정확히 전달
+      target_label_en: Deliver an effective dose precisely to the intended tissue
+      current_label: AAV·렌티바이러스·지질나노입자등 적응증별 전달체 병존
+      current_label_en: AAV, lentiviral, lipid-nanoparticle, and other delivery systems coexist by indication
+      what: 유전자를 올바른 세포에 충분히 보내야 효과는 내고 다른 조직의 부작용은 줄일 수 있습니다.
+      what_en: Effective targeting must reach enough intended cells while limiting effects elsewhere.
+      gap: 간·뇌·근육 등 조직별 장벽과 면역반응이 달라 범용 전달체가 없습니다.
+      gap_en: Tissue barriers and immune responses differ, so there is no universal delivery vehicle.
+      pursuing: [유전자치료 개발사, 벡터·지질나노입자 개발사]
+      metric: 표적 조직 발현·용량·면역반응
+      metric_en: Target-tissue expression, dose, and immune response
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.fda.gov/vaccines-blood-biologics/cellular-gene-therapy-products
+      source_label: FDA 세포·유전자치료 허브
+      source_label_en: FDA cellular and gene therapy hub
+      gap_score: 2
+
+    - id: durability-redosing
+      name: 효과 지속성·재투여
+      name_en: Durability and redosing
+      target_label: 한 번의 치료로 수년 효과, 필요 시 안전한 재투여
+      target_label_en: Multi-year benefit from one treatment with safe redosing when needed
+      current_label: 제품·조직별 효과 지속기간과 재투여 가능성이 크게 다름
+      current_label_en: Durability and redosing feasibility vary widely by product and tissue
+      what: 효과가 짧게 끝나면 비싼 일회성 치료의 가치가 작아집니다.
+      what_en: A costly one-time treatment has limited value if benefit fades quickly.
+      gap: 전달체에 대한 항체가 생기면 같은 치료를 다시 쓰기 어려울 수 있습니다.
+      gap_en: Antibodies against a delivery vector can make repeat dosing difficult.
+      pursuing: [허가 유전자치료 보유사, 차세대 전달체 개발사]
+      metric: 효과 지속기간·재투여 가능률·항체
+      metric_en: Effect duration, redosing feasibility, and antibodies
+      confidence: medium
+      as_of: 2026-07-12
+      source: https://www.fda.gov/vaccines-blood-biologics/biologics-guidances/cellular-gene-therapy-guidances
+      source_label: FDA 세포·유전자치료 가이던스
+      source_label_en: FDA cellular and gene therapy guidances
+      gap_score: 2
+
+    - id: long-term-safety
+      name: 지연 부작용·장기 추적
+      name_en: Delayed risks and long-term follow-up
+      target_label: 암·의도하지 않은 유전체 변화를 장기간 통제
+      target_label_en: Control delayed cancer and unintended genomic risks over long follow-up
+      current_label: 위험도에 따라 장기 추적과 허가 후 감시 요구
+      current_label_en: Risk-based long-term follow-up and post-approval surveillance are required
+      what: 유전자를 오래 바꾸는 치료는 몇 년 뒤에 나타나는 부작용까지 보아야 합니다.
+      what_en: Long-lasting genetic changes require monitoring for adverse effects that may appear years later.
+      gap: 희귀질환은 환자 수가 적어 매우 드문 부작용을 허가 전에 파악하기 어렵습니다.
+      gap_en: Rare-disease cohorts are small, so very rare harms are hard to detect before approval.
+      pursuing: [FDA, EMA, 제품 개발사·환자등록]
+      metric: 장기 추적률·지연 중대이상반응
+      metric_en: Follow-up completion and delayed serious adverse events
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.fda.gov/regulatory-information/search-fda-guidance-documents/long-term-follow-after-administration-human-gene-therapy-products
+      source_label: FDA 유전자치료 장기 추적 가이던스
+      source_label_en: FDA long-term follow-up guidance for gene therapy
+      gap_score: 3
+
+    - id: manufacturing-quality
+      name: 제조·품질·생산능력
+      name_en: Manufacturing, quality, and capacity
+      target_label: 동일한 품질의 치료제를 필요한 환자에게 반복 공급
+      target_label_en: Repeatedly supply consistent-quality therapy to eligible patients
+      current_label: 제품별 전용 공정과 복잡한 품질시험이 원가·리드타임을 높임
+      current_label_en: Product-specific processes and complex release testing raise cost and lead time
+      what: 임상에서 좋은 치료도 매번 같은 품질로 만들지 못하면 보급되기 어렵습니다.
+      what_en: A clinically effective therapy cannot scale without consistent manufacturing.
+      gap: 고수율 벡터 생산, 오염 관리, 역가·품질 시험을 표준화해야 합니다.
+      gap_en: Vector yield, contamination control, potency, and release testing need standardization.
+      pursuing: [CDMO, 유전자치료 개발사, FDA]
+      metric: 배치 성공률·리드타임·원가·품질 편차
+      metric_en: Batch success, lead time, cost, and quality variation
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.fda.gov/vaccines-blood-biologics/biologics-guidances/cellular-gene-therapy-guidances
+      source_label: FDA 유전자치료 CMC 가이던스 모음
+      source_label_en: FDA gene therapy CMC guidance collection
+      gap_score: 2
+
+    - id: price-access
+      name: 가격·보험·환자 접근
+      name_en: Price, coverage, and patient access
+      target_label: 일회성 고가 치료를 환자가 지속 가능하게 이용
+      target_label_en: Sustainable patient access to high-cost one-time therapies
+      current_label: 수억·수십억 원대 가격과 성과연계·분할지급 실험
+      current_label_en: Million-dollar prices alongside outcome-based and installment payment experiments
+      what: 효과가 큰 치료도 보험자와 병원이 비용을 감당하지 못하면 주류 치료가 되지 못합니다.
+      what_en: Even transformative therapy cannot become mainstream if payers and hospitals cannot fund it.
+      gap: 치료 즉시 비용이 들지만 효과와 절감 의료비는 여러 년에 나타나 지급 구조가 어렵습니다.
+      gap_en: Costs are immediate while benefits and avoided care accrue over years, complicating payment.
+      pursuing: [CMS, 민간보험자, 제약사]
+      metric: 정가·실제 접근 환자·보험 보장·치료 중단
+      metric_en: List price, treated patients, coverage, and discontinuation
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.cms.gov/priorities/innovation/innovation-models/cgt
+      source_label: CMS 세포·유전자치료 접근 모델
+      source_label_en: CMS Cell and Gene Therapy Access Model
+      gap_score: 3
+
+- tech: fusion-power
+  requirements:
+    - id: net-electricity-duty-cycle
+      name: 순발전·지속 운전
+      name_en: Net electricity and duty cycle
+      target_label: 발전소 전체 소비전력을 빼고 전력망에 지속 공급
+      target_label_en: Deliver sustained grid electricity after all plant power use
+      current_label: 플라스마·타겟 실험의 에너지 이정표와 파일럿 플랜트 설계 단계
+      current_label_en: Plasma and target energy milestones alongside pilot-plant design
+      what: 짧은 실험의 반응 에너지가 아니라 냉각·자석·레이저까지 포함한 발전소 순발전이 필요합니다.
+      what_en: The milestone is sustained plant-level net electricity, not a brief reaction-level energy gain.
+      gap: 실험 이득을 열변환·보조설비·정비 손실을 넘는 발전소로 이어야 합니다.
+      gap_en: Experimental gain must survive heat conversion, auxiliary power, and maintenance losses at plant scale.
+      pursuing: [ITER, Commonwealth Fusion Systems, Helion, TAE Technologies, 각국 연구소]
+      metric: 플라스마 Q·발전소 순전력·가동률
+      metric_en: Plasma Q, plant net power, and availability
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.energy.gov/fusion/fusion-energy
+      source_label: DOE 핵융합 과학기술 로드맵
+      source_label_en: DOE Fusion Science and Technology Roadmap
+      gap_score: 3
+
+    - id: neutron-materials
+      name: 중성자 내구 소재
+      name_en: Neutron-tolerant materials
+      target_label: 강한 중성자선에서 수년 운전하는 벽·블랭킷·자석
+      target_label_en: Walls, blankets, and magnets that survive years of neutron exposure
+      current_label: 후보 소재·코팅·시험장치 개발 중
+      current_label_en: Candidate materials, coatings, and irradiation test facilities under development
+      what: 핵융합 중성자는 발전소 내부를 약하게 만들고 방사성 폐기물과 정비 비용을 늘립니다.
+      what_en: Fusion neutrons damage plant components and raise maintenance and waste burdens.
+      gap: 상용 플랜트와 같은 조건의 누적 중성자 손상 데이터가 부족합니다.
+      gap_en: There is limited accumulated damage data under commercial-plant-like neutron conditions.
+      pursuing: [DOE, ITER, EUROfusion, 소재 연구기관]
+      metric: dpa·부품 수명·교체 주기
+      metric_en: Displacements per atom, component life, and replacement cycle
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.energy.gov/articles/doe-announces-new-decadal-fusion-energy-strategy
+      source_label: DOE 핵융합 에너지 전략
+      source_label_en: DOE Fusion Energy Strategy
+      gap_score: 2
+
+    - id: tritium-fuel-cycle
+      name: 삼중수소 연료순환
+      name_en: Tritium fuel cycle
+      target_label: 발전소 내부에서 삼중수소를 생산·회수·재사용
+      target_label_en: Breed, recover, and recycle tritium inside the plant
+      current_label: 제한된 세계 재고와 블랭킷·회수 기술 실증 준비
+      current_label_en: Limited global inventory with breeding-blanket and recovery demonstrations pending
+      what: 주요 연료인 삼중수소는 자연에 거의 없어 발전소가 스스로 만들어야 합니다.
+      what_en: Tritium is scarce in nature, so a deuterium-tritium plant must breed its own fuel.
+      gap: 실제 발전소 규모의 생산율, 누출 통제, 재고 관리가 검증되지 않았습니다.
+      gap_en: Plant-scale breeding ratio, leakage control, and inventory management remain unproven.
+      pursuing: [ITER, 각국 핵융합 연구소]
+      metric: 삼중수소 증식비·회수율·재고
+      metric_en: Tritium breeding ratio, recovery, and inventory
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.iter.org/mach/tritium-breeding
+      source_label: ITER 삼중수소 증식 블랭킷
+      source_label_en: ITER tritium breeding blankets
+      gap_score: 2
+
+    - id: maintainability
+      name: 원격 정비·가동률
+      name_en: Remote maintenance and availability
+      target_label: 고방사선 부품을 빠르게 원격 교체하고 높은 가동률 유지
+      target_label_en: Rapid remote replacement of activated parts with high plant availability
+      current_label: ITER·파일럿 설계에서 원격 유지보수 체계 개발
+      current_label_en: Remote-maintenance systems are being developed in ITER and pilot designs
+      what: 작은 고장에도 발전소가 오래 멈추면 전기 원가가 급격히 올라갑니다.
+      what_en: Long outages after component failures would make fusion electricity uneconomic.
+      gap: 상용운전과 비슷한 환경에서 정비시간과 부품 수명을 검증하지 못했습니다.
+      gap_en: Maintenance time and component life have not been proven under commercial-like operations.
+      pursuing: [ITER, UKAEA, 파일럿 플랜트 개발사]
+      metric: 연간 가동률·평균 정비시간·부품 수명
+      metric_en: Annual availability, maintenance time, and component life
+      confidence: medium
+      as_of: 2026-07-12
+      source: https://www.iter.org/mach/remote-handling
+      source_label: ITER 원격 유지보수
+      source_label_en: ITER remote maintenance
+      gap_score: 2
+
+    - id: economics-licensing
+      name: 경제성·인허가·공급망
+      name_en: Economics, licensing, and supply chain
+      target_label: 반복 건설 가능한 비용과 인허가 기준으로 전력시장에 참여
+      target_label_en: Repeatable construction cost and licensing that can compete in power markets
+      current_label: 각국이 핵융합 규제체계와 민관 파일럿 지원을 구축
+      current_label_en: Governments are building fusion-specific regulation and public-private pilot support
+      what: 순발전에 성공해도 건설비·이자·정비비가 높으면 다른 발전원과 경쟁하기 어렵습니다.
+      what_en: Even net-electricity success must overcome construction, financing, and maintenance cost.
+      gap: 첫 발전소의 실증 원가가 없고 핵심 부품·연료·전문인력 공급망도 초기입니다.
+      gap_en: No first-plant cost evidence exists, and component, fuel, and workforce supply chains are early.
+      pursuing: [DOE, NRC, UKAEA, 핵융합 개발사]
+      metric: 발전소 건설비·균등화발전비용·인허가 기간
+      metric_en: Plant capex, levelized cost, and licensing duration
+      confidence: low
+      as_of: 2026-07-12
+      source: https://www.energy.gov/sites/default/files/2024-06/fusion-energy-strategy-2024.pdf
+      source_label: DOE 핵융합 에너지 전략 2024
+      source_label_en: DOE Fusion Energy Strategy 2024
+      gap_score: 3
+
+- tech: commercial-space
+  requirements:
+    - id: launch-cost-reliability
+      name: 발사 비용·신뢰성
+      name_en: Launch cost and reliability
+      target_label: 반복 재사용과 높은 성공률로 kg당 비용을 지속 하락
+      target_label_en: Sustain falling cost per kg through reuse and high reliability
+      current_label: 재사용 발사체가 고빈도 시장을 크게 확대, 차대형 중형·소형 발사체 경쟁
+      current_label_en: Reusable launch dominates high cadence while new medium and small launchers compete
+      what: 우주에서 어떤 사업을 하든 첫 관문은 물체를 싸고 믿을 수 있게 올리는 것입니다.
+      what_en: Every space business starts with affordable and reliable access to orbit.
+      gap: 선도 업체 의존도가 높고 신규 발사체는 비행 신뢰성을 쌓는 데 시간이 필요합니다.
+      gap_en: The market depends heavily on a leader, while new launchers need time to establish flight reliability.
+      pursuing: [SpaceX, Rocket Lab, ULA, Blue Origin, 각국 발사체 기업]
+      metric: kg당 가격·발사 성공률·재사용 횟수
+      metric_en: Price per kg, launch success, and reuse count
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.faa.gov/data_research/commercial_space_data
+      source_label: FAA 상업우주 데이터
+      source_label_en: FAA commercial-space data
+      gap_score: 2
+
+    - id: cadence-capacity
+      name: 발사 빈도·인프라 용량
+      name_en: Launch cadence and infrastructure capacity
+      target_label: 발사장·인허가·제조가 다수 사업자의 수요를 안정적으로 처리
+      target_label_en: Spaceports, licensing, and manufacturing support many operators reliably
+      current_label: 발사 횟수 급증과 함께 발사장·공역·심사 부하 증가
+      current_label_en: Rapid launch growth is increasing pressure on ranges, airspace, and licensing
+      what: 로켓을 많이 만들어도 발사장과 인허가 막히면 고객 일정이 밀립니다.
+      what_en: Rocket supply does not create cadence if ranges and licensing become bottlenecks.
+      gap: 항공·해상 통제와 지역 환경영향을 줄이면서 심사 용량을 늘려야 합니다.
+      gap_en: Review capacity must grow while managing airspace, maritime, and local environmental effects.
+      pursuing: [FAA, 우주군 발사장, 민간 스페이스포트]
+      metric: 연간 발사·지연률·인허가 처리기간
+      metric_en: Annual launches, delay rate, and licensing lead time
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.faa.gov/space
+      source_label: FAA 상업우주교통국
+      source_label_en: FAA Office of Commercial Space Transportation
+      gap_score: 2
+
+    - id: orbital-demand
+      name: 궤도 내 수요·수익모델
+      name_en: In-orbit demand and business models
+      target_label: 정부 계약 외에도 통신·관측·제조·연구가 자립적으로 수익 창출
+      target_label_en: Communications, observation, manufacturing, and research earn durable non-government revenue
+      current_label: 통신·지구관측은 상업화, 정거장·제조는 정부 수요에 큰 의존
+      current_label_en: Communications and Earth observation are commercial; stations and manufacturing remain government-dependent
+      what: 발사량이 늘어도 궤도에서 돈을 버는 고객이 없으면 상업 생태계는 자립하지 못합니다.
+      what_en: More launches do not create a self-sustaining economy without paying customers in orbit.
+      gap: 우주 제조·의약·연구의 많은 사례가 실험 단계이며 지구 대비 이점을 입증해야 합니다.
+      gap_en: Many manufacturing and research cases remain experimental and must prove an advantage over Earth-based alternatives.
+      pursuing: [NASA, Axiom Space, Vast, 위성통신·지구관측 사업자]
+      metric: 민간 매출·정부 의존도·반복 고객
+      metric_en: Commercial revenue, government dependence, and repeat customers
+      confidence: medium
+      as_of: 2026-07-12
+      source: https://www.nasa.gov/humans-in-space/commercial-space/what-is-the-commercial-low-earth-orbit-economy/
+      source_label: NASA 저궤도 상업경제
+      source_label_en: NASA commercial low-Earth-orbit economy
+      gap_score: 3
+
+    - id: orbital-sustainability
+      name: 궤도 지속가능성
+      name_en: Orbital sustainability
+      target_label: 위성·로켓이 추적·회피·제거 규칙을 지켜 충돌 위험을 억제
+      target_label_en: Satellites and stages follow tracking, avoidance, and disposal rules that contain collision risk
+      current_label: 물체 급증과 함께 사업자별 회피·폐기 실무와 정책 강화
+      current_label_en: Rapid object growth is driving stronger operator practices and disposal policy
+      what: 충돌 파편이 늘면 우주의 모든 상업자가 더 많은 비용과 위험을 부담합니다.
+      what_en: Collision debris raises cost and risk for every operator in orbit.
+      gap: 국가별 규칙, 기동 데이터, 책임 기준이 파편화되어 있고 이미 있는 폐기물 제거 시장도 초기입니다.
+      gap_en: National rules, maneuver data, and liability are fragmented, while debris-removal markets are early.
+      pursuing: [NASA, ESA, 우주교통관리기관, 위성 운영사]
+      metric: 충돌 위험·기동 건수·임무 후 제거 준수율
+      metric_en: Collision risk, maneuvers, and post-mission disposal compliance
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.nasa.gov/spacesustainability/
+      source_label: NASA 우주 지속가능성 전략
+      source_label_en: NASA Space Sustainability Strategy
+      gap_score: 2
+
+    - id: regulation-spectrum-liability
+      name: 인허가·전파·책임
+      name_en: Licensing, spectrum, and liability
+      target_label: 발사·위성·전파·우주안전 규칙이 국가간 일관되게 연결
+      target_label_en: Coherent cross-border rules for launch, satellites, spectrum, and safety
+      current_label: FAA·FCC·NOAA 등 기관별 심사와 국제 조정 병존
+      current_label_en: Agency-specific FAA, FCC, NOAA reviews coexist with international coordination
+      what: 위성은 국경을 넘고 주파수를 공유하므로 한 나라의 허가만으로는 충분하지 않습니다.
+      what_en: Satellites cross borders and share spectrum, so one nation's license is not enough.
+      gap: 신규 위성 수와 서비스가 심사·전파조정·손해책임 규칙보다 빠르게 늘고 있습니다.
+      gap_en: Satellite volume and new services are growing faster than review, spectrum coordination, and liability rules.
+      pursuing: [FAA, FCC Space Bureau, NOAA, ITU, 각국 우주기관]
+      metric: 인허가 기간·주파수 조정·사고 책임 기준
+      metric_en: Licensing time, spectrum coordination, and liability rules
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.fcc.gov/space
+      source_label: FCC Space Bureau
+      source_label_en: FCC Space Bureau
+      gap_score: 2
+
+- tech: singularity-2045
+  requirements:
+    - id: broad-ai-capability
+      name: 범용 AI 능력
+      name_en: Broad AI capability
+      target_label: 여러 분야의 새로운 장기 업무를 스스로 배워 완수
+      target_label_en: Learn and complete unfamiliar long-horizon work across domains
+      current_label: 인간을 넘는 개별 과제와 불안정한 장기 에이전트 능력이 병존
+      current_label_en: Superhuman narrow tasks coexist with unreliable long-horizon agents
+      what: 특이점 시나리오의 첫 가정은 AI가 한 분야를 넘어 다양한 일을 스스로 배우는 것입니다.
+      what_en: The first singularity assumption is AI that learns broad work beyond one domain.
+      gap: 범용성과 자율성을 합의하고 반복 측정하는 공통 기준이 없습니다.
+      gap_en: There is no settled, repeatable measure of generality and autonomy.
+      pursuing: [AI 연구소, 평가기관, 표준기관]
+      metric: 새 과제 전이·자율 업무 시간·실패률
+      metric_en: Novel-task transfer, autonomous task horizon, and failure rate
+      confidence: medium
+      as_of: 2026-07-12
+      source: https://aiindex.stanford.edu/report/
+      source_label: Stanford AI Index
+      source_label_en: Stanford AI Index
+      gap_score: 2
+
+    - id: recursive-improvement-evidence
+      name: 재귀적 개선 근거
+      name_en: Evidence of recursive improvement
+      target_label: AI가 자신의 연구·개발 과정을 개선해 능력 향상을 반복 가속
+      target_label_en: AI repeatedly accelerates its own research and development process
+      current_label: 코딩·연구 보조는 확대됐지만 자율적 가속 루프는 미입증
+      current_label_en: Coding and research assistance has expanded, but autonomous acceleration loops are unproven
+      what: 능력 폭발은 AI가 다음 AI를 더 빠르게 만드는 선순환이 실제로 있어야 합니다.
+      what_en: A capability explosion assumes a real feedback loop where AI speeds development of better AI.
+      gap: 현재 향상이 알고리즘, 연산량, 사람 연구자 중 어느 요인에서 오는지 분리하기 어렵습니다.
+      gap_en: It is difficult to separate gains from algorithms, compute, and human researchers.
+      pursuing: [AI 연구소, 과학자동화 연구자]
+      metric: AI 보조 연구 생산성·모델 개발주기·자동 개선 재현
+      metric_en: AI-assisted research productivity, development cycles, and replicated self-improvement
+      confidence: low
+      as_of: 2026-07-12
+      source: https://epoch.ai/data
+      source_label: Epoch AI 능력·연산 추세 데이터
+      source_label_en: Epoch AI capability and compute trends
+      gap_score: 3
+
+    - id: physical-infrastructure
+      name: 연산·에너지·물리 인프라
+      name_en: Compute, energy, and physical infrastructure
+      target_label: 대규모 AI의 연산·전력·네트워크·로봇 수요를 안정적으로 공급
+      target_label_en: Reliably supply compute, power, networks, and robotics for large-scale AI
+      current_label: 데이터센터 CAPEX가 증가하지만 전력망·칩·건설 리드타임이 제약
+      current_label_en: Data-center capex is rising while grid, chip, and construction lead times constrain growth
+      what: 소프트웨어 능력이 커져도 칩과 전력, 냉각, 로봇을 빠르게 만들지 못하면 현실 확산은 느립니다.
+      what_en: Software capability cannot spread physically faster than chips, power, cooling, and robots can be built.
+      gap: 전력망과 제조 설비는 소프트웨어보다 증설 속도가 느립니다.
+      gap_en: Grids and factories scale more slowly than software.
+      pursuing: [클라우드사, 반도체사, 전력·데이터센터 개발사]
+      metric: AI CAPEX·전력수요·가속기 공급·로봇 보급
+      metric_en: AI capex, power demand, accelerator supply, and robot deployment
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.iea.org/reports/energy-and-ai
+      source_label: IEA 에너지와 AI
+      source_label_en: IEA Energy and AI
+      gap_score: 2
+
+    - id: governance-distribution
+      name: 통제·제도·편익 분배
+      name_en: Control, institutions, and benefit distribution
+      target_label: 고위험 AI를 검증·제한하고 생산성 편익을 광범위하게 공유
+      target_label_en: Test and constrain high-risk AI while broadly sharing productivity gains
+      current_label: 자율 위험관리 틀·국가별 규칙·노동 전환 정책이 분절적으로 발전
+      current_label_en: Voluntary frameworks, national rules, and labor-transition policy are developing unevenly
+      what: 특이점은 기술 이벤트만이 아니라 안전, 일자리, 소득, 권력의 분배를 바꾸는 사회 시나리오입니다.
+      what_en: Singularity is a social scenario about safety, work, income, and power, not only a technical event.
+      gap: 기술 속도와 제도 변화 속도가 다르고 국가간 합의도 제한적입니다.
+      gap_en: Technology and institutions move at different speeds, with limited international agreement.
+      pursuing: [NIST, OECD, ILO, 각국 AI 안전기관·정부]
+      metric: 고위험 평가·AI 사고·노동 전환·생산성 분배
+      metric_en: High-risk evaluations, AI incidents, labor transition, and productivity distribution
+      confidence: medium
+      as_of: 2026-07-12
+      source: https://www.nist.gov/itl/ai-risk-management-framework
+      source_label: NIST AI 위험관리 프레임워크
+      source_label_en: NIST AI Risk Management Framework
+      gap_score: 2
+
+    - id: forecast-uncertainty
+      name: 예측 불확실성
+      name_en: Forecast uncertainty
+      target_label: 정의·조건·반증 기준이 명확한 복수 시나리오로 관리
+      target_label_en: Maintain multiple scenarios with clear definitions, conditions, and falsification tests
+      current_label: 2045년은 특정 저자의 시나리오이며 합의된 과학적 예측이 아님
+      current_label_en: 2045 is one author's scenario, not a consensus scientific forecast
+      what: 특이점은 정의부터 다르므로 한 연도를 정답처럼 보기보다 조건별 가능성으로 봐야 합니다.
+      what_en: Definitions differ, so the date should be treated as a conditional scenario, not an answer.
+      gap: AGI, 재귀적 개선, 현실 확산 중 어느 조건이 필수인지도 합의되지 않았습니다.
+      gap_en: There is no consensus on whether AGI, recursive improvement, or physical diffusion is essential.
+      pursuing: [미래예측 연구자, AI 평가기관]
+      metric: 예측 분포·정의 변화·사전 반증 기준
+      metric_en: Forecast distributions, definition changes, and precommitted falsification criteria
+      confidence: low
+      as_of: 2026-07-12
+      source: https://www.dni.gov/index.php/gt2040-home
+      source_label: 미 국가정보위원회 Global Trends 2040
+      source_label_en: U.S. National Intelligence Council Global Trends 2040
+      gap_score: 3
+
 - tech: quantum
   requirements:
     - id: error-correction
@@ -384,6 +1006,49 @@
       source_label_en: IBM Quantum roadmap
       gap_score: 3
 
+    - id: system-integration
+      name: 제어·냉각·모듈 통합
+      name_en: Control, cooling, and modular integration
+      target_label: 오류정정 모듈을 데이터센터에서 안정적으로 확장
+      target_label_en: Reliably scale error-corrected modules in data-center operations
+      current_label: 연구실 시스템과 초기 모듈형 아키텍처 병존
+      current_label_en: Laboratory systems and early modular architectures coexist
+      what: 큐비트만이 아니라 극저온 냉각, 제어 전자장치, 네트워크를 함께 늘려야 합니다.
+      what_en: Qubits must scale together with cryogenics, control electronics, and networking.
+      gap: 방식별로 장비와 온도 요구가 달라 어느 아키텍처가 대규모에 유리한지 아직 결론나지 않았습니다.
+      gap_en: Competing modalities impose different hardware and temperature requirements, with no settled scaling winner.
+      pursuing: [IBM, Google Quantum, IonQ, Quantinuum, QuEra, PsiQuantum]
+      metric: 모듈 연결 손실·제어선 수·가동률
+      metric_en: Module-link loss, control-line count, and uptime
+      confidence: medium
+      as_of: 2026-07-12
+      source: https://www.quantum.gov/
+      source_label: 미국 National Quantum Initiative
+      source_label_en: U.S. National Quantum Initiative
+      gap_score: 2
+
+    - id: pqc-transition
+      name: 양자내성암호 전환
+      name_en: Post-quantum cryptography transition
+      target_label: 핵심 시스템의 양자내성 암호 전환 완료
+      target_label_en: Complete PQC migration for critical systems
+      current_label: NIST 표준 확정 후 자산 파악과 이전 실증 단계
+      current_label_en: Asset discovery and migration pilots after NIST finalized initial standards
+      what: 양자컴퓨터의 성공 시점과 관계없이 오래 보관할 데이터는 미리 새 암호로 바꿔야 합니다.
+      what_en: Long-lived data needs new cryptography before a capable quantum computer exists.
+      gap: 조직이 보유한 암호 기술을 모두 찾고 제품·프로토콜을 중단 없이 교체하는 작업이 남았습니다.
+      gap_en: Organizations still need cryptographic inventories and disruption-free replacement across products and protocols.
+      achieved_by: [NIST]
+      pursuing: [정부기관, 금융사, 클라우드·통신 제공사]
+      metric: PQC 전환 계획·표준 적용률
+      metric_en: PQC migration plans and standards adoption
+      confidence: high
+      as_of: 2026-07-12
+      source: https://pages.nist.gov/nccoe-migration-post-quantum-cryptography/
+      source_label: NIST 양자내성암호 이전
+      source_label_en: NIST migration to post-quantum cryptography
+      gap_score: 2
+
 - tech: bci
   requirements:
     - id: clinical-stage
@@ -394,13 +1059,13 @@
       current_rung: invasive-feasibility
       what: 이식형 BCI는 장기 안전성과 실제 기능 개선을 임상시험으로 입증해야 합니다.
       what_en: Implanted BCI must prove long-term safety and functional benefit in clinical trials.
-      gap: PRIME은 초기 타당성 시험이며 정식 승인까지 확증 임상과 규제 심사가 남았습니다.
-      gap_en: PRIME is an early feasibility study; pivotal evidence and regulatory review remain.
+      gap: PRIME 등은 초기 타당성 시험이며, 첫 확증(pivotal) 임상이 준비 중일 뿐 정식 승인 심사는 아직 남았습니다.
+      gap_en: PRIME and peers are early feasibility studies; the first pivotal trial is only being prepared and regulatory review still remains.
       pursuing: [Neuralink, Synchron, Paradromics, Precision Neuroscience]
       metric: FDA 임상 단계·이식 환자 수
       metric_en: FDA trial stage and implanted patient count
       confidence: high
-      as_of: 2026-01-09
+      as_of: 2026-07-12
       source: https://clinicaltrials.gov/study/NCT06429735
       source_label: ClinicalTrials.gov PRIME 연구
       source_label_en: ClinicalTrials.gov PRIME study
@@ -420,7 +1085,7 @@
       metric: 정보전송률·장치 관련 이상반응
       metric_en: Information transfer rate and device-related adverse events
       confidence: medium
-      as_of: 2026-01-09
+      as_of: 2026-07-12
       source: https://www.fda.gov/regulatory-information/search-fda-guidance-documents/implanted-brain-computer-interface-bci-devices-patients-paralysis-or-amputation-non-clinical-testing
       source_label: FDA 이식형 BCI 가이드
       source_label_en: FDA implanted BCI guidance
@@ -443,6 +1108,48 @@
       source: https://www.fda.gov/news-events/fda-meetings-conferences-and-workshops/public-workshop-food-and-drug-administrationnational-institutes-health-joint-workshop-developing
       source_label: FDA·NIH BCI 임상평가 워크숍
       source_label_en: FDA-NIH BCI outcomes workshop
+      gap_score: 2
+
+    - id: functional-utility
+      name: 일상 기능 개선
+      name_en: Everyday functional benefit
+      target_label: 커서 시연을 넘어 의사소통·자립성을 지속적으로 개선
+      target_label_en: Sustained communication and independence beyond cursor demonstrations
+      current_label: 소수 참가자의 커서·타이핑·음성 복원 실증
+      current_label_en: Cursor, typing, and speech restoration shown in small participant cohorts
+      what: 의료기기로 보급되려면 신호 속도보다 환자의 실제 생활이 나아지는지가 중요합니다.
+      what_en: Medical adoption depends on better daily life, not signal speed alone.
+      gap: 작은 초기 임상의 성공을 더 많은 환자와 가정 환경에서 재현해야 합니다.
+      gap_en: Early successes need replication across more patients and home settings.
+      pursuing: [Neuralink, Synchron, Paradromics, Precision Neuroscience]
+      metric: 타이핑 속도·의사소통 성공률·삶의 질
+      metric_en: Typing speed, communication success, and quality of life
+      confidence: medium
+      as_of: 2026-07-12
+      source: https://www.gao.gov/products/gao-25-106952
+      source_label: GAO BCI 기술평가
+      source_label_en: GAO BCI technology assessment
+      gap_score: 3
+
+    - id: privacy-lifetime-support
+      name: 뇌신호 프라이버시·평생 지원
+      name_en: Neural-data privacy and lifetime support
+      target_label: 뇌신호 통제권과 장기 유지보수·제거 책임이 명확
+      target_label_en: Clear neural-data control and long-term maintenance or removal responsibility
+      current_label: 임상 보호와 일반 의료기기 규칙은 있지만 BCI 특유 장기 정책은 형성 중
+      current_label_en: Trial and device protections exist, while BCI-specific long-term policy is still forming
+      what: 이식 후 회사가 사라지거나 서버 지원이 끝나도 환자를 보호할 책임 구조가 필요합니다.
+      what_en: Patients need protection if a company exits or server support ends after implantation.
+      gap: 뇌 데이터 소유권, 보험 보장, 장치 유지·제거 비용에 대한 공통 기준이 부족합니다.
+      gap_en: Common rules remain incomplete for neural-data rights, coverage, maintenance, and explant costs.
+      pursuing: [NIH BRAIN Initiative, FDA, CMS, 의료윤리 연구자]
+      metric: 데이터 권리·장기지원·보험 정책
+      metric_en: Data-rights, long-term-support, and coverage policies
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.braininitiative.nih.gov/vision/nih-brain-initiative-reports/brain-20-neuroethics-enabling-and-enhancing-neuroscience
+      source_label: NIH BRAIN 뇌신경윤리 로드맵
+      source_label_en: NIH BRAIN neuroethics roadmap
       gap_score: 2
 
 - tech: future-food
@@ -508,6 +1215,48 @@
       source_label_en: FDA cultured-cell food overview
       gap_score: 3
 
+    - id: precision-fermentation
+      name: 정밀발효 상업화
+      name_en: Precision-fermentation commercialization
+      target_label: 대형 발효 설비에서 기존 단백질과 원가·품질 경쟁
+      target_label_en: Compete with conventional proteins on cost and quality at industrial fermentation scale
+      current_label: 일부 우유·달걀 단백질은 상업 판매, 품목·규모 확장 중
+      current_label_en: Some dairy and egg proteins are commercial while products and scale expand
+      what: 미생물에게 우유·달걀 단백질을 만들게 하는 발효는 배양육과 다른 또 하나의 주요 경로입니다.
+      what_en: Microbial production of dairy and egg proteins is a separate major path from cultivated meat.
+      gap: 식품 안전성과 정제 비용, 대형 발효조 수율을 함께 개선해야 합니다.
+      gap_en: Food safety, purification cost, and industrial fermenter yield must improve together.
+      pursuing: [Perfect Day, The EVERY Company, 정밀발효 스타트업]
+      metric: 발효 수율·정제 원가·판매 품목
+      metric_en: Fermentation yield, purification cost, and commercial products
+      confidence: medium
+      as_of: 2026-07-12
+      source: https://www.fao.org/food-safety/scientific-advice/biotechnology--gmo-and-gm-foods/cell-based-food-and-precision-fermentation/ensuring-the-food-safety-of-cell-based-food/en
+      source_label: FAO 세포배양·정밀발효 안전 허브
+      source_label_en: FAO cell-based food and precision-fermentation hub
+      gap_score: 2
+
+    - id: energy-lifecycle
+      name: 에너지·전과정 환경성
+      name_en: Energy and lifecycle impact
+      target_label: 기존 축산보다 낮은 전과정 배출과 자원 사용을 실증
+      target_label_en: Demonstrate lower lifecycle emissions and resource use than conventional livestock
+      current_label: 전력 구성·시설 규모·공정 가정에 따라 평가 결과가 큰 범위
+      current_label_en: Assessments vary widely with electricity mix, facility scale, and process assumptions
+      what: 가축을 줄여도 공장의 전력과 원료 사용이 크면 환경 이점이 줄어듭니다.
+      what_en: Environmental benefit shrinks if factories require high-carbon power or resource-intensive inputs.
+      gap: 실제 상업 공정 데이터가 부족해 가정에 의존한 비교가 많습니다.
+      gap_en: Limited commercial-process data leaves many comparisons dependent on assumptions.
+      pursuing: [FAO, 식품 안전기관, 전과정평가 연구자]
+      metric: kg당 에너지·온실가스·물 사용
+      metric_en: Energy, greenhouse gases, and water per kg
+      confidence: low
+      as_of: 2026-07-12
+      source: https://www.fao.org/food-safety/news/detail/New-review-examines-the-safety-of-new-food-sources-and-production-systems-/en
+      source_label: FAO 신규 식품 생산방식 검토
+      source_label_en: FAO review of new food production systems
+      gap_score: 2
+
 - tech: uam
   requirements:
     - id: certification
@@ -570,6 +1319,27 @@
       source: https://www.faa.gov/newsroom/faa-issues-implementation-plan-outlining-steps-usher-advanced-air-mobility
       source_label: FAA Innovate28 실행계획
       source_label_en: FAA Innovate28 implementation plan
+      gap_score: 2
+
+    - id: operations-airspace
+      name: 공역·반복 운항
+      name_en: Airspace and repeat operations
+      target_label: 기존 항공교통과 함께 여러 노선을 매일 반복 운항
+      target_label_en: Daily multi-route service integrated with existing air traffic
+      current_label: 조종사 탑승·기존 헬리포트와 절차를 활용한 초기 운항 계획
+      current_label_en: Early service plans rely on pilots and existing heliports and procedures
+      what: 기체 인증 후에도 조종사, 정비, 기상, 관제, 회전시간을 맞춰야 상업 서비스가 됩니다.
+      what_en: Certification alone is not service; pilots, maintenance, weather, traffic control, and turnaround must align.
+      gap: 초기에는 기존 항공 절차를 사용하므로 운항 횟수가 늘면 새로운 교통관리와 자동화가 필요합니다.
+      gap_en: Early operations use existing aviation procedures; higher frequency will need new traffic management and automation.
+      pursuing: [FAA, NASA, Joby, Archer]
+      metric: 일일 운항·정시율·회전시간·기상 취소율
+      metric_en: Daily flights, on-time rate, turnaround, and weather cancellations
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.faa.gov/sites/faa.gov/files/AAM-I28-Implementation-Plan.pdf
+      source_label: FAA AAM 구현 계획
+      source_label_en: FAA AAM implementation plan
       gap_score: 2
 
 - tech: carbon-capture
@@ -635,8 +1405,92 @@
       source_label_en: DOE DACS life-cycle assessment practices
       gap_score: 2
 
+    - id: clean-energy-input
+      name: 저탄소 에너지·소재
+      name_en: Low-carbon energy and materials
+      target_label: 포집에 쓴 에너지를 빼고도 큰 순제거량 확보
+      target_label_en: Deliver large net removals after capture energy is counted
+      current_label: 열·전력·흡착제 선택에 따라 순제거량과 비용 차이가 큼
+      current_label_en: Net removal and cost vary sharply with heat, power, and sorbent choices
+      what: 공기에서 탄소를 빼는 데 많은 화석에너지를 쓰면 실제 제거 효과가 작아집니다.
+      what_en: Using carbon-intensive energy to remove carbon can sharply reduce the actual climate benefit.
+      gap: 싼 저탄소 전력과 열이 필요하지만 다른 부문의 전기화 수요와 경쟁합니다.
+      gap_en: Cheap low-carbon power and heat are needed but compete with electrification elsewhere.
+      pursuing: [Climeworks, Heirloom, DOE]
+      metric: 제거 톤당 열·전력·순제거율
+      metric_en: Heat, electricity, and net-removal ratio per ton
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.energy.gov/hgeo/best-practices-life-cycle-assessment-direct-air-capture-storage-dacs
+      source_label: DOE DACS 전과정평가 모범규범
+      source_label_en: DOE DACS lifecycle-assessment best practices
+      gap_score: 3
+
+    - id: policy-accounting-demand
+      name: 정책·회계·수요
+      name_en: Policy, accounting, and demand
+      target_label: 보조금 변동에도 유지되는 투명한 순제거 시장
+      target_label_en: Transparent net-removal demand that survives subsidy changes
+      current_label: 세제혜택·정부 지원·기업 선구매가 초기 수요를 주도
+      current_label_en: Tax credits, public support, and corporate advance purchases drive early demand
+      what: 돈을 내는 주체와 톤당 순제거량을 같은 방식으로 계산해야 프로젝트가 반복됩니다.
+      what_en: Repeatable projects need durable buyers and consistent accounting of net tons removed.
+      gap: 크레딧 품질과 영속성 기준이 여러 제도에서 달라 실제 가치를 비교하기 어렵습니다.
+      gap_en: Credit quality and durability rules differ, making real value hard to compare.
+      pursuing: [DOE, EPA, 탄소제거 구매자, 표준기관]
+      metric: 검증 순제거 구매량·톤당 가격·정책 지원
+      metric_en: Verified purchases, price per net ton, and policy support
+      confidence: medium
+      as_of: 2026-07-12
+      source: https://www.epa.gov/ghgreporting/subpart-rr-geologic-sequestration-carbon-dioxide
+      source_label: EPA 지중저장 측정·보고·검증
+      source_label_en: EPA geologic-sequestration MRV
+      gap_score: 2
+
 - tech: geoengineering
   requirements:
+    - id: scientific-evidence
+      name: 효과·부작용 근거
+      name_en: Evidence on effects and side effects
+      target_label: 지역별 기온·강수·오존·생태계 영향을 충분히 예측
+      target_label_en: Adequately predict regional temperature, rainfall, ozone, and ecosystem effects
+      current_label: 화산 관측과 기후모델 중심, 대규모 현장 검증 없음
+      current_label_en: Evidence comes mainly from volcano observations and climate models, without large-scale field validation
+      what: 전 지구 평균이 식어도 어느 지역의 비와 농업, 오존층에 큰 피해가 생길 수 있습니다.
+      what_en: Global average cooling could still cause major regional harm to rainfall, agriculture, or ozone.
+      gap: 현재 지식은 이론과 모델 비중이 높고 큰 개입을 안전하게 실험할 방법 자체가 논쟁적입니다.
+      gap_en: Knowledge remains model-heavy, while safe field experimentation is itself contested.
+      pursuing: [NOAA, WMO, 기후모델 연구기관]
+      metric: 모델 간 지역 영향 편차·관측 검증
+      metric_en: Cross-model regional spread and observational validation
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.congress.gov/crs-product/R47551
+      source_label: 미 의회조사국 태양지구공학 검토
+      source_label_en: Congressional Research Service solar-geoengineering review
+      gap_score: 3
+
+    - id: monitoring-reversibility
+      name: 감시·중단 위험
+      name_en: Monitoring and termination risk
+      target_label: 전 지구 효과를 실시간으로 감시하고 중단 시 급반등을 관리
+      target_label_en: Monitor global effects and manage rapid warming if intervention stops
+      current_label: 대기·복사수지 관측망은 있지만 배치 전제 중단 체계는 없음
+      current_label_en: Atmospheric and radiation monitoring exists, but no deployment-grade termination system does
+      what: 장기 개입을 갑자기 멈추면 숨겨졌던 온난화가 빠르게 돌아올 수 있습니다.
+      what_en: Abruptly ending a sustained intervention could cause rapid rebound warming.
+      gap: 정치·전쟁·예산 변화에도 수십 년 운영을 지속할 제도가 필요합니다.
+      gap_en: Institutions would need to sustain operations for decades through political, conflict, and budget changes.
+      pursuing: [NOAA, WMO, 각국 기후기관]
+      metric: 관측 커버리지·중단 시나리오·장기 재원
+      metric_en: Observation coverage, termination scenarios, and durable funding
+      confidence: medium
+      as_of: 2026-07-12
+      source: https://www.unep.org/ocs/Solar-radiation-modification
+      source_label: UNEP 태양복사수정 위험 검토
+      source_label_en: UNEP review of solar-radiation-modification risks
+      gap_score: 3
+
     - id: governance
       name: 국제 거버넌스
       name_en: International governance
@@ -656,6 +1510,27 @@
       source: https://www.unep.org/resources/report/Solar-Radiation-Modification-research-deployment
       source_label: UNEP One Atmosphere
       source_label_en: UNEP One Atmosphere
+      gap_score: 3
+
+    - id: equity-legitimacy
+      name: 형평성·정당성
+      name_en: Equity and legitimacy
+      target_label: 피해와 편익이 다른 국가·지역이 의사결정과 보상에 참여
+      target_label_en: Regions with unequal harms and benefits participate in decisions and remedies
+      current_label: 국제 논의는 있지만 대표성·보상·책임 규칙은 미정
+      current_label_en: International debate exists, but representation, compensation, and liability rules are unsettled
+      what: 누가 얼마나 식힐지 결정하고 피해를 보는 지역을 어떻게 보상할지가 기술만큼 중요합니다.
+      what_en: Who decides the cooling level and compensates harmed regions matters as much as the technology.
+      gap: 일방적 실행을 막고 기후 영향의 인과관계를 판정할 국제 절차가 없습니다.
+      gap_en: No global process can reliably prevent unilateral action or attribute climate harm.
+      pursuing: [UNEP, CBD, WMO, 개발도상국 연구자·정부]
+      metric: 참여 국가·지역 범위·책임·분쟁해결 규칙
+      metric_en: Participation, liability, and dispute-resolution rules
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.cbd.int/climate/geoengineering
+      source_label: 생물다양성협약 지구공학 결정
+      source_label_en: Convention on Biological Diversity geoengineering decisions
       gap_score: 3
 
 - tech: spatial
@@ -719,4 +1594,46 @@
       source: https://about.fb.com/news/2024/12/accelerating-the-future-ai-mixed-reality-and-the-metaverse/
       source_label: Meta 혼합현실 제품 방향
       source_label_en: Meta mixed-reality product direction
+      gap_score: 2
+
+    - id: interaction-standards
+      name: 입력·호환성·접근성
+      name_en: Input, interoperability, and accessibility
+      target_label: 기기와 플랫폼이 달라도 일관된 시선·손·음성 상호작용
+      target_label_en: Consistent gaze, hand, and voice interaction across devices and platforms
+      current_label: OpenXR·WebXR 표준과 플랫폼별 입력 규칙이 병존
+      current_label_en: OpenXR and WebXR standards coexist with platform-specific interaction models
+      what: 새 기기마다 앱을 다시 만들어야 하면 콘텐츠 생태계가 빠르게 커지기 어렵습니다.
+      what_en: If every device requires a separate app, the content ecosystem cannot scale quickly.
+      gap: 시선·손 추적을 못 쓰는 사용자까지 포함하는 공통 입력 방식과 호환성이 부족합니다.
+      gap_en: Interoperability and input alternatives for people unable to use gaze or hand tracking remain incomplete.
+      pursuing: [Khronos, W3C, Apple, Google, Meta]
+      metric: 표준 호환 기기·크로스플랫폼 앱·접근성 지원
+      metric_en: Conformant devices, cross-platform apps, and accessibility support
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.khronos.org/openxr/
+      source_label: Khronos OpenXR 표준
+      source_label_en: Khronos OpenXR standard
+      gap_score: 2
+
+    - id: privacy-social-acceptance
+      name: 공간 데이터 프라이버시
+      name_en: Spatial-data privacy
+      target_label: 시선·손·방 지도 데이터를 최소 수집하고 사용자가 통제
+      target_label_en: Minimize gaze, hand, and room-map collection under user control
+      current_label: 플랫폼별 권한·샌드박스는 있지만 상시 착용에 대한 사회적 기준은 형성 중
+      current_label_en: Platform permissions exist, while norms for always-on wear remain unsettled
+      what: 안경이 사용자의 시선과 집안, 주변 사람을 계속 읽으면 스마트폰보다 민감한 데이터가 생깁니다.
+      what_en: Always-on glasses can create more sensitive data than phones by reading gaze, rooms, and bystanders.
+      gap: 기기 내 처리, 제3자 알림, 생체·공간 데이터 사용 규칙이 일관되지 않았습니다.
+      gap_en: On-device processing, bystander notice, and biometric or spatial-data rules are not consistent.
+      pursuing: [NIST, Apple, Google, Meta, W3C]
+      metric: 감지 데이터 기기 내 처리율·권한·사고
+      metric_en: On-device processing, permissions, and privacy incidents
+      confidence: high
+      as_of: 2026-07-12
+      source: https://www.nist.gov/publications/report-virtual-workshop-usable-cybersecurity-and-privacy-immersive-technologies
+      source_label: NIST 몰입형 기술 보안·프라이버시 보고서
+      source_label_en: NIST immersive-technology security and privacy report
       gap_score: 2

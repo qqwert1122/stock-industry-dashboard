@@ -26,6 +26,7 @@
 | [feature-future-tech-breakdown.md](feature-future-tech-breakdown.md) | **F7** — 기술 요구사항 브레이크다운 (도메인별 능력 사다리: 자율주행 L0~L5·통신 세대·HBM 세대, 목표/현재 단·달성 기업·병목) + **저자 작성 위키 콘텐츠**(로보택시·AGI·휴머노이드) + 실행 프롬프트 |
 | [feature-future-expansion.md](feature-future-expansion.md) | **F8** — 미래 기술 확장 세트 7종 (양자·BCI·미래식량·도심항공·탄소포집·지구공학·공간컴퓨팅) + investable/nature 성격 태그 + **저자 작성 위키 콘텐츠** + 실행 프롬프트 |
 | [feature-future-roadmap-gantt.md](feature-future-roadmap-gantt.md) | **F9** — 기술별 로드맵 간트 (done/active/projected 막대 + 오늘선 + 예측 마름모 + 재추정 유령 막대) + **저자 작성 시드 13종** + 실행 프롬프트 |
+| [feature-future-company-arcs.md](feature-future-company-arcs.md) | **F10** — 기업의 흥망 아크 차트 (기술별 주요 기업 멀티라인, 상장=100 로그축, 파산✕/피인수→ 표시, 챕터 스텝퍼) + **정적 1회 수록 원칙·시대별 자료 소스 지도** + 실행 프롬프트 |
 
 공통 제약(요구사항 1): **운영 비용 0원.** 유료 API·유료 호스팅·유료 모델 금지.
 무료 한도(GitHub Actions, Gemini free tier, 각 공공/무료 API) 안에서만 동작해야 한다.
@@ -41,14 +42,19 @@
 - 진입점: `industry-dashboard` CLI → `src/macro_telegram_report/dashboard_cli.py`
   - 풀빌드: `dashboard.py::build_dashboard_site()` (dashboard.py:471)
   - 시세만 갱신: `--prices-only` → `refresh_prices_site()` (dashboard.py:513)
-- `dashboard.py` (약 5,100줄, 단일 모듈)가 모든 수집기(`collect_*_metrics`)를 순차 호출해
-  `metrics: list[dict]` 를 만들고, 아래 산출물을 `site/` 에 쓴다:
+- `dashboard.py`가 모든 수집기(`collect_*_metrics`)를 순차 호출해 `metrics: list[dict]`를 만들고,
+  아래 산출물을 `site/`에 쓴다. 공통 책임은 다음 모듈로 분리되어 있다:
+  - `dashboard_briefing.py`: AI 브리핑 게이트·내러티브·Gemini 응답 정규화
+  - `dashboard_metrics.py`: 지표 생성·분류·국가 추론·표시 형식
+  - `dashboard_localization.py`: 표시 문구 정리와 영문 변환 사전
+  - `site_output.py`: 정적 템플릿 조합·에셋 복사·사이트 셸 출력
+  - `storage.py`: 상태/스냅샷 JSON 입출력
   - `site/data/dashboard.json` — 전체 페이로드 (metrics 158개 + market_gauges + morning_briefing 등)
   - `site/data/long_history.json` — 상세 차트용 장기 시계열
   - `site/data/market_gauges_history.json` — 게이지 히스토리
-  - `site/index.html` — `templates/dashboard.html` 의 `__DASHBOARD_JSON__` 자리에
-    페이로드 JSON을 치환해 생성 (`render_dashboard_html()`, dashboard.py:5130).
-    **프론트엔드는 이 단일 HTML 템플릿 안의 인라인 JS가 임베드된 JSON을 클라이언트에서 렌더링**하는 구조.
+  - `site/index.html` — `templates/dashboard.html` 셸에 CSS/JS 파셜과
+    `__DASHBOARD_JSON__` 페이로드를 빌드 시 인라인으로 조합한다.
+    배포 산출물은 기존과 같은 단일 HTML이며, 소스만 기능 영역별 파셜로 나뉜다.
 - 장기 히스토리 저장소: `data/history/*.json` (repo에 커밋, 증분 병합) — `history_store.py::HistoryStore`
 - HTTP: 모든 수집기가 `http_client.py::ThrottledSession` 공유 (호스트별 최소 간격 + 429/503 재시도)
 - 수집 소스: FRED, ECOS, KRX Open API(data-dbg.krx.co.kr), Yahoo Finance(Naver 폴백),

@@ -2,11 +2,9 @@ from __future__ import annotations
 
 import argparse
 import importlib
-import json
 import os
 import queue
 import shutil
-import socket
 import subprocess
 import sys
 import threading
@@ -22,9 +20,9 @@ ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
 SITE = ROOT / "site"
 CONFIG = ROOT / "config.yaml"
-DASHBOARD_SOURCE = ROOT / "src" / "macro_telegram_report" / "dashboard.py"
-DASHBOARD_TEMPLATE = ROOT / "src" / "macro_telegram_report" / "templates" / "dashboard.html"
+PACKAGE_SOURCE = ROOT / "src" / "macro_telegram_report"
 ASSETS = ROOT / "assets"
+FUTURE_DATA = ROOT / "data" / "future"
 
 
 LIVE_RELOAD_SNIPPET = """
@@ -162,8 +160,12 @@ def run_full_build(args: argparse.Namespace) -> bool:
 def load_dashboard_module():
     add_src_to_path()
     importlib.invalidate_caches()
-    dashboard = importlib.import_module("macro_telegram_report.dashboard")
-    return importlib.reload(dashboard)
+    for module_name in sorted(
+        (name for name in sys.modules if name.startswith("macro_telegram_report.")),
+        reverse=True,
+    ):
+        del sys.modules[module_name]
+    return importlib.import_module("macro_telegram_report.dashboard")
 
 
 def load_mock_config() -> dict[str, Any]:
@@ -175,9 +177,7 @@ def load_mock_config() -> dict[str, Any]:
 
 def write_dashboard_preview(payload: dict[str, Any], dashboard: Any) -> None:
     SITE.mkdir(parents=True, exist_ok=True)
-    dashboard.copy_dashboard_assets(SITE)
-    (SITE / "index.html").write_text(dashboard.render_dashboard_html(payload), encoding="utf-8")
-    (SITE / ".nojekyll").write_text("", encoding="utf-8")
+    dashboard.write_dashboard_shell(SITE, payload)
 
 
 def render_existing_payload() -> bool:
@@ -188,16 +188,15 @@ def render_existing_payload() -> bool:
 
     try:
         dashboard = load_dashboard_module()
-        payload = json.loads(data_path.read_text(encoding="utf-8"))
+        payload = dashboard.load_json(data_path, {})
+        if not isinstance(payload, dict):
+            raise ValueError("site/data/dashboard.json must contain an object")
         payload["future"] = dashboard.build_future_timeline(
             load_mock_config(),
             payload.get("metrics", []),
             today=datetime.now(ZoneInfo("Asia/Seoul")).date(),
         )
-        (data_path.parent / "future.json").write_text(
-            json.dumps(payload["future"], ensure_ascii=False, indent=2) + "\n",
-            encoding="utf-8",
-        )
+        dashboard.write_json(data_path.parent / "future.json", payload["future"])
         write_dashboard_preview(payload, dashboard)
         print("[dev] fast render: regenerated site/index.html from existing data")
         return True
@@ -948,15 +947,12 @@ def render_mock_payload() -> bool:
         signal_log = mock_signal_log(payload)
 
         for filename in ("dashboard.mock.json", "dashboard.json"):
-            (data_path / filename).write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        (data_path / "calendar.json").write_text(json.dumps(payload["calendar"], ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        (data_path / "future.json").write_text(json.dumps(payload["future"], ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        (data_path / "long_history.json").write_text(json.dumps(long_history, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        (data_path / "market_gauges_history.json").write_text(
-            json.dumps(market_gauges_history, ensure_ascii=False, indent=2) + "\n",
-            encoding="utf-8",
-        )
-        (data_path / "signal_log.json").write_text(json.dumps(signal_log, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            dashboard.write_json(data_path / filename, payload)
+        dashboard.write_json(data_path / "calendar.json", payload["calendar"])
+        dashboard.write_json(data_path / "future.json", payload["future"])
+        dashboard.write_json(data_path / "long_history.json", long_history)
+        dashboard.write_json(data_path / "market_gauges_history.json", market_gauges_history)
+        dashboard.write_json(data_path / "signal_log.json", signal_log)
         print("[dev] mock render: regenerated site/index.html from dummy data")
         return True
     except Exception as exc:  # noqa: BLE001 - keep the dev server alive.
@@ -976,29 +972,16 @@ def newest_mtime(paths: list[Path]) -> float:
     return newest
 
 
-def find_available_port(host: str, start: int) -> int:
-    for port in range(start, start + 50):
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            try:
-                sock.bind((host, port))
-            except OSError:
-                continue
-            return port
-    raise RuntimeError(f"No available port found from {start} to {start + 49}")
-
-
 def start_server(host: str, port: int) -> ReloadServer:
-    actual_port = find_available_port(host, port)
-    server = ReloadServer((host, actual_port), DashboardHandler)
+    server = ReloadServer((host, port), DashboardHandler)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
-    print(f"[dev] open http://{host}:{actual_port}/")
+    print(f"[dev] open http://{host}:{port}/")
     return server
 
 
 def watch_loop(args: argparse.Namespace, server: ReloadServer) -> None:
-    fast_paths = [DASHBOARD_SOURCE, DASHBOARD_TEMPLATE, ASSETS]
+    fast_paths = [PACKAGE_SOURCE, ASSETS, FUTURE_DATA]
     full_paths = [Path(args.config)]
     fast_stamp = newest_mtime(fast_paths)
     full_stamp = newest_mtime(full_paths)
@@ -1036,7 +1019,15 @@ def main() -> int:
     else:
         render_existing_payload()
 
-    server = start_server(args.host, args.port)
+    try:
+        server = start_server(args.host, args.port)
+    except OSError as exc:
+        print(
+            f"[dev] http://{args.host}:{args.port}/ is already in use; "
+            "reuse or stop the existing development server before starting another."
+        )
+        print(f"[dev] {exc}")
+        return 1
     try:
         watch_loop(args, server)
     except KeyboardInterrupt:

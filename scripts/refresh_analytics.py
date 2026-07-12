@@ -30,45 +30,82 @@ def rows(payload: dict) -> list[dict]:
     metrics = [item["name"] for item in payload.get("metricHeaders", [])]
     result = []
     for row in payload.get("rows", []):
-        item = {name: value.get("value", "") for name, value in zip(dimensions, row.get("dimensionValues", []))}
-        item.update({name: float(value.get("value", 0)) for name, value in zip(metrics, row.get("metricValues", []))})
+        item = {
+            name: value.get("value", "")
+            for name, value in zip(dimensions, row.get("dimensionValues", []))
+        }
+        item.update(
+            {
+                name: float(value.get("value", 0))
+                for name, value in zip(metrics, row.get("metricValues", []))
+            }
+        )
         result.append(item)
     return result
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Write a safe GA4 aggregate snapshot for the static admin page.")
+    parser = argparse.ArgumentParser(
+        description="Write a safe GA4 aggregate snapshot for the static admin page."
+    )
     parser.add_argument("--out", default="site/data/analytics.json")
     args = parser.parse_args()
     property_id = os.environ["GA_PROPERTY_ID"]
     credentials_info = json.loads(os.environ["GA_SERVICE_ACCOUNT_JSON"])
-    credentials = service_account.Credentials.from_service_account_info(credentials_info, scopes=[SCOPE])
+    credentials = service_account.Credentials.from_service_account_info(
+        credentials_info,
+        scopes=[SCOPE],
+    )
     credentials.refresh(Request())
     common = {"dateRanges": [{"startDate": "30daysAgo", "endDate": "today"}], "limit": "20"}
-    summary = report(property_id, credentials.token, {
-        **common,
-        "metrics": [{"name": name} for name in ("screenPageViews", "totalUsers", "sessions", "eventCount")],
-    })
-    daily = report(property_id, credentials.token, {
-        **common,
-        "dimensions": [{"name": "date"}],
-        "metrics": [{"name": "screenPageViews"}, {"name": "totalUsers"}],
-        "orderBys": [{"dimension": {"dimensionName": "date"}}],
-        "limit": "31",
-    })
-    pages = report(property_id, credentials.token, {
-        **common,
-        "dimensions": [{"name": "pagePath"}],
-        "metrics": [{"name": "screenPageViews"}, {"name": "totalUsers"}],
-        "orderBys": [{"metric": {"metricName": "screenPageViews"}, "desc": True}],
-    })
-    clicks = report(property_id, credentials.token, {
-        **common,
-        "dimensions": [{"name": "customEvent:element_label"}],
-        "metrics": [{"name": "eventCount"}],
-        "dimensionFilter": {"filter": {"fieldName": "eventName", "stringFilter": {"value": "ui_click"}}},
-        "orderBys": [{"metric": {"metricName": "eventCount"}, "desc": True}],
-    })
+    summary = report(
+        property_id,
+        credentials.token,
+        {
+            **common,
+            "metrics": [
+                {"name": name}
+                for name in ("screenPageViews", "totalUsers", "sessions", "eventCount")
+            ],
+        },
+    )
+    daily = report(
+        property_id,
+        credentials.token,
+        {
+            **common,
+            "dimensions": [{"name": "date"}],
+            "metrics": [{"name": "screenPageViews"}, {"name": "totalUsers"}],
+            "orderBys": [{"dimension": {"dimensionName": "date"}}],
+            "limit": "31",
+        },
+    )
+    pages = report(
+        property_id,
+        credentials.token,
+        {
+            **common,
+            "dimensions": [{"name": "pagePath"}],
+            "metrics": [{"name": "screenPageViews"}, {"name": "totalUsers"}],
+            "orderBys": [{"metric": {"metricName": "screenPageViews"}, "desc": True}],
+        },
+    )
+    clicks = report(
+        property_id,
+        credentials.token,
+        {
+            **common,
+            "dimensions": [{"name": "customEvent:element_label"}],
+            "metrics": [{"name": "eventCount"}],
+            "dimensionFilter": {
+                "filter": {
+                    "fieldName": "eventName",
+                    "stringFilter": {"value": "ui_click"},
+                }
+            },
+            "orderBys": [{"metric": {"metricName": "eventCount"}, "desc": True}],
+        },
+    )
     output = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "period": "최근 30일",

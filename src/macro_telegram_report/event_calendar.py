@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -8,6 +7,7 @@ from typing import Any
 import yaml
 
 from .fetch_log import current_logger
+from .storage import write_json
 
 
 def nth_weekday(year: int, month: int, weekday: int, nth: int) -> date:
@@ -182,5 +182,4 @@ def build_event_calendar(
 
 
 def write_event_calendar(path: Path, calendar: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(calendar, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    write_json(path, calendar)

@@ -3,6 +3,8 @@
   name_en: Artificial General Intelligence
   category: AI
   category_en: AI
+  nature: frontier
+  investable: true
   predicted:
     year: 2029
     source_label: 커즈와일 『마침내 특이점이 온다』
@@ -28,6 +30,8 @@
   name_en: Robotaxi
   category: 로봇·모빌리티
   category_en: Robotics/Mobility
+  nature: product
+  investable: true
   predicted:
     year: 2027
     source_label: 커즈와일 『마침내 특이점이 온다』
@@ -53,6 +57,8 @@
   name_en: Humanoid Robots
   category: 로봇·모빌리티
   category_en: Robotics/Mobility
+  nature: frontier
+  investable: true
   predicted:
     label: 2030년대 초
     label_en: Early 2030s
@@ -76,10 +82,12 @@
   companies: [TSLA, TER, NVDA, QCOM]
 
 - id: longevity-escape
-  name: 수명 탈출 속도
-  name_en: Longevity Escape Velocity
+  name: 건강수명 연장(LEV 가설)
+  name_en: Healthspan Extension (LEV Hypothesis)
   category: 바이오
   category_en: Biotech
+  nature: frontier
+  investable: partial
   predicted:
     year: 2032
     source_label: 커즈와일 『마침내 특이점이 온다』
@@ -105,6 +113,8 @@
   name_en: Mainstream Gene Therapy
   category: 바이오
   category_en: Biotech
+  nature: product
+  investable: true
   predicted:
     label: 2030년대
     label_en: 2030s
@@ -132,6 +142,8 @@
   name_en: Commercial Fusion Power
   category: 에너지
   category_en: Energy
+  nature: frontier
+  investable: partial
   predicted:
     label: 2030년대 후반
     label_en: Late 2030s
@@ -152,13 +164,16 @@
   bottleneck: "병목: 순발전·경제성"
   bottleneck_en: "Bottleneck: net power and economics"
   metrics: [미국 전력수요, GE Vernova(GEV)]
-  companies: [GEV, OKLO]
+  companies: [GEV]
+  private_players: [Commonwealth Fusion Systems, Helion, TAE Technologies, Tokamak Energy]
 
 - id: commercial-space
   name: 우주 상업화
   name_en: Commercial Space
   category: 우주
   category_en: Space
+  nature: product
+  investable: true
   predicted:
     label: 진행 중
     label_en: In progress
@@ -186,6 +201,8 @@
   name_en: Singularity
   category: AI
   category_en: AI
+  nature: scenario
+  investable: false
   predicted:
     year: 2045
     source_label: 커즈와일 『마침내 특이점이 온다』
@@ -204,7 +221,7 @@
   bottleneck: "병목: AGI 이후 경로의 불확실성"
   bottleneck_en: "Bottleneck: uncertainty after AGI"
   metrics: [Microsoft, Amazon, CoreWeave]
-  companies: [MSFT, NVDA, GOOGL, META]
+  companies: []
 
 - id: quantum
   name: 양자 컴퓨팅
@@ -223,6 +240,7 @@
     confidence: medium
     manufacturer_forecast: true
   status: upcoming
+  image: assets/future-images/quantum.png
   as_of: 2026-07-12
   what: 0과 1을 동시에 겹쳐 다루는 새로운 방식의 컴퓨터입니다. 모든 계산이 아니라 특정 문제에서만 빠릅니다.
   what_en: A new kind of computer that can work with overlapping states of zero and one. It is faster only for certain problems, not every calculation.
@@ -252,13 +270,14 @@
     source: https://clinicaltrials.gov/study/NCT06429735
     confidence: low
   status: distant
-  as_of: 2026-01-09
+  image: assets/future-images/bci.png
+  as_of: 2026-07-12
   what: 생각만으로 기계를 움직일 수 있게 뇌와 컴퓨터를 연결하는 기술입니다.
   what_en: Technology that connects the brain to a computer so a person can control a machine through thought.
   why: 마비 환자가 다시 소통하고 움직일 수 있게 됩니다. 먼 미래엔 능력의 확장까지 이야기됩니다.
   why_en: It could restore communication and movement for people with paralysis; enhancement is a much more distant idea.
-  now: 소수의 환자가 이식받아 생각으로 커서와 외부 장치를 움직이는 초기 임상 단계입니다.
-  now_en: A small number of patients are in early trials using implants to control cursors and external devices.
+  now: 이식 환자가 누적 수십 명 규모로 늘었고, 정식 승인을 향한 첫 확증 임상이 준비되는 단계입니다.
+  now_en: Implanted participants now number in the dozens, and the first pivotal trial toward formal approval is being prepared.
   glossary: [invasive-electrode]
   bottleneck: "병목: 장기 안전성·신호 안정성·정식 의료기기 승인"
   bottleneck_en: "Bottleneck: long-term safety, signal stability, and medical authorization"
@@ -281,6 +300,7 @@
     source: https://www.fda.gov/food/food-ingredients-packaging/human-food-made-cultured-animal-cells
     confidence: low
   status: distant
+  image: assets/future-images/future-food.png
   as_of: 2026-07-12
   what: 가축 없이 세포와 미생물로 고기·우유를 만드는 기술입니다.
   what_en: Technology that makes meat and dairy proteins from cells and microbes without raising whole animals.
@@ -310,6 +330,7 @@
     source: https://www.faa.gov/newsroom/faa-issues-implementation-plan-outlining-steps-usher-advanced-air-mobility
     confidence: medium
   status: upcoming
+  image: assets/future-images/uam.png
   as_of: 2026-07-12
   what: 전기로 뜨고 내리는 소형 비행기로 도심 하늘을 나는 에어택시입니다.
   what_en: Electric air taxis that take off and land vertically for short urban trips.
@@ -339,6 +360,7 @@
     source: https://www.energy.gov/hgeo/funding-notice-carbon-negative-shot-pilots
     confidence: medium
   status: distant
+  image: assets/future-images/carbon-capture.png
   as_of: 2026-07-12
   what: 공기 중의 이산화탄소를 직접 빨아들여 땅속에 저장하는 기술입니다.
   what_en: Technology that removes carbon dioxide directly from ambient air and stores it.
@@ -361,6 +383,7 @@
   investable: false
   predicted: null
   status: watch
+  image: assets/future-images/geoengineering.png
   as_of: 2026-07-12
   what: 지구 기온을 인위적으로 낮추려는 대규모 개입 기술입니다.
   what_en: Large-scale interventions intended to deliberately cool the planet.
@@ -399,6 +422,7 @@
     confidence: low
     manufacturer_forecast: true
   status: distant
+  image: assets/future-images/spatial.png
   as_of: 2026-07-12
   what: 디지털 화면을 현실 공간 위에 겹쳐 보여주는 안경과 헤드셋입니다.
   what_en: Glasses and headsets that place digital information into the physical world.

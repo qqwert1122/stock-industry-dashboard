@@ -6,7 +6,6 @@ KRX 응답 원본 행 전체를 날짜별 스냅샷으로 보존합니다.
 
 from __future__ import annotations
 
-import json
 from copy import deepcopy
 from datetime import date, timedelta
 from pathlib import Path
@@ -15,6 +14,7 @@ from typing import Any
 import requests
 
 from .market_sentiment import krx_date, parse_date_key, parse_krx_number
+from .storage import load_json, write_json
 
 RAW_FLOW_SNAPSHOT_VERSION = 1
 KRX_GETJSON_URL = "https://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd"
@@ -72,12 +72,7 @@ def empty_raw_flow_snapshot(market: str) -> dict[str, Any]:
 def load_raw_flow_snapshot(path: str | Path, market: str) -> dict[str, Any]:
     document = empty_raw_flow_snapshot(market)
     target = Path(path)
-    if not target.exists():
-        return document
-    try:
-        loaded = json.loads(target.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return document
+    loaded = load_json(target, None)
     if not isinstance(loaded, dict):
         return document
     if isinstance(loaded.get("dates"), dict):
@@ -89,11 +84,7 @@ def load_raw_flow_snapshot(path: str | Path, market: str) -> dict[str, Any]:
 
 def save_raw_flow_snapshot(path: str | Path, document: dict[str, Any]) -> None:
     target = Path(path)
-    target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text(
-        json.dumps(document, ensure_ascii=False, separators=(",", ":")) + "\n",
-        encoding="utf-8",
-    )
+    write_json(target, document, compact=True)
 
 
 def raw_flow_known_dates(document: dict[str, Any]) -> set[str]:
