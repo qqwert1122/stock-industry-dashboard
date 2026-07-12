@@ -32,6 +32,24 @@
         "USDKRW": 1499.9000244140625
       },
       "telegram_sent": false
+    },
+    {
+      "ts": "2026-07-12T23:58:29",
+      "observed_at": "2026-07-13",
+      "rule_key": "원/달러 환율|above=1500",
+      "metric_id": "c0e679b6845a",
+      "metric_name": "원/달러 환율",
+      "direction": "triggered",
+      "value": 1501.1800537109375,
+      "display_value": "1,501.2원",
+      "threshold_label": "≥ 1500",
+      "message": "환율이 위기 수준입니다. 달러 자산/환헤지 상황을 점검하세요.",
+      "context": {
+        "KS11": 7475.93994140625,
+        "GSPC": 7575.39013671875,
+        "USDKRW": 1501.1800537109375
+      },
+      "telegram_sent": false
     }
   ]
 }
