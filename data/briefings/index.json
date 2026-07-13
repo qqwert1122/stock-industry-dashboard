@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-14T02:50:41+09:00",
+  "updated_at": "2026-07-14T04:16:17+09:00",
   "cards": [
+    {
+      "id": "2026-07-14-intraday-915ab70266",
+      "date": "2026-07-14",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-14T04:16:17+09:00",
+      "generated_label": "2026-07-14 04:16 KST",
+      "headline": "미국 증시 반도체 약세와 변동성 확대, CPI 경계감",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak",
+        "산업:데이터인프라:strong"
+      ]
+    },
     {
       "id": "2026-07-14-intraday-90e5141331",
       "date": "2026-07-14",
