@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "generated_at": "2026-07-14T14:44:13",
+  "generated_at": "2026-07-14T16:10:02",
   "window": {
-    "from": "2026-07-07",
-    "to": "2026-10-12"
+    "from": "2026-07-08",
+    "to": "2026-10-13"
   },
   "events": [
     {
@@ -12,8 +12,8 @@
       "category": "market",
       "country": "KR",
       "note": "매월 둘째 목요일 기준, 휴장 시 전영업일",
-      "d_day": -5,
-      "d_day_label": "D-5"
+      "d_day": -6,
+      "d_day_label": "D-6"
     },
     {
       "date": "2026-07-14",
@@ -21,8 +21,8 @@
       "category": "corporate",
       "country": "US",
       "note": "2Q26, pre-market",
-      "d_day": 0,
-      "d_day_label": "D-day"
+      "d_day": -1,
+      "d_day_label": "D-1"
     },
     {
       "date": "2026-07-14",
@@ -30,8 +30,8 @@
       "category": "macro",
       "country": "US",
       "note": "2026년 6월 CPI",
-      "d_day": 0,
-      "d_day_label": "D-day",
+      "d_day": -1,
+      "d_day_label": "D-1",
       "metric_id": "e9b8cd241fa0"
     },
     {
@@ -40,8 +40,8 @@
       "category": "corporate",
       "country": "NL",
       "note": "2Q26, pre-market",
-      "d_day": 1,
-      "d_day_label": "D+1"
+      "d_day": 0,
+      "d_day_label": "D-day"
     },
     {
       "date": "2026-07-16",
@@ -49,8 +49,8 @@
       "category": "corporate",
       "country": "KR",
       "note": "2Q26, 국내 실적 캘린더 기준",
-      "d_day": 2,
-      "d_day_label": "D+2"
+      "d_day": 1,
+      "d_day_label": "D+1"
     },
     {
       "date": "2026-07-16",
@@ -58,8 +58,8 @@
       "category": "corporate",
       "country": "TW",
       "note": "2Q26, pre-market",
-      "d_day": 2,
-      "d_day_label": "D+2"
+      "d_day": 1,
+      "d_day_label": "D+1"
     },
     {
       "date": "2026-07-16",
@@ -67,12 +67,30 @@
       "category": "policy",
       "country": "KR",
       "note": "통화정책방향 결정회의",
-      "d_day": 2,
-      "d_day_label": "D+2"
+      "d_day": 1,
+      "d_day_label": "D+1"
     },
     {
       "date": "2026-07-21",
       "name": "D.R. Horton 실적",
+      "category": "corporate",
+      "country": "US",
+      "note": "2Q26, pre-market",
+      "d_day": 6,
+      "d_day_label": "D+6"
+    },
+    {
+      "date": "2026-07-22",
+      "name": "Alphabet 실적",
+      "category": "corporate",
+      "country": "US",
+      "note": "2Q26",
+      "d_day": 7,
+      "d_day_label": "D+7"
+    },
+    {
+      "date": "2026-07-22",
+      "name": "GE Vernova 실적",
       "category": "corporate",
       "country": "US",
       "note": "2Q26, pre-market",
@@ -81,30 +99,12 @@
     },
     {
       "date": "2026-07-22",
-      "name": "Alphabet 실적",
-      "category": "corporate",
-      "country": "US",
-      "note": "2Q26",
-      "d_day": 8,
-      "d_day_label": "D+8"
-    },
-    {
-      "date": "2026-07-22",
-      "name": "GE Vernova 실적",
-      "category": "corporate",
-      "country": "US",
-      "note": "2Q26, pre-market",
-      "d_day": 8,
-      "d_day_label": "D+8"
-    },
-    {
-      "date": "2026-07-22",
       "name": "Tesla 실적",
       "category": "corporate",
       "country": "US",
       "note": "2Q26, after-hours",
-      "d_day": 8,
-      "d_day_label": "D+8"
+      "d_day": 7,
+      "d_day_label": "D+7"
     },
     {
       "date": "2026-07-22",
@@ -112,8 +112,8 @@
       "category": "corporate",
       "country": "KR",
       "note": "2Q26, Quartr 기준",
-      "d_day": 8,
-      "d_day_label": "D+8"
+      "d_day": 7,
+      "d_day_label": "D+7"
     },
     {
       "date": "2026-07-22",
@@ -121,8 +121,8 @@
       "category": "industry",
       "country": "GLOBAL",
       "note": "민간 핵융합 투자·공급망·상업화 목표를 점검하는 시즌",
-      "d_day": 8,
-      "d_day_label": "D+8",
+      "d_day": 7,
+      "d_day_label": "D+7",
       "name_en": "Fusion industry report season",
       "note_en": "Season for checking private fusion funding, supply chain, and commercialization targets"
     },
@@ -132,8 +132,8 @@
       "category": "corporate",
       "country": "KR",
       "note": "2Q26, 국내 실적 캘린더 기준",
-      "d_day": 9,
-      "d_day_label": "D+9"
+      "d_day": 8,
+      "d_day_label": "D+8"
     },
     {
       "date": "2026-07-23",
@@ -141,8 +141,8 @@
       "category": "corporate",
       "country": "US",
       "note": "2Q26, after-hours",
-      "d_day": 9,
-      "d_day_label": "D+9"
+      "d_day": 8,
+      "d_day_label": "D+8"
     },
     {
       "date": "2026-07-23",
@@ -150,8 +150,8 @@
       "category": "corporate",
       "country": "KR",
       "note": "2Q26, Investing.com/국내 실적 캘린더 기준",
-      "d_day": 9,
-      "d_day_label": "D+9"
+      "d_day": 8,
+      "d_day_label": "D+8"
     },
     {
       "date": "2026-07-23",
@@ -159,8 +159,8 @@
       "category": "corporate",
       "country": "US",
       "note": "2Q26, pre-market",
-      "d_day": 9,
-      "d_day_label": "D+9"
+      "d_day": 8,
+      "d_day_label": "D+8"
     },
     {
       "date": "2026-07-23",
@@ -168,8 +168,8 @@
       "category": "corporate",
       "country": "KR",
       "note": "2Q26, 국내 실적 캘린더 기준",
-      "d_day": 9,
-      "d_day_label": "D+9"
+      "d_day": 8,
+      "d_day_label": "D+8"
     },
     {
       "date": "2026-07-23",
@@ -177,8 +177,8 @@
       "category": "corporate",
       "country": "KR",
       "note": "2Q26",
-      "d_day": 9,
-      "d_day_label": "D+9"
+      "d_day": 8,
+      "d_day_label": "D+8"
     },
     {
       "date": "2026-07-27",
@@ -186,12 +186,48 @@
       "category": "corporate",
       "country": "US",
       "note": "2Q26, after-hours",
-      "d_day": 13,
-      "d_day_label": "D+13"
+      "d_day": 12,
+      "d_day_label": "D+12"
     },
     {
       "date": "2026-07-28",
       "name": "KB금융 실적",
+      "category": "corporate",
+      "country": "KR",
+      "note": "2Q26, 국내 실적 캘린더 기준",
+      "d_day": 13,
+      "d_day_label": "D+13"
+    },
+    {
+      "date": "2026-07-29",
+      "name": "Lam Research 실적",
+      "category": "corporate",
+      "country": "US",
+      "note": "2Q26",
+      "d_day": 14,
+      "d_day_label": "D+14"
+    },
+    {
+      "date": "2026-07-29",
+      "name": "Meta Platforms 실적",
+      "category": "corporate",
+      "country": "US",
+      "note": "2Q26",
+      "d_day": 14,
+      "d_day_label": "D+14"
+    },
+    {
+      "date": "2026-07-29",
+      "name": "Microsoft 실적",
+      "category": "corporate",
+      "country": "US",
+      "note": "2Q26",
+      "d_day": 14,
+      "d_day_label": "D+14"
+    },
+    {
+      "date": "2026-07-29",
+      "name": "SK하이닉스 실적",
       "category": "corporate",
       "country": "KR",
       "note": "2Q26, 국내 실적 캘린더 기준",
@@ -200,48 +236,12 @@
     },
     {
       "date": "2026-07-29",
-      "name": "Lam Research 실적",
-      "category": "corporate",
-      "country": "US",
-      "note": "2Q26",
-      "d_day": 15,
-      "d_day_label": "D+15"
-    },
-    {
-      "date": "2026-07-29",
-      "name": "Meta Platforms 실적",
-      "category": "corporate",
-      "country": "US",
-      "note": "2Q26",
-      "d_day": 15,
-      "d_day_label": "D+15"
-    },
-    {
-      "date": "2026-07-29",
-      "name": "Microsoft 실적",
-      "category": "corporate",
-      "country": "US",
-      "note": "2Q26",
-      "d_day": 15,
-      "d_day_label": "D+15"
-    },
-    {
-      "date": "2026-07-29",
-      "name": "SK하이닉스 실적",
-      "category": "corporate",
-      "country": "KR",
-      "note": "2Q26, 국내 실적 캘린더 기준",
-      "d_day": 15,
-      "d_day_label": "D+15"
-    },
-    {
-      "date": "2026-07-29",
       "name": "FOMC 결정",
       "category": "policy",
       "country": "US",
       "note": "7월 FOMC",
-      "d_day": 15,
-      "d_day_label": "D+15"
+      "d_day": 14,
+      "d_day_label": "D+14"
     },
     {
       "date": "2026-07-30",
@@ -249,8 +249,8 @@
       "category": "corporate",
       "country": "US",
       "note": "2Q26",
-      "d_day": 16,
-      "d_day_label": "D+16"
+      "d_day": 15,
+      "d_day_label": "D+15"
     },
     {
       "date": "2026-07-30",
@@ -258,8 +258,8 @@
       "category": "corporate",
       "country": "US",
       "note": "2Q26",
-      "d_day": 16,
-      "d_day_label": "D+16"
+      "d_day": 15,
+      "d_day_label": "D+15"
     },
     {
       "date": "2026-07-30",
@@ -267,8 +267,8 @@
       "category": "corporate",
       "country": "US",
       "note": "2Q26",
-      "d_day": 16,
-      "d_day_label": "D+16"
+      "d_day": 15,
+      "d_day_label": "D+15"
     },
     {
       "date": "2026-07-30",
@@ -276,8 +276,8 @@
       "category": "corporate",
       "country": "KR",
       "note": "2Q26 earnings conference call, 10:00 KST",
-      "d_day": 16,
-      "d_day_label": "D+16"
+      "d_day": 15,
+      "d_day_label": "D+15"
     },
     {
       "date": "2026-08-04",
@@ -285,8 +285,8 @@
       "category": "corporate",
       "country": "US",
       "note": "2Q26",
-      "d_day": 21,
-      "d_day_label": "D+21"
+      "d_day": 20,
+      "d_day_label": "D+20"
     },
     {
       "date": "2026-08-04",
@@ -294,8 +294,8 @@
       "category": "corporate",
       "country": "US",
       "note": "2Q26",
-      "d_day": 21,
-      "d_day_label": "D+21"
+      "d_day": 20,
+      "d_day_label": "D+20"
     },
     {
       "date": "2026-08-05",
@@ -303,8 +303,8 @@
       "category": "corporate",
       "country": "US",
       "note": "2Q26, after-hours",
-      "d_day": 22,
-      "d_day_label": "D+22"
+      "d_day": 21,
+      "d_day_label": "D+21"
     },
     {
       "date": "2026-08-05",
@@ -312,8 +312,8 @@
       "category": "corporate",
       "country": "US",
       "note": "2Q26, pre-market",
-      "d_day": 22,
-      "d_day_label": "D+22"
+      "d_day": 21,
+      "d_day_label": "D+21"
     },
     {
       "date": "2026-08-06",
@@ -321,8 +321,8 @@
       "category": "corporate",
       "country": "KR",
       "note": "2Q26, Quartr 기준",
-      "d_day": 23,
-      "d_day_label": "D+23"
+      "d_day": 22,
+      "d_day_label": "D+22"
     },
     {
       "date": "2026-08-06",
@@ -330,8 +330,8 @@
       "category": "corporate",
       "country": "US",
       "note": "2Q26",
-      "d_day": 23,
-      "d_day_label": "D+23"
+      "d_day": 22,
+      "d_day_label": "D+22"
     },
     {
       "date": "2026-08-06",
@@ -339,8 +339,8 @@
       "category": "corporate",
       "country": "JP",
       "note": "2Q26",
-      "d_day": 23,
-      "d_day_label": "D+23"
+      "d_day": 22,
+      "d_day_label": "D+22"
     },
     {
       "date": "2026-08-07",
@@ -348,8 +348,8 @@
       "category": "corporate",
       "country": "US",
       "note": "2Q26",
-      "d_day": 24,
-      "d_day_label": "D+24"
+      "d_day": 23,
+      "d_day_label": "D+23"
     },
     {
       "date": "2026-08-07",
@@ -357,8 +357,8 @@
       "category": "corporate",
       "country": "KR",
       "note": "2Q26, Quartr 기준",
-      "d_day": 24,
-      "d_day_label": "D+24"
+      "d_day": 23,
+      "d_day_label": "D+23"
     },
     {
       "date": "2026-08-07",
@@ -366,8 +366,8 @@
       "category": "corporate",
       "country": "KR",
       "note": "2Q26, Investing.com/국내 실적 캘린더 기준",
-      "d_day": 24,
-      "d_day_label": "D+24"
+      "d_day": 23,
+      "d_day_label": "D+23"
     },
     {
       "date": "2026-08-07",
@@ -375,8 +375,8 @@
       "category": "corporate",
       "country": "KR",
       "note": "2Q26, Business Insider 기준",
-      "d_day": 24,
-      "d_day_label": "D+24"
+      "d_day": 23,
+      "d_day_label": "D+23"
     },
     {
       "date": "2026-08-07",
@@ -384,8 +384,8 @@
       "category": "corporate",
       "country": "KR",
       "note": "2Q26, 국내 실적 캘린더 기준",
-      "d_day": 24,
-      "d_day_label": "D+24"
+      "d_day": 23,
+      "d_day_label": "D+23"
     },
     {
       "date": "2026-08-11",
@@ -393,8 +393,8 @@
       "category": "corporate",
       "country": "US",
       "note": "2Q26",
-      "d_day": 28,
-      "d_day_label": "D+28"
+      "d_day": 27,
+      "d_day_label": "D+27"
     },
     {
       "date": "2026-08-11",
@@ -402,8 +402,8 @@
       "category": "corporate",
       "country": "US",
       "note": "2Q26",
-      "d_day": 28,
-      "d_day_label": "D+28"
+      "d_day": 27,
+      "d_day_label": "D+27"
     },
     {
       "date": "2026-08-12",
@@ -411,8 +411,8 @@
       "category": "macro",
       "country": "US",
       "note": "2026년 7월 CPI",
-      "d_day": 29,
-      "d_day_label": "D+29",
+      "d_day": 28,
+      "d_day_label": "D+28",
       "metric_id": "e9b8cd241fa0"
     },
     {
@@ -421,8 +421,8 @@
       "category": "corporate",
       "country": "US",
       "note": "3Q26, after-hours",
-      "d_day": 30,
-      "d_day_label": "D+30"
+      "d_day": 29,
+      "d_day_label": "D+29"
     },
     {
       "date": "2026-08-13",
@@ -430,8 +430,8 @@
       "category": "market",
       "country": "KR",
       "note": "매월 둘째 목요일 기준, 휴장 시 전영업일",
-      "d_day": 30,
-      "d_day_label": "D+30"
+      "d_day": 29,
+      "d_day_label": "D+29"
     },
     {
       "date": "2026-08-18",
@@ -439,8 +439,8 @@
       "category": "corporate",
       "country": "KR",
       "note": "2Q26, 국내 실적 캘린더 기준",
-      "d_day": 35,
-      "d_day_label": "D+35"
+      "d_day": 34,
+      "d_day_label": "D+34"
     },
     {
       "date": "2026-08-19",
@@ -448,8 +448,8 @@
       "category": "corporate",
       "country": "KR",
       "note": "2Q26, Investing.com/국내 실적 캘린더 기준",
-      "d_day": 36,
-      "d_day_label": "D+36"
+      "d_day": 35,
+      "d_day_label": "D+35"
     },
     {
       "date": "2026-08-26",
@@ -457,8 +457,8 @@
       "category": "corporate",
       "country": "US",
       "note": "2Q26",
-      "d_day": 43,
-      "d_day_label": "D+43"
+      "d_day": 42,
+      "d_day_label": "D+42"
     },
     {
       "date": "2026-08-27",
@@ -466,8 +466,8 @@
       "category": "policy",
       "country": "KR",
       "note": "통화정책방향 결정회의",
-      "d_day": 44,
-      "d_day_label": "D+44"
+      "d_day": 43,
+      "d_day_label": "D+43"
     },
     {
       "date": "2026-09-07",
@@ -475,8 +475,8 @@
       "category": "holiday",
       "country": "US",
       "note": "Labor Day",
-      "d_day": 55,
-      "d_day_label": "D+55"
+      "d_day": 54,
+      "d_day_label": "D+54"
     },
     {
       "date": "2026-09-08",
@@ -484,8 +484,8 @@
       "category": "corporate",
       "country": "US",
       "note": "1Q FY2027, estimated",
-      "d_day": 56,
-      "d_day_label": "D+56"
+      "d_day": 55,
+      "d_day_label": "D+55"
     },
     {
       "date": "2026-09-10",
@@ -493,8 +493,8 @@
       "category": "market",
       "country": "KR",
       "note": "3·6·9·12월 둘째 목요일 기준",
-      "d_day": 58,
-      "d_day_label": "D+58"
+      "d_day": 57,
+      "d_day_label": "D+57"
     },
     {
       "date": "2026-09-10",
@@ -502,8 +502,8 @@
       "category": "market",
       "country": "KR",
       "note": "매월 둘째 목요일 기준, 휴장 시 전영업일",
-      "d_day": 58,
-      "d_day_label": "D+58"
+      "d_day": 57,
+      "d_day_label": "D+57"
     },
     {
       "date": "2026-09-11",
@@ -511,8 +511,8 @@
       "category": "macro",
       "country": "US",
       "note": "2026년 8월 CPI",
-      "d_day": 59,
-      "d_day_label": "D+59",
+      "d_day": 58,
+      "d_day_label": "D+58",
       "metric_id": "e9b8cd241fa0"
     },
     {
@@ -521,8 +521,8 @@
       "category": "policy",
       "country": "US",
       "note": "9월 FOMC·SEP",
-      "d_day": 64,
-      "d_day_label": "D+64"
+      "d_day": 63,
+      "d_day_label": "D+63"
     },
     {
       "date": "2026-09-18",
@@ -530,8 +530,8 @@
       "category": "market",
       "country": "US",
       "note": "3·6·9·12월 셋째 금요일 기준, 휴장 시 전영업일",
-      "d_day": 66,
-      "d_day_label": "D+66"
+      "d_day": 65,
+      "d_day_label": "D+65"
     },
     {
       "date": "2026-09-23",
@@ -539,8 +539,8 @@
       "category": "corporate",
       "country": "US",
       "note": "4Q FY2026, expected after-hours",
-      "d_day": 71,
-      "d_day_label": "D+71"
+      "d_day": 70,
+      "d_day_label": "D+70"
     },
     {
       "date": "2026-09-24",
@@ -548,8 +548,8 @@
       "category": "holiday",
       "country": "KR",
       "note": "추석 연휴",
-      "d_day": 72,
-      "d_day_label": "D+72"
+      "d_day": 71,
+      "d_day_label": "D+71"
     },
     {
       "date": "2026-09-24",
@@ -557,8 +557,8 @@
       "category": "industry",
       "country": "GLOBAL",
       "note": "로봇 설치 대수와 지역별 자동화 수요를 확인하는 시즌",
-      "d_day": 72,
-      "d_day_label": "D+72",
+      "d_day": 71,
+      "d_day_label": "D+71",
       "name_en": "World Robotics report season",
       "note_en": "Season for checking robot installations and regional automation demand"
     },
@@ -568,8 +568,8 @@
       "category": "holiday",
       "country": "KR",
       "note": "추석 연휴",
-      "d_day": 73,
-      "d_day_label": "D+73"
+      "d_day": 72,
+      "d_day_label": "D+72"
     },
     {
       "date": "2026-10-05",
@@ -577,8 +577,8 @@
       "category": "holiday",
       "country": "KR",
       "note": "개천절 대체휴일",
-      "d_day": 83,
-      "d_day_label": "D+83"
+      "d_day": 82,
+      "d_day_label": "D+82"
     },
     {
       "date": "2026-10-08",
@@ -586,8 +586,8 @@
       "category": "market",
       "country": "KR",
       "note": "매월 둘째 목요일 기준, 휴장 시 전영업일",
-      "d_day": 86,
-      "d_day_label": "D+86"
+      "d_day": 85,
+      "d_day_label": "D+85"
     },
     {
       "date": "2026-10-09",
@@ -595,36 +595,44 @@
       "category": "holiday",
       "country": "KR",
       "note": "한글날",
-      "d_day": 87,
-      "d_day_label": "D+87"
+      "d_day": 86,
+      "d_day_label": "D+86"
     }
   ],
   "upcoming": [
-    {
-      "date": "2026-07-14",
-      "name": "JPMorgan Chase 실적",
-      "category": "corporate",
-      "country": "US",
-      "note": "2Q26, pre-market",
-      "d_day": 0,
-      "d_day_label": "D-day"
-    },
-    {
-      "date": "2026-07-14",
-      "name": "미국 CPI 발표",
-      "category": "macro",
-      "country": "US",
-      "note": "2026년 6월 CPI",
-      "d_day": 0,
-      "d_day_label": "D-day",
-      "metric_id": "e9b8cd241fa0"
-    },
     {
       "date": "2026-07-15",
       "name": "ASML 실적",
       "category": "corporate",
       "country": "NL",
       "note": "2Q26, pre-market",
+      "d_day": 0,
+      "d_day_label": "D-day"
+    },
+    {
+      "date": "2026-07-16",
+      "name": "POSCO홀딩스 실적",
+      "category": "corporate",
+      "country": "KR",
+      "note": "2Q26, 국내 실적 캘린더 기준",
+      "d_day": 1,
+      "d_day_label": "D+1"
+    },
+    {
+      "date": "2026-07-16",
+      "name": "TSMC 실적",
+      "category": "corporate",
+      "country": "TW",
+      "note": "2Q26, pre-market",
+      "d_day": 1,
+      "d_day_label": "D+1"
+    },
+    {
+      "date": "2026-07-16",
+      "name": "한국은행 금통위",
+      "category": "policy",
+      "country": "KR",
+      "note": "통화정책방향 결정회의",
       "d_day": 1,
       "d_day_label": "D+1"
     }
