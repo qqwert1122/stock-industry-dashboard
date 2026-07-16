@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-17T04:20:42+09:00",
+  "updated_at": "2026-07-17T05:25:37+09:00",
   "cards": [
+    {
+      "id": "2026-07-17-intraday-ae796a7032",
+      "date": "2026-07-17",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-17T05:25:37+09:00",
+      "generated_label": "2026-07-17 05:25 KST",
+      "headline": "미국 증시 변동성 확대와 반도체 약세 흐름",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:데이터인프라:strong",
+        "산업:스테이블코인:strong"
+      ]
+    },
     {
       "id": "2026-07-17-intraday-f04f1acf0c",
       "date": "2026-07-17",
@@ -1355,19 +1373,6 @@
       "low_signal": false,
       "session_label": "세션 외",
       "gate_reason": "유의미한 변화: 한국 수출 무기류/탄약(9306)",
-      "gemini_call_attempted": true
-    },
-    {
-      "id": "2026-07-09-morning-ec60947d43",
-      "date": "2026-07-09",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-07-09T16:31:13+09:00",
-      "generated_label": "2026-07-09 16:31 KST",
-      "headline": "한국 옵션만기일의 변동성과 방산주 차익실현",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "일일 전체 빌드",
       "gemini_call_attempted": true
     }
   ]
