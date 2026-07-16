@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-17T01:48:15+09:00",
+  "updated_at": "2026-07-17T03:00:24+09:00",
   "cards": [
+    {
+      "id": "2026-07-17-intraday-f58ac0cd6d",
+      "date": "2026-07-17",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-17T03:00:24+09:00",
+      "generated_label": "2026-07-17 03:00 KST",
+      "headline": "미국 반도체·로봇 동반 급락, 기술주 투자심리 위축",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Rocket Lab(RKLB)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:로봇:weak",
+        "산업:데이터인프라:strong"
+      ]
+    },
     {
       "id": "2026-07-17-intraday-ab86cfe35d",
       "date": "2026-07-17",
@@ -1342,19 +1360,6 @@
       "generated_at": "2026-07-09T15:13:20+09:00",
       "generated_label": "2026-07-09 15:13 KST",
       "headline": "코스피 옵션만기일, 투자심리 위축 속 변동성 주의",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true
-    },
-    {
-      "id": "2026-07-09-morning-0e12a95c3d",
-      "date": "2026-07-09",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-07-09T15:00:13+09:00",
-      "generated_label": "2026-07-09 15:00 KST",
-      "headline": "코스피 옵션만기일 앞둔 투자심리 위축과 방산주 조정",
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "일일 전체 빌드",
