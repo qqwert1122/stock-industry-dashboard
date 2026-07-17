@@ -2,15 +2,15 @@
   "rules": {
     "S&P 500 Shiller CAPE|pct_above=95": {
       "triggered": true,
-      "value": 42.18,
+      "value": 41.94,
       "observed_at": "2026-07-01",
       "metric_id": "b0b6e0910209",
       "metric_name": "S&P 500 Shiller CAPE"
     },
     "하이일드 회사채 OAS|above=5.0": {
       "triggered": false,
-      "value": 2.72,
-      "observed_at": "2026-07-14",
+      "value": 2.71,
+      "observed_at": "2026-07-15",
       "metric_id": "1dbb497f2b22",
       "metric_name": "미국 하이일드 회사채 OAS"
     },
@@ -23,8 +23,8 @@
     },
     "10Y-3M 금리차|below=0": {
       "triggered": false,
-      "value": 0.72,
-      "observed_at": "2026-07-15",
+      "value": 0.73,
+      "observed_at": "2026-07-16",
       "metric_id": "0f9e337e8716",
       "metric_name": "미국 10Y-3M 금리차"
     },
@@ -37,8 +37,8 @@
     },
     "원/달러 환율|above=1500": {
       "triggered": false,
-      "value": 1479.1300048828125,
-      "observed_at": "2026-07-16",
+      "value": 1479.18994140625,
+      "observed_at": "2026-07-17",
       "metric_id": "c0e679b6845a",
       "metric_name": "원/달러 환율"
     }

@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-17T06:31:08+09:00",
+  "updated_at": "2026-07-17T08:57:55+09:00",
   "cards": [
+    {
+      "id": "2026-07-17-morning-46e1182150",
+      "date": "2026-07-17",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-07-17T08:57:55+09:00",
+      "generated_label": "2026-07-17 08:57 KST",
+      "headline": "반도체·로봇 중심의 조정세와 외국인 수급 이탈",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:로봇:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-07-17-intraday-e8ec11e257",
       "date": "2026-07-17",
@@ -1364,19 +1382,6 @@
       "headline": "미국 반도체 반등과 한국 옵션만기일의 긴장감",
       "low_signal": false,
       "session_label": "미국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true
-    },
-    {
-      "id": "2026-07-09-morning-d43cb08fb5",
-      "date": "2026-07-09",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-07-09T18:10:38+09:00",
-      "generated_label": "2026-07-09 18:10 KST",
-      "headline": "코스피 공포 심화와 옵션만기일 변동성 주의",
-      "low_signal": false,
-      "session_label": "세션 외",
       "gate_reason": "일일 전체 빌드",
       "gemini_call_attempted": true
     }
