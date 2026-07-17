@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-18T07:11:49+09:00",
+  "updated_at": "2026-07-18T08:51:27+09:00",
   "cards": [
+    {
+      "id": "2026-07-18-morning-1d79025d30",
+      "date": "2026-07-18",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-07-18T08:51:27+09:00",
+      "generated_label": "2026-07-18 08:51 KST",
+      "headline": "미국 금리 상승과 기술주 조정, 전력·바이오의 상대적 강세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:전력:strong",
+        "산업:바이오:strong",
+        "산업:건설/부동산:weak"
+      ]
+    },
     {
       "id": "2026-07-18-intraday-c03a383fcd",
       "date": "2026-07-18",
@@ -1406,24 +1424,6 @@
       "generated_at": "2026-07-10T23:24:51+09:00",
       "generated_label": "2026-07-10 23:24 KST",
       "headline": "스테이블코인 강세와 반도체 차익실현의 교차",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Circle(CRCL)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:반도체:weak",
-        "산업:로봇:strong"
-      ]
-    },
-    {
-      "id": "2026-07-10-intraday-e147e0ada9",
-      "date": "2026-07-10",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-10T23:21:36+09:00",
-      "generated_label": "2026-07-10 23:21 KST",
-      "headline": "반도체 차익실현 속 스테이블코인 강세",
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: Circle(CRCL)",
