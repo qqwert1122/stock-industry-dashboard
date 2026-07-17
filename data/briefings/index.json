@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-17T21:41:11+09:00",
+  "updated_at": "2026-07-17T23:27:15+09:00",
   "cards": [
+    {
+      "id": "2026-07-17-intraday-aebdb6a726",
+      "date": "2026-07-17",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-17T23:27:15+09:00",
+      "generated_label": "2026-07-17 23:27 KST",
+      "headline": "미국 반도체·인프라주 약세와 변동성 확대",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:데이터인프라:weak",
+        "산업:로봇:weak"
+      ]
+    },
     {
       "id": "2026-07-17-intraday-3460a2a015",
       "date": "2026-07-17",
@@ -1400,19 +1418,6 @@
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true
-    },
-    {
-      "id": "2026-07-10-intraday-ea39959e4e",
-      "date": "2026-07-10",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-10T06:56:44+09:00",
-      "generated_label": "2026-07-10 06:56 KST",
-      "headline": "방산 수출 급증과 데이터 인프라 투자 확대",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 한국 수출 무기류/탄약(9306)",
       "gemini_call_attempted": true
     }
   ]
