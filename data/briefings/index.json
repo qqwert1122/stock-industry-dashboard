@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-17T08:57:55+09:00",
+  "updated_at": "2026-07-17T11:55:48+09:00",
   "cards": [
+    {
+      "id": "2026-07-17-intraday-518b0e77fb",
+      "date": "2026-07-17",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-17T11:55:48+09:00",
+      "generated_label": "2026-07-17 11:55 KST",
+      "headline": "코스피·코스닥 급락, 외국인 매도세와 반도체 약세가 시장 압박",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-07-17-morning-46e1182150",
       "date": "2026-07-17",
@@ -1367,19 +1385,6 @@
       "generated_at": "2026-07-09T23:47:39+09:00",
       "generated_label": "2026-07-09 23:47 KST",
       "headline": "반도체 장비주 강세와 한국 옵션만기 경계감",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true
-    },
-    {
-      "id": "2026-07-09-morning-9dffe98eee",
-      "date": "2026-07-09",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-07-09T23:37:49+09:00",
-      "generated_label": "2026-07-09 23:37 KST",
-      "headline": "미국 반도체 반등과 한국 옵션만기일의 긴장감",
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "일일 전체 빌드",
