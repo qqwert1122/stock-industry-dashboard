@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-18T03:32:32+09:00",
+  "updated_at": "2026-07-18T05:00:16+09:00",
   "cards": [
+    {
+      "id": "2026-07-18-intraday-7f95b06eaa",
+      "date": "2026-07-18",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-18T05:00:16+09:00",
+      "generated_label": "2026-07-18 05:00 KST",
+      "headline": "미국 증시 변동성 확대와 유가 상승에 따른 투자심리 위축",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:데이터인프라:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-07-18-intraday-d98c036956",
       "date": "2026-07-18",
@@ -1415,24 +1433,6 @@
         "산업:스테이블코인:strong",
         "산업:로봇:strong",
         "산업:반도체:weak"
-      ]
-    },
-    {
-      "id": "2026-07-10-morning-f88103858a",
-      "date": "2026-07-10",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-07-10T22:57:45+09:00",
-      "generated_label": "2026-07-10 22:57 KST",
-      "headline": "건설·금융·스테이블코인 주도, 외국인 수급은 여전히 관망",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:건설/부동산:strong",
-        "산업:은행/금융:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
