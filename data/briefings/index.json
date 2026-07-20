@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-19T08:52:44+09:00",
+  "updated_at": "2026-07-20T08:55:30+09:00",
   "cards": [
+    {
+      "id": "2026-07-20-morning-c6c8d11234",
+      "date": "2026-07-20",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-07-20T08:55:30+09:00",
+      "generated_label": "2026-07-20 08:55 KST",
+      "headline": "유가 상승과 환율 변동 속 전력·조선업 강세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:전력:strong",
+        "산업:조선:strong",
+        "산업:화학/정유:strong"
+      ]
+    },
     {
       "id": "2026-07-19-morning-250bb78d9b",
       "date": "2026-07-19",
@@ -1406,24 +1424,6 @@
       "generated_at": "2026-07-10T23:37:59+09:00",
       "generated_label": "2026-07-10 23:37 KST",
       "headline": "스테이블코인 강세와 반도체 차익실현의 공존",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Circle(CRCL)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:반도체:weak",
-        "산업:로봇:strong"
-      ]
-    },
-    {
-      "id": "2026-07-10-intraday-4ec2b5a9e4",
-      "date": "2026-07-10",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-10T23:29:21+09:00",
-      "generated_label": "2026-07-10 23:29 KST",
-      "headline": "스테이블코인 강세 속 반도체 차익실현 지속",
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: Circle(CRCL)",
