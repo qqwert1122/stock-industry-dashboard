@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-20T23:40:58+09:00",
+  "updated_at": "2026-07-21T01:21:15+09:00",
   "cards": [
+    {
+      "id": "2026-07-21-intraday-76ec62da9b",
+      "date": "2026-07-21",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-21T01:21:15+09:00",
+      "generated_label": "2026-07-21 01:21 KST",
+      "headline": "스테이블코인과 반도체 주도, 미국장 위험 선호 회복",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Circle(CRCL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:반도체:strong",
+        "산업:데이터인프라:strong"
+      ]
+    },
     {
       "id": "2026-07-20-intraday-925ae09673",
       "date": "2026-07-20",
@@ -1413,24 +1431,6 @@
       "narrative_topics": [
         "산업:스테이블코인:strong",
         "산업:철강/소재:weak",
-        "산업:매크로:neutral"
-      ]
-    },
-    {
-      "id": "2026-07-11-intraday-b583e23ec9",
-      "date": "2026-07-11",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-11T01:25:32+09:00",
-      "generated_label": "2026-07-11 01:25 KST",
-      "headline": "미국 증시 혼조 속 알루미늄 급락과 위험자산 선호",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 알루미늄 선물(ALI)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:철강/소재:weak",
-        "산업:스테이블코인:strong",
         "산업:매크로:neutral"
       ]
     }
