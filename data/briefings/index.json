@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-20T18:56:35+09:00",
+  "updated_at": "2026-07-20T21:14:37+09:00",
   "cards": [
+    {
+      "id": "2026-07-20-intraday-54a94e7d45",
+      "date": "2026-07-20",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-20T21:14:37+09:00",
+      "generated_label": "2026-07-20 21:14 KST",
+      "headline": "반도체 반등과 VIX 하락, 시장 변동성 완화 신호",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Micron(MU)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:로봇:strong",
+        "산업:배터리:weak"
+      ]
+    },
     {
       "id": "2026-07-20-intraday-13b66e20f9",
       "date": "2026-07-20",
@@ -1414,24 +1432,6 @@
         "산업:스테이블코인:strong",
         "산업:반도체:weak",
         "산업:데이터인프라:weak"
-      ]
-    },
-    {
-      "id": "2026-07-11-morning-b32a5e9034",
-      "date": "2026-07-11",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-07-11T00:12:59+09:00",
-      "generated_label": "2026-07-11 00:12 KST",
-      "headline": "스테이블코인 강세와 데이터인프라의 숨 고르기",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:데이터인프라:weak",
-        "산업:반도체:weak"
       ]
     }
   ]
