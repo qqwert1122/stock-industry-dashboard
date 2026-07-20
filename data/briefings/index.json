@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-20T08:55:30+09:00",
+  "updated_at": "2026-07-20T12:34:27+09:00",
   "cards": [
+    {
+      "id": "2026-07-20-intraday-b64fae1d44",
+      "date": "2026-07-20",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-20T12:34:27+09:00",
+      "generated_label": "2026-07-20 12:34 KST",
+      "headline": "코스피·코스닥 동반 급락, 반도체 및 대형주 중심 투자심리 위축",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak",
+        "산업:자동차:weak"
+      ]
+    },
     {
       "id": "2026-07-20-morning-c6c8d11234",
       "date": "2026-07-20",
@@ -1406,24 +1424,6 @@
       "generated_at": "2026-07-10T23:40:37+09:00",
       "generated_label": "2026-07-10 23:40 KST",
       "headline": "스테이블코인 강세와 반도체 차익실현의 교차",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Circle(CRCL)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:반도체:weak",
-        "산업:로봇:strong"
-      ]
-    },
-    {
-      "id": "2026-07-10-intraday-29a554edcf",
-      "date": "2026-07-10",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-10T23:37:59+09:00",
-      "generated_label": "2026-07-10 23:37 KST",
-      "headline": "스테이블코인 강세와 반도체 차익실현의 공존",
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: Circle(CRCL)",
