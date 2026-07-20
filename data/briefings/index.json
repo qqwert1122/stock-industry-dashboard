@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-21T05:06:55+09:00",
+  "updated_at": "2026-07-21T06:40:05+09:00",
   "cards": [
+    {
+      "id": "2026-07-21-intraday-0654c86789",
+      "date": "2026-07-21",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-21T06:40:05+09:00",
+      "generated_label": "2026-07-21 06:40 KST",
+      "headline": "주요 산업 전반의 조정과 외국인 수급 이탈",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Circle(CRCL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:조선:weak",
+        "산업:건설/부동산:weak",
+        "산업:자동차:weak"
+      ]
+    },
     {
       "id": "2026-07-21-intraday-2c99c05e34",
       "date": "2026-07-21",
@@ -1414,24 +1432,6 @@
       "narrative_topics": [
         "산업:매크로:neutral",
         "산업:스테이블코인:strong"
-      ]
-    },
-    {
-      "id": "2026-07-11-intraday-d21fd24bd0",
-      "date": "2026-07-11",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-11T06:05:05+09:00",
-      "generated_label": "2026-07-11 06:05 KST",
-      "headline": "미국 증시 변동성 완화와 스테이블코인 강세",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:데이터인프라:weak",
-        "산업:반도체:weak"
       ]
     }
   ]
