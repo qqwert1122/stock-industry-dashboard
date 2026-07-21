@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-21T08:55:06+09:00",
+  "updated_at": "2026-07-21T12:13:25+09:00",
   "cards": [
+    {
+      "id": "2026-07-21-intraday-4b578644ab",
+      "date": "2026-07-21",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-21T12:13:25+09:00",
+      "generated_label": "2026-07-21 12:13 KST",
+      "headline": "반도체 중심의 기술주 반등과 코스피 수급 개선",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:데이터인프라:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-07-21-morning-c25a478cda",
       "date": "2026-07-21",
@@ -1415,24 +1433,6 @@
       "narrative_topics": [
         "산업:스테이블코인:strong",
         "산업:반도체:weak"
-      ]
-    },
-    {
-      "id": "2026-07-11-morning-f634eeefb3",
-      "date": "2026-07-11",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-07-11T08:54:34+09:00",
-      "generated_label": "2026-07-11 08:54 KST",
-      "headline": "건설·금융·우주 중심의 시장 강세와 외국인 수급 이탈",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:건설/부동산:strong",
-        "산업:은행/금융:strong",
-        "산업:우주:strong"
       ]
     }
   ]
