@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-21T06:40:05+09:00",
+  "updated_at": "2026-07-21T08:55:06+09:00",
   "cards": [
+    {
+      "id": "2026-07-21-morning-c25a478cda",
+      "date": "2026-07-21",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-07-21T08:55:06+09:00",
+      "generated_label": "2026-07-21 08:55 KST",
+      "headline": "스테이블코인 강세 속 배터리·건설 약세 지속",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:배터리:weak",
+        "산업:건설/부동산:weak"
+      ]
+    },
     {
       "id": "2026-07-21-intraday-0654c86789",
       "date": "2026-07-21",
@@ -1415,23 +1433,6 @@
         "산업:건설/부동산:strong",
         "산업:은행/금융:strong",
         "산업:우주:strong"
-      ]
-    },
-    {
-      "id": "2026-07-11-intraday-81a6a02f93",
-      "date": "2026-07-11",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-11T07:31:19+09:00",
-      "generated_label": "2026-07-11 07:31 KST",
-      "headline": "미국 증시 소폭 반등 속 암호자산 유동성 개선",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 이더리움",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:neutral",
-        "산업:스테이블코인:strong"
       ]
     }
   ]
