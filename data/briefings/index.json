@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-21T12:13:25+09:00",
+  "updated_at": "2026-07-21T15:08:23+09:00",
   "cards": [
+    {
+      "id": "2026-07-21-intraday-9bad09edf4",
+      "date": "2026-07-21",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-21T15:08:23+09:00",
+      "generated_label": "2026-07-21 15:08 KST",
+      "headline": "반도체 주도 반등과 코스닥의 강한 회복세",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:데이터인프라:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-07-21-intraday-4b578644ab",
       "date": "2026-07-21",
@@ -1416,23 +1434,6 @@
         "산업:건설/부동산:strong",
         "산업:철강/소재:strong",
         "산업:은행/금융:strong"
-      ]
-    },
-    {
-      "id": "2026-07-12-morning-b3f26fe8a5",
-      "date": "2026-07-12",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-07-12T02:33:22+09:00",
-      "generated_label": "2026-07-12 02:33 KST",
-      "headline": "스테이블코인 유동성 확대와 반도체 종목별 차별화",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:반도체:weak"
       ]
     }
   ]
