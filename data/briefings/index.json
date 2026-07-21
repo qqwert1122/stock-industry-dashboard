@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-22T02:51:52+09:00",
+  "updated_at": "2026-07-22T04:08:10+09:00",
   "cards": [
+    {
+      "id": "2026-07-22-intraday-b72bd1f5d7",
+      "date": "2026-07-22",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-22T04:08:10+09:00",
+      "generated_label": "2026-07-22 04:08 KST",
+      "headline": "반도체·로봇 주도 미국장 강세, 한국장 반등 기대",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Teradyne(TER)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:로봇:strong",
+        "산업:스테이블코인:strong"
+      ]
+    },
     {
       "id": "2026-07-22-intraday-264a88bb3d",
       "date": "2026-07-22",
@@ -1419,24 +1437,6 @@
         "산업:반도체:weak",
         "산업:데이터인프라:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-07-14-intraday-a932d1425e",
-      "date": "2026-07-14",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-14T00:44:49+09:00",
-      "generated_label": "2026-07-14 00:44 KST",
-      "headline": "반도체 투심 위축과 유가 급등에 따른 나스닥 하락",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:로봇:strong",
-        "산업:데이터인프라:strong"
       ]
     }
   ]
