@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-22T18:23:37+09:00",
+  "updated_at": "2026-07-22T20:24:47+09:00",
   "cards": [
+    {
+      "id": "2026-07-22-intraday-1fc6da441d",
+      "date": "2026-07-22",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-22T20:24:47+09:00",
+      "generated_label": "2026-07-22 20:24 KST",
+      "headline": "건설·우주 강세 속 반도체·전력주 차익실현",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: GE Vernova(GEV)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:건설/부동산:strong",
+        "산업:우주:strong",
+        "산업:반도체:weak"
+      ]
+    },
     {
       "id": "2026-07-22-intraday-c6ab3ae0c1",
       "date": "2026-07-22",
@@ -1419,24 +1437,6 @@
         "산업:반도체:strong",
         "산업:방산:weak",
         "산업:은행/금융:weak"
-      ]
-    },
-    {
-      "id": "2026-07-14-intraday-9dd596c4de",
-      "date": "2026-07-14",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-14T18:01:15+09:00",
-      "generated_label": "2026-07-14 18:01 KST",
-      "headline": "반도체 주도 속 유가 급등과 건설주 강세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: D.R. Horton(DHI)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:건설/부동산:strong",
-        "산업:화학/정유:strong"
       ]
     }
   ]
