@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-23T01:22:16+09:00",
+  "updated_at": "2026-07-23T02:48:13+09:00",
   "cards": [
+    {
+      "id": "2026-07-23-intraday-fce9f3f371",
+      "date": "2026-07-23",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-23T02:48:13+09:00",
+      "generated_label": "2026-07-23 02:48 KST",
+      "headline": "미국장, 에너지 가격 상승과 스테이블코인 약세",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: GE Vernova(GEV)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:weak",
+        "산업:로봇:weak",
+        "산업:데이터인프라:weak"
+      ]
+    },
     {
       "id": "2026-07-23-intraday-1e0c70b3be",
       "date": "2026-07-23",
@@ -1419,24 +1437,6 @@
         "산업:반도체:strong",
         "산업:로봇:strong",
         "산업:스테이블코인:strong"
-      ]
-    },
-    {
-      "id": "2026-07-15-intraday-15eb0b2eaa",
-      "date": "2026-07-15",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-15T01:10:03+09:00",
-      "generated_label": "2026-07-15 01:10 KST",
-      "headline": "반도체·로봇 중심의 기술주 반등과 위험선호 회복",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 이더리움",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:로봇:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
