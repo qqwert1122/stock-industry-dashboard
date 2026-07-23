@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-24T03:09:07+09:00",
+  "updated_at": "2026-07-24T04:54:20+09:00",
   "cards": [
+    {
+      "id": "2026-07-24-intraday-ab04f94be0",
+      "date": "2026-07-24",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-24T04:54:20+09:00",
+      "generated_label": "2026-07-24 04:54 KST",
+      "headline": "미국 증시 변동성 급증과 기술주 약세",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:데이터인프라:weak",
+        "산업:반도체:weak",
+        "산업:스테이블코인:weak"
+      ]
+    },
     {
       "id": "2026-07-24-intraday-63d9b830da",
       "date": "2026-07-24",
@@ -1412,24 +1430,6 @@
       "generated_at": "2026-07-16T04:00:00+09:00",
       "generated_label": "2026-07-16 04:00 KST",
       "headline": "반도체 투심 위축과 미국 증시의 차익실현 압력",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Micron(MU)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:strong",
-        "산업:스테이블코인:strong"
-      ]
-    },
-    {
-      "id": "2026-07-16-intraday-f049d94c7c",
-      "date": "2026-07-16",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-16T02:45:03+09:00",
-      "generated_label": "2026-07-16 02:45 KST",
-      "headline": "반도체 대표주 급락과 기술주 차익실현 압력",
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: Micron(MU)",
