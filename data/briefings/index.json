@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-23T20:23:23+09:00",
+  "updated_at": "2026-07-23T21:56:26+09:00",
   "cards": [
+    {
+      "id": "2026-07-23-intraday-faf5243adf",
+      "date": "2026-07-23",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-23T21:56:26+09:00",
+      "generated_label": "2026-07-23 21:56 KST",
+      "headline": "미국 변동성 확대와 방산·배터리 중심의 시장 차별화",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:방산:strong",
+        "산업:배터리:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-07-23-intraday-c4faf50dd3",
       "date": "2026-07-23",
@@ -1420,24 +1438,6 @@
         "산업:반도체:strong",
         "산업:매크로:strong",
         "산업:은행/금융:strong"
-      ]
-    },
-    {
-      "id": "2026-07-15-intraday-f53b54f9ee",
-      "date": "2026-07-15",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-15T20:07:35+09:00",
-      "generated_label": "2026-07-15 20:07 KST",
-      "headline": "반도체 장비주 중심의 기술주 반등과 시장 변동성 완화",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Lam Research(LRCX)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:로봇:strong",
-        "산업:매크로:strong"
       ]
     }
   ]
