@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-24T05:54:59+09:00",
+  "updated_at": "2026-07-24T06:59:56+09:00",
   "cards": [
+    {
+      "id": "2026-07-24-intraday-299310620c",
+      "date": "2026-07-24",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-24T06:59:56+09:00",
+      "generated_label": "2026-07-24 06:59 KST",
+      "headline": "유가 급등에 따른 에너지·화학주 강세와 미국 증시 변동성 확대",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:화학/정유:strong",
+        "산업:배터리:strong",
+        "산업:건설/부동산:strong"
+      ]
+    },
     {
       "id": "2026-07-24-intraday-705c1575dd",
       "date": "2026-07-24",
@@ -1420,24 +1438,6 @@
         "산업:방산:strong",
         "산업:우주:strong",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-07-16-intraday-9cee0c03d5",
-      "date": "2026-07-16",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-16T05:14:09+09:00",
-      "generated_label": "2026-07-16 05:14 KST",
-      "headline": "미국 증시 변동성 완화와 반도체 대표주 흐름",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:strong",
-        "산업:화학/정유:strong"
       ]
     }
   ]
