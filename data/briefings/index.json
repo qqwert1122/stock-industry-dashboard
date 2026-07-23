@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-23T21:56:26+09:00",
+  "updated_at": "2026-07-24T00:04:57+09:00",
   "cards": [
+    {
+      "id": "2026-07-24-intraday-f0b6f87b87",
+      "date": "2026-07-24",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-24T00:04:57+09:00",
+      "generated_label": "2026-07-24 00:04 KST",
+      "headline": "미국 증시 변동성 확대와 기술주 중심의 차익실현",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:데이터인프라:weak",
+        "산업:반도체:weak",
+        "산업:로봇:weak"
+      ]
+    },
     {
       "id": "2026-07-23-intraday-faf5243adf",
       "date": "2026-07-23",
@@ -1420,24 +1438,6 @@
         "산업:데이터인프라:strong",
         "산업:반도체:weak",
         "산업:스테이블코인:strong"
-      ]
-    },
-    {
-      "id": "2026-07-15-intraday-c66145d70c",
-      "date": "2026-07-15",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-15T21:50:00+09:00",
-      "generated_label": "2026-07-15 21:50 KST",
-      "headline": "반도체 장비주 중심의 기술주 반등과 한국은행 금통위 관망세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Lam Research(LRCX)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:strong",
-        "산업:은행/금융:strong"
       ]
     }
   ]
