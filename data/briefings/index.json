@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-24T23:48:34+09:00",
+  "updated_at": "2026-07-25T01:35:11+09:00",
   "cards": [
+    {
+      "id": "2026-07-25-intraday-9767ada09f",
+      "date": "2026-07-25",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-25T01:35:11+09:00",
+      "generated_label": "2026-07-25 01:35 KST",
+      "headline": "에너지 가격 급락과 VIX 안정화, 반도체는 약세 지속",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: S&P500 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:화학/정유:weak",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-07-24-intraday-bd49dc84f3",
       "date": "2026-07-24",
@@ -1421,24 +1439,6 @@
         "산업:반도체:weak",
         "산업:로봇:weak",
         "산업:데이터인프라:strong"
-      ]
-    },
-    {
-      "id": "2026-07-16-intraday-e7875f977f",
-      "date": "2026-07-16",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-16T21:58:50+09:00",
-      "generated_label": "2026-07-16 21:58 KST",
-      "headline": "반도체 대표주 급락과 변동성 확대, 한국장 경계심리 고조",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Micron(MU)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:방산:strong",
-        "산업:바이오:strong"
       ]
     }
   ]
