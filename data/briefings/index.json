@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-24T17:33:33+09:00",
+  "updated_at": "2026-07-24T18:16:21+09:00",
   "cards": [
+    {
+      "id": "2026-07-24-intraday-9f9d56cae3",
+      "date": "2026-07-24",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-24T18:16:21+09:00",
+      "generated_label": "2026-07-24 18:16 KST",
+      "headline": "바이오 강세 속 유가 급락과 반도체 혼조세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:바이오:strong",
+        "산업:반도체:weak",
+        "산업:화학/정유:weak"
+      ]
+    },
     {
       "id": "2026-07-24-intraday-a55e3ae4b1",
       "date": "2026-07-24",
@@ -1421,24 +1439,6 @@
         "산업:철강/소재:strong",
         "산업:데이터인프라:strong",
         "산업:매크로:neutral"
-      ]
-    },
-    {
-      "id": "2026-07-16-intraday-696797d97b",
-      "date": "2026-07-16",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-16T14:44:24+09:00",
-      "generated_label": "2026-07-16 14:44 KST",
-      "headline": "반도체 투심 위축 속 조선·방산 중심의 차별화 장세",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:조선:strong",
-        "산업:방산:strong"
       ]
     }
   ]
