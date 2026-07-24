@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-25T05:44:59+09:00",
+  "updated_at": "2026-07-25T06:58:20+09:00",
   "cards": [
+    {
+      "id": "2026-07-25-intraday-5c0227ccd3",
+      "date": "2026-07-25",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-25T06:58:20+09:00",
+      "generated_label": "2026-07-25 06:58 KST",
+      "headline": "국제 유가 하락과 나스닥 선물 약세 속 시장 경계감",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:바이오:strong",
+        "산업:우주:weak",
+        "산업:방산:strong"
+      ]
+    },
     {
       "id": "2026-07-25-intraday-8fd40f727d",
       "date": "2026-07-25",
@@ -1421,24 +1439,6 @@
         "산업:반도체:weak",
         "산업:데이터인프라:strong",
         "산업:스테이블코인:strong"
-      ]
-    },
-    {
-      "id": "2026-07-17-intraday-f04f1acf0c",
-      "date": "2026-07-17",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-17T04:20:42+09:00",
-      "generated_label": "2026-07-17 04:20 KST",
-      "headline": "미국 반도체·로봇주 동반 급락, 시장 변동성 확대",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Rocket Lab(RKLB)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:로봇:weak",
-        "산업:스테이블코인:weak"
       ]
     }
   ]
