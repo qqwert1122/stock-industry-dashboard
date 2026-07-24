@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-24T21:54:41+09:00",
+  "updated_at": "2026-07-24T23:48:34+09:00",
   "cards": [
+    {
+      "id": "2026-07-24-intraday-bd49dc84f3",
+      "date": "2026-07-24",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-24T23:48:34+09:00",
+      "generated_label": "2026-07-24 23:48 KST",
+      "headline": "반도체 약세와 나스닥 선물 하락으로 투자심리 위축",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥100 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:스테이블코인:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-07-24-intraday-a2c96a33c9",
       "date": "2026-07-24",
@@ -1421,24 +1439,6 @@
         "산업:반도체:weak",
         "산업:방산:strong",
         "산업:바이오:strong"
-      ]
-    },
-    {
-      "id": "2026-07-16-intraday-296de97cc4",
-      "date": "2026-07-16",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-16T20:16:38+09:00",
-      "generated_label": "2026-07-16 20:16 KST",
-      "headline": "반도체 대표주 동반 약세와 시장 변동성 확대",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: TSMC(TSM)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:로봇:weak",
-        "산업:우주:weak"
       ]
     }
   ]
