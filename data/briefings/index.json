@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-28T03:01:34+09:00",
+  "updated_at": "2026-07-28T05:02:51+09:00",
   "cards": [
+    {
+      "id": "2026-07-28-intraday-16775ac172",
+      "date": "2026-07-28",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-28T05:02:51+09:00",
+      "generated_label": "2026-07-28 05:02 KST",
+      "headline": "국제 유가 급락과 미국 증시 관망세",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:화학/정유:weak",
+        "산업:매크로:strong",
+        "산업:반도체:strong"
+      ]
+    },
     {
       "id": "2026-07-28-intraday-c998e9a5ef",
       "date": "2026-07-28",
@@ -1420,24 +1438,6 @@
         "산업:매크로:weak",
         "산업:반도체:weak",
         "산업:화학/정유:strong"
-      ]
-    },
-    {
-      "id": "2026-07-17-intraday-aebdb6a726",
-      "date": "2026-07-17",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-17T23:27:15+09:00",
-      "generated_label": "2026-07-17 23:27 KST",
-      "headline": "미국 반도체·인프라주 약세와 변동성 확대",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:weak",
-        "산업:로봇:weak"
       ]
     }
   ]
