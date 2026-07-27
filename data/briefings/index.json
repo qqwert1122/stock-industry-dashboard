@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-27T12:35:15+09:00",
+  "updated_at": "2026-07-27T15:54:18+09:00",
   "cards": [
+    {
+      "id": "2026-07-27-intraday-a606d99ec1",
+      "date": "2026-07-27",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-27T15:54:18+09:00",
+      "generated_label": "2026-07-27 15:54 KST",
+      "headline": "코스피 반등과 NAVER·반도체 중심의 시장 회복",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:데이터인프라:strong",
+        "산업:반도체:strong",
+        "산업:철강/소재:strong"
+      ]
+    },
     {
       "id": "2026-07-27-intraday-105901cf0c",
       "date": "2026-07-27",
@@ -1420,24 +1438,6 @@
         "산업:반도체:weak",
         "산업:매크로:weak",
         "산업:우주:strong"
-      ]
-    },
-    {
-      "id": "2026-07-17-intraday-3db55f9b3b",
-      "date": "2026-07-17",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-17T14:46:04+09:00",
-      "generated_label": "2026-07-17 14:46 KST",
-      "headline": "반도체 투심 악화와 외국인 매도세에 따른 시장 경계감",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 이더리움",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak",
-        "산업:매크로:strong"
       ]
     }
   ]
