@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-27T22:37:05+09:00",
+  "updated_at": "2026-07-28T01:10:47+09:00",
   "cards": [
+    {
+      "id": "2026-07-28-intraday-4becfdf548",
+      "date": "2026-07-28",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-28T01:10:47+09:00",
+      "generated_label": "2026-07-28 01:10 KST",
+      "headline": "반도체 대표주 급락과 나스닥 선물 약세",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥100 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:데이터인프라:strong",
+        "산업:로봇:weak"
+      ]
+    },
     {
       "id": "2026-07-27-intraday-ca7fba0ed6",
       "date": "2026-07-27",
@@ -1420,24 +1438,6 @@
         "산업:반도체:weak",
         "산업:로봇:weak",
         "산업:조선:strong"
-      ]
-    },
-    {
-      "id": "2026-07-17-intraday-4438319ba2",
-      "date": "2026-07-17",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-17T20:03:56+09:00",
-      "generated_label": "2026-07-17 20:03 KST",
-      "headline": "VIX 급등 속 반도체 약세와 조선·방산의 상대적 강세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:조선:strong",
-        "산업:방산:strong"
       ]
     }
   ]
