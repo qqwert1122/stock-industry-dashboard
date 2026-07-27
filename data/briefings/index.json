@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-27T08:58:13+09:00",
+  "updated_at": "2026-07-27T12:35:15+09:00",
   "cards": [
+    {
+      "id": "2026-07-27-intraday-105901cf0c",
+      "date": "2026-07-27",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-27T12:35:15+09:00",
+      "generated_label": "2026-07-27 12:35 KST",
+      "headline": "코스닥 반등과 NAVER 강세, 수급은 여전히 관망세",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:데이터인프라:strong",
+        "산업:매크로:weak",
+        "산업:방산:weak"
+      ]
+    },
     {
       "id": "2026-07-27-morning-4bba09736a",
       "date": "2026-07-27",
@@ -1415,24 +1433,6 @@
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "유의미한 변화: 이더리움",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak",
-        "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-07-17-intraday-518b0e77fb",
-      "date": "2026-07-17",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-17T11:55:48+09:00",
-      "generated_label": "2026-07-17 11:55 KST",
-      "headline": "코스피·코스닥 급락, 외국인 매도세와 반도체 약세가 시장 압박",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:weak",
