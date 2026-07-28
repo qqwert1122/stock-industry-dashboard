@@ -1,80 +1,8 @@
 {
   "version": 1,
-  "updated_at": "2026-07-29T04:12:59+09:00",
+  "updated_at": "2026-07-29T05:41:24+09:00",
   "count": 60,
   "runs": [
-    {
-      "run_id": "2026-07-24T14:55:21+09:00",
-      "run_type": "prices",
-      "started_at": "2026-07-24T14:55:21+09:00",
-      "finished_at": "2026-07-24T14:55:38+09:00",
-      "duration_ms": 17376,
-      "summary": {
-        "success": 2,
-        "no_new_data": 0,
-        "failed": 0
-      },
-      "records": [
-        {
-          "source": "대표주가/시장지수",
-          "endpoint": "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}",
-          "status": "success",
-          "message": "한국장 33/33개 지표 자동 수집",
-          "metric_count": 33,
-          "new_data_count": 32,
-          "started_at": "2026-07-24T14:55:21+09:00",
-          "duration_ms": 16629,
-          "http_status": null
-        },
-        {
-          "source": "미래 타임라인",
-          "endpoint": "data/future/technologies.yaml",
-          "status": "success",
-          "message": "15개 기술 타임라인 생성",
-          "metric_count": 15,
-          "new_data_count": 0,
-          "started_at": "2026-07-24T14:55:38+09:00",
-          "duration_ms": 616,
-          "http_status": null
-        }
-      ]
-    },
-    {
-      "run_id": "2026-07-24T14:55:39+09:00",
-      "run_type": "briefing-intraday",
-      "started_at": "2026-07-24T14:55:39+09:00",
-      "finished_at": "2026-07-24T14:55:42+09:00",
-      "duration_ms": 3271,
-      "summary": {
-        "success": 2,
-        "no_new_data": 0,
-        "failed": 0
-      },
-      "records": [
-        {
-          "source": "미래 타임라인",
-          "endpoint": "data/future/technologies.yaml",
-          "status": "success",
-          "message": "15개 기술 타임라인 생성",
-          "metric_count": 15,
-          "new_data_count": 0,
-          "started_at": "2026-07-24T14:55:41+09:00",
-          "duration_ms": 614,
-          "http_status": null
-        },
-        {
-          "source": "AI 요약",
-          "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent",
-          "status": "success",
-          "message": "카드 생성: 유의미한 변화: 삼성바이오로직스(207940.KS) (Gemini 호출)",
-          "metric_count": 32,
-          "new_data_count": 1,
-          "started_at": "2026-07-24T14:55:39+09:00",
-          "duration_ms": 3271,
-          "http_status": null
-        }
-      ]
-    },
     {
       "run_id": "2026-07-24T17:32:55+09:00",
       "run_type": "prices",
@@ -3127,6 +3055,78 @@
           "new_data_count": 1,
           "started_at": "2026-07-29T04:12:56+09:00",
           "duration_ms": 3125,
+          "http_status": null
+        }
+      ]
+    },
+    {
+      "run_id": "2026-07-29T05:40:43+09:00",
+      "run_type": "prices",
+      "started_at": "2026-07-29T05:40:43+09:00",
+      "finished_at": "2026-07-29T05:41:20+09:00",
+      "duration_ms": 37258,
+      "summary": {
+        "success": 2,
+        "no_new_data": 0,
+        "failed": 0
+      },
+      "records": [
+        {
+          "source": "대표주가/시장지수",
+          "endpoint": "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}",
+          "status": "success",
+          "message": "미국 프리·정규·애프터장 45/45개 지표 자동 수집",
+          "metric_count": 45,
+          "new_data_count": 45,
+          "started_at": "2026-07-29T05:40:43+09:00",
+          "duration_ms": 36552,
+          "http_status": null
+        },
+        {
+          "source": "미래 타임라인",
+          "endpoint": "data/future/technologies.yaml",
+          "status": "success",
+          "message": "15개 기술 타임라인 생성",
+          "metric_count": 15,
+          "new_data_count": 0,
+          "started_at": "2026-07-29T05:41:20+09:00",
+          "duration_ms": 557,
+          "http_status": null
+        }
+      ]
+    },
+    {
+      "run_id": "2026-07-29T05:41:21+09:00",
+      "run_type": "briefing-intraday",
+      "started_at": "2026-07-29T05:41:21+09:00",
+      "finished_at": "2026-07-29T05:41:24+09:00",
+      "duration_ms": 3645,
+      "summary": {
+        "success": 2,
+        "no_new_data": 0,
+        "failed": 0
+      },
+      "records": [
+        {
+          "source": "미래 타임라인",
+          "endpoint": "data/future/technologies.yaml",
+          "status": "success",
+          "message": "15개 기술 타임라인 생성",
+          "metric_count": 15,
+          "new_data_count": 0,
+          "started_at": "2026-07-29T05:41:24+09:00",
+          "duration_ms": 567,
+          "http_status": null
+        },
+        {
+          "source": "AI 요약",
+          "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent",
+          "status": "success",
+          "message": "카드 생성: 유의미한 변화: Teradyne(TER) (Gemini 호출)",
+          "metric_count": 45,
+          "new_data_count": 1,
+          "started_at": "2026-07-29T05:41:21+09:00",
+          "duration_ms": 3645,
           "http_status": null
         }
       ]
