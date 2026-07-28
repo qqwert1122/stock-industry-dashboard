@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-07-28T06:36:39+09:00",
+  "updated_at": "2026-07-28T09:00:48+09:00",
   "cards": [
+    {
+      "id": "2026-07-28-morning-a0ce7b55c4",
+      "date": "2026-07-28",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-07-28T09:00:48+09:00",
+      "generated_label": "2026-07-28 09:00 KST",
+      "headline": "반도체 주도 흐름과 외국인 선물 매도세의 충돌",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-07-28-intraday-e10fbc67bd",
       "date": "2026-07-28",
@@ -1420,24 +1437,6 @@
         "산업:매크로:weak",
         "산업:화학/정유:strong",
         "산업:반도체:weak"
-      ]
-    },
-    {
-      "id": "2026-07-18-intraday-41fd55c00c",
-      "date": "2026-07-18",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-18T02:04:07+09:00",
-      "generated_label": "2026-07-18 02:04 KST",
-      "headline": "미국 증시 변동성 확대와 에너지 가격 상승",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥100 선물",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:weak",
-        "산업:화학/정유:strong"
       ]
     }
   ]
