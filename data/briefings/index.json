@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-28T22:47:19+09:00",
+  "updated_at": "2026-07-29T01:00:43+09:00",
   "cards": [
+    {
+      "id": "2026-07-29-intraday-cd9080d2a3",
+      "date": "2026-07-29",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-29T01:00:43+09:00",
+      "generated_label": "2026-07-29 01:00 KST",
+      "headline": "반도체 급락과 데이터인프라의 차별화된 흐름",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:데이터인프라:strong",
+        "산업:로봇:strong"
+      ]
+    },
     {
       "id": "2026-07-28-intraday-8f90a8da9d",
       "date": "2026-07-28",
@@ -1418,24 +1436,6 @@
         "산업:반도체:weak",
         "산업:매크로:weak",
         "산업:자동차:weak"
-      ]
-    },
-    {
-      "id": "2026-07-20-morning-c6c8d11234",
-      "date": "2026-07-20",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-07-20T08:55:30+09:00",
-      "generated_label": "2026-07-20 08:55 KST",
-      "headline": "유가 상승과 환율 변동 속 전력·조선업 강세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:전력:strong",
-        "산업:조선:strong",
-        "산업:화학/정유:strong"
       ]
     }
   ]
