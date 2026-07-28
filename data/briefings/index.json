@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-28T14:50:53+09:00",
+  "updated_at": "2026-07-28T17:41:29+09:00",
   "cards": [
+    {
+      "id": "2026-07-28-intraday-c923f9ab89",
+      "date": "2026-07-28",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-28T17:41:29+09:00",
+      "generated_label": "2026-07-28 17:41 KST",
+      "headline": "반도체·전력·배터리 동반 약세, FOMC 앞둔 관망세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Micron(MU)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:전력:weak",
+        "산업:배터리:weak"
+      ]
+    },
     {
       "id": "2026-07-28-intraday-51d2ae18bb",
       "date": "2026-07-28",
@@ -1417,24 +1435,6 @@
       "narrative_topics": [
         "산업:화학/정유:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-07-18-intraday-ad94322678",
-      "date": "2026-07-18",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-18T06:02:12+09:00",
-      "generated_label": "2026-07-18 06:02 KST",
-      "headline": "미국 증시 변동성 확대와 에너지 가격 급등",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:weak",
-        "산업:화학/정유:strong",
-        "산업:반도체:weak"
       ]
     }
   ]
