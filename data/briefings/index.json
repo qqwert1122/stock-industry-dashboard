@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-28T20:52:30+09:00",
+  "updated_at": "2026-07-28T22:47:19+09:00",
   "cards": [
+    {
+      "id": "2026-07-28-intraday-8f90a8da9d",
+      "date": "2026-07-28",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-28T22:47:19+09:00",
+      "generated_label": "2026-07-28 22:47 KST",
+      "headline": "반도체 중심의 기술주 급락과 시장 변동성 확대",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:우주:weak",
+        "산업:전력:weak"
+      ]
+    },
     {
       "id": "2026-07-28-intraday-8b7ce01f4a",
       "date": "2026-07-28",
@@ -1418,24 +1436,6 @@
         "산업:전력:strong",
         "산업:조선:strong",
         "산업:화학/정유:strong"
-      ]
-    },
-    {
-      "id": "2026-07-19-morning-250bb78d9b",
-      "date": "2026-07-19",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-07-19T08:52:44+09:00",
-      "generated_label": "2026-07-19 08:52 KST",
-      "headline": "미국 증시 조정과 유가 급등, 위험회피 심리 확산",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:weak",
-        "산업:화학/정유:strong",
-        "산업:자동차:weak"
       ]
     }
   ]
