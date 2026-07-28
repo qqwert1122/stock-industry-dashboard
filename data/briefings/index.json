@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-29T05:41:21+09:00",
+  "updated_at": "2026-07-29T06:57:13+09:00",
   "cards": [
+    {
+      "id": "2026-07-29-intraday-72a7e81b05",
+      "date": "2026-07-29",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-29T06:57:13+09:00",
+      "generated_label": "2026-07-29 06:57 KST",
+      "headline": "반도체·배터리 약세 속 로봇주 반등과 FOMC 경계감",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Teradyne(TER)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:배터리:weak",
+        "산업:로봇:strong"
+      ]
+    },
     {
       "id": "2026-07-29-intraday-3b3d695ee9",
       "date": "2026-07-29",
@@ -1418,24 +1436,6 @@
         "산업:반도체:strong",
         "산업:데이터인프라:strong",
         "산업:스테이블코인:strong"
-      ]
-    },
-    {
-      "id": "2026-07-20-intraday-54a94e7d45",
-      "date": "2026-07-20",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-20T21:14:37+09:00",
-      "generated_label": "2026-07-20 21:14 KST",
-      "headline": "반도체 반등과 VIX 하락, 시장 변동성 완화 신호",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Micron(MU)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:로봇:strong",
-        "산업:배터리:weak"
       ]
     }
   ]
