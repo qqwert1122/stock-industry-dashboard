@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-07-28T11:48:53+09:00",
+  "updated_at": "2026-07-28T14:50:53+09:00",
   "cards": [
+    {
+      "id": "2026-07-28-intraday-51d2ae18bb",
+      "date": "2026-07-28",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-28T14:50:53+09:00",
+      "generated_label": "2026-07-28 14:50 KST",
+      "headline": "반도체 투매와 외국인 선물 매도에 코스피 10%대 급락",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-07-28-intraday-7ccdfc10be",
       "date": "2026-07-28",
@@ -1418,24 +1435,6 @@
         "산업:매크로:weak",
         "산업:화학/정유:strong",
         "산업:반도체:weak"
-      ]
-    },
-    {
-      "id": "2026-07-18-intraday-7f95b06eaa",
-      "date": "2026-07-18",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-18T05:00:16+09:00",
-      "generated_label": "2026-07-18 05:00 KST",
-      "headline": "미국 증시 변동성 확대와 유가 상승에 따른 투자심리 위축",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:weak",
-        "산업:매크로:weak"
       ]
     }
   ]
