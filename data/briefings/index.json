@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-29T17:51:40+09:00",
+  "updated_at": "2026-07-29T18:34:02+09:00",
   "cards": [
+    {
+      "id": "2026-07-29-intraday-a32f61963e",
+      "date": "2026-07-29",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-29T18:34:02+09:00",
+      "generated_label": "2026-07-29 18:34 KST",
+      "headline": "반도체 장비주 급락과 미국 FOMC 경계감",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Applied Materials(AMAT)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:로봇:strong",
+        "산업:철강/소재:strong"
+      ]
+    },
     {
       "id": "2026-07-29-intraday-3da01c45d6",
       "date": "2026-07-29",
@@ -1418,24 +1436,6 @@
         "산업:스테이블코인:strong",
         "산업:배터리:weak",
         "산업:건설/부동산:weak"
-      ]
-    },
-    {
-      "id": "2026-07-21-intraday-0654c86789",
-      "date": "2026-07-21",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-21T06:40:05+09:00",
-      "generated_label": "2026-07-21 06:40 KST",
-      "headline": "주요 산업 전반의 조정과 외국인 수급 이탈",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Circle(CRCL)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:조선:weak",
-        "산업:건설/부동산:weak",
-        "산업:자동차:weak"
       ]
     }
   ]
