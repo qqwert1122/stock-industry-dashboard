@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-29T18:34:02+09:00",
+  "updated_at": "2026-07-29T20:56:55+09:00",
   "cards": [
+    {
+      "id": "2026-07-29-intraday-7b7e1aedda",
+      "date": "2026-07-29",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-29T20:56:55+09:00",
+      "generated_label": "2026-07-29 20:56 KST",
+      "headline": "반도체 약세 속 에너지·자동차 선전, FOMC 관망세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Teradyne(TER)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:자동차:strong",
+        "산업:화학/정유:strong"
+      ]
+    },
     {
       "id": "2026-07-29-intraday-a32f61963e",
       "date": "2026-07-29",
@@ -1418,24 +1436,6 @@
         "산업:반도체:strong",
         "산업:데이터인프라:strong",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-07-21-morning-c25a478cda",
-      "date": "2026-07-21",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-07-21T08:55:06+09:00",
-      "generated_label": "2026-07-21 08:55 KST",
-      "headline": "스테이블코인 강세 속 배터리·건설 약세 지속",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:배터리:weak",
-        "산업:건설/부동산:weak"
       ]
     }
   ]
