@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-29T20:56:55+09:00",
+  "updated_at": "2026-07-29T22:59:32+09:00",
   "cards": [
+    {
+      "id": "2026-07-29-intraday-b6544f1bb9",
+      "date": "2026-07-29",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-29T22:59:32+09:00",
+      "generated_label": "2026-07-29 22:59 KST",
+      "headline": "나스닥 하락과 유가 급등, 시장 변동성 확대",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:우주:weak",
+        "산업:건설/부동산:weak"
+      ]
+    },
     {
       "id": "2026-07-29-intraday-7b7e1aedda",
       "date": "2026-07-29",
@@ -1410,24 +1428,6 @@
       "generated_at": "2026-07-21T15:08:23+09:00",
       "generated_label": "2026-07-21 15:08 KST",
       "headline": "반도체 주도 반등과 코스닥의 강한 회복세",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:데이터인프라:strong",
-        "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-07-21-intraday-4b578644ab",
-      "date": "2026-07-21",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-21T12:13:25+09:00",
-      "generated_label": "2026-07-21 12:13 KST",
-      "headline": "반도체 중심의 기술주 반등과 코스피 수급 개선",
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "유의미한 변화: 코스닥",
