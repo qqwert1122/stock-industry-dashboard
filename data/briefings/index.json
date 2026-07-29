@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-29T08:56:50+09:00",
+  "updated_at": "2026-07-29T11:55:47+09:00",
   "cards": [
+    {
+      "id": "2026-07-29-intraday-de9a6aaa24",
+      "date": "2026-07-29",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-29T11:55:47+09:00",
+      "generated_label": "2026-07-29 11:55 KST",
+      "headline": "코스피·코스닥 동반 급락, 반도체 중심의 투자심리 위축",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak",
+        "산업:우주:strong"
+      ]
+    },
     {
       "id": "2026-07-29-morning-6532606dcb",
       "date": "2026-07-29",
@@ -1418,24 +1436,6 @@
         "산업:반도체:strong",
         "산업:데이터인프라:strong",
         "산업:스테이블코인:strong"
-      ]
-    },
-    {
-      "id": "2026-07-21-intraday-76ec62da9b",
-      "date": "2026-07-21",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-21T01:21:15+09:00",
-      "generated_label": "2026-07-21 01:21 KST",
-      "headline": "스테이블코인과 반도체 주도, 미국장 위험 선호 회복",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Circle(CRCL)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:반도체:strong",
-        "산업:데이터인프라:strong"
       ]
     }
   ]
