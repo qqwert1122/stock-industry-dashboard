@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-30T00:51:06+09:00",
+  "updated_at": "2026-07-30T02:07:53+09:00",
   "cards": [
+    {
+      "id": "2026-07-30-intraday-97273dfb25",
+      "date": "2026-07-30",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-30T02:07:53+09:00",
+      "generated_label": "2026-07-30 02:07 KST",
+      "headline": "반도체 대표주 급락과 에너지 가격 급등의 이중고",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Micron(MU)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:화학/정유:strong",
+        "산업:데이터인프라:strong"
+      ]
+    },
     {
       "id": "2026-07-30-intraday-0b0107b3c4",
       "date": "2026-07-30",
@@ -1418,24 +1436,6 @@
         "산업:반도체:strong",
         "산업:전력:strong",
         "산업:스테이블코인:strong"
-      ]
-    },
-    {
-      "id": "2026-07-21-intraday-72d12e1568",
-      "date": "2026-07-21",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-21T17:46:49+09:00",
-      "generated_label": "2026-07-21 17:46 KST",
-      "headline": "반도체 중심의 기술주 반등과 시장 변동성 완화",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:로봇:strong",
-        "산업:바이오:strong"
       ]
     }
   ]
