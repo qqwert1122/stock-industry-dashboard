@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-31T00:30:06+09:00",
+  "updated_at": "2026-07-31T02:02:54+09:00",
   "cards": [
+    {
+      "id": "2026-07-31-intraday-65e9393233",
+      "date": "2026-07-31",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-31T02:02:54+09:00",
+      "generated_label": "2026-07-31 02:02 KST",
+      "headline": "반도체·데이터인프라 중심의 미국장 강세와 VIX 급락",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: S&P 500",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:데이터인프라:strong",
+        "산업:로봇:weak"
+      ]
+    },
     {
       "id": "2026-07-31-intraday-6dcf483c83",
       "date": "2026-07-31",
@@ -1409,24 +1427,6 @@
       "generated_at": "2026-07-22T18:23:37+09:00",
       "generated_label": "2026-07-22 18:23 KST",
       "headline": "우주·자동차 강세 속 반도체 차익실현 압력",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Rocket Lab(RKLB)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:우주:strong",
-        "산업:자동차:strong",
-        "산업:반도체:weak"
-      ]
-    },
-    {
-      "id": "2026-07-22-intraday-4de4fcb099",
-      "date": "2026-07-22",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-22T17:35:20+09:00",
-      "generated_label": "2026-07-22 17:35 KST",
-      "headline": "우주·자동차 강세 속 반도체 약세, 실적 시즌 경계감 확대",
       "low_signal": false,
       "session_label": "세션 외",
       "gate_reason": "유의미한 변화: Rocket Lab(RKLB)",
