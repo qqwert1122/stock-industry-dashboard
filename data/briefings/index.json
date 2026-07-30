@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-30T08:58:39+09:00",
+  "updated_at": "2026-07-30T11:41:12+09:00",
   "cards": [
+    {
+      "id": "2026-07-30-intraday-3f5b578929",
+      "date": "2026-07-30",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-30T11:41:12+09:00",
+      "generated_label": "2026-07-30 11:41 KST",
+      "headline": "코스피·코스닥 급락 속 반도체·배터리 대표주 반등",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:전기차:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-07-30-morning-cdde73be27",
       "date": "2026-07-30",
@@ -1410,24 +1428,6 @@
       "generated_at": "2026-07-22T04:08:10+09:00",
       "generated_label": "2026-07-22 04:08 KST",
       "headline": "반도체·로봇 주도 미국장 강세, 한국장 반등 기대",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Teradyne(TER)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:로봇:strong",
-        "산업:스테이블코인:strong"
-      ]
-    },
-    {
-      "id": "2026-07-22-intraday-264a88bb3d",
-      "date": "2026-07-22",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-22T02:51:52+09:00",
-      "generated_label": "2026-07-22 02:51 KST",
-      "headline": "반도체·로봇 중심의 기술주 강세와 위험 선호 회복",
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: Teradyne(TER)",
