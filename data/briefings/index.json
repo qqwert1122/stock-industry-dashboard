@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-31T05:12:27+09:00",
+  "updated_at": "2026-07-31T06:41:16+09:00",
   "cards": [
+    {
+      "id": "2026-07-31-intraday-2773506ccd",
+      "date": "2026-07-31",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-31T06:41:16+09:00",
+      "generated_label": "2026-07-31 06:41 KST",
+      "headline": "미국 증시 변동성 완화와 반도체 반등 신호",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:strong",
+        "산업:방산:strong"
+      ]
+    },
     {
       "id": "2026-07-31-intraday-86add74e98",
       "date": "2026-07-31",
@@ -1417,24 +1435,6 @@
         "산업:스테이블코인:weak",
         "산업:로봇:weak",
         "산업:데이터인프라:weak"
-      ]
-    },
-    {
-      "id": "2026-07-22-intraday-701ac1f90b",
-      "date": "2026-07-22",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-22T21:55:06+09:00",
-      "generated_label": "2026-07-22 21:55 KST",
-      "headline": "반도체 장비주 중심의 차익실현과 에너지 가격 상승",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Applied Materials(AMAT)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:화학/정유:strong",
-        "산업:우주:strong"
       ]
     }
   ]
