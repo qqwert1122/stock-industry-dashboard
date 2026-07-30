@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-30T16:56:36+09:00",
+  "updated_at": "2026-07-30T18:26:40+09:00",
   "cards": [
+    {
+      "id": "2026-07-30-intraday-f1d43d8808",
+      "date": "2026-07-30",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-30T18:26:40+09:00",
+      "generated_label": "2026-07-30 18:26 KST",
+      "headline": "미국 빅테크 반등과 방산·철강의 동반 강세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Microsoft(MSFT)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:방산:strong",
+        "산업:철강/소재:strong",
+        "산업:데이터인프라:strong"
+      ]
+    },
     {
       "id": "2026-07-30-intraday-7f49e0984d",
       "date": "2026-07-30",
@@ -1417,24 +1435,6 @@
         "산업:스테이블코인:strong",
         "산업:반도체:strong",
         "산업:바이오:strong"
-      ]
-    },
-    {
-      "id": "2026-07-22-intraday-b7004da2d3",
-      "date": "2026-07-22",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-22T06:59:18+09:00",
-      "generated_label": "2026-07-22 06:59 KST",
-      "headline": "우주 산업의 강세와 원자재 가격 상승이 시장을 견인",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Rocket Lab(RKLB)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:우주:strong",
-        "산업:건설/부동산:strong",
-        "산업:전력:strong"
       ]
     }
   ]
