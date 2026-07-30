@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-30T07:27:15+09:00",
+  "updated_at": "2026-07-30T08:58:39+09:00",
   "cards": [
+    {
+      "id": "2026-07-30-morning-cdde73be27",
+      "date": "2026-07-30",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-07-30T08:58:39+09:00",
+      "generated_label": "2026-07-30 08:58 KST",
+      "headline": "국내 증시 수급 불안과 주요 산업 대표주 동반 약세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:우주:weak",
+        "산업:건설/부동산:weak",
+        "산업:방산:weak"
+      ]
+    },
     {
       "id": "2026-07-30-intraday-246e706bac",
       "date": "2026-07-30",
@@ -1418,24 +1436,6 @@
         "산업:반도체:strong",
         "산업:로봇:strong",
         "산업:스테이블코인:strong"
-      ]
-    },
-    {
-      "id": "2026-07-22-intraday-2ab647c5a7",
-      "date": "2026-07-22",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-22T01:25:19+09:00",
-      "generated_label": "2026-07-22 01:25 KST",
-      "headline": "반도체·스테이블코인 급등, 미국 증시 위험선호 회복",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Teradyne(TER)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:스테이블코인:strong",
-        "산업:데이터인프라:weak"
       ]
     }
   ]
