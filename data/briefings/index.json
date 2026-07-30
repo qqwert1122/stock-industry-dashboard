@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-30T22:07:01+09:00",
+  "updated_at": "2026-07-31T00:30:06+09:00",
   "cards": [
+    {
+      "id": "2026-07-31-intraday-6dcf483c83",
+      "date": "2026-07-31",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-31T00:30:06+09:00",
+      "generated_label": "2026-07-31 00:30 KST",
+      "headline": "미국 반도체·데이터인프라 급반등, 위험선호 회복",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:데이터인프라:strong",
+        "산업:로봇:weak"
+      ]
+    },
     {
       "id": "2026-07-30-intraday-db08ed9bf9",
       "date": "2026-07-30",
@@ -1417,24 +1435,6 @@
         "산업:우주:strong",
         "산업:자동차:strong",
         "산업:반도체:weak"
-      ]
-    },
-    {
-      "id": "2026-07-22-intraday-e258dc9065",
-      "date": "2026-07-22",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-22T14:55:38+09:00",
-      "generated_label": "2026-07-22 14:55 KST",
-      "headline": "코스피 급락 속 자동차·조선·로봇 중심의 선별적 반등",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:자동차:strong",
-        "산업:조선:strong",
-        "산업:로봇:strong"
       ]
     }
   ]
