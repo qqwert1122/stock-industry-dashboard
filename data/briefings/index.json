@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-31T18:34:04+09:00",
+  "updated_at": "2026-07-31T18:38:32+09:00",
   "cards": [
+    {
+      "id": "2026-07-31-intraday-1b3b2f6872",
+      "date": "2026-07-31",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-31T18:38:32+09:00",
+      "generated_label": "2026-07-31 18:38 KST",
+      "headline": "반도체 반등과 외국인 순매수 전환, 시장 분위기 개선",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Intel(INTC)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:strong",
+        "산업:우주:strong"
+      ]
+    },
     {
       "id": "2026-07-31-intraday-3796d4cd05",
       "date": "2026-07-31",
@@ -1417,24 +1435,6 @@
         "산업:자동차:strong",
         "산업:건설/부동산:strong",
         "산업:우주:strong"
-      ]
-    },
-    {
-      "id": "2026-07-23-intraday-06faf59371",
-      "date": "2026-07-23",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-23T05:36:33+09:00",
-      "generated_label": "2026-07-23 05:36 KST",
-      "headline": "유가 급등과 반도체 반등 속 미국장 혼조세",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:화학/정유:strong",
-        "산업:로봇:strong"
       ]
     }
   ]
