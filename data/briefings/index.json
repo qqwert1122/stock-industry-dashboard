@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-01T02:27:53+09:00",
+  "updated_at": "2026-08-01T03:53:34+09:00",
   "cards": [
+    {
+      "id": "2026-08-01-intraday-a5ed307f80",
+      "date": "2026-08-01",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-01T03:53:34+09:00",
+      "generated_label": "2026-08-01 03:53 KST",
+      "headline": "미국 증시 변동성 완화와 데이터 인프라 중심의 반등",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:데이터인프라:strong",
+        "산업:반도체:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-08-01-intraday-ac8449e3b5",
       "date": "2026-08-01",
@@ -1417,24 +1435,6 @@
         "산업:배터리:strong",
         "산업:우주:strong",
         "산업:방산:strong"
-      ]
-    },
-    {
-      "id": "2026-07-23-intraday-2dc4145eb8",
-      "date": "2026-07-23",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-23T18:09:25+09:00",
-      "generated_label": "2026-07-23 18:09 KST",
-      "headline": "에너지 가격 급락과 배터리·화학주 강세의 교차",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:배터리:strong",
-        "산업:화학/정유:strong",
-        "산업:건설/부동산:strong"
       ]
     }
   ]
