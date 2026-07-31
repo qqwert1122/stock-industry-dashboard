@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-31T06:41:16+09:00",
+  "updated_at": "2026-07-31T09:00:11+09:00",
   "cards": [
+    {
+      "id": "2026-07-31-morning-322c2d5681",
+      "date": "2026-07-31",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-07-31T09:00:11+09:00",
+      "generated_label": "2026-07-31 09:00 KST",
+      "headline": "외국인 대규모 순매수 유입, 반도체 약세 속 시장 반등 모색",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:strong",
+        "산업:우주:strong"
+      ]
+    },
     {
       "id": "2026-07-31-intraday-2773506ccd",
       "date": "2026-07-31",
@@ -1417,24 +1435,6 @@
         "산업:반도체:strong",
         "산업:화학/정유:strong",
         "산업:스테이블코인:weak"
-      ]
-    },
-    {
-      "id": "2026-07-23-intraday-0cb725d0db",
-      "date": "2026-07-23",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-23T00:00:07+09:00",
-      "generated_label": "2026-07-23 00:00 KST",
-      "headline": "미국 증시 관망세 속 스테이블코인·로봇 약세",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥100 선물",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:weak",
-        "산업:로봇:weak",
-        "산업:데이터인프라:weak"
       ]
     }
   ]

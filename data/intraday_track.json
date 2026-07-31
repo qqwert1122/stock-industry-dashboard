@@ -1,60 +1,7 @@
 {
   "version": 1,
-  "updated_at": "2026-07-31T06:41:16+09:00",
+  "updated_at": "2026-07-31T09:00:11+09:00",
   "snapshots": [
-    {
-      "generated_at": "2026-07-23T00:00:07+09:00",
-      "metrics": {
-        "코스피": {
-          "value": 6923.419921875,
-          "display_value": "6,923.4 지수",
-          "change_pct": 2.6003411626302597,
-          "observed_at": "2026-07-22"
-        },
-        "코스닥": {
-          "value": 763.6900024414062,
-          "display_value": "763.7 지수",
-          "change_pct": 1.3738783573122415,
-          "observed_at": "2026-07-22"
-        },
-        "원/달러 환율": {
-          "value": 1476.3699951171875,
-          "display_value": "1,476.4원",
-          "change_pct": 0.09220177100890403,
-          "observed_at": "2026-07-22"
-        },
-        "엔/달러 환율": {
-          "value": 163.11199951171875,
-          "display_value": "163.1 엔",
-          "change_pct": 0.38464615746376385,
-          "observed_at": "2026-07-22"
-        },
-        "엔/원 환율": {
-          "value": 9.029999732971191,
-          "display_value": "9.03원",
-          "change_pct": -0.5234352937616871,
-          "observed_at": "2026-07-22"
-        },
-        "S&P500 선물": {
-          "value": 7536.0,
-          "display_value": "7,536.0 지수",
-          "change_pct": -0.12921180797137444,
-          "observed_at": "2026-07-22"
-        },
-        "나스닥100 선물": {
-          "value": 29224.0,
-          "display_value": "29,224.0 지수",
-          "change_pct": -0.31382180379314617,
-          "observed_at": "2026-07-22"
-        },
-        "미국 CNN 공포탐욕지수": {
-          "value": 41.03,
-          "display_value": "41.03 점",
-          "change_pct": 8.14443858724303,
-          "observed_at": "2026-07-21"
-        }
-      }
-    },
     {
       "generated_at": "2026-07-23T01:22:16+09:00",
       "metrics": {
@@ -4677,6 +4624,65 @@
           "display_value": "87.79",
           "change_pct": 5.225937912022061,
           "observed_at": "2026-07-29"
+        }
+      }
+    },
+    {
+      "generated_at": "2026-07-31T09:00:11+09:00",
+      "metrics": {
+        "코스피": {
+          "value": 5663.240234375,
+          "display_value": "5,663.2 지수",
+          "change_pct": -5.983403985715185,
+          "observed_at": "2026-07-29"
+        },
+        "코스닥": {
+          "value": 662.6799926757812,
+          "display_value": "662.7 지수",
+          "change_pct": -6.116028108426319,
+          "observed_at": "2026-07-29"
+        },
+        "원/달러 환율": {
+          "value": 1426.25,
+          "display_value": "1,426.2원",
+          "change_pct": -1.11143668159156,
+          "observed_at": "2026-07-31"
+        },
+        "엔/달러 환율": {
+          "value": 160.22900390625,
+          "display_value": "160.2 엔",
+          "change_pct": -1.8805873166667708,
+          "observed_at": "2026-07-31"
+        },
+        "엔/원 환율": {
+          "value": 8.873000144958496,
+          "display_value": "8.87원",
+          "change_pct": 0.4726765299057023,
+          "observed_at": "2026-07-31"
+        },
+        "S&P500 선물": {
+          "value": 7490.0,
+          "display_value": "7,490.0 지수",
+          "change_pct": 1.8874341098452652,
+          "observed_at": "2026-07-30"
+        },
+        "나스닥100 선물": {
+          "value": 28434.0,
+          "display_value": "28,434.0 지수",
+          "change_pct": 3.9938556067588227,
+          "observed_at": "2026-07-30"
+        },
+        "미국 CNN 공포탐욕지수": {
+          "value": 38.91,
+          "display_value": "38.91 점",
+          "change_pct": 12.261973456433939,
+          "observed_at": "2026-07-30"
+        },
+        "VKOSPI": {
+          "value": 86.18,
+          "display_value": "86.18",
+          "change_pct": -1.8339218589816575,
+          "observed_at": "2026-07-30"
         }
       }
     }
