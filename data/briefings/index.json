@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-31T20:54:15+09:00",
+  "updated_at": "2026-07-31T22:47:05+09:00",
   "cards": [
+    {
+      "id": "2026-07-31-intraday-e65eb00864",
+      "date": "2026-07-31",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-31T22:47:05+09:00",
+      "generated_label": "2026-07-31 22:47 KST",
+      "headline": "미국 증시 반등 속 스테이블코인 약세와 데이터 인프라 강세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Coinbase(COIN)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:데이터인프라:strong",
+        "산업:스테이블코인:weak",
+        "산업:건설/부동산:strong"
+      ]
+    },
     {
       "id": "2026-07-31-intraday-144c96e42c",
       "date": "2026-07-31",
@@ -1417,24 +1435,6 @@
         "산업:반도체:strong",
         "산업:데이터인프라:strong",
         "산업:조선:strong"
-      ]
-    },
-    {
-      "id": "2026-07-23-morning-d80c0e0e65",
-      "date": "2026-07-23",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-07-23T08:59:51+09:00",
-      "generated_label": "2026-07-23 08:59 KST",
-      "headline": "스테이블코인 약세와 조선·우주 중심의 차별화 장세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:weak",
-        "산업:조선:strong",
-        "산업:우주:strong"
       ]
     }
   ]
