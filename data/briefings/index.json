@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-01T00:57:37+09:00",
+  "updated_at": "2026-08-01T02:27:53+09:00",
   "cards": [
+    {
+      "id": "2026-08-01-intraday-ac8449e3b5",
+      "date": "2026-08-01",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-01T02:27:53+09:00",
+      "generated_label": "2026-08-01 02:27 KST",
+      "headline": "미국 선물 강세와 VIX 하락, 위험선호 회복 신호",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥100 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:데이터인프라:strong",
+        "산업:반도체:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-08-01-intraday-4891ad649f",
       "date": "2026-08-01",
@@ -1417,24 +1435,6 @@
         "산업:배터리:strong",
         "산업:화학/정유:strong",
         "산업:건설/부동산:strong"
-      ]
-    },
-    {
-      "id": "2026-07-23-intraday-8144059691",
-      "date": "2026-07-23",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-23T15:16:28+09:00",
-      "generated_label": "2026-07-23 15:16 KST",
-      "headline": "코스닥 2.5% 급등, 실적 시즌 기대감에 기술주 중심 강세",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:데이터인프라:strong",
-        "산업:전기차:strong",
-        "산업:조선:strong"
       ]
     }
   ]
