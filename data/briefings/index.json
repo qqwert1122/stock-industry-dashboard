@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-31T18:38:32+09:00",
+  "updated_at": "2026-07-31T20:54:15+09:00",
   "cards": [
+    {
+      "id": "2026-07-31-intraday-144c96e42c",
+      "date": "2026-07-31",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-31T20:54:15+09:00",
+      "generated_label": "2026-07-31 20:54 KST",
+      "headline": "반도체·전력 인프라 주도, 외국인 순매수 전환",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: GE Vernova(GEV)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:전력:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-07-31-intraday-1b3b2f6872",
       "date": "2026-07-31",
@@ -1416,24 +1434,6 @@
       "narrative_topics": [
         "산업:스테이블코인:weak",
         "산업:조선:strong",
-        "산업:우주:strong"
-      ]
-    },
-    {
-      "id": "2026-07-23-intraday-97c1ed7ca1",
-      "date": "2026-07-23",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-23T07:00:24+09:00",
-      "generated_label": "2026-07-23 07:00 KST",
-      "headline": "자동차·건설·우주 강세 속 실적 시즌 관망세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Tesla(TSLA)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:자동차:strong",
-        "산업:건설/부동산:strong",
         "산업:우주:strong"
       ]
     }
