@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-01T05:17:15+09:00",
+  "updated_at": "2026-08-01T06:35:44+09:00",
   "cards": [
+    {
+      "id": "2026-08-01-intraday-c325366843",
+      "date": "2026-08-01",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-01T06:35:44+09:00",
+      "generated_label": "2026-08-01 06:35 KST",
+      "headline": "VIX 하락과 엔화 강세 전환, 시장 변동성 완화 신호",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:우주:strong",
+        "산업:매크로:strong",
+        "산업:화학/정유:strong"
+      ]
+    },
     {
       "id": "2026-08-01-intraday-f6893fe039",
       "date": "2026-08-01",
@@ -1417,24 +1435,6 @@
         "산업:방산:strong",
         "산업:배터리:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-07-23-intraday-c4faf50dd3",
-      "date": "2026-07-23",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-23T20:23:23+09:00",
-      "generated_label": "2026-07-23 20:23 KST",
-      "headline": "방산·배터리 주도 속 VIX 상승에 따른 시장 경계감",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:방산:strong",
-        "산업:배터리:strong",
-        "산업:철강/소재:strong"
       ]
     }
   ]
