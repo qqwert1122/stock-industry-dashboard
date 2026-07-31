@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-07-31T09:00:11+09:00",
+  "updated_at": "2026-07-31T12:22:53+09:00",
   "cards": [
+    {
+      "id": "2026-07-31-intraday-79cdfcd80f",
+      "date": "2026-07-31",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-07-31T12:22:53+09:00",
+      "generated_label": "2026-07-31 12:22 KST",
+      "headline": "반도체 중심의 강력한 반등, 외국인 수급이 코스피 견인",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:strong",
+        "산업:우주:strong"
+      ]
+    },
     {
       "id": "2026-07-31-morning-322c2d5681",
       "date": "2026-07-31",
@@ -1417,24 +1435,6 @@
         "산업:스테이블코인:weak",
         "산업:로봇:weak",
         "산업:데이터인프라:weak"
-      ]
-    },
-    {
-      "id": "2026-07-23-intraday-1e0c70b3be",
-      "date": "2026-07-23",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-23T01:22:16+09:00",
-      "generated_label": "2026-07-23 01:22 KST",
-      "headline": "반도체 반등과 에너지 가격 상승, 시장의 엇갈린 흐름",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: GE Vernova(GEV)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:화학/정유:strong",
-        "산업:스테이블코인:weak"
       ]
     }
   ]
