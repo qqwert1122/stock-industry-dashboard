@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-04T03:15:40+09:00",
+  "updated_at": "2026-08-04T05:09:13+09:00",
   "cards": [
+    {
+      "id": "2026-08-04-intraday-0c0f23e570",
+      "date": "2026-08-04",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-04T05:09:13+09:00",
+      "generated_label": "2026-08-04 05:09 KST",
+      "headline": "국제 유가 급락과 나스닥 반등, 한국장 수급 변화 주목",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:데이터인프라:weak",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-08-04-intraday-dd52dd70ce",
       "date": "2026-08-04",
@@ -1416,24 +1434,6 @@
         "산업:바이오:strong",
         "산업:반도체:weak",
         "산업:화학/정유:weak"
-      ]
-    },
-    {
-      "id": "2026-07-24-intraday-a55e3ae4b1",
-      "date": "2026-07-24",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-24T17:33:33+09:00",
-      "generated_label": "2026-07-24 17:33 KST",
-      "headline": "국제 유가 급락과 반도체 변동성 확대",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:화학/정유:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
