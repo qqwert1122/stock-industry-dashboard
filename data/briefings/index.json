@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-03T19:31:56+09:00",
+  "updated_at": "2026-08-03T19:36:53+09:00",
   "cards": [
+    {
+      "id": "2026-08-03-intraday-bcd9caca8a",
+      "date": "2026-08-03",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-03T19:36:53+09:00",
+      "generated_label": "2026-08-03 19:36 KST",
+      "headline": "국제 유가 급락과 외국인 선물 매도세에 주목",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:화학/정유:weak",
+        "산업:매크로:weak",
+        "산업:반도체:weak"
+      ]
+    },
     {
       "id": "2026-08-03-intraday-0f19682408",
       "date": "2026-08-03",
@@ -1416,24 +1434,6 @@
         "산업:방산:strong",
         "산업:조선:strong",
         "산업:전력:strong"
-      ]
-    },
-    {
-      "id": "2026-07-24-intraday-299310620c",
-      "date": "2026-07-24",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-24T06:59:56+09:00",
-      "generated_label": "2026-07-24 06:59 KST",
-      "headline": "유가 급등에 따른 에너지·화학주 강세와 미국 증시 변동성 확대",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:화학/정유:strong",
-        "산업:배터리:strong",
-        "산업:건설/부동산:strong"
       ]
     }
   ]
