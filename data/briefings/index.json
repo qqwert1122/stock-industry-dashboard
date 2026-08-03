@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-02T08:55:50+09:00",
+  "updated_at": "2026-08-03T08:57:37+09:00",
   "cards": [
+    {
+      "id": "2026-08-03-morning-26cfbac1c2",
+      "date": "2026-08-03",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-08-03T08:57:37+09:00",
+      "generated_label": "2026-08-03 08:57 KST",
+      "headline": "외국인 선물 매도 전환과 환율 상승, 수급 경계감 확대",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:weak",
+        "산업:방산:strong",
+        "산업:우주:strong"
+      ]
+    },
     {
       "id": "2026-08-02-morning-0b85833f57",
       "date": "2026-08-02",
@@ -1417,24 +1435,6 @@
         "산업:로봇:weak",
         "산업:데이터인프라:weak",
         "산업:반도체:weak"
-      ]
-    },
-    {
-      "id": "2026-07-24-intraday-058ba0b8d2",
-      "date": "2026-07-24",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-24T01:55:17+09:00",
-      "generated_label": "2026-07-24 01:55 KST",
-      "headline": "미국 증시 변동성 확대와 기술주 조정",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Mobileye(MBLY)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:데이터인프라:weak",
-        "산업:반도체:weak",
-        "산업:로봇:weak"
       ]
     }
   ]
