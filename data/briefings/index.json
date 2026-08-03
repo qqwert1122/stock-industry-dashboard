@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-03T22:37:16+09:00",
+  "updated_at": "2026-08-04T01:16:41+09:00",
   "cards": [
+    {
+      "id": "2026-08-04-intraday-ce4f958a2a",
+      "date": "2026-08-04",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-04T01:16:41+09:00",
+      "generated_label": "2026-08-04 01:16 KST",
+      "headline": "나스닥 1.5% 급등, AI 데이터인프라 주도",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:데이터인프라:strong",
+        "산업:반도체:strong",
+        "산업:로봇:strong"
+      ]
+    },
     {
       "id": "2026-08-03-intraday-3135605f34",
       "date": "2026-08-03",
@@ -1411,24 +1429,6 @@
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "유의미한 변화: 삼성바이오로직스(207940.KS)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:자동차:weak",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-07-24-intraday-9d4550276d",
-      "date": "2026-07-24",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-24T11:57:12+09:00",
-      "generated_label": "2026-07-24 11:57 KST",
-      "headline": "반도체·자동차 동반 급락, 코스피 조정 속 수급 공백",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:weak",
