@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-08-03T08:57:37+09:00",
+  "updated_at": "2026-08-03T12:25:03+09:00",
   "cards": [
+    {
+      "id": "2026-08-03-intraday-196f075ed5",
+      "date": "2026-08-03",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-03T12:25:03+09:00",
+      "generated_label": "2026-08-03 12:25 KST",
+      "headline": "반도체 급락과 외국인 선물 매도에 코스피 4%대 하락",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-03-morning-26cfbac1c2",
       "date": "2026-08-03",
@@ -1417,24 +1434,6 @@
         "산업:데이터인프라:weak",
         "산업:반도체:weak",
         "산업:스테이블코인:weak"
-      ]
-    },
-    {
-      "id": "2026-07-24-intraday-63d9b830da",
-      "date": "2026-07-24",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-24T03:09:07+09:00",
-      "generated_label": "2026-07-24 03:09 KST",
-      "headline": "미국 증시 변동성 확대와 기술주 약세, 한국장 투자심리 위축 우려",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Mobileye(MBLY)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:로봇:weak",
-        "산업:데이터인프라:weak",
-        "산업:반도체:weak"
       ]
     }
   ]
