@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-04T18:35:54+09:00",
+  "updated_at": "2026-08-04T20:59:03+09:00",
   "cards": [
+    {
+      "id": "2026-08-04-intraday-f1e6615dda",
+      "date": "2026-08-04",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-04T20:59:03+09:00",
+      "generated_label": "2026-08-04 20:59 KST",
+      "headline": "반도체·우주·로봇 중심의 기술주 강세와 수급 개선",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Rocket Lab(RKLB)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:우주:strong",
+        "산업:로봇:strong"
+      ]
+    },
     {
       "id": "2026-08-04-intraday-ff93576400",
       "date": "2026-08-04",
@@ -1414,24 +1432,6 @@
       "narrative_topics": [
         "산업:화학/정유:weak",
         "산업:반도체:weak",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-07-25-intraday-671c8aaedb",
-      "date": "2026-07-25",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-25T04:24:58+09:00",
-      "generated_label": "2026-07-25 04:24 KST",
-      "headline": "미국 증시 선물 하락과 유가 급락에 따른 투자심리 위축",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥100 선물",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:화학/정유:weak",
         "산업:매크로:weak"
       ]
     }
