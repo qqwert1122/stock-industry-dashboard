@@ -2,8 +2,8 @@
   "rules": {
     "S&P 500 Shiller CAPE|pct_above=95": {
       "triggered": true,
-      "value": 40.91,
-      "observed_at": "2026-07-01",
+      "value": 41.51,
+      "observed_at": "2026-08-01",
       "metric_id": "b0b6e0910209",
       "metric_name": "S&P 500 Shiller CAPE"
     },
@@ -23,8 +23,8 @@
     },
     "10Y-3M 금리차|below=0": {
       "triggered": false,
-      "value": 0.92,
-      "observed_at": "2026-07-31",
+      "value": 0.79,
+      "observed_at": "2026-08-03",
       "metric_id": "0f9e337e8716",
       "metric_name": "미국 10Y-3M 금리차"
     },
@@ -37,8 +37,8 @@
     },
     "원/달러 환율|above=1500": {
       "triggered": false,
-      "value": 1428.780029296875,
-      "observed_at": "2026-08-03",
+      "value": 1432.1800537109375,
+      "observed_at": "2026-08-04",
       "metric_id": "c0e679b6845a",
       "metric_name": "원/달러 환율"
     }
