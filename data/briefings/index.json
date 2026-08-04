@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-04T17:44:05+09:00",
+  "updated_at": "2026-08-04T18:35:54+09:00",
   "cards": [
+    {
+      "id": "2026-08-04-intraday-ff93576400",
+      "date": "2026-08-04",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-04T18:35:54+09:00",
+      "generated_label": "2026-08-04 18:35 KST",
+      "headline": "우주·로봇·배터리 주도, 미국장 반등 속 한국장 수급 변화 주목",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Rocket Lab(RKLB)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:우주:strong",
+        "산업:로봇:strong",
+        "산업:배터리:strong"
+      ]
+    },
     {
       "id": "2026-08-04-intraday-9edb485c89",
       "date": "2026-08-04",
@@ -1415,24 +1433,6 @@
         "산업:반도체:weak",
         "산업:화학/정유:weak",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-07-25-intraday-e69bbe07a5",
-      "date": "2026-07-25",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-25T02:57:54+09:00",
-      "generated_label": "2026-07-25 02:57 KST",
-      "headline": "유가 급락과 반도체 약세, 미국 증시 변동성 주의",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:화학/정유:weak",
-        "산업:반도체:weak",
-        "산업:매크로:strong"
       ]
     }
   ]
