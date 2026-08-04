@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-04T11:52:10+09:00",
+  "updated_at": "2026-08-04T14:52:19+09:00",
   "cards": [
+    {
+      "id": "2026-08-04-intraday-910c4b76ae",
+      "date": "2026-08-04",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-04T14:52:19+09:00",
+      "generated_label": "2026-08-04 14:52 KST",
+      "headline": "반도체 약세 속 방산·데이터인프라 중심의 수급 이동",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 쎄트렉아이(099320.KQ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:방산:strong",
+        "산업:데이터인프라:strong"
+      ]
+    },
     {
       "id": "2026-08-04-intraday-cc7ae639d8",
       "date": "2026-08-04",
@@ -1415,24 +1433,6 @@
         "산업:반도체:weak",
         "산업:화학/정유:weak",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-07-24-intraday-bd49dc84f3",
-      "date": "2026-07-24",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-24T23:48:34+09:00",
-      "generated_label": "2026-07-24 23:48 KST",
-      "headline": "반도체 약세와 나스닥 선물 하락으로 투자심리 위축",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥100 선물",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:스테이블코인:weak",
-        "산업:매크로:weak"
       ]
     }
   ]
