@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-05T05:08:00+09:00",
+  "updated_at": "2026-08-05T06:46:38+09:00",
   "cards": [
+    {
+      "id": "2026-08-05-intraday-096315ff29",
+      "date": "2026-08-05",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-05T06:46:38+09:00",
+      "generated_label": "2026-08-05 06:46 KST",
+      "headline": "미국 기술주 조정과 유가 급락, 방산·우주로 쏠리는 시선",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: AMD(AMD)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:방산:strong",
+        "산업:우주:strong",
+        "산업:반도체:weak"
+      ]
+    },
     {
       "id": "2026-08-05-intraday-1a38508f6b",
       "date": "2026-08-05",
@@ -1416,24 +1434,6 @@
         "산업:데이터인프라:strong",
         "산업:매크로:weak",
         "산업:방산:weak"
-      ]
-    },
-    {
-      "id": "2026-07-27-morning-4bba09736a",
-      "date": "2026-07-27",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-07-27T08:58:13+09:00",
-      "generated_label": "2026-07-27 08:58 KST",
-      "headline": "국제 유가 급락과 미국 선물 강세 속 국내 수급 변화 주목",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:strong",
-        "산업:화학/정유:weak",
-        "산업:바이오:strong"
       ]
     }
   ]
