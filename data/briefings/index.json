@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-05T03:11:09+09:00",
+  "updated_at": "2026-08-05T05:08:00+09:00",
   "cards": [
+    {
+      "id": "2026-08-05-intraday-1a38508f6b",
+      "date": "2026-08-05",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-05T05:08:00+09:00",
+      "generated_label": "2026-08-05 05:08 KST",
+      "headline": "미국 증시 반등과 유가 급락, 반도체 중심의 투자심리 회복",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:로봇:strong",
+        "산업:데이터인프라:weak"
+      ]
+    },
     {
       "id": "2026-08-05-intraday-958288aa33",
       "date": "2026-08-05",
@@ -1416,24 +1434,6 @@
         "산업:매크로:strong",
         "산업:화학/정유:weak",
         "산업:바이오:strong"
-      ]
-    },
-    {
-      "id": "2026-07-26-morning-e2dc2bd11a",
-      "date": "2026-07-26",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-07-26T08:59:35+09:00",
-      "generated_label": "2026-07-26 08:59 KST",
-      "headline": "코스피·코스닥 급락과 외국인 대규모 순매도",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:weak",
-        "산업:바이오:strong",
-        "산업:우주:weak"
       ]
     }
   ]
