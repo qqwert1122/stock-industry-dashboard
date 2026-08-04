@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-05T01:26:22+09:00",
+  "updated_at": "2026-08-05T03:11:09+09:00",
   "cards": [
+    {
+      "id": "2026-08-05-intraday-958288aa33",
+      "date": "2026-08-05",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-05T03:11:09+09:00",
+      "generated_label": "2026-08-05 03:11 KST",
+      "headline": "미국 반도체·로봇주 급등, 기술주 중심의 강한 반등",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Teradyne(TER)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:로봇:strong",
+        "산업:데이터인프라:strong"
+      ]
+    },
     {
       "id": "2026-08-05-intraday-8e65476da0",
       "date": "2026-08-05",
@@ -1416,23 +1434,6 @@
         "산업:매크로:weak",
         "산업:바이오:strong",
         "산업:우주:weak"
-      ]
-    },
-    {
-      "id": "2026-07-25-morning-7f4a653c80",
-      "date": "2026-07-25",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-07-25T09:01:57+09:00",
-      "generated_label": "2026-07-25 09:01 KST",
-      "headline": "반도체 투심 위축과 코스닥 수급 불안 지속",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak"
       ]
     }
   ]
