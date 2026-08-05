@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-05T22:49:26+09:00",
+  "updated_at": "2026-08-06T00:57:18+09:00",
   "cards": [
+    {
+      "id": "2026-08-06-intraday-bf581d3cc8",
+      "date": "2026-08-06",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-06T00:57:18+09:00",
+      "generated_label": "2026-08-06 00:57 KST",
+      "headline": "미국 증시 반도체·로봇 약세 속 변동성 확대",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:로봇:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-05-intraday-6a7474aa26",
       "date": "2026-08-05",
@@ -1416,24 +1434,6 @@
       "narrative_topics": [
         "산업:반도체:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-07-28-intraday-e10fbc67bd",
-      "date": "2026-07-28",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-28T06:36:39+09:00",
-      "generated_label": "2026-07-28 06:36 KST",
-      "headline": "국제 유가 급락과 방산 약세, 바이오·철강 중심의 시장 재편",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:방산:weak",
-        "산업:바이오:strong",
-        "산업:철강/소재:strong"
       ]
     }
   ]
