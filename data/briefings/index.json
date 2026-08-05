@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-05T09:00:17+09:00",
+  "updated_at": "2026-08-05T11:49:06+09:00",
   "cards": [
+    {
+      "id": "2026-08-05-intraday-e014d18579",
+      "date": "2026-08-05",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-05T11:49:06+09:00",
+      "generated_label": "2026-08-05 11:49 KST",
+      "headline": "코스피·코스닥 동반 급등, 반도체 중심의 강한 반등세",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:strong",
+        "산업:조선:strong"
+      ]
+    },
     {
       "id": "2026-08-05-morning-7a038c33bc",
       "date": "2026-08-05",
@@ -1416,24 +1434,6 @@
         "산업:반도체:strong",
         "산업:로봇:strong",
         "산업:화학/정유:weak"
-      ]
-    },
-    {
-      "id": "2026-07-27-intraday-a606d99ec1",
-      "date": "2026-07-27",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-27T15:54:18+09:00",
-      "generated_label": "2026-07-27 15:54 KST",
-      "headline": "코스피 반등과 NAVER·반도체 중심의 시장 회복",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:데이터인프라:strong",
-        "산업:반도체:strong",
-        "산업:철강/소재:strong"
       ]
     }
   ]
