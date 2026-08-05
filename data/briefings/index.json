@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-05T18:31:50+09:00",
+  "updated_at": "2026-08-05T20:53:01+09:00",
   "cards": [
+    {
+      "id": "2026-08-05-intraday-1528999a6c",
+      "date": "2026-08-05",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-05T20:53:01+09:00",
+      "generated_label": "2026-08-05 20:53 KST",
+      "headline": "반도체 차익실현과 바이오·건설의 상대적 강세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: AMD(AMD)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:바이오:strong",
+        "산업:건설/부동산:strong"
+      ]
+    },
     {
       "id": "2026-08-05-intraday-c0a06db8a2",
       "date": "2026-08-05",
@@ -1416,24 +1434,6 @@
         "산업:화학/정유:weak",
         "산업:매크로:strong",
         "산업:반도체:strong"
-      ]
-    },
-    {
-      "id": "2026-07-28-intraday-c998e9a5ef",
-      "date": "2026-07-28",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-28T03:01:34+09:00",
-      "generated_label": "2026-07-28 03:01 KST",
-      "headline": "유가 급락과 반도체 약세, 시장 변동성 확대",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:strong",
-        "산업:화학/정유:weak"
       ]
     }
   ]
