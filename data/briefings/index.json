@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-06T20:58:59+09:00",
+  "updated_at": "2026-08-06T23:12:01+09:00",
   "cards": [
+    {
+      "id": "2026-08-06-intraday-b62bf5ff2e",
+      "date": "2026-08-06",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-06T23:12:01+09:00",
+      "generated_label": "2026-08-06 23:12 KST",
+      "headline": "반도체·로봇 중심의 기술주 반등과 시장 안정",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Albemarle(ALB)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:로봇:strong",
+        "산업:스테이블코인:weak"
+      ]
+    },
     {
       "id": "2026-08-06-intraday-fed3f8194b",
       "date": "2026-08-06",
@@ -1419,24 +1437,6 @@
         "산업:반도체:weak",
         "산업:배터리:weak",
         "산업:로봇:strong"
-      ]
-    },
-    {
-      "id": "2026-07-29-intraday-3b3d695ee9",
-      "date": "2026-07-29",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-29T05:41:21+09:00",
-      "generated_label": "2026-07-29 05:41 KST",
-      "headline": "데이터인프라 강세 속 유가 급락과 반도체 변동성",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Teradyne(TER)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:데이터인프라:strong",
-        "산업:반도체:weak",
-        "산업:매크로:weak"
       ]
     }
   ]
