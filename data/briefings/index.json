@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-06T14:53:41+09:00",
+  "updated_at": "2026-08-06T17:43:38+09:00",
   "cards": [
+    {
+      "id": "2026-08-06-intraday-bf13bf98fe",
+      "date": "2026-08-06",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-06T17:43:38+09:00",
+      "generated_label": "2026-08-06 17:43 KST",
+      "headline": "반도체 약세 속 방산·배터리 중심의 차별화 장세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Micron(MU)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:방산:strong",
+        "산업:배터리:strong"
+      ]
+    },
     {
       "id": "2026-08-06-intraday-5f33550616",
       "date": "2026-08-06",
@@ -1414,24 +1432,6 @@
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: Micron(MU)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:strong",
-        "산업:로봇:strong"
-      ]
-    },
-    {
-      "id": "2026-07-29-intraday-cd9080d2a3",
-      "date": "2026-07-29",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-29T01:00:43+09:00",
-      "generated_label": "2026-07-29 01:00 KST",
-      "headline": "반도체 급락과 데이터인프라의 차별화된 흐름",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:weak",
