@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-06T07:06:57+09:00",
+  "updated_at": "2026-08-06T08:58:38+09:00",
   "cards": [
+    {
+      "id": "2026-08-06-morning-fea109d54a",
+      "date": "2026-08-06",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-08-06T08:58:38+09:00",
+      "generated_label": "2026-08-06 08:58 KST",
+      "headline": "건설·바이오 주도 속 기관 선물 매도세 주의",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:건설/부동산:strong",
+        "산업:바이오:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-06-intraday-e7fccdc5e2",
       "date": "2026-08-06",
@@ -1411,24 +1429,6 @@
       "generated_at": "2026-07-28T20:52:30+09:00",
       "generated_label": "2026-07-28 20:52 KST",
       "headline": "반도체 대표주 동반 급락, 시장 전반의 위험 선호 위축",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Micron(MU)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak",
-        "산업:배터리:weak"
-      ]
-    },
-    {
-      "id": "2026-07-28-intraday-a70bcd1844",
-      "date": "2026-07-28",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-28T18:32:36+09:00",
-      "generated_label": "2026-07-28 18:32 KST",
-      "headline": "반도체 대표주 약세와 미국 FOMC 앞둔 관망세",
       "low_signal": false,
       "session_label": "세션 외",
       "gate_reason": "유의미한 변화: Micron(MU)",
