@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-06T08:58:38+09:00",
+  "updated_at": "2026-08-06T11:52:00+09:00",
   "cards": [
+    {
+      "id": "2026-08-06-intraday-7d10412f9f",
+      "date": "2026-08-06",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-06T11:52:00+09:00",
+      "generated_label": "2026-08-06 11:52 KST",
+      "headline": "반도체 대표주 급락과 시장 변동성 확대",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak",
+        "산업:방산:strong"
+      ]
+    },
     {
       "id": "2026-08-06-morning-fea109d54a",
       "date": "2026-08-06",
@@ -1419,24 +1437,6 @@
         "산업:반도체:weak",
         "산업:우주:weak",
         "산업:전력:weak"
-      ]
-    },
-    {
-      "id": "2026-07-28-intraday-8b7ce01f4a",
-      "date": "2026-07-28",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-28T20:52:30+09:00",
-      "generated_label": "2026-07-28 20:52 KST",
-      "headline": "반도체 대표주 동반 급락, 시장 전반의 위험 선호 위축",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Micron(MU)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak",
-        "산업:배터리:weak"
       ]
     }
   ]
