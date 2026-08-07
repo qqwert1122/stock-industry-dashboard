@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-07T10:41:19+09:00",
+  "updated_at": "2026-08-07T11:50:16+09:00",
   "cards": [
+    {
+      "id": "2026-08-07-intraday-a7d784b68f",
+      "date": "2026-08-07",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-07T11:50:16+09:00",
+      "generated_label": "2026-08-07 11:50 KST",
+      "headline": "코스피·코스닥 동반 급락, 외국인 매도세와 수급 불안 심화",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: KOSPI200",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:데이터인프라:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-07-morning-bb76386b8e",
       "date": "2026-08-07",
@@ -1411,24 +1429,6 @@
       "generated_at": "2026-07-29T14:56:43+09:00",
       "generated_label": "2026-07-29 14:56 KST",
       "headline": "코스피·코스닥 동반 급락, 반도체 중심 투자심리 위축",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak",
-        "산업:우주:strong"
-      ]
-    },
-    {
-      "id": "2026-07-29-intraday-de9a6aaa24",
-      "date": "2026-07-29",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-29T11:55:47+09:00",
-      "generated_label": "2026-07-29 11:55 KST",
-      "headline": "코스피·코스닥 동반 급락, 반도체 중심의 투자심리 위축",
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "유의미한 변화: 코스피",
