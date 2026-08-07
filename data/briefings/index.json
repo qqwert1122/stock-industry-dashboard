@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-08T04:46:19+09:00",
+  "updated_at": "2026-08-08T05:32:33+09:00",
   "cards": [
+    {
+      "id": "2026-08-08-intraday-a6cda3b010",
+      "date": "2026-08-08",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-08T05:32:33+09:00",
+      "generated_label": "2026-08-08 05:32 KST",
+      "headline": "미국장, 금 선물 급등과 나스닥 선물 강세로 위험선호 회복",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 금 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:로봇:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-08-08-intraday-5e5b8a7eab",
       "date": "2026-08-08",
@@ -1419,24 +1437,6 @@
         "산업:조선:strong",
         "산업:방산:strong",
         "산업:반도체:strong"
-      ]
-    },
-    {
-      "id": "2026-07-30-intraday-f1d43d8808",
-      "date": "2026-07-30",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-30T18:26:40+09:00",
-      "generated_label": "2026-07-30 18:26 KST",
-      "headline": "미국 빅테크 반등과 방산·철강의 동반 강세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Microsoft(MSFT)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:방산:strong",
-        "산업:철강/소재:strong",
-        "산업:데이터인프라:strong"
       ]
     }
   ]
