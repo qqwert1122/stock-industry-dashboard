@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-07T19:27:58+09:00",
+  "updated_at": "2026-08-07T20:21:37+09:00",
   "cards": [
+    {
+      "id": "2026-08-07-intraday-a7c96e5a66",
+      "date": "2026-08-07",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-07T20:21:37+09:00",
+      "generated_label": "2026-08-07 20:21 KST",
+      "headline": "배터리·반도체 장비 강세 속 국내 증시 조정",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Rocket Lab(RKLB)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:배터리:strong",
+        "산업:반도체:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-07-intraday-2c42352f81",
       "date": "2026-08-07",
@@ -1419,24 +1437,6 @@
         "산업:반도체:weak",
         "산업:데이터인프라:strong",
         "산업:로봇:strong"
-      ]
-    },
-    {
-      "id": "2026-07-30-intraday-97273dfb25",
-      "date": "2026-07-30",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-30T02:07:53+09:00",
-      "generated_label": "2026-07-30 02:07 KST",
-      "headline": "반도체 대표주 급락과 에너지 가격 급등의 이중고",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Micron(MU)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:화학/정유:strong",
-        "산업:데이터인프라:strong"
       ]
     }
   ]
