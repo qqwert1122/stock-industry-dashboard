@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-07T11:50:16+09:00",
+  "updated_at": "2026-08-07T13:57:49+09:00",
   "cards": [
+    {
+      "id": "2026-08-07-intraday-fa92d13b15",
+      "date": "2026-08-07",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-07T13:57:49+09:00",
+      "generated_label": "2026-08-07 13:57 KST",
+      "headline": "반도체·인터넷주 약세 속 코스피·코스닥 동반 하락",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:데이터인프라:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-07-intraday-a7d784b68f",
       "date": "2026-08-07",
@@ -1419,24 +1437,6 @@
         "산업:반도체:weak",
         "산업:스테이블코인:strong",
         "산업:자동차:strong"
-      ]
-    },
-    {
-      "id": "2026-07-29-intraday-845e02c523",
-      "date": "2026-07-29",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-29T14:56:43+09:00",
-      "generated_label": "2026-07-29 14:56 KST",
-      "headline": "코스피·코스닥 동반 급락, 반도체 중심 투자심리 위축",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak",
-        "산업:우주:strong"
       ]
     }
   ]
