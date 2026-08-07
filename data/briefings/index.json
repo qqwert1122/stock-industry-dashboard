@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-08-07T23:47:21+09:00",
+  "updated_at": "2026-08-08T00:48:30+09:00",
   "cards": [
+    {
+      "id": "2026-08-08-intraday-4e19b3a9be",
+      "date": "2026-08-08",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-08T00:48:30+09:00",
+      "generated_label": "2026-08-08 00:48 KST",
+      "headline": "스테이블코인 주도 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 금 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로",
+        "산업:철강/소재"
+      ]
+    },
     {
       "id": "2026-08-07-intraday-73601f143e",
       "date": "2026-08-07",
@@ -1419,24 +1436,6 @@
         "산업:우주:weak",
         "산업:건설/부동산:weak",
         "산업:방산:weak"
-      ]
-    },
-    {
-      "id": "2026-07-30-intraday-246e706bac",
-      "date": "2026-07-30",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-30T07:27:15+09:00",
-      "generated_label": "2026-07-30 07:27 KST",
-      "headline": "유가 급등과 미국 선물 약세, 시장 변동성 확대",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:화학/정유:strong",
-        "산업:매크로:weak",
-        "산업:반도체:weak"
       ]
     }
   ]
