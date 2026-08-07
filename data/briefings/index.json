@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-07T15:12:49+09:00",
+  "updated_at": "2026-08-07T16:45:27+09:00",
   "cards": [
+    {
+      "id": "2026-08-07-intraday-6f64e9b4a6",
+      "date": "2026-08-07",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-07T16:45:27+09:00",
+      "generated_label": "2026-08-07 16:45 KST",
+      "headline": "배터리·화학 강세 속 코스피·코스닥 동반 하락",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 금 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:배터리:strong",
+        "산업:화학/정유:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-07-intraday-4d80c28ecf",
       "date": "2026-08-07",
@@ -1419,24 +1437,6 @@
         "산업:반도체:weak",
         "산업:자동차:strong",
         "산업:화학/정유:strong"
-      ]
-    },
-    {
-      "id": "2026-07-29-intraday-a32f61963e",
-      "date": "2026-07-29",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-29T18:34:02+09:00",
-      "generated_label": "2026-07-29 18:34 KST",
-      "headline": "반도체 장비주 급락과 미국 FOMC 경계감",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Applied Materials(AMAT)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:로봇:strong",
-        "산업:철강/소재:strong"
       ]
     }
   ]
