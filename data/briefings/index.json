@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-08T03:43:23+09:00",
+  "updated_at": "2026-08-08T04:46:19+09:00",
   "cards": [
+    {
+      "id": "2026-08-08-intraday-5e5b8a7eab",
+      "date": "2026-08-08",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-08T04:46:19+09:00",
+      "generated_label": "2026-08-08 04:46 KST",
+      "headline": "미국 증시 선물 상승과 스테이블코인 강세",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 금 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:로봇:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-08-08-intraday-8567b68952",
       "date": "2026-08-08",
@@ -1419,24 +1437,6 @@
         "산업:방산:strong",
         "산업:철강/소재:strong",
         "산업:데이터인프라:strong"
-      ]
-    },
-    {
-      "id": "2026-07-30-intraday-7f49e0984d",
-      "date": "2026-07-30",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-30T16:56:36+09:00",
-      "generated_label": "2026-07-30 16:56 KST",
-      "headline": "미국 증시 변동성 완화 속 반도체 약세와 에너지 강세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:화학/정유:strong",
-        "산업:반도체:weak",
-        "산업:우주:weak"
       ]
     }
   ]
