@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-08T02:42:15+09:00",
+  "updated_at": "2026-08-08T03:43:23+09:00",
   "cards": [
+    {
+      "id": "2026-08-08-intraday-8567b68952",
+      "date": "2026-08-08",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-08T03:43:23+09:00",
+      "generated_label": "2026-08-08 03:43 KST",
+      "headline": "미국 증시 변동성 완화와 금 선물 강세",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 금 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:로봇:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-08-08-intraday-a944bc7233",
       "date": "2026-08-08",
@@ -1419,23 +1437,6 @@
         "산업:화학/정유:strong",
         "산업:반도체:weak",
         "산업:우주:weak"
-      ]
-    },
-    {
-      "id": "2026-07-30-intraday-634a8e0a42",
-      "date": "2026-07-30",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-30T14:28:09+09:00",
-      "generated_label": "2026-07-30 14:28 KST",
-      "headline": "코스피·코스닥 동반 급락, 반도체 중심의 투자심리 위축",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:strong"
       ]
     }
   ]
