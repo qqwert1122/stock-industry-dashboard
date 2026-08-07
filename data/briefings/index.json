@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-07T13:57:49+09:00",
+  "updated_at": "2026-08-07T15:12:49+09:00",
   "cards": [
+    {
+      "id": "2026-08-07-intraday-4d80c28ecf",
+      "date": "2026-08-07",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-07T15:12:49+09:00",
+      "generated_label": "2026-08-07 15:12 KST",
+      "headline": "반도체·데이터인프라 약세 속 수급 이탈 가속화",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:데이터인프라:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-07-intraday-fa92d13b15",
       "date": "2026-08-07",
@@ -1419,24 +1437,6 @@
         "산업:반도체:weak",
         "산업:로봇:strong",
         "산업:철강/소재:strong"
-      ]
-    },
-    {
-      "id": "2026-07-29-intraday-3da01c45d6",
-      "date": "2026-07-29",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-29T17:51:40+09:00",
-      "generated_label": "2026-07-29 17:51 KST",
-      "headline": "반도체 약세 속 스테이블코인·자동차 선방",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Teradyne(TER)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:스테이블코인:strong",
-        "산업:자동차:strong"
       ]
     }
   ]
