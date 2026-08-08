@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-08T08:31:51+09:00",
+  "updated_at": "2026-08-09T08:26:40+09:00",
   "cards": [
+    {
+      "id": "2026-08-09-morning-24e1a9b143",
+      "date": "2026-08-09",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-08-09T08:26:40+09:00",
+      "generated_label": "2026-08-09 08:26 KST",
+      "headline": "미국 증시 반등과 배터리·우주 산업의 강세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:배터리:strong",
+        "산업:우주:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-08-morning-24c6e50490",
       "date": "2026-08-08",
@@ -1414,24 +1432,6 @@
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: S&P 500",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:데이터인프라:strong",
-        "산업:로봇:weak"
-      ]
-    },
-    {
-      "id": "2026-07-31-intraday-6dcf483c83",
-      "date": "2026-07-31",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-31T00:30:06+09:00",
-      "generated_label": "2026-07-31 00:30 KST",
-      "headline": "미국 반도체·데이터인프라 급반등, 위험선호 회복",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:strong",
