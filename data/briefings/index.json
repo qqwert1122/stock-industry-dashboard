@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-09T08:26:40+09:00",
+  "updated_at": "2026-08-10T08:29:30+09:00",
   "cards": [
+    {
+      "id": "2026-08-10-morning-2480f48c1a",
+      "date": "2026-08-10",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-08-10T08:29:30+09:00",
+      "generated_label": "2026-08-10 08:29 KST",
+      "headline": "스테이블코인 및 배터리 중심의 시장 강세 지속",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:배터리:strong",
+        "산업:전기차:strong"
+      ]
+    },
     {
       "id": "2026-08-09-morning-24e1a9b143",
       "date": "2026-08-09",
@@ -1414,24 +1432,6 @@
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: Lam Research(LRCX)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:데이터인프라:strong",
-        "산업:로봇:weak"
-      ]
-    },
-    {
-      "id": "2026-07-31-intraday-65e9393233",
-      "date": "2026-07-31",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-31T02:02:54+09:00",
-      "generated_label": "2026-07-31 02:02 KST",
-      "headline": "반도체·데이터인프라 중심의 미국장 강세와 VIX 급락",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: S&P 500",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:strong",
