@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-10T17:25:19+09:00",
+  "updated_at": "2026-08-10T18:58:36+09:00",
   "cards": [
+    {
+      "id": "2026-08-10-intraday-f29e5e4a92",
+      "date": "2026-08-10",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-10T18:58:36+09:00",
+      "generated_label": "2026-08-10 18:58 KST",
+      "headline": "우주·배터리 산업 주도, 반도체 장비주 반등",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Rocket Lab(RKLB)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:우주:strong",
+        "산업:배터리:strong",
+        "산업:반도체:strong"
+      ]
+    },
     {
       "id": "2026-08-10-intraday-b3d1c72d67",
       "date": "2026-08-10",
@@ -1414,24 +1432,6 @@
       "low_signal": false,
       "session_label": "세션 외",
       "gate_reason": "유의미한 변화: Intel(INTC)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:strong",
-        "산업:우주:strong"
-      ]
-    },
-    {
-      "id": "2026-07-31-intraday-846c21c376",
-      "date": "2026-07-31",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-31T15:30:33+09:00",
-      "generated_label": "2026-07-31 15:30 KST",
-      "headline": "반도체 주도 코스피 급등, 외국인 대규모 순매수 유입",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:strong",
