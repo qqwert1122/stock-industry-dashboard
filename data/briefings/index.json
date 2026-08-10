@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-10T22:54:45+09:00",
+  "updated_at": "2026-08-10T23:54:36+09:00",
   "cards": [
+    {
+      "id": "2026-08-10-intraday-fde552545d",
+      "date": "2026-08-10",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-10T23:54:36+09:00",
+      "generated_label": "2026-08-10 23:54 KST",
+      "headline": "미국 반도체 약세와 에너지 가격 상승의 교차",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Intel(INTC)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:데이터인프라:strong",
+        "산업:로봇:strong"
+      ]
+    },
     {
       "id": "2026-08-10-intraday-1e4c373fe1",
       "date": "2026-08-10",
@@ -1419,24 +1437,6 @@
         "산업:데이터인프라:strong",
         "산업:반도체:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-07-31-intraday-e65eb00864",
-      "date": "2026-07-31",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-31T22:47:05+09:00",
-      "generated_label": "2026-07-31 22:47 KST",
-      "headline": "미국 증시 반등 속 스테이블코인 약세와 데이터 인프라 강세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Coinbase(COIN)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:데이터인프라:strong",
-        "산업:스테이블코인:weak",
-        "산업:건설/부동산:strong"
       ]
     }
   ]
