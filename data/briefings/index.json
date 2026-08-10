@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-10T20:03:33+09:00",
+  "updated_at": "2026-08-10T21:09:18+09:00",
   "cards": [
+    {
+      "id": "2026-08-10-intraday-9dea7fd25b",
+      "date": "2026-08-10",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-10T21:09:18+09:00",
+      "generated_label": "2026-08-10 21:09 KST",
+      "headline": "우주·방산 강세 속 반도체 장비주 반등",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 알루미늄 선물(ALI)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:우주:strong",
+        "산업:방산:strong",
+        "산업:반도체:strong"
+      ]
+    },
     {
       "id": "2026-08-10-intraday-dc0d54dfa3",
       "date": "2026-08-10",
@@ -1419,24 +1437,6 @@
         "산업:반도체:strong",
         "산업:전력:strong",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-07-31-intraday-1b3b2f6872",
-      "date": "2026-07-31",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-31T18:38:32+09:00",
-      "generated_label": "2026-07-31 18:38 KST",
-      "headline": "반도체 반등과 외국인 순매수 전환, 시장 분위기 개선",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Intel(INTC)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:strong",
-        "산업:우주:strong"
       ]
     }
   ]
