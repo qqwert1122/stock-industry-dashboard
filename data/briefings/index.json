@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-10T08:29:30+09:00",
+  "updated_at": "2026-08-10T11:07:01+09:00",
   "cards": [
+    {
+      "id": "2026-08-10-intraday-a47c850b18",
+      "date": "2026-08-10",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-10T11:07:01+09:00",
+      "generated_label": "2026-08-10 11:07 KST",
+      "headline": "코스닥 급반등과 반도체·방산 중심의 시장 회복",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:방산:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-10-morning-2480f48c1a",
       "date": "2026-08-10",
@@ -1419,24 +1437,6 @@
         "산업:반도체:strong",
         "산업:데이터인프라:weak",
         "산업:스테이블코인:weak"
-      ]
-    },
-    {
-      "id": "2026-07-31-intraday-af8d345e26",
-      "date": "2026-07-31",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-31T03:54:28+09:00",
-      "generated_label": "2026-07-31 03:54 KST",
-      "headline": "반도체·데이터인프라 중심의 미국장 강세와 변동성 완화",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Lam Research(LRCX)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:데이터인프라:strong",
-        "산업:로봇:weak"
       ]
     }
   ]
