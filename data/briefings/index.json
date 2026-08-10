@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-10T18:58:36+09:00",
+  "updated_at": "2026-08-10T20:03:33+09:00",
   "cards": [
+    {
+      "id": "2026-08-10-intraday-dc0d54dfa3",
+      "date": "2026-08-10",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-10T20:03:33+09:00",
+      "generated_label": "2026-08-10 20:03 KST",
+      "headline": "우주·조선·방산 주도, 변동성 지표 VIX 상승",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:우주:strong",
+        "산업:조선:strong",
+        "산업:방산:strong"
+      ]
+    },
     {
       "id": "2026-08-10-intraday-f29e5e4a92",
       "date": "2026-08-10",
@@ -1410,24 +1428,6 @@
       "card_type_label": "장중",
       "generated_at": "2026-07-31T18:38:32+09:00",
       "generated_label": "2026-07-31 18:38 KST",
-      "headline": "반도체 반등과 외국인 순매수 전환, 시장 분위기 개선",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Intel(INTC)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:strong",
-        "산업:우주:strong"
-      ]
-    },
-    {
-      "id": "2026-07-31-intraday-3796d4cd05",
-      "date": "2026-07-31",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-31T18:34:04+09:00",
-      "generated_label": "2026-07-31 18:34 KST",
       "headline": "반도체 반등과 외국인 순매수 전환, 시장 분위기 개선",
       "low_signal": false,
       "session_label": "세션 외",
