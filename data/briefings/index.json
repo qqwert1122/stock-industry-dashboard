@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-10T11:07:01+09:00",
+  "updated_at": "2026-08-10T13:09:53+09:00",
   "cards": [
+    {
+      "id": "2026-08-10-intraday-d1bd3d4762",
+      "date": "2026-08-10",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-10T13:09:53+09:00",
+      "generated_label": "2026-08-10 13:09 KST",
+      "headline": "KOSPI200 급락 속 조선·방산 중심의 차별화 장세",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: KOSPI200",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:조선:strong",
+        "산업:방산:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-10-intraday-a47c850b18",
       "date": "2026-08-10",
@@ -1419,24 +1437,6 @@
         "산업:반도체:strong",
         "산업:매크로:strong",
         "산업:방산:strong"
-      ]
-    },
-    {
-      "id": "2026-07-31-intraday-86add74e98",
-      "date": "2026-07-31",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-07-31T05:12:27+09:00",
-      "generated_label": "2026-07-31 05:12 KST",
-      "headline": "미국 증시 반등과 변동성 완화, 반도체 중심의 투자심리 회복",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥100 선물",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:데이터인프라:weak",
-        "산업:스테이블코인:weak"
       ]
     }
   ]
