@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-11T06:34:36+09:00",
+  "updated_at": "2026-08-11T08:32:59+09:00",
   "cards": [
+    {
+      "id": "2026-08-11-morning-d70d0ffe9e",
+      "date": "2026-08-11",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-08-11T08:32:59+09:00",
+      "generated_label": "2026-08-11 08:32 KST",
+      "headline": "방산·조선 주도 속 반도체 판매액 증가와 미국 CPI 대기",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:방산:strong",
+        "산업:조선:strong",
+        "산업:반도체:strong"
+      ]
+    },
     {
       "id": "2026-08-11-intraday-a1a09021ac",
       "date": "2026-08-11",
@@ -1419,24 +1437,6 @@
       "narrative_topics": [
         "산업:반도체:weak",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-03-morning-26cfbac1c2",
-      "date": "2026-08-03",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-08-03T08:57:37+09:00",
-      "generated_label": "2026-08-03 08:57 KST",
-      "headline": "외국인 선물 매도 전환과 환율 상승, 수급 경계감 확대",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:weak",
-        "산업:방산:strong",
-        "산업:우주:strong"
       ]
     }
   ]
