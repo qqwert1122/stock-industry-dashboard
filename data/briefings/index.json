@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-11T01:45:35+09:00",
+  "updated_at": "2026-08-11T02:44:59+09:00",
   "cards": [
+    {
+      "id": "2026-08-11-intraday-b89430bbac",
+      "date": "2026-08-11",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-11T02:44:59+09:00",
+      "generated_label": "2026-08-11 02:44 KST",
+      "headline": "유가 급등과 반도체 약세 속 로봇·인프라 주목",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: WTI 선물(CL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:로봇:strong",
+        "산업:데이터인프라:strong"
+      ]
+    },
     {
       "id": "2026-08-11-intraday-1fc84a0982",
       "date": "2026-08-11",
@@ -1411,24 +1429,6 @@
       "generated_at": "2026-08-01T05:17:15+09:00",
       "generated_label": "2026-08-01 05:17 KST",
       "headline": "VIX 하락과 엔화 강세, 미국 증시의 안도감",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:데이터인프라:strong",
-        "산업:반도체:strong",
-        "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-08-01-intraday-a5ed307f80",
-      "date": "2026-08-01",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-01T03:53:34+09:00",
-      "generated_label": "2026-08-01 03:53 KST",
-      "headline": "미국 증시 변동성 완화와 데이터 인프라 중심의 반등",
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: VIX",
