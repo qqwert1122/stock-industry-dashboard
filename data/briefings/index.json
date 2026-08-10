@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-11T04:50:05+09:00",
+  "updated_at": "2026-08-11T05:34:22+09:00",
   "cards": [
+    {
+      "id": "2026-08-11-intraday-e38a2b9e75",
+      "date": "2026-08-11",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-11T05:34:22+09:00",
+      "generated_label": "2026-08-11 05:34 KST",
+      "headline": "유가 급등과 변동성 확대 속 미국 증시 관망세",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: WTI 선물(CL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:화학/정유:strong",
+        "산업:매크로:weak",
+        "산업:반도체:weak"
+      ]
+    },
     {
       "id": "2026-08-11-intraday-2dc51c4cb1",
       "date": "2026-08-11",
@@ -1419,24 +1437,6 @@
         "산업:건설/부동산:strong",
         "산업:조선:strong",
         "산업:데이터인프라:strong"
-      ]
-    },
-    {
-      "id": "2026-08-01-morning-839bd5a2db",
-      "date": "2026-08-01",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-08-01T09:00:34+09:00",
-      "generated_label": "2026-08-01 09:00 KST",
-      "headline": "반도체 중심의 수급 변동성과 기관의 대규모 리밸런싱",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:strong",
-        "산업:우주:strong"
       ]
     }
   ]
