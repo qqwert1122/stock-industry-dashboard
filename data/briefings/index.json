@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-12T06:38:34+09:00",
+  "updated_at": "2026-08-12T08:38:02+09:00",
   "cards": [
+    {
+      "id": "2026-08-12-morning-af344ec38b",
+      "date": "2026-08-12",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-08-12T08:38:02+09:00",
+      "generated_label": "2026-08-12 08:38 KST",
+      "headline": "조선·배터리 약세와 건설·부동산의 상대적 강세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:조선:weak",
+        "산업:배터리:weak",
+        "산업:건설/부동산:strong"
+      ]
+    },
     {
       "id": "2026-08-12-intraday-a09d14a431",
       "date": "2026-08-12",
@@ -1418,24 +1436,6 @@
         "산업:반도체:strong",
         "산업:매크로:weak",
         "산업:방산:strong"
-      ]
-    },
-    {
-      "id": "2026-08-05-intraday-096315ff29",
-      "date": "2026-08-05",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-05T06:46:38+09:00",
-      "generated_label": "2026-08-05 06:46 KST",
-      "headline": "미국 기술주 조정과 유가 급락, 방산·우주로 쏠리는 시선",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: AMD(AMD)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:방산:strong",
-        "산업:우주:strong",
-        "산업:반도체:weak"
       ]
     }
   ]
