@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-11T08:32:59+09:00",
+  "updated_at": "2026-08-11T11:00:29+09:00",
   "cards": [
+    {
+      "id": "2026-08-11-intraday-3c27102dcd",
+      "date": "2026-08-11",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-11T11:00:29+09:00",
+      "generated_label": "2026-08-11 11:00 KST",
+      "headline": "코스닥 급반등과 반도체 중심의 시장 재편",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:strong",
+        "산업:화학/정유:strong"
+      ]
+    },
     {
       "id": "2026-08-11-morning-d70d0ffe9e",
       "date": "2026-08-11",
@@ -1420,23 +1438,6 @@
         "산업:반도체:weak",
         "산업:매크로:weak",
         "산업:데이터인프라:strong"
-      ]
-    },
-    {
-      "id": "2026-08-03-intraday-196f075ed5",
-      "date": "2026-08-03",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-03T12:25:03+09:00",
-      "generated_label": "2026-08-03 12:25 KST",
-      "headline": "반도체 급락과 외국인 선물 매도에 코스피 4%대 하락",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak"
       ]
     }
   ]
