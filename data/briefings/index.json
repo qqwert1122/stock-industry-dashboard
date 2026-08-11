@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-12T03:52:20+09:00",
+  "updated_at": "2026-08-12T04:57:09+09:00",
   "cards": [
+    {
+      "id": "2026-08-12-intraday-e7d39cc200",
+      "date": "2026-08-12",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-12T04:57:09+09:00",
+      "generated_label": "2026-08-12 04:57 KST",
+      "headline": "미국 CPI 앞둔 관망세와 반도체·로봇의 차별적 강세",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Circle(CRCL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:로봇:strong",
+        "산업:데이터인프라:weak"
+      ]
+    },
     {
       "id": "2026-08-12-intraday-9a6ad93e1e",
       "date": "2026-08-12",
@@ -1413,24 +1431,6 @@
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: Teradyne(TER)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:로봇:strong",
-        "산업:데이터인프라:strong"
-      ]
-    },
-    {
-      "id": "2026-08-05-intraday-8e65476da0",
-      "date": "2026-08-05",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-05T01:26:22+09:00",
-      "generated_label": "2026-08-05 01:26 KST",
-      "headline": "미국 반도체·로봇주 급등, 기술주 중심의 강한 반등",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥100 선물",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:strong",
