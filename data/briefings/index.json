@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-11T22:51:37+09:00",
+  "updated_at": "2026-08-11T23:52:09+09:00",
   "cards": [
+    {
+      "id": "2026-08-11-intraday-3a2b1f557d",
+      "date": "2026-08-11",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-11T23:52:09+09:00",
+      "generated_label": "2026-08-11 23:52 KST",
+      "headline": "스테이블코인·로봇 강세 속 반도체 장비주 반등",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Circle(CRCL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:로봇:strong",
+        "산업:반도체:strong"
+      ]
+    },
     {
       "id": "2026-08-11-intraday-bee6cb22fc",
       "date": "2026-08-11",
@@ -1418,24 +1436,6 @@
         "산업:우주:strong",
         "산업:방산:strong",
         "산업:반도체:strong"
-      ]
-    },
-    {
-      "id": "2026-08-04-intraday-910c4b76ae",
-      "date": "2026-08-04",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-04T14:52:19+09:00",
-      "generated_label": "2026-08-04 14:52 KST",
-      "headline": "반도체 약세 속 방산·데이터인프라 중심의 수급 이동",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 쎄트렉아이(099320.KQ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:방산:strong",
-        "산업:데이터인프라:strong"
       ]
     }
   ]
