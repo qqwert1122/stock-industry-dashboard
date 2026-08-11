@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-08-11T12:52:38+09:00",
+  "updated_at": "2026-08-11T14:13:32+09:00",
   "cards": [
+    {
+      "id": "2026-08-11-intraday-dde7529e58",
+      "date": "2026-08-11",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-11T14:13:32+09:00",
+      "generated_label": "2026-08-11 14:13 KST",
+      "headline": "KOSPI200 급락과 기관의 수급 이탈로 시장 변동성 확대",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: KOSPI200",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-11-intraday-a877d82a96",
       "date": "2026-08-11",
@@ -1419,24 +1436,6 @@
         "산업:화학/정유:weak",
         "산업:매크로:weak",
         "산업:반도체:weak"
-      ]
-    },
-    {
-      "id": "2026-08-03-intraday-0f19682408",
-      "date": "2026-08-03",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-03T19:31:56+09:00",
-      "generated_label": "2026-08-03 19:31 KST",
-      "headline": "국제 유가 급락과 반도체 투자심리 위축",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:화학/정유:weak",
-        "산업:매크로:weak"
       ]
     }
   ]
