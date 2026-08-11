@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-11T23:52:09+09:00",
+  "updated_at": "2026-08-12T00:54:12+09:00",
   "cards": [
+    {
+      "id": "2026-08-12-intraday-3b7818e17e",
+      "date": "2026-08-12",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-12T00:54:12+09:00",
+      "generated_label": "2026-08-12 00:54 KST",
+      "headline": "미국 CPI 대기 속 로봇·스테이블코인 강세",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Circle(CRCL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:로봇:strong",
+        "산업:스테이블코인:strong",
+        "산업:데이터인프라:weak"
+      ]
+    },
     {
       "id": "2026-08-11-intraday-3a2b1f557d",
       "date": "2026-08-11",
@@ -1418,24 +1436,6 @@
         "산업:우주:strong",
         "산업:로봇:strong",
         "산업:배터리:strong"
-      ]
-    },
-    {
-      "id": "2026-08-04-intraday-9edb485c89",
-      "date": "2026-08-04",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-04T17:44:05+09:00",
-      "generated_label": "2026-08-04 17:44 KST",
-      "headline": "나스닥 급락과 반도체·우주·방산의 엇갈린 흐름",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 나스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:우주:strong",
-        "산업:방산:strong",
-        "산업:반도체:strong"
       ]
     }
   ]
