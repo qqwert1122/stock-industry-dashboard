@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-11T15:07:33+09:00",
+  "updated_at": "2026-08-11T16:39:12+09:00",
   "cards": [
+    {
+      "id": "2026-08-11-intraday-224a739f88",
+      "date": "2026-08-11",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-11T16:39:12+09:00",
+      "generated_label": "2026-08-11 16:39 KST",
+      "headline": "유가 상승과 환율 변동 속 바이오·데이터인프라 강세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: WTI 선물(CL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:바이오:strong",
+        "산업:데이터인프라:strong",
+        "산업:화학/정유:weak"
+      ]
+    },
     {
       "id": "2026-08-11-intraday-83dd8f936b",
       "date": "2026-08-11",
@@ -1417,24 +1435,6 @@
         "산업:데이터인프라:strong",
         "산업:반도체:strong",
         "산업:로봇:strong"
-      ]
-    },
-    {
-      "id": "2026-08-03-intraday-3135605f34",
-      "date": "2026-08-03",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-03T22:37:16+09:00",
-      "generated_label": "2026-08-03 22:37 KST",
-      "headline": "반도체 약세와 유가 급락, 데이터인프라로 쏠린 시선",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: S&P 500",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:strong",
-        "산업:화학/정유:weak"
       ]
     }
   ]
