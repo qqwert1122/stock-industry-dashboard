@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-08-11T14:13:32+09:00",
+  "updated_at": "2026-08-11T15:07:33+09:00",
   "cards": [
+    {
+      "id": "2026-08-11-intraday-83dd8f936b",
+      "date": "2026-08-11",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-11T15:07:33+09:00",
+      "generated_label": "2026-08-11 15:07 KST",
+      "headline": "반도체 주도 속 코스닥 반등, 미국 CPI 앞둔 관망세",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-08-11-intraday-dde7529e58",
       "date": "2026-08-11",
@@ -1418,24 +1435,6 @@
         "산업:반도체:weak",
         "산업:데이터인프라:strong",
         "산업:화학/정유:weak"
-      ]
-    },
-    {
-      "id": "2026-08-03-intraday-bcd9caca8a",
-      "date": "2026-08-03",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-03T19:36:53+09:00",
-      "generated_label": "2026-08-03 19:36 KST",
-      "headline": "국제 유가 급락과 외국인 선물 매도세에 주목",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:화학/정유:weak",
-        "산업:매크로:weak",
-        "산업:반도체:weak"
       ]
     }
   ]
