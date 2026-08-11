@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-12T05:38:53+09:00",
+  "updated_at": "2026-08-12T06:38:34+09:00",
   "cards": [
+    {
+      "id": "2026-08-12-intraday-a09d14a431",
+      "date": "2026-08-12",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-12T06:38:34+09:00",
+      "generated_label": "2026-08-12 06:38 KST",
+      "headline": "미국 CPI 대기 속 금·유가 상승과 바이오 강세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 금 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:바이오:strong",
+        "산업:반도체:weak",
+        "산업:전기차:weak"
+      ]
+    },
     {
       "id": "2026-08-12-intraday-b9dc76d710",
       "date": "2026-08-12",
@@ -1418,24 +1436,6 @@
         "산업:방산:strong",
         "산업:우주:strong",
         "산업:반도체:weak"
-      ]
-    },
-    {
-      "id": "2026-08-05-intraday-1a38508f6b",
-      "date": "2026-08-05",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-05T05:08:00+09:00",
-      "generated_label": "2026-08-05 05:08 KST",
-      "headline": "미국 증시 반등과 유가 급락, 반도체 중심의 투자심리 회복",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:로봇:strong",
-        "산업:데이터인프라:weak"
       ]
     }
   ]
