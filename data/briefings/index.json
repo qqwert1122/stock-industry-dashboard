@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-12T23:17:01+09:00",
+  "updated_at": "2026-08-13T00:27:54+09:00",
   "cards": [
+    {
+      "id": "2026-08-13-intraday-c809bf6949",
+      "date": "2026-08-13",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-13T00:27:54+09:00",
+      "generated_label": "2026-08-13 00:27 KST",
+      "headline": "반도체 주도권 강화와 미국 증시의 안정적 흐름",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Teradyne(TER)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:스테이블코인:strong",
+        "산업:데이터인프라:weak"
+      ]
+    },
     {
       "id": "2026-08-12-intraday-60e622f0af",
       "date": "2026-08-12",
@@ -1415,24 +1433,6 @@
         "산업:건설/부동산:strong",
         "산업:조선:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-06-intraday-4867546dbd",
-      "date": "2026-08-06",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-06T05:35:47+09:00",
-      "generated_label": "2026-08-06 05:35 KST",
-      "headline": "미국 증시 선물 하락과 위험자산 변동성 축소",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥100 선물",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:weak",
-        "산업:반도체:weak",
-        "산업:화학/정유:strong"
       ]
     }
   ]
