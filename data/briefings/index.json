@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-13T05:36:09+09:00",
+  "updated_at": "2026-08-13T06:37:43+09:00",
   "cards": [
+    {
+      "id": "2026-08-13-intraday-78ffa694d3",
+      "date": "2026-08-13",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-13T06:37:43+09:00",
+      "generated_label": "2026-08-13 06:37 KST",
+      "headline": "방산·배터리 주도 속 한국 옵션만기 경계감",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 금 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:방산:strong",
+        "산업:배터리:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-13-intraday-01525c7081",
       "date": "2026-08-13",
@@ -1415,24 +1433,6 @@
         "산업:반도체:weak",
         "산업:화학/정유:strong",
         "산업:방산:strong"
-      ]
-    },
-    {
-      "id": "2026-08-06-intraday-b0c698bcd7",
-      "date": "2026-08-06",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-06T18:36:10+09:00",
-      "generated_label": "2026-08-06 18:36 KST",
-      "headline": "배터리·방산 강세 속 건설주 약세, 수급 변동성 주의",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: D.R. Horton(DHI)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:배터리:strong",
-        "산업:방산:strong",
-        "산업:건설/부동산:weak"
       ]
     }
   ]
