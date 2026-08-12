@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-12T16:44:42+09:00",
+  "updated_at": "2026-08-12T17:11:11+09:00",
   "cards": [
+    {
+      "id": "2026-08-12-intraday-aab78b20c6",
+      "date": "2026-08-12",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-12T17:11:11+09:00",
+      "generated_label": "2026-08-12 17:11 KST",
+      "headline": "반도체 장비주 중심의 기술주 반등과 미국 CPI 대기",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Applied Materials(AMAT)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:배터리:strong",
+        "산업:우주:strong"
+      ]
+    },
     {
       "id": "2026-08-12-intraday-2799fdac26",
       "date": "2026-08-12",
@@ -1415,24 +1433,6 @@
         "산업:반도체:weak",
         "산업:바이오:strong",
         "산업:건설/부동산:strong"
-      ]
-    },
-    {
-      "id": "2026-08-05-intraday-c0a06db8a2",
-      "date": "2026-08-05",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-05T18:31:50+09:00",
-      "generated_label": "2026-08-05 18:31 KST",
-      "headline": "AMD 급락과 AI 인프라의 엇갈린 흐름",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: AMD(AMD)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:strong",
-        "산업:우주:strong"
       ]
     }
   ]
