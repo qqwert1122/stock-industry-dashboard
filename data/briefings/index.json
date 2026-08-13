@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-14T05:34:19+09:00",
+  "updated_at": "2026-08-14T06:37:24+09:00",
   "cards": [
+    {
+      "id": "2026-08-14-intraday-c038ed4f4c",
+      "date": "2026-08-14",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-14T06:37:24+09:00",
+      "generated_label": "2026-08-14 06:37 KST",
+      "headline": "반도체 장비주 약세와 미국 선물 강세의 교차",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Applied Materials(AMAT)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:strong",
+        "산업:화학/정유:weak"
+      ]
+    },
     {
       "id": "2026-08-14-intraday-a66962e64a",
       "date": "2026-08-14",
@@ -1402,24 +1420,6 @@
       "generated_at": "2026-08-08T03:43:23+09:00",
       "generated_label": "2026-08-08 03:43 KST",
       "headline": "미국 증시 변동성 완화와 금 선물 강세",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 금 선물",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:로봇:strong",
-        "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-08-08-intraday-a944bc7233",
-      "date": "2026-08-08",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-08T02:42:15+09:00",
-      "generated_label": "2026-08-08 02:42 KST",
-      "headline": "미국 증시 선물 강세와 스테이블코인 유동성 확대",
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: 금 선물",
