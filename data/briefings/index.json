@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-14T06:37:24+09:00",
+  "updated_at": "2026-08-14T08:38:59+09:00",
   "cards": [
+    {
+      "id": "2026-08-14-morning-2d60866eef",
+      "date": "2026-08-14",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-08-14T08:38:59+09:00",
+      "generated_label": "2026-08-14 08:38 KST",
+      "headline": "스테이블코인과 전기차 중심의 시장 강세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:전기차:strong",
+        "산업:전력:weak"
+      ]
+    },
     {
       "id": "2026-08-14-intraday-c038ed4f4c",
       "date": "2026-08-14",
@@ -1402,24 +1420,6 @@
       "generated_at": "2026-08-08T04:46:19+09:00",
       "generated_label": "2026-08-08 04:46 KST",
       "headline": "미국 증시 선물 상승과 스테이블코인 강세",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 금 선물",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:로봇:strong",
-        "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-08-08-intraday-8567b68952",
-      "date": "2026-08-08",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-08T03:43:23+09:00",
-      "generated_label": "2026-08-08 03:43 KST",
-      "headline": "미국 증시 변동성 완화와 금 선물 강세",
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: 금 선물",
