@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-13T21:53:25+09:00",
+  "updated_at": "2026-08-13T23:18:50+09:00",
   "cards": [
+    {
+      "id": "2026-08-13-intraday-6bba163f53",
+      "date": "2026-08-13",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-13T23:18:50+09:00",
+      "generated_label": "2026-08-13 23:18 KST",
+      "headline": "미국 반도체 중심의 기술주 반등과 한국장 옵션만기 경계감",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥100 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:로봇:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-08-13-intraday-0097dd90bb",
       "date": "2026-08-13",
@@ -1412,24 +1430,6 @@
       "narrative_topics": [
         "산업:배터리:strong",
         "산업:반도체:strong",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-07-intraday-2c42352f81",
-      "date": "2026-08-07",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-07T19:27:58+09:00",
-      "generated_label": "2026-08-07 19:27 KST",
-      "headline": "배터리·방산 강세 속 한국 증시 외국인 순매도 전환",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Nucor(NUE)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:배터리:strong",
-        "산업:방산:strong",
         "산업:매크로:weak"
       ]
     }
