@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-13T19:55:55+09:00",
+  "updated_at": "2026-08-13T20:42:11+09:00",
   "cards": [
+    {
+      "id": "2026-08-13-intraday-5c30b23746",
+      "date": "2026-08-13",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-13T20:42:11+09:00",
+      "generated_label": "2026-08-13 20:42 KST",
+      "headline": "WTI 유가 하락과 한국 옵션만기 앞둔 시장 관망",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: WTI 선물(CL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:바이오:strong",
+        "산업:방산:strong",
+        "산업:전력:weak"
+      ]
+    },
     {
       "id": "2026-08-13-intraday-f2c0ee6276",
       "date": "2026-08-13",
@@ -1413,24 +1431,6 @@
         "산업:배터리:strong",
         "산업:전기차:strong",
         "산업:건설/부동산:weak"
-      ]
-    },
-    {
-      "id": "2026-08-07-intraday-572d2fa565",
-      "date": "2026-08-07",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-07T17:09:51+09:00",
-      "generated_label": "2026-08-07 17:09 KST",
-      "headline": "배터리·방산 강세 속 코스피·코스닥 동반 하락",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Rocket Lab(RKLB)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:배터리:strong",
-        "산업:방산:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
