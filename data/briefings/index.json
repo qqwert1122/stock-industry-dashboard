@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-08-14T01:25:27+09:00",
+  "updated_at": "2026-08-14T02:27:33+09:00",
   "cards": [
+    {
+      "id": "2026-08-14-intraday-6d57ff182c",
+      "date": "2026-08-14",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-14T02:27:33+09:00",
+      "generated_label": "2026-08-14 02:27 KST",
+      "headline": "반도체 주도 미국장 강세, 한국장 긍정적 영향 기대",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Micron(MU)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-08-14-intraday-6fbdbc800c",
       "date": "2026-08-14",
@@ -1411,24 +1428,6 @@
         "산업:스테이블코인:strong",
         "산업:로봇:strong",
         "산업:반도체:weak"
-      ]
-    },
-    {
-      "id": "2026-08-07-intraday-a6c9211a86",
-      "date": "2026-08-07",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-07T22:47:42+09:00",
-      "generated_label": "2026-08-07 22:47 KST",
-      "headline": "나스닥 반등 속 한국 증시 수급 이탈과 차익실현",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 나스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:배터리:strong",
-        "산업:스테이블코인:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
