@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-13T17:13:56+09:00",
+  "updated_at": "2026-08-13T18:38:53+09:00",
   "cards": [
+    {
+      "id": "2026-08-13-intraday-d39fc02a33",
+      "date": "2026-08-13",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-13T18:38:53+09:00",
+      "generated_label": "2026-08-13 18:38 KST",
+      "headline": "데이터인프라 강세와 유가 하락, 한국 옵션만기 변동성 주의",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: WTI 선물(CL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:데이터인프라:strong",
+        "산업:화학/정유:weak",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-08-13-intraday-90b841ef3f",
       "date": "2026-08-13",
@@ -1412,24 +1430,6 @@
       "narrative_topics": [
         "산업:배터리:strong",
         "산업:화학/정유:strong",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-07-intraday-4d80c28ecf",
-      "date": "2026-08-07",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-07T15:12:49+09:00",
-      "generated_label": "2026-08-07 15:12 KST",
-      "headline": "반도체·데이터인프라 약세 속 수급 이탈 가속화",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:weak",
         "산업:매크로:weak"
       ]
     }
