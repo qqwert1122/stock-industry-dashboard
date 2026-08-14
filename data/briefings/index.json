@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-15T06:47:32+09:00",
+  "updated_at": "2026-08-15T08:19:23+09:00",
   "cards": [
+    {
+      "id": "2026-08-15-morning-10589571ba",
+      "date": "2026-08-15",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-08-15T08:19:23+09:00",
+      "generated_label": "2026-08-15 08:19 KST",
+      "headline": "배터리·자동차 주도 장세, 기관 수급 변화 주목",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:배터리:strong",
+        "산업:자동차:strong",
+        "산업:매크로:neutral"
+      ]
+    },
     {
       "id": "2026-08-15-intraday-becaf80485",
       "date": "2026-08-15",
@@ -1403,24 +1421,6 @@
         "산업:반도체:weak",
         "산업:화학/정유:strong",
         "산업:데이터인프라:strong"
-      ]
-    },
-    {
-      "id": "2026-08-11-intraday-b6f09423ef",
-      "date": "2026-08-11",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-11T03:45:29+09:00",
-      "generated_label": "2026-08-11 03:45 KST",
-      "headline": "유가 급등과 반도체 약세, 시장 변동성 확대",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: WTI 선물(CL)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:화학/정유:strong",
-        "산업:반도체:weak",
-        "산업:로봇:strong"
       ]
     }
   ]
