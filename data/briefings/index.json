@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-14T19:51:51+09:00",
+  "updated_at": "2026-08-14T20:38:53+09:00",
   "cards": [
+    {
+      "id": "2026-08-14-intraday-e6920e801a",
+      "date": "2026-08-14",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-14T20:38:53+09:00",
+      "generated_label": "2026-08-14 20:38 KST",
+      "headline": "자동차·배터리 주도 속 반도체 장비주 차익실현",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Applied Materials(AMAT)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:자동차:strong",
+        "산업:배터리:strong",
+        "산업:반도체:weak"
+      ]
+    },
     {
       "id": "2026-08-14-intraday-c50002ba52",
       "date": "2026-08-14",
@@ -1402,24 +1420,6 @@
       "generated_at": "2026-08-10T14:46:54+09:00",
       "generated_label": "2026-08-10 14:46 KST",
       "headline": "조선·방산 주도 장세 속 KOSPI200 변동성 확대",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: KOSPI200",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:조선:strong",
-        "산업:방산:strong",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-10-intraday-d1bd3d4762",
-      "date": "2026-08-10",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-10T13:09:53+09:00",
-      "generated_label": "2026-08-10 13:09 KST",
-      "headline": "KOSPI200 급락 속 조선·방산 중심의 차별화 장세",
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "유의미한 변화: KOSPI200",
