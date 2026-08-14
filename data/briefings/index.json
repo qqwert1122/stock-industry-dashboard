@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-14T23:11:38+09:00",
+  "updated_at": "2026-08-15T00:13:50+09:00",
   "cards": [
+    {
+      "id": "2026-08-15-intraday-aa04f8b115",
+      "date": "2026-08-15",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-15T00:13:50+09:00",
+      "generated_label": "2026-08-15 00:13 KST",
+      "headline": "금 선물 급등과 위험자산 경계감, 한국장 변동성 주의",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 금 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:weak",
+        "산업:화학/정유:strong",
+        "산업:스테이블코인:weak"
+      ]
+    },
     {
       "id": "2026-08-14-intraday-84f3865809",
       "date": "2026-08-14",
@@ -1409,24 +1427,6 @@
         "산업:우주:strong",
         "산업:배터리:strong",
         "산업:반도체:strong"
-      ]
-    },
-    {
-      "id": "2026-08-10-intraday-b3d1c72d67",
-      "date": "2026-08-10",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-10T17:25:19+09:00",
-      "generated_label": "2026-08-10 17:25 KST",
-      "headline": "우주·배터리 산업 주도 속 알루미늄 선물 급등",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 알루미늄 선물(ALI)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:우주:strong",
-        "산업:배터리:strong",
-        "산업:철강/소재:strong"
       ]
     }
   ]
