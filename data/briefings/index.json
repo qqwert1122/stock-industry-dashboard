@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-15T01:13:01+09:00",
+  "updated_at": "2026-08-15T02:25:18+09:00",
   "cards": [
+    {
+      "id": "2026-08-15-intraday-708e1bf42c",
+      "date": "2026-08-15",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-15T02:25:18+09:00",
+      "generated_label": "2026-08-15 02:25 KST",
+      "headline": "국제 유가 상승과 스테이블코인 약세로 본 시장 흐름",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 금 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:화학/정유:strong",
+        "산업:스테이블코인:weak",
+        "산업:매크로:neutral"
+      ]
+    },
     {
       "id": "2026-08-15-intraday-89ae995788",
       "date": "2026-08-15",
@@ -1408,24 +1426,6 @@
         "산업:우주:strong",
         "산업:방산:strong",
         "산업:반도체:strong"
-      ]
-    },
-    {
-      "id": "2026-08-10-intraday-dc0d54dfa3",
-      "date": "2026-08-10",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-10T20:03:33+09:00",
-      "generated_label": "2026-08-10 20:03 KST",
-      "headline": "우주·조선·방산 주도, 변동성 지표 VIX 상승",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:우주:strong",
-        "산업:조선:strong",
-        "산업:방산:strong"
       ]
     }
   ]
