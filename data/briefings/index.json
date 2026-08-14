@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-15T04:26:28+09:00",
+  "updated_at": "2026-08-15T05:02:29+09:00",
   "cards": [
+    {
+      "id": "2026-08-15-intraday-2f2ec07697",
+      "date": "2026-08-15",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-15T05:02:29+09:00",
+      "generated_label": "2026-08-15 05:02 KST",
+      "headline": "미국 증시 변동성 완화와 유가 상승세 지속",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:strong",
+        "산업:화학/정유:strong",
+        "산업:스테이블코인:weak"
+      ]
+    },
     {
       "id": "2026-08-15-intraday-919947aae9",
       "date": "2026-08-15",
@@ -1406,24 +1424,6 @@
         "산업:반도체:weak",
         "산업:데이터인프라:strong",
         "산업:화학/정유:strong"
-      ]
-    },
-    {
-      "id": "2026-08-10-intraday-fde552545d",
-      "date": "2026-08-10",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-10T23:54:36+09:00",
-      "generated_label": "2026-08-10 23:54 KST",
-      "headline": "미국 반도체 약세와 에너지 가격 상승의 교차",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Intel(INTC)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:strong",
-        "산업:로봇:strong"
       ]
     }
   ]
