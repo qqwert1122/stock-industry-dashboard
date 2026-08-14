@@ -1,80 +1,8 @@
 {
   "version": 1,
-  "updated_at": "2026-08-15T03:14:00+09:00",
+  "updated_at": "2026-08-15T04:26:44+09:00",
   "count": 60,
   "runs": [
-    {
-      "run_id": "2026-08-13T13:26:54+09:00",
-      "run_type": "briefing-intraday",
-      "started_at": "2026-08-13T13:26:54+09:00",
-      "finished_at": "2026-08-13T13:26:57+09:00",
-      "duration_ms": 3393,
-      "summary": {
-        "success": 2,
-        "no_new_data": 0,
-        "failed": 0
-      },
-      "records": [
-        {
-          "source": "미래 타임라인",
-          "endpoint": "data/future/technologies.yaml",
-          "status": "success",
-          "message": "15개 기술 타임라인 생성",
-          "metric_count": 15,
-          "new_data_count": 0,
-          "started_at": "2026-08-13T13:26:56+09:00",
-          "duration_ms": 622,
-          "http_status": null
-        },
-        {
-          "source": "AI 요약",
-          "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent",
-          "status": "success",
-          "message": "카드 생성: 유의미한 변화: SK하이닉스(000660.KS) (Gemini 호출)",
-          "metric_count": 31,
-          "new_data_count": 1,
-          "started_at": "2026-08-13T13:26:54+09:00",
-          "duration_ms": 3393,
-          "http_status": null
-        }
-      ]
-    },
-    {
-      "run_id": "2026-08-13T15:00:06+09:00",
-      "run_type": "prices",
-      "started_at": "2026-08-13T15:00:06+09:00",
-      "finished_at": "2026-08-13T15:00:24+09:00",
-      "duration_ms": 17303,
-      "summary": {
-        "success": 2,
-        "no_new_data": 0,
-        "failed": 0
-      },
-      "records": [
-        {
-          "source": "대표주가/시장지수",
-          "endpoint": "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}",
-          "status": "success",
-          "message": "한국장 33/33개 지표 자동 수집",
-          "metric_count": 33,
-          "new_data_count": 30,
-          "started_at": "2026-08-13T15:00:06+09:00",
-          "duration_ms": 16547,
-          "http_status": null
-        },
-        {
-          "source": "미래 타임라인",
-          "endpoint": "data/future/technologies.yaml",
-          "status": "success",
-          "message": "15개 기술 타임라인 생성",
-          "metric_count": 15,
-          "new_data_count": 0,
-          "started_at": "2026-08-13T15:00:23+09:00",
-          "duration_ms": 618,
-          "http_status": null
-        }
-      ]
-    },
     {
       "run_id": "2026-08-13T15:00:24+09:00",
       "run_type": "briefing-intraday",
@@ -2401,6 +2329,78 @@
           "new_data_count": 1,
           "started_at": "2026-08-15T03:13:55+09:00",
           "duration_ms": 4870,
+          "http_status": null
+        }
+      ]
+    },
+    {
+      "run_id": "2026-08-15T04:26:20+09:00",
+      "run_type": "prices",
+      "started_at": "2026-08-15T04:26:20+09:00",
+      "finished_at": "2026-08-15T04:26:27+09:00",
+      "duration_ms": 7736,
+      "summary": {
+        "success": 2,
+        "no_new_data": 0,
+        "failed": 0
+      },
+      "records": [
+        {
+          "source": "대표주가/시장지수",
+          "endpoint": "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}",
+          "status": "success",
+          "message": "주말 연속시장 14/14개 지표 자동 수집",
+          "metric_count": 14,
+          "new_data_count": 14,
+          "started_at": "2026-08-15T04:26:20+09:00",
+          "duration_ms": 7060,
+          "http_status": null
+        },
+        {
+          "source": "미래 타임라인",
+          "endpoint": "data/future/technologies.yaml",
+          "status": "success",
+          "message": "15개 기술 타임라인 생성",
+          "metric_count": 15,
+          "new_data_count": 0,
+          "started_at": "2026-08-15T04:26:27+09:00",
+          "duration_ms": 580,
+          "http_status": null
+        }
+      ]
+    },
+    {
+      "run_id": "2026-08-15T04:26:28+09:00",
+      "run_type": "briefing-intraday",
+      "started_at": "2026-08-15T04:26:28+09:00",
+      "finished_at": "2026-08-15T04:26:44+09:00",
+      "duration_ms": 15554,
+      "summary": {
+        "success": 2,
+        "no_new_data": 0,
+        "failed": 0
+      },
+      "records": [
+        {
+          "source": "미래 타임라인",
+          "endpoint": "data/future/technologies.yaml",
+          "status": "success",
+          "message": "15개 기술 타임라인 생성",
+          "metric_count": 15,
+          "new_data_count": 0,
+          "started_at": "2026-08-15T04:26:43+09:00",
+          "duration_ms": 565,
+          "http_status": null
+        },
+        {
+          "source": "AI 요약",
+          "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent",
+          "status": "success",
+          "message": "카드 생성: 유의미한 변화: Brent 선물(BZ) (Gemini 호출)",
+          "metric_count": 14,
+          "new_data_count": 1,
+          "started_at": "2026-08-15T04:26:28+09:00",
+          "duration_ms": 15554,
           "http_status": null
         }
       ]
