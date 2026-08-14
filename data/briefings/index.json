@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-08-15T02:25:18+09:00",
+  "updated_at": "2026-08-15T03:13:55+09:00",
   "cards": [
+    {
+      "id": "2026-08-15-intraday-ffd4c40480",
+      "date": "2026-08-15",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-15T03:13:55+09:00",
+      "generated_label": "2026-08-15 03:13 KST",
+      "headline": "미국 증시 변동성 완화와 에너지 가격 상승",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:neutral",
+        "산업:화학/정유:strong"
+      ]
+    },
     {
       "id": "2026-08-15-intraday-708e1bf42c",
       "date": "2026-08-15",
@@ -1408,24 +1425,6 @@
         "산업:우주:strong",
         "산업:방산:strong",
         "산업:반도체:weak"
-      ]
-    },
-    {
-      "id": "2026-08-10-intraday-9dea7fd25b",
-      "date": "2026-08-10",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-10T21:09:18+09:00",
-      "generated_label": "2026-08-10 21:09 KST",
-      "headline": "우주·방산 강세 속 반도체 장비주 반등",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 알루미늄 선물(ALI)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:우주:strong",
-        "산업:방산:strong",
-        "산업:반도체:strong"
       ]
     }
   ]
