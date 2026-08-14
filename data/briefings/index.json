@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-08-14T21:47:03+09:00",
+  "updated_at": "2026-08-14T23:11:38+09:00",
   "cards": [
+    {
+      "id": "2026-08-14-intraday-84f3865809",
+      "date": "2026-08-14",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-14T23:11:38+09:00",
+      "generated_label": "2026-08-14 23:11 KST",
+      "headline": "AMD 주도 반도체 강세와 스테이블코인 약세의 교차",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: AMD(AMD)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:스테이블코인:weak"
+      ]
+    },
     {
       "id": "2026-08-14-intraday-45ad56d929",
       "date": "2026-08-14",
@@ -1410,24 +1427,6 @@
         "산업:우주:strong",
         "산업:배터리:strong",
         "산업:철강/소재:strong"
-      ]
-    },
-    {
-      "id": "2026-08-10-intraday-f52f13e3ed",
-      "date": "2026-08-10",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-10T16:01:36+09:00",
-      "generated_label": "2026-08-10 16:01 KST",
-      "headline": "코스닥 중심의 강한 반등과 우주·로봇 산업의 주도",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 코스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:우주:strong",
-        "산업:로봇:strong",
-        "산업:배터리:strong"
       ]
     }
   ]
