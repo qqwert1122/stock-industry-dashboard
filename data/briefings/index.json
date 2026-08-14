@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-08-15T05:54:06+09:00",
+  "updated_at": "2026-08-15T06:18:14+09:00",
   "cards": [
+    {
+      "id": "2026-08-15-intraday-bf48b5b450",
+      "date": "2026-08-15",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-15T06:18:14+09:00",
+      "generated_label": "2026-08-15 06:18 KST",
+      "headline": "국제 유가 상승과 안전자산 선호 속 시장 관망",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:화학/정유:strong",
+        "산업:매크로:neutral"
+      ]
+    },
     {
       "id": "2026-08-15-intraday-82266b4821",
       "date": "2026-08-15",
@@ -1398,24 +1415,6 @@
       "generated_at": "2026-08-11T02:44:59+09:00",
       "generated_label": "2026-08-11 02:44 KST",
       "headline": "유가 급등과 반도체 약세 속 로봇·인프라 주목",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: WTI 선물(CL)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:로봇:strong",
-        "산업:데이터인프라:strong"
-      ]
-    },
-    {
-      "id": "2026-08-11-intraday-1fc84a0982",
-      "date": "2026-08-11",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-11T01:45:35+09:00",
-      "generated_label": "2026-08-11 01:45 KST",
-      "headline": "유가 급등과 반도체 약세 속 로봇·데이터인프라 주목",
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: WTI 선물(CL)",
