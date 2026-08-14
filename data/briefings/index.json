@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-14T11:13:22+09:00",
+  "updated_at": "2026-08-14T13:19:24+09:00",
   "cards": [
+    {
+      "id": "2026-08-14-intraday-46be73cff7",
+      "date": "2026-08-14",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-14T13:19:24+09:00",
+      "generated_label": "2026-08-14 13:19 KST",
+      "headline": "현대차 급등과 반도체 반등이 이끄는 코스피 상승",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 현대차(005380.KS)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:자동차:strong",
+        "산업:반도체:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-08-14-intraday-0f952d6275",
       "date": "2026-08-14",
@@ -1410,24 +1428,6 @@
         "산업:배터리:strong",
         "산업:스테이블코인:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-08-intraday-a6cda3b010",
-      "date": "2026-08-08",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-08T05:32:33+09:00",
-      "generated_label": "2026-08-08 05:32 KST",
-      "headline": "미국장, 금 선물 급등과 나스닥 선물 강세로 위험선호 회복",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 금 선물",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:로봇:strong",
-        "산업:매크로:strong"
       ]
     }
   ]
