@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-17T08:17:37+09:00",
+  "updated_at": "2026-08-17T10:31:42+09:00",
   "cards": [
+    {
+      "id": "2026-08-17-intraday-34f4f852a0",
+      "date": "2026-08-17",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-17T10:31:42+09:00",
+      "generated_label": "2026-08-17 10:31 KST",
+      "headline": "원자재 가격 상승과 반도체 중심의 시장 흐름",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 알루미늄 선물(ALI)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:철강/소재:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-17-morning-eb5c02b1b6",
       "date": "2026-08-17",
@@ -1403,24 +1421,6 @@
         "산업:방산:strong",
         "산업:조선:strong",
         "산업:반도체:strong"
-      ]
-    },
-    {
-      "id": "2026-08-11-intraday-a1a09021ac",
-      "date": "2026-08-11",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-11T06:34:36+09:00",
-      "generated_label": "2026-08-11 06:34 KST",
-      "headline": "조선·방산·배터리 강세 속 유가 급등과 금리 변동성 주시",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Rocket Lab(RKLB)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:조선:strong",
-        "산업:방산:strong",
-        "산업:배터리:strong"
       ]
     }
   ]
