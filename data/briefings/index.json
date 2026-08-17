@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-18T04:49:55+09:00",
+  "updated_at": "2026-08-18T05:18:15+09:00",
   "cards": [
+    {
+      "id": "2026-08-18-intraday-46d02ab4fe",
+      "date": "2026-08-18",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-18T05:18:15+09:00",
+      "generated_label": "2026-08-18 05:18 KST",
+      "headline": "VIX 급등과 유가 상승에 따른 시장 경계감 확대",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:weak",
+        "산업:반도체:weak",
+        "산업:화학/정유:strong"
+      ]
+    },
     {
       "id": "2026-08-18-intraday-b1b8cf7708",
       "date": "2026-08-18",
@@ -1409,24 +1427,6 @@
         "산업:반도체:strong",
         "산업:배터리:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-12-intraday-aab78b20c6",
-      "date": "2026-08-12",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-12T17:11:11+09:00",
-      "generated_label": "2026-08-12 17:11 KST",
-      "headline": "반도체 장비주 중심의 기술주 반등과 미국 CPI 대기",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Applied Materials(AMAT)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:배터리:strong",
-        "산업:우주:strong"
       ]
     }
   ]
