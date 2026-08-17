@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-17T13:49:05+09:00",
+  "updated_at": "2026-08-17T14:40:22+09:00",
   "cards": [
+    {
+      "id": "2026-08-17-intraday-0fc6e84c2d",
+      "date": "2026-08-17",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-17T14:40:22+09:00",
+      "generated_label": "2026-08-17 14:40 KST",
+      "headline": "반도체 주도 장세 속 구리 가격 상승과 수급 변화",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 구리 선물(HG)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:철강/소재:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-17-intraday-83615c4165",
       "date": "2026-08-17",
@@ -1405,23 +1423,6 @@
       "narrative_topics": [
         "산업:반도체:strong",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-08-11-intraday-dde7529e58",
-      "date": "2026-08-11",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-11T14:13:32+09:00",
-      "generated_label": "2026-08-11 14:13 KST",
-      "headline": "KOSPI200 급락과 기관의 수급 이탈로 시장 변동성 확대",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: KOSPI200",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
