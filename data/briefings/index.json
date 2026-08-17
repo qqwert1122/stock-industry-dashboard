@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-18T01:19:22+09:00",
+  "updated_at": "2026-08-18T01:54:12+09:00",
   "cards": [
+    {
+      "id": "2026-08-18-intraday-c117a57c96",
+      "date": "2026-08-18",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-18T01:54:12+09:00",
+      "generated_label": "2026-08-18 01:54 KST",
+      "headline": "반도체 장비주 중심의 강세와 빅테크의 숨 고르기",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Applied Materials(AMAT)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:로봇:strong",
+        "산업:데이터인프라:weak"
+      ]
+    },
     {
       "id": "2026-08-18-intraday-fe42fd9692",
       "date": "2026-08-18",
@@ -1406,24 +1424,6 @@
         "산업:조선:weak",
         "산업:배터리:weak",
         "산업:건설/부동산:strong"
-      ]
-    },
-    {
-      "id": "2026-08-12-intraday-a09d14a431",
-      "date": "2026-08-12",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-12T06:38:34+09:00",
-      "generated_label": "2026-08-12 06:38 KST",
-      "headline": "미국 CPI 대기 속 금·유가 상승과 바이오 강세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 금 선물",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:바이오:strong",
-        "산업:반도체:weak",
-        "산업:전기차:weak"
       ]
     }
   ]
