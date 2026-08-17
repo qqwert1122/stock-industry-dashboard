@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-17T10:31:42+09:00",
+  "updated_at": "2026-08-17T11:48:12+09:00",
   "cards": [
+    {
+      "id": "2026-08-17-intraday-5d06ff0bf7",
+      "date": "2026-08-17",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-17T11:48:12+09:00",
+      "generated_label": "2026-08-17 11:48 KST",
+      "headline": "KOSPI200 급락과 원자재 가격 상승의 엇박자",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: KOSPI200",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:철강/소재:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-17-intraday-34f4f852a0",
       "date": "2026-08-17",
@@ -1403,24 +1421,6 @@
         "산업:반도체:strong",
         "산업:매크로:strong",
         "산업:화학/정유:strong"
-      ]
-    },
-    {
-      "id": "2026-08-11-morning-d70d0ffe9e",
-      "date": "2026-08-11",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-08-11T08:32:59+09:00",
-      "generated_label": "2026-08-11 08:32 KST",
-      "headline": "방산·조선 주도 속 반도체 판매액 증가와 미국 CPI 대기",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:방산:strong",
-        "산업:조선:strong",
-        "산업:반도체:strong"
       ]
     }
   ]
