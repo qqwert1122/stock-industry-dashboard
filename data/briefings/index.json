@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-18T01:54:12+09:00",
+  "updated_at": "2026-08-18T02:20:19+09:00",
   "cards": [
+    {
+      "id": "2026-08-18-intraday-bde02ed29a",
+      "date": "2026-08-18",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-18T02:20:19+09:00",
+      "generated_label": "2026-08-18 02:20 KST",
+      "headline": "반도체 장비주 강세와 VIX 상승이 공존하는 미국장",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:데이터인프라:weak",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-08-18-intraday-c117a57c96",
       "date": "2026-08-18",
@@ -1406,24 +1424,6 @@
       "narrative_topics": [
         "산업:반도체:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-12-morning-af344ec38b",
-      "date": "2026-08-12",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-08-12T08:38:02+09:00",
-      "generated_label": "2026-08-12 08:38 KST",
-      "headline": "조선·배터리 약세와 건설·부동산의 상대적 강세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:조선:weak",
-        "산업:배터리:weak",
-        "산업:건설/부동산:strong"
       ]
     }
   ]
