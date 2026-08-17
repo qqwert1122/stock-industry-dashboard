@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-17T20:21:27+09:00",
+  "updated_at": "2026-08-17T20:50:42+09:00",
   "cards": [
+    {
+      "id": "2026-08-17-intraday-82520bff5d",
+      "date": "2026-08-17",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-17T20:50:42+09:00",
+      "generated_label": "2026-08-17 20:50 KST",
+      "headline": "자동차·배터리·로봇 주도, 미국장 반등 속 한국장 기대",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Mobileye(MBLY)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:자동차:strong",
+        "산업:배터리:strong",
+        "산업:로봇:strong"
+      ]
+    },
     {
       "id": "2026-08-17-intraday-31c3407d27",
       "date": "2026-08-17",
@@ -1406,24 +1424,6 @@
         "산업:로봇:strong",
         "산업:스테이블코인:strong",
         "산업:데이터인프라:weak"
-      ]
-    },
-    {
-      "id": "2026-08-11-intraday-3a2b1f557d",
-      "date": "2026-08-11",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-11T23:52:09+09:00",
-      "generated_label": "2026-08-11 23:52 KST",
-      "headline": "스테이블코인·로봇 강세 속 반도체 장비주 반등",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Circle(CRCL)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:로봇:strong",
-        "산업:반도체:strong"
       ]
     }
   ]
