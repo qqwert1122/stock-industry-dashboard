@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-17T23:34:15+09:00",
+  "updated_at": "2026-08-18T00:19:12+09:00",
   "cards": [
+    {
+      "id": "2026-08-18-intraday-de35e48809",
+      "date": "2026-08-18",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-18T00:19:12+09:00",
+      "generated_label": "2026-08-18 00:19 KST",
+      "headline": "반도체 장비·메모리 강세 속 미국 증시 반등",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Micron(MU)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:로봇:strong",
+        "산업:데이터인프라:weak"
+      ]
+    },
     {
       "id": "2026-08-17-intraday-53d3c2fa46",
       "date": "2026-08-17",
@@ -1406,24 +1424,6 @@
         "산업:화학/정유:strong",
         "산업:반도체:weak",
         "산업:매크로:neutral"
-      ]
-    },
-    {
-      "id": "2026-08-12-intraday-e7d39cc200",
-      "date": "2026-08-12",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-12T04:57:09+09:00",
-      "generated_label": "2026-08-12 04:57 KST",
-      "headline": "미국 CPI 앞둔 관망세와 반도체·로봇의 차별적 강세",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Circle(CRCL)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:로봇:strong",
-        "산업:데이터인프라:weak"
       ]
     }
   ]
