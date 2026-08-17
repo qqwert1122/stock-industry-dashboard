@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-17T22:23:42+09:00",
+  "updated_at": "2026-08-17T23:01:34+09:00",
   "cards": [
+    {
+      "id": "2026-08-17-intraday-25758a145b",
+      "date": "2026-08-17",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-17T23:01:34+09:00",
+      "generated_label": "2026-08-17 23:01 KST",
+      "headline": "반도체 장비주 중심의 기술주 강세와 VIX 상승",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Applied Materials(AMAT)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:로봇:strong",
+        "산업:데이터인프라:weak"
+      ]
+    },
     {
       "id": "2026-08-17-intraday-371597c038",
       "date": "2026-08-17",
@@ -1405,24 +1423,6 @@
       "narrative_topics": [
         "산업:반도체:strong",
         "산업:로봇:strong",
-        "산업:데이터인프라:weak"
-      ]
-    },
-    {
-      "id": "2026-08-12-intraday-3ee179bbad",
-      "date": "2026-08-12",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-12T02:52:39+09:00",
-      "generated_label": "2026-08-12 02:52 KST",
-      "headline": "미국 CPI 대기 속 스테이블코인 강세와 반도체 반등",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Circle(CRCL)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:반도체:strong",
         "산업:데이터인프라:weak"
       ]
     }

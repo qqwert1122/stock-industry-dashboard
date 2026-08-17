@@ -1,80 +1,8 @@
 {
   "version": 1,
-  "updated_at": "2026-08-17T22:25:59+09:00",
+  "updated_at": "2026-08-17T23:03:32+09:00",
   "count": 60,
   "runs": [
-    {
-      "run_id": "2026-08-14T19:51:51+09:00",
-      "run_type": "briefing-intraday",
-      "started_at": "2026-08-14T19:51:51+09:00",
-      "finished_at": "2026-08-14T19:52:17+09:00",
-      "duration_ms": 25746,
-      "summary": {
-        "success": 2,
-        "no_new_data": 0,
-        "failed": 0
-      },
-      "records": [
-        {
-          "source": "미래 타임라인",
-          "endpoint": "data/future/technologies.yaml",
-          "status": "success",
-          "message": "15개 기술 타임라인 생성",
-          "metric_count": 15,
-          "new_data_count": 0,
-          "started_at": "2026-08-14T19:52:16+09:00",
-          "duration_ms": 605,
-          "http_status": null
-        },
-        {
-          "source": "AI 요약",
-          "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent",
-          "status": "success",
-          "message": "카드 생성: 유의미한 변화: Applied Materials(AMAT) (Gemini 호출)",
-          "metric_count": 41,
-          "new_data_count": 1,
-          "started_at": "2026-08-14T19:51:51+09:00",
-          "duration_ms": 25746,
-          "http_status": null
-        }
-      ]
-    },
-    {
-      "run_id": "2026-08-14T20:38:15+09:00",
-      "run_type": "prices",
-      "started_at": "2026-08-14T20:38:15+09:00",
-      "finished_at": "2026-08-14T20:38:52+09:00",
-      "duration_ms": 37337,
-      "summary": {
-        "success": 2,
-        "no_new_data": 0,
-        "failed": 0
-      },
-      "records": [
-        {
-          "source": "대표주가/시장지수",
-          "endpoint": "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}",
-          "status": "success",
-          "message": "미국 프리·정규·애프터장 45/45개 지표 자동 수집",
-          "metric_count": 45,
-          "new_data_count": 40,
-          "started_at": "2026-08-14T20:38:15+09:00",
-          "duration_ms": 36564,
-          "http_status": null
-        },
-        {
-          "source": "미래 타임라인",
-          "endpoint": "data/future/technologies.yaml",
-          "status": "success",
-          "message": "15개 기술 타임라인 생성",
-          "metric_count": 15,
-          "new_data_count": 0,
-          "started_at": "2026-08-14T20:38:52+09:00",
-          "duration_ms": 615,
-          "http_status": null
-        }
-      ]
-    },
     {
       "run_id": "2026-08-14T20:38:53+09:00",
       "run_type": "briefing-intraday",
@@ -2885,6 +2813,78 @@
           "new_data_count": 1,
           "started_at": "2026-08-17T22:23:42+09:00",
           "duration_ms": 136666,
+          "http_status": null
+        }
+      ]
+    },
+    {
+      "run_id": "2026-08-17T22:59:19+09:00",
+      "run_type": "prices",
+      "started_at": "2026-08-17T22:59:19+09:00",
+      "finished_at": "2026-08-17T23:01:34+09:00",
+      "duration_ms": 135060,
+      "summary": {
+        "success": 1,
+        "no_new_data": 1,
+        "failed": 0
+      },
+      "records": [
+        {
+          "source": "대표주가/시장지수",
+          "endpoint": "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}",
+          "status": "success",
+          "message": "미국 프리·정규·애프터장 45/45개 지표 자동 수집",
+          "metric_count": 45,
+          "new_data_count": 45,
+          "started_at": "2026-08-17T22:59:19+09:00",
+          "duration_ms": 36833,
+          "http_status": null
+        },
+        {
+          "source": "미래 타임라인",
+          "endpoint": "data/future/technologies.yaml",
+          "status": "no_new_data",
+          "message": "15개 기술 타임라인 생성, YAML 경고 63건",
+          "metric_count": 15,
+          "new_data_count": 0,
+          "started_at": "2026-08-17T22:59:56+09:00",
+          "duration_ms": 98072,
+          "http_status": null
+        }
+      ]
+    },
+    {
+      "run_id": "2026-08-17T23:01:34+09:00",
+      "run_type": "briefing-intraday",
+      "started_at": "2026-08-17T23:01:34+09:00",
+      "finished_at": "2026-08-17T23:03:32+09:00",
+      "duration_ms": 117290,
+      "summary": {
+        "success": 1,
+        "no_new_data": 1,
+        "failed": 0
+      },
+      "records": [
+        {
+          "source": "미래 타임라인",
+          "endpoint": "data/future/technologies.yaml",
+          "status": "no_new_data",
+          "message": "15개 기술 타임라인 생성, YAML 경고 64건",
+          "metric_count": 15,
+          "new_data_count": 0,
+          "started_at": "2026-08-17T23:01:38+09:00",
+          "duration_ms": 113543,
+          "http_status": null
+        },
+        {
+          "source": "AI 요약",
+          "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent",
+          "status": "success",
+          "message": "카드 생성: 유의미한 변화: Applied Materials(AMAT) (Gemini 호출)",
+          "metric_count": 45,
+          "new_data_count": 1,
+          "started_at": "2026-08-17T23:01:34+09:00",
+          "duration_ms": 117290,
           "http_status": null
         }
       ]
