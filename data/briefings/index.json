@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-18T04:07:28+09:00",
+  "updated_at": "2026-08-18T04:49:55+09:00",
   "cards": [
+    {
+      "id": "2026-08-18-intraday-b1b8cf7708",
+      "date": "2026-08-18",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-18T04:49:55+09:00",
+      "generated_label": "2026-08-18 04:49 KST",
+      "headline": "반도체 장비주 강세와 VIX 상승이 공존하는 미국장",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:로봇:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-18-intraday-7df0d85a4d",
       "date": "2026-08-18",
@@ -1409,24 +1427,6 @@
         "산업:반도체:strong",
         "산업:배터리:strong",
         "산업:우주:strong"
-      ]
-    },
-    {
-      "id": "2026-08-12-intraday-2799fdac26",
-      "date": "2026-08-12",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-12T16:44:42+09:00",
-      "generated_label": "2026-08-12 16:44 KST",
-      "headline": "방산 강세 속 바이오 약세, 미국 CPI 대기하며 관망세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 금 선물",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:방산:strong",
-        "산업:바이오:weak",
-        "산업:로봇:strong"
       ]
     }
   ]
