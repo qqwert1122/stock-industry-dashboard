@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-18T02:53:26+09:00",
+  "updated_at": "2026-08-18T03:27:23+09:00",
   "cards": [
+    {
+      "id": "2026-08-18-intraday-4d26b71604",
+      "date": "2026-08-18",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-18T03:27:23+09:00",
+      "generated_label": "2026-08-18 03:27 KST",
+      "headline": "미국 반도체 장비주 강세와 VIX 상승의 공존",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:로봇:strong",
+        "산업:데이터인프라:weak"
+      ]
+    },
     {
       "id": "2026-08-18-intraday-d585ca589f",
       "date": "2026-08-18",
@@ -1404,23 +1422,6 @@
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "유의미한 변화: 한화에어로스페이스(012450.KS)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-12-intraday-9bb2f2329b",
-      "date": "2026-08-12",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-12T13:18:59+09:00",
-      "generated_label": "2026-08-12 13:18 KST",
-      "headline": "반도체 주도 코스피 급등, 외국인 수급 변화 주목",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:strong",
