@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-18T06:18:51+09:00",
+  "updated_at": "2026-08-18T06:48:34+09:00",
   "cards": [
+    {
+      "id": "2026-08-18-intraday-87d644c58b",
+      "date": "2026-08-18",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-18T06:48:34+09:00",
+      "generated_label": "2026-08-18 06:48 KST",
+      "headline": "자동차·배터리 주도 속 비트코인 반등과 시장 관망",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 비트코인",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:자동차:strong",
+        "산업:배터리:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-08-18-intraday-db634100d8",
       "date": "2026-08-18",
@@ -1408,24 +1426,6 @@
       "narrative_topics": [
         "산업:반도체:strong",
         "산업:로봇:strong",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-12-intraday-916673831c",
-      "date": "2026-08-12",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-12T20:41:35+09:00",
-      "generated_label": "2026-08-12 20:41 KST",
-      "headline": "반도체 장비주 중심의 기술주 반등과 배터리 강세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Lam Research(LRCX)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:배터리:strong",
         "산업:매크로:weak"
       ]
     }
