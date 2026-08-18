@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-19T04:47:47+09:00",
+  "updated_at": "2026-08-19T05:15:11+09:00",
   "cards": [
+    {
+      "id": "2026-08-19-intraday-45b2b3b156",
+      "date": "2026-08-19",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-19T05:15:11+09:00",
+      "generated_label": "2026-08-19 05:15 KST",
+      "headline": "미국 증시 변동성 확대와 기술주 투자심리 위축",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:데이터인프라:weak",
+        "산업:로봇:strong"
+      ]
+    },
     {
       "id": "2026-08-19-intraday-ef3f447729",
       "date": "2026-08-19",
@@ -1412,24 +1430,6 @@
       "narrative_topics": [
         "산업:반도체:strong",
         "산업:자동차:strong",
-        "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-08-14-intraday-46be73cff7",
-      "date": "2026-08-14",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-14T13:19:24+09:00",
-      "generated_label": "2026-08-14 13:19 KST",
-      "headline": "현대차 급등과 반도체 반등이 이끄는 코스피 상승",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 현대차(005380.KS)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:자동차:strong",
-        "산업:반도체:strong",
         "산업:매크로:strong"
       ]
     }
