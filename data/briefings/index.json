@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-19T00:37:11+09:00",
+  "updated_at": "2026-08-19T01:22:38+09:00",
   "cards": [
+    {
+      "id": "2026-08-19-intraday-19f85f3d54",
+      "date": "2026-08-19",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-19T01:22:38+09:00",
+      "generated_label": "2026-08-19 01:22 KST",
+      "headline": "반도체·로봇 동반 급락, 미국 증시 투자심리 위축",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Teradyne(TER)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:로봇:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-19-intraday-614e08e637",
       "date": "2026-08-19",
@@ -1405,23 +1423,6 @@
       "generated_at": "2026-08-14T03:26:54+09:00",
       "generated_label": "2026-08-14 03:26 KST",
       "headline": "반도체 대표주 강세와 함께 미국 증시 상승세 지속",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Micron(MU)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-08-14-intraday-6d57ff182c",
-      "date": "2026-08-14",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-14T02:27:33+09:00",
-      "generated_label": "2026-08-14 02:27 KST",
-      "headline": "반도체 주도 미국장 강세, 한국장 긍정적 영향 기대",
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: Micron(MU)",
