@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-18T12:28:47+09:00",
+  "updated_at": "2026-08-18T13:11:04+09:00",
   "cards": [
+    {
+      "id": "2026-08-18-intraday-998b82275e",
+      "date": "2026-08-18",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-18T13:11:04+09:00",
+      "generated_label": "2026-08-18 13:11 KST",
+      "headline": "코스피·코스닥 동반 약세, 기관 매도세에 시장 하방 압력 확대",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:weak",
+        "산업:전기차:weak",
+        "산업:조선:weak"
+      ]
+    },
     {
       "id": "2026-08-18-intraday-50044c971a",
       "date": "2026-08-18",
@@ -1404,24 +1422,6 @@
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: Teradyne(TER)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:로봇:weak",
-        "산업:데이터인프라:weak"
-      ]
-    },
-    {
-      "id": "2026-08-13-intraday-9056f403a1",
-      "date": "2026-08-13",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-13T02:26:52+09:00",
-      "generated_label": "2026-08-13 02:26 KST",
-      "headline": "반도체 주도 미국장, 한국장 옵션만기 변동성 주의",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Micron(MU)",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:strong",
