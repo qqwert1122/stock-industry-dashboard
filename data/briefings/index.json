@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-18T08:20:16+09:00",
+  "updated_at": "2026-08-18T10:24:55+09:00",
   "cards": [
+    {
+      "id": "2026-08-18-intraday-b18d2ee8a5",
+      "date": "2026-08-18",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-18T10:24:55+09:00",
+      "generated_label": "2026-08-18 10:24 KST",
+      "headline": "반도체 대표주 급등에 코스피 2%대 강세",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:weak",
+        "산업:조선:weak"
+      ]
+    },
     {
       "id": "2026-08-18-morning-311ee32cf7",
       "date": "2026-08-18",
@@ -1409,24 +1427,6 @@
         "산업:반도체:strong",
         "산업:스테이블코인:strong",
         "산업:데이터인프라:weak"
-      ]
-    },
-    {
-      "id": "2026-08-12-intraday-60e622f0af",
-      "date": "2026-08-12",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-12T23:17:01+09:00",
-      "generated_label": "2026-08-12 23:17 KST",
-      "headline": "반도체 주도 미국장 상승, CPI 앞둔 관망세",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:데이터인프라:weak",
-        "산업:로봇:weak"
       ]
     }
   ]
