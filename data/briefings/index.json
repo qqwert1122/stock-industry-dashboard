@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-18T18:56:52+09:00",
+  "updated_at": "2026-08-18T19:22:51+09:00",
   "cards": [
+    {
+      "id": "2026-08-18-intraday-5d0f3ab267",
+      "date": "2026-08-18",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-18T19:22:51+09:00",
+      "generated_label": "2026-08-18 19:22 KST",
+      "headline": "미국 증시 변동성 확대와 반도체·전기차 동반 약세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:전기차:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-18-intraday-a7d3c11482",
       "date": "2026-08-18",
@@ -1409,24 +1427,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체"
-      ]
-    },
-    {
-      "id": "2026-08-13-intraday-7478df7a44",
-      "date": "2026-08-13",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-13T16:47:53+09:00",
-      "generated_label": "2026-08-13 16:47 KST",
-      "headline": "반도체 주도 속 원자재 가격 하락과 환율 상승",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: WTI 선물(CL)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:strong",
-        "산업:화학/정유:weak"
       ]
     }
   ]
