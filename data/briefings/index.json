@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-18T20:18:40+09:00",
+  "updated_at": "2026-08-18T20:49:44+09:00",
   "cards": [
+    {
+      "id": "2026-08-18-intraday-cc4d3b3973",
+      "date": "2026-08-18",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-18T20:49:44+09:00",
+      "generated_label": "2026-08-18 20:49 KST",
+      "headline": "미국 증시 변동성 확대와 반도체·전기차 동반 약세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:전기차:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-18-intraday-8a3b66012c",
       "date": "2026-08-18",
@@ -1410,24 +1428,6 @@
       "narrative_topics": [
         "산업:바이오:strong",
         "산업:방산:strong",
-        "산업:전력:weak"
-      ]
-    },
-    {
-      "id": "2026-08-13-intraday-f2c0ee6276",
-      "date": "2026-08-13",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-13T19:55:55+09:00",
-      "generated_label": "2026-08-13 19:55 KST",
-      "headline": "방산·자동차 주도 속 전력·우주 약세 지속",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Rocket Lab(RKLB)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:방산:strong",
-        "산업:자동차:strong",
         "산업:전력:weak"
       ]
     }
