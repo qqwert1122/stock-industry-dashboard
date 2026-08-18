@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-18T13:53:52+09:00",
+  "updated_at": "2026-08-18T14:33:10+09:00",
   "cards": [
+    {
+      "id": "2026-08-18-intraday-f7678d18a7",
+      "date": "2026-08-18",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-18T14:33:10+09:00",
+      "generated_label": "2026-08-18 14:33 KST",
+      "headline": "국내 대형주 동반 약세, 기관 매도세에 시장 하방 압력 확대",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: NAVER(035420.KS)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:데이터인프라:weak",
+        "산업:전기차:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-18-intraday-9cbe83375c",
       "date": "2026-08-18",
@@ -1409,24 +1427,6 @@
         "산업:매크로:strong",
         "산업:반도체:strong",
         "산업:화학/정유:strong"
-      ]
-    },
-    {
-      "id": "2026-08-13-intraday-818f5496a2",
-      "date": "2026-08-13",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-13T04:35:31+09:00",
-      "generated_label": "2026-08-13 04:35 KST",
-      "headline": "반도체 주도권 강화와 미국 증시 변동성 완화",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Teradyne(TER)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:로봇:weak",
-        "산업:데이터인프라:weak"
       ]
     }
   ]
