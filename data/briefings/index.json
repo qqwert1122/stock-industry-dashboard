@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-19T03:26:42+09:00",
+  "updated_at": "2026-08-19T04:06:44+09:00",
   "cards": [
+    {
+      "id": "2026-08-19-intraday-457337dcac",
+      "date": "2026-08-19",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-19T04:06:44+09:00",
+      "generated_label": "2026-08-19 04:06 KST",
+      "headline": "반도체·로봇 동반 급락, 미국 증시 투자심리 위축",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Teradyne(TER)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:로봇:weak",
+        "산업:데이터인프라:strong"
+      ]
+    },
     {
       "id": "2026-08-19-intraday-6478306765",
       "date": "2026-08-19",
@@ -1413,24 +1431,6 @@
         "산업:반도체:strong",
         "산업:자동차:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-14-morning-2d60866eef",
-      "date": "2026-08-14",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-08-14T08:38:59+09:00",
-      "generated_label": "2026-08-14 08:38 KST",
-      "headline": "스테이블코인과 전기차 중심의 시장 강세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:전기차:strong",
-        "산업:전력:weak"
       ]
     }
   ]
