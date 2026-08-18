@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-18T14:33:10+09:00",
+  "updated_at": "2026-08-18T15:03:30+09:00",
   "cards": [
+    {
+      "id": "2026-08-18-intraday-6a913c4a88",
+      "date": "2026-08-18",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-18T15:03:30+09:00",
+      "generated_label": "2026-08-18 15:03 KST",
+      "headline": "코스피·코스닥 동반 급락, 대형주 중심의 투자심리 위축",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak",
+        "산업:전기차:weak"
+      ]
+    },
     {
       "id": "2026-08-18-intraday-f7678d18a7",
       "date": "2026-08-18",
@@ -1409,24 +1427,6 @@
         "산업:방산:strong",
         "산업:배터리:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-13-intraday-01525c7081",
-      "date": "2026-08-13",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-13T05:36:09+09:00",
-      "generated_label": "2026-08-13 05:36 KST",
-      "headline": "미국 증시 변동성 완화와 금 선물 강세",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:strong",
-        "산업:반도체:strong",
-        "산업:화학/정유:strong"
       ]
     }
   ]
