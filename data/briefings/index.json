@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-19T02:22:02+09:00",
+  "updated_at": "2026-08-19T02:52:14+09:00",
   "cards": [
+    {
+      "id": "2026-08-19-intraday-7ba297f736",
+      "date": "2026-08-19",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-19T02:52:14+09:00",
+      "generated_label": "2026-08-19 02:52 KST",
+      "headline": "반도체·로봇 중심의 기술주 차익실현과 시장 조정",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Teradyne(TER)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:로봇:weak",
+        "산업:데이터인프라:strong"
+      ]
+    },
     {
       "id": "2026-08-19-intraday-cce3425ff0",
       "date": "2026-08-19",
@@ -1413,24 +1431,6 @@
         "산업:반도체:weak",
         "산업:매크로:strong",
         "산업:화학/정유:weak"
-      ]
-    },
-    {
-      "id": "2026-08-14-intraday-a66962e64a",
-      "date": "2026-08-14",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-14T05:34:19+09:00",
-      "generated_label": "2026-08-14 05:34 KST",
-      "headline": "반도체 장비주 조정과 나스닥 선물 강세의 공존",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Applied Materials(AMAT)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:strong",
-        "산업:데이터인프라:weak"
       ]
     }
   ]
