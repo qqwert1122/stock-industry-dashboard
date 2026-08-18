@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-19T00:00:34+09:00",
+  "updated_at": "2026-08-19T00:37:11+09:00",
   "cards": [
+    {
+      "id": "2026-08-19-intraday-614e08e637",
+      "date": "2026-08-19",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-19T00:37:11+09:00",
+      "generated_label": "2026-08-19 00:37 KST",
+      "headline": "미국 반도체 투심 위축과 VIX 급등으로 시장 경계감 확산",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:데이터인프라:weak",
+        "산업:로봇:weak"
+      ]
+    },
     {
       "id": "2026-08-19-intraday-8a03658cf1",
       "date": "2026-08-19",
@@ -1404,23 +1422,6 @@
       "generated_at": "2026-08-14T02:27:33+09:00",
       "generated_label": "2026-08-14 02:27 KST",
       "headline": "반도체 주도 미국장 강세, 한국장 긍정적 영향 기대",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Micron(MU)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-08-14-intraday-6fbdbc800c",
-      "date": "2026-08-14",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-14T01:25:27+09:00",
-      "generated_label": "2026-08-14 01:25 KST",
-      "headline": "반도체 주도 미국장 강세, 한국장 반등 기대",
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: Micron(MU)",
