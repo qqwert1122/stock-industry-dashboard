@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-18T16:06:01+09:00",
+  "updated_at": "2026-08-18T16:32:00+09:00",
   "cards": [
+    {
+      "id": "2026-08-18-intraday-27824a0e1d",
+      "date": "2026-08-18",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-18T16:32:00+09:00",
+      "generated_label": "2026-08-18 16:32 KST",
+      "headline": "VIX 급등과 함께 시장 변동성 확대, 위험 회피 심리 강화",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:weak",
+        "산업:건설/부동산:weak",
+        "산업:철강/소재:weak"
+      ]
+    },
     {
       "id": "2026-08-18-intraday-d8225c6b6f",
       "date": "2026-08-18",
@@ -1409,24 +1427,6 @@
         "산업:반도체:strong",
         "산업:매크로:strong",
         "산업:데이터인프라:strong"
-      ]
-    },
-    {
-      "id": "2026-08-13-morning-e533c5702b",
-      "date": "2026-08-13",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-08-13T08:39:10+09:00",
-      "generated_label": "2026-08-13 08:39 KST",
-      "headline": "반도체·방산 주도 속 한국 옵션만기 변동성 주의",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:방산:strong",
-        "산업:매크로:strong"
       ]
     }
   ]
