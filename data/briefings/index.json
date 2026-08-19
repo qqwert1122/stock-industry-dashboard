@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-08-20T05:18:56+09:00",
+  "updated_at": "2026-08-20T05:52:31+09:00",
   "cards": [
+    {
+      "id": "2026-08-20-intraday-f7a999c14a",
+      "date": "2026-08-20",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-20T05:52:31+09:00",
+      "generated_label": "2026-08-20 05:52 KST",
+      "headline": "이더리움 급등과 VIX 하락, 위험자산 선호 회복",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 이더리움",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:strong",
+        "산업:스테이블코인:strong"
+      ]
+    },
     {
       "id": "2026-08-20-intraday-4451ccc391",
       "date": "2026-08-20",
@@ -1415,24 +1432,6 @@
         "산업:자동차:strong",
         "산업:배터리:strong",
         "산업:로봇:strong"
-      ]
-    },
-    {
-      "id": "2026-08-17-intraday-31c3407d27",
-      "date": "2026-08-17",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-17T20:21:27+09:00",
-      "generated_label": "2026-08-17 20:21 KST",
-      "headline": "변동성 지수(VIX) 상승과 반도체·배터리 중심의 시장 흐름",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:배터리:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
