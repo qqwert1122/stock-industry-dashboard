@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-19T22:26:56+09:00",
+  "updated_at": "2026-08-19T23:05:50+09:00",
   "cards": [
+    {
+      "id": "2026-08-19-intraday-d8cfb026c4",
+      "date": "2026-08-19",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-19T23:05:50+09:00",
+      "generated_label": "2026-08-19 23:05 KST",
+      "headline": "반도체 약세 속 스테이블코인 강세, 미국장 변동성 확대",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥100 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:스테이블코인:strong",
+        "산업:로봇:strong"
+      ]
+    },
     {
       "id": "2026-08-19-intraday-d56081ae1e",
       "date": "2026-08-19",
@@ -1410,24 +1428,6 @@
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "유의미한 변화: 구리 선물(HG)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:철강/소재:strong",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-17-intraday-5d06ff0bf7",
-      "date": "2026-08-17",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-17T11:48:12+09:00",
-      "generated_label": "2026-08-17 11:48 KST",
-      "headline": "KOSPI200 급락과 원자재 가격 상승의 엇박자",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: KOSPI200",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:strong",
