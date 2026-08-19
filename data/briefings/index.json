@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-19T21:30:42+09:00",
+  "updated_at": "2026-08-19T22:26:56+09:00",
   "cards": [
+    {
+      "id": "2026-08-19-intraday-d56081ae1e",
+      "date": "2026-08-19",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-19T22:26:56+09:00",
+      "generated_label": "2026-08-19 22:26 KST",
+      "headline": "금 선물 급등과 환율 하락, 건설·부동산 주도",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 금 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:건설/부동산:strong",
+        "산업:스테이블코인:strong",
+        "산업:데이터인프라:weak"
+      ]
+    },
     {
       "id": "2026-08-19-intraday-32c375135c",
       "date": "2026-08-19",
@@ -1410,24 +1428,6 @@
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "유의미한 변화: KOSPI200",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:철강/소재:strong",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-17-intraday-34f4f852a0",
-      "date": "2026-08-17",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-17T10:31:42+09:00",
-      "generated_label": "2026-08-17 10:31 KST",
-      "headline": "원자재 가격 상승과 반도체 중심의 시장 흐름",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 알루미늄 선물(ALI)",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:strong",
