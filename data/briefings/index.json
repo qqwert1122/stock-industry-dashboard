@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-08-19T13:22:08+09:00",
+  "updated_at": "2026-08-19T14:03:28+09:00",
   "cards": [
+    {
+      "id": "2026-08-19-intraday-d3a5514662",
+      "date": "2026-08-19",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-19T14:03:28+09:00",
+      "generated_label": "2026-08-19 14:03 KST",
+      "headline": "반도체 대표주 급락에 코스피 5%대 하락",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: SK하이닉스(000660.KS)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-19-intraday-1988f8628d",
       "date": "2026-08-19",
@@ -1412,24 +1429,6 @@
       "narrative_topics": [
         "산업:스테이블코인:weak",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-15-intraday-aa04f8b115",
-      "date": "2026-08-15",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-15T00:13:50+09:00",
-      "generated_label": "2026-08-15 00:13 KST",
-      "headline": "금 선물 급등과 위험자산 경계감, 한국장 변동성 주의",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 금 선물",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:weak",
-        "산업:화학/정유:strong",
-        "산업:스테이블코인:weak"
       ]
     }
   ]
