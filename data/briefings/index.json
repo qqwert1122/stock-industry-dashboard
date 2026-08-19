@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-19T20:18:54+09:00",
+  "updated_at": "2026-08-19T20:48:43+09:00",
   "cards": [
+    {
+      "id": "2026-08-19-intraday-42ef28b765",
+      "date": "2026-08-19",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-19T20:48:43+09:00",
+      "generated_label": "2026-08-19 20:48 KST",
+      "headline": "바이오 강세 속 반도체·로봇 약세 지속",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Rocket Lab(RKLB)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:바이오:strong",
+        "산업:로봇:weak",
+        "산업:반도체:weak"
+      ]
+    },
     {
       "id": "2026-08-19-intraday-7358f2ddf1",
       "date": "2026-08-19",
@@ -1415,24 +1433,6 @@
         "산업:배터리:strong",
         "산업:자동차:strong",
         "산업:조선:strong"
-      ]
-    },
-    {
-      "id": "2026-08-16-morning-e3cad9b49a",
-      "date": "2026-08-16",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-08-16T08:18:29+09:00",
-      "generated_label": "2026-08-16 08:18 KST",
-      "headline": "배터리·자동차 중심의 강세와 스테이블코인 약세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:배터리:strong",
-        "산업:자동차:strong",
-        "산업:스테이블코인:weak"
       ]
     }
   ]
