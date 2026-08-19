@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-19T19:24:32+09:00",
+  "updated_at": "2026-08-19T19:53:59+09:00",
   "cards": [
+    {
+      "id": "2026-08-19-intraday-c1d77de09a",
+      "date": "2026-08-19",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-19T19:53:59+09:00",
+      "generated_label": "2026-08-19 19:53 KST",
+      "headline": "미국 기술주 조정과 환율 하락, 한국장 변동성 주의",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Rocket Lab(RKLB)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:전력:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-19-intraday-0bab25af3b",
       "date": "2026-08-19",
@@ -1414,22 +1432,6 @@
       "narrative_topics": [
         "산업:배터리:strong",
         "산업:자동차:strong",
-        "산업:매크로:neutral"
-      ]
-    },
-    {
-      "id": "2026-08-15-intraday-becaf80485",
-      "date": "2026-08-15",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-15T06:47:32+09:00",
-      "generated_label": "2026-08-15 06:47 KST",
-      "headline": "비트코인 등 주요 가상자산 소폭 하락하며 관망세",
-      "low_signal": true,
-      "session_label": "세션 외",
-      "gate_reason": "변화는 있으나 유의미성 낮음",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
         "산업:매크로:neutral"
       ]
     }
