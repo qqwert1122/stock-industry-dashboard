@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-20T03:23:12+09:00",
+  "updated_at": "2026-08-20T04:01:51+09:00",
   "cards": [
+    {
+      "id": "2026-08-20-intraday-cd3024455b",
+      "date": "2026-08-20",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-20T04:01:51+09:00",
+      "generated_label": "2026-08-20 04:01 KST",
+      "headline": "스테이블코인 강세와 반도체 차익실현의 엇갈린 흐름",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 이더리움",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:반도체:weak",
+        "산업:로봇:strong"
+      ]
+    },
     {
       "id": "2026-08-20-intraday-db3c58fc71",
       "date": "2026-08-20",
@@ -1414,24 +1432,6 @@
       "narrative_topics": [
         "산업:반도체:strong",
         "산업:자동차:strong",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-17-intraday-169f567271",
-      "date": "2026-08-17",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-17T18:35:58+09:00",
-      "generated_label": "2026-08-17 18:35 KST",
-      "headline": "반도체·배터리 주도 속 VIX 상승에 따른 경계감",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:배터리:strong",
         "산업:매크로:weak"
       ]
     }
