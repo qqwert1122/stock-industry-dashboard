@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-19T20:48:43+09:00",
+  "updated_at": "2026-08-19T21:30:42+09:00",
   "cards": [
+    {
+      "id": "2026-08-19-intraday-32c375135c",
+      "date": "2026-08-19",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-19T21:30:42+09:00",
+      "generated_label": "2026-08-19 21:30 KST",
+      "headline": "건설·방산 강세 속 자동차·우주 약세, 환율 하락 주목",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Rocket Lab(RKLB)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:건설/부동산:strong",
+        "산업:방산:strong",
+        "산업:자동차:weak"
+      ]
+    },
     {
       "id": "2026-08-19-intraday-42ef28b765",
       "date": "2026-08-19",
@@ -1415,24 +1433,6 @@
         "산업:반도체:strong",
         "산업:철강/소재:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-17-morning-eb5c02b1b6",
-      "date": "2026-08-17",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-08-17T08:17:37+09:00",
-      "generated_label": "2026-08-17 08:17 KST",
-      "headline": "배터리·자동차 주도 속 수출 지표 확인",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:배터리:strong",
-        "산업:자동차:strong",
-        "산업:조선:strong"
       ]
     }
   ]
