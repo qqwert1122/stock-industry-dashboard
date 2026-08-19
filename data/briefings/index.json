@@ -1,7 +1,23 @@
 {
   "version": 1,
-  "updated_at": "2026-08-19T16:32:15+09:00",
+  "updated_at": "2026-08-19T17:27:55+09:00",
   "cards": [
+    {
+      "id": "2026-08-19-intraday-42f7368590",
+      "date": "2026-08-19",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-19T17:27:55+09:00",
+      "generated_label": "2026-08-19 17:27 KST",
+      "headline": "건설/부동산 주도 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Huntington Ingalls(HII)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체"
+      ]
+    },
     {
       "id": "2026-08-19-intraday-5361a084ba",
       "date": "2026-08-19",
@@ -1414,23 +1430,6 @@
         "산업:매크로:strong",
         "산업:화학/정유:strong",
         "산업:스테이블코인:weak"
-      ]
-    },
-    {
-      "id": "2026-08-15-intraday-919947aae9",
-      "date": "2026-08-15",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-15T04:26:28+09:00",
-      "generated_label": "2026-08-15 04:26 KST",
-      "headline": "국제 유가 상승과 변동성 완화 속 미국장 혼조",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:화학/정유:strong",
-        "산업:매크로:neutral"
       ]
     }
   ]
