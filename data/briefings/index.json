@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-19T23:05:50+09:00",
+  "updated_at": "2026-08-20T00:00:58+09:00",
   "cards": [
+    {
+      "id": "2026-08-20-intraday-74a9630dcc",
+      "date": "2026-08-20",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-20T00:00:58+09:00",
+      "generated_label": "2026-08-20 00:00 KST",
+      "headline": "미국 반도체 약세와 스테이블코인 강세의 엇갈린 흐름",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:스테이블코인:strong",
+        "산업:로봇:strong"
+      ]
+    },
     {
       "id": "2026-08-19-intraday-d8cfb026c4",
       "date": "2026-08-19",
@@ -1407,24 +1425,6 @@
       "generated_at": "2026-08-17T13:49:05+09:00",
       "generated_label": "2026-08-17 13:49 KST",
       "headline": "반도체 주도 장세 속 구리 가격 상승과 수급 불균형",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 구리 선물(HG)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:철강/소재:strong",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-17-intraday-f2465752f6",
-      "date": "2026-08-17",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-17T12:55:50+09:00",
-      "generated_label": "2026-08-17 12:55 KST",
-      "headline": "반도체 중심의 시장 반등과 구리 가격 상승세",
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "유의미한 변화: 구리 선물(HG)",
