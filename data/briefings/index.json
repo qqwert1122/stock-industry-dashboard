@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-19T14:03:28+09:00",
+  "updated_at": "2026-08-19T14:47:37+09:00",
   "cards": [
+    {
+      "id": "2026-08-19-intraday-052a4bcd30",
+      "date": "2026-08-19",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-19T14:47:37+09:00",
+      "generated_label": "2026-08-19 14:47 KST",
+      "headline": "반도체 투매 속 코스피 급락, 방산은 홀로 강세",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: SK하이닉스(000660.KS)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:방산:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-19-intraday-d3a5514662",
       "date": "2026-08-19",
@@ -1412,23 +1430,6 @@
         "산업:화학/정유:strong",
         "산업:스테이블코인:weak",
         "산업:매크로:neutral"
-      ]
-    },
-    {
-      "id": "2026-08-15-intraday-89ae995788",
-      "date": "2026-08-15",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-15T01:13:01+09:00",
-      "generated_label": "2026-08-15 01:13 KST",
-      "headline": "스테이블코인 약세와 금 선물 강세로 본 위험 회피",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 금 선물",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:weak",
-        "산업:매크로:weak"
       ]
     }
   ]
