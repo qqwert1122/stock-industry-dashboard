@@ -1,7 +1,23 @@
 {
   "version": 1,
-  "updated_at": "2026-08-20T05:52:31+09:00",
+  "updated_at": "2026-08-20T06:19:07+09:00",
   "cards": [
+    {
+      "id": "2026-08-20-intraday-3443d48ac6",
+      "date": "2026-08-20",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-20T06:19:07+09:00",
+      "generated_label": "2026-08-20 06:19 KST",
+      "headline": "건설/부동산 주도 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 이더리움",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체"
+      ]
+    },
     {
       "id": "2026-08-20-intraday-f7a999c14a",
       "date": "2026-08-20",
@@ -1414,24 +1430,6 @@
         "산업:반도체:strong",
         "산업:자동차:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-17-intraday-82520bff5d",
-      "date": "2026-08-17",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-17T20:50:42+09:00",
-      "generated_label": "2026-08-17 20:50 KST",
-      "headline": "자동차·배터리·로봇 주도, 미국장 반등 속 한국장 기대",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Mobileye(MBLY)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:자동차:strong",
-        "산업:배터리:strong",
-        "산업:로봇:strong"
       ]
     }
   ]
