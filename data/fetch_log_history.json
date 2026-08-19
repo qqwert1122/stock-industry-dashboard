@@ -1,80 +1,8 @@
 {
   "version": 1,
-  "updated_at": "2026-08-20T04:01:54+09:00",
+  "updated_at": "2026-08-20T04:48:02+09:00",
   "count": 60,
   "runs": [
-    {
-      "run_id": "2026-08-19T05:15:11+09:00",
-      "run_type": "briefing-intraday",
-      "started_at": "2026-08-19T05:15:11+09:00",
-      "finished_at": "2026-08-19T05:15:15+09:00",
-      "duration_ms": 3425,
-      "summary": {
-        "success": 2,
-        "no_new_data": 0,
-        "failed": 0
-      },
-      "records": [
-        {
-          "source": "미래 타임라인",
-          "endpoint": "data/future/technologies.yaml",
-          "status": "success",
-          "message": "15개 기술 타임라인 생성",
-          "metric_count": 15,
-          "new_data_count": 0,
-          "started_at": "2026-08-19T05:15:14+09:00",
-          "duration_ms": 632,
-          "http_status": null
-        },
-        {
-          "source": "AI 요약",
-          "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent",
-          "status": "success",
-          "message": "카드 생성: 유의미한 변화: VIX (Gemini 호출)",
-          "metric_count": 44,
-          "new_data_count": 1,
-          "started_at": "2026-08-19T05:15:11+09:00",
-          "duration_ms": 3425,
-          "http_status": null
-        }
-      ]
-    },
-    {
-      "run_id": "2026-08-19T05:46:30+09:00",
-      "run_type": "prices",
-      "started_at": "2026-08-19T05:46:30+09:00",
-      "finished_at": "2026-08-19T05:47:07+09:00",
-      "duration_ms": 37328,
-      "summary": {
-        "success": 2,
-        "no_new_data": 0,
-        "failed": 0
-      },
-      "records": [
-        {
-          "source": "대표주가/시장지수",
-          "endpoint": "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}",
-          "status": "success",
-          "message": "미국 프리·정규·애프터장 45/45개 지표 자동 수집",
-          "metric_count": 45,
-          "new_data_count": 39,
-          "started_at": "2026-08-19T05:46:30+09:00",
-          "duration_ms": 36602,
-          "http_status": null
-        },
-        {
-          "source": "미래 타임라인",
-          "endpoint": "data/future/technologies.yaml",
-          "status": "success",
-          "message": "15개 기술 타임라인 생성",
-          "metric_count": 15,
-          "new_data_count": 0,
-          "started_at": "2026-08-19T05:47:07+09:00",
-          "duration_ms": 567,
-          "http_status": null
-        }
-      ]
-    },
     {
       "run_id": "2026-08-19T05:47:08+09:00",
       "run_type": "briefing-intraday",
@@ -2401,6 +2329,78 @@
           "new_data_count": 1,
           "started_at": "2026-08-20T04:01:51+09:00",
           "duration_ms": 3611,
+          "http_status": null
+        }
+      ]
+    },
+    {
+      "run_id": "2026-08-20T04:47:19+09:00",
+      "run_type": "prices",
+      "started_at": "2026-08-20T04:47:19+09:00",
+      "finished_at": "2026-08-20T04:47:57+09:00",
+      "duration_ms": 37378,
+      "summary": {
+        "success": 2,
+        "no_new_data": 0,
+        "failed": 0
+      },
+      "records": [
+        {
+          "source": "대표주가/시장지수",
+          "endpoint": "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}",
+          "status": "success",
+          "message": "미국 프리·정규·애프터장 45/45개 지표 자동 수집",
+          "metric_count": 45,
+          "new_data_count": 42,
+          "started_at": "2026-08-20T04:47:19+09:00",
+          "duration_ms": 36568,
+          "http_status": null
+        },
+        {
+          "source": "미래 타임라인",
+          "endpoint": "data/future/technologies.yaml",
+          "status": "success",
+          "message": "15개 기술 타임라인 생성",
+          "metric_count": 15,
+          "new_data_count": 0,
+          "started_at": "2026-08-20T04:47:56+09:00",
+          "duration_ms": 616,
+          "http_status": null
+        }
+      ]
+    },
+    {
+      "run_id": "2026-08-20T04:47:57+09:00",
+      "run_type": "briefing-intraday",
+      "started_at": "2026-08-20T04:47:57+09:00",
+      "finished_at": "2026-08-20T04:48:02+09:00",
+      "duration_ms": 4508,
+      "summary": {
+        "success": 2,
+        "no_new_data": 0,
+        "failed": 0
+      },
+      "records": [
+        {
+          "source": "미래 타임라인",
+          "endpoint": "data/future/technologies.yaml",
+          "status": "success",
+          "message": "15개 기술 타임라인 생성",
+          "metric_count": 15,
+          "new_data_count": 0,
+          "started_at": "2026-08-20T04:48:01+09:00",
+          "duration_ms": 621,
+          "http_status": null
+        },
+        {
+          "source": "AI 요약",
+          "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent",
+          "status": "success",
+          "message": "카드 생성: 유의미한 변화: 이더리움 (Gemini 호출)",
+          "metric_count": 42,
+          "new_data_count": 1,
+          "started_at": "2026-08-20T04:47:57+09:00",
+          "duration_ms": 4508,
           "http_status": null
         }
       ]
