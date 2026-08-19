@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-19T10:26:17+09:00",
+  "updated_at": "2026-08-19T11:42:01+09:00",
   "cards": [
+    {
+      "id": "2026-08-19-intraday-5a5ab89520",
+      "date": "2026-08-19",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-19T11:42:01+09:00",
+      "generated_label": "2026-08-19 11:42 KST",
+      "headline": "반도체 대표주 급락에 코스피·코스닥 동반 하락",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak",
+        "산업:데이터인프라:weak"
+      ]
+    },
     {
       "id": "2026-08-19-intraday-8f913aaad8",
       "date": "2026-08-19",
@@ -1413,24 +1431,6 @@
         "산업:반도체:weak",
         "산업:자동차:strong",
         "산업:로봇:strong"
-      ]
-    },
-    {
-      "id": "2026-08-14-intraday-e6920e801a",
-      "date": "2026-08-14",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-14T20:38:53+09:00",
-      "generated_label": "2026-08-14 20:38 KST",
-      "headline": "자동차·배터리 주도 속 반도체 장비주 차익실현",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Applied Materials(AMAT)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:자동차:strong",
-        "산업:배터리:strong",
-        "산업:반도체:weak"
       ]
     }
   ]
