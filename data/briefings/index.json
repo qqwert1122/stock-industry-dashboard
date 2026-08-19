@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-19T18:57:20+09:00",
+  "updated_at": "2026-08-19T19:24:32+09:00",
   "cards": [
+    {
+      "id": "2026-08-19-intraday-0bab25af3b",
+      "date": "2026-08-19",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-19T19:24:32+09:00",
+      "generated_label": "2026-08-19 19:24 KST",
+      "headline": "건설·방산 강세 속 반도체·자동차 약세 지속",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Rocket Lab(RKLB)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:건설/부동산:strong",
+        "산업:방산:strong",
+        "산업:반도체:weak"
+      ]
+    },
     {
       "id": "2026-08-19-intraday-9c1d418756",
       "date": "2026-08-19",
@@ -1412,23 +1430,6 @@
       "gate_reason": "변화는 있으나 유의미성 낮음",
       "gemini_call_attempted": true,
       "narrative_topics": [
-        "산업:매크로:neutral"
-      ]
-    },
-    {
-      "id": "2026-08-15-intraday-bf48b5b450",
-      "date": "2026-08-15",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-15T06:18:14+09:00",
-      "generated_label": "2026-08-15 06:18 KST",
-      "headline": "국제 유가 상승과 안전자산 선호 속 시장 관망",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:화학/정유:strong",
         "산업:매크로:neutral"
       ]
     }
