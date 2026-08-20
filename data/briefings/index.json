@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-21T02:22:16+09:00",
+  "updated_at": "2026-08-21T02:54:57+09:00",
   "cards": [
+    {
+      "id": "2026-08-21-intraday-5ddf58ab92",
+      "date": "2026-08-21",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-21T02:54:57+09:00",
+      "generated_label": "2026-08-21 02:54 KST",
+      "headline": "스테이블코인 강세와 VIX 상승이 공존하는 미국장",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Coinbase(COIN)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:데이터인프라:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-21-intraday-28d7045dbf",
       "date": "2026-08-21",
@@ -1399,24 +1417,6 @@
         "산업:반도체:strong",
         "산업:건설/부동산:weak",
         "산업:스테이블코인:weak"
-      ]
-    },
-    {
-      "id": "2026-08-18-intraday-6a913c4a88",
-      "date": "2026-08-18",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-18T15:03:30+09:00",
-      "generated_label": "2026-08-18 15:03 KST",
-      "headline": "코스피·코스닥 동반 급락, 대형주 중심의 투자심리 위축",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak",
-        "산업:전기차:weak"
       ]
     }
   ]
