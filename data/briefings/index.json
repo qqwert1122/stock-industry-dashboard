@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-20T16:35:13+09:00",
+  "updated_at": "2026-08-20T17:28:56+09:00",
   "cards": [
+    {
+      "id": "2026-08-20-intraday-2c2ea5fdc2",
+      "date": "2026-08-20",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-20T17:28:56+09:00",
+      "generated_label": "2026-08-20 17:28 KST",
+      "headline": "스테이블코인 강세와 외국인 순매도 지속",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Coinbase(COIN)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:매크로:weak",
+        "산업:전력:strong"
+      ]
+    },
     {
       "id": "2026-08-20-intraday-53bfad38d8",
       "date": "2026-08-20",
@@ -1397,24 +1415,6 @@
       "generated_at": "2026-08-18T04:49:55+09:00",
       "generated_label": "2026-08-18 04:49 KST",
       "headline": "반도체 장비주 강세와 VIX 상승이 공존하는 미국장",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:로봇:strong",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-18-intraday-7df0d85a4d",
-      "date": "2026-08-18",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-18T04:07:28+09:00",
-      "generated_label": "2026-08-18 04:07 KST",
-      "headline": "반도체·로봇 강세 속 VIX 상승에 따른 경계감",
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: VIX",
