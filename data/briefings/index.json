@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-21T06:51:49+09:00",
+  "updated_at": "2026-08-21T08:23:16+09:00",
   "cards": [
+    {
+      "id": "2026-08-21-morning-32a3b72e14",
+      "date": "2026-08-21",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-08-21T08:23:16+09:00",
+      "generated_label": "2026-08-21 08:23 KST",
+      "headline": "스테이블코인 강세와 외국인 선물 수급 변화",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:매크로:weak",
+        "산업:은행/금융:weak"
+      ]
+    },
     {
       "id": "2026-08-21-intraday-c6b3b7c64d",
       "date": "2026-08-21",
@@ -1398,24 +1416,6 @@
       "narrative_topics": [
         "산업:반도체:weak",
         "산업:전기차:weak",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-18-intraday-8a3b66012c",
-      "date": "2026-08-18",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-18T20:18:40+09:00",
-      "generated_label": "2026-08-18 20:18 KST",
-      "headline": "미국 증시 변동성 확대와 기술주 중심의 약세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:weak",
         "산업:매크로:weak"
       ]
     }

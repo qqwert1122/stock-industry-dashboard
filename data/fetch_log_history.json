@@ -1,44 +1,8 @@
 {
   "version": 1,
-  "updated_at": "2026-08-21T06:52:17+09:00",
+  "updated_at": "2026-08-21T08:26:41+09:00",
   "count": 60,
   "runs": [
-    {
-      "run_id": "2026-08-20T06:48:54+09:00",
-      "run_type": "briefing-intraday",
-      "started_at": "2026-08-20T06:48:54+09:00",
-      "finished_at": "2026-08-20T06:48:57+09:00",
-      "duration_ms": 3888,
-      "summary": {
-        "success": 2,
-        "no_new_data": 0,
-        "failed": 0
-      },
-      "records": [
-        {
-          "source": "미래 타임라인",
-          "endpoint": "data/future/technologies.yaml",
-          "status": "success",
-          "message": "15개 기술 타임라인 생성",
-          "metric_count": 15,
-          "new_data_count": 0,
-          "started_at": "2026-08-20T06:48:57+09:00",
-          "duration_ms": 637,
-          "http_status": null
-        },
-        {
-          "source": "AI 요약",
-          "endpoint": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent",
-          "status": "success",
-          "message": "카드 생성: 유의미한 변화: 이더리움 (Gemini 호출)",
-          "metric_count": 32,
-          "new_data_count": 1,
-          "started_at": "2026-08-20T06:48:54+09:00",
-          "duration_ms": 3888,
-          "http_status": null
-        }
-      ]
-    },
     {
       "run_id": "2026-08-20T08:20:32+09:00",
       "run_type": "full",
@@ -2401,6 +2365,284 @@
           "new_data_count": 1,
           "started_at": "2026-08-21T06:51:49+09:00",
           "duration_ms": 28466,
+          "http_status": null
+        }
+      ]
+    },
+    {
+      "run_id": "2026-08-21T08:23:16+09:00",
+      "run_type": "full",
+      "started_at": "2026-08-21T08:23:16+09:00",
+      "finished_at": "2026-08-21T08:26:41+09:00",
+      "duration_ms": 205244,
+      "summary": {
+        "success": 15,
+        "no_new_data": 9,
+        "failed": 0
+      },
+      "records": [
+        {
+          "source": "WSTS",
+          "endpoint": "https://www.wsts.org/76/Recent-News-Release",
+          "status": "no_new_data",
+          "message": "6/6개 지표 자동 수집",
+          "metric_count": 6,
+          "new_data_count": 0,
+          "started_at": "2026-08-21T08:23:16+09:00",
+          "duration_ms": 1280,
+          "http_status": null
+        },
+        {
+          "source": "FRED",
+          "endpoint": "https://api.stlouisfed.org/fred/series/observations",
+          "status": "success",
+          "message": "53/53개 지표 자동 수집",
+          "metric_count": 53,
+          "new_data_count": 14,
+          "started_at": "2026-08-21T08:23:17+09:00",
+          "duration_ms": 31821,
+          "http_status": null
+        },
+        {
+          "source": "ECOS 신용스프레드",
+          "endpoint": "https://ecos.bok.or.kr/api/",
+          "status": "success",
+          "message": "2/2개 지표 자동 수집",
+          "metric_count": 2,
+          "new_data_count": 2,
+          "started_at": "2026-08-21T08:23:49+09:00",
+          "duration_ms": 4067,
+          "http_status": null
+        },
+        {
+          "source": "ECOS 매크로",
+          "endpoint": "https://ecos.bok.or.kr/api/",
+          "status": "no_new_data",
+          "message": "4/4개 지표 자동 수집",
+          "metric_count": 4,
+          "new_data_count": 0,
+          "started_at": "2026-08-21T08:23:53+09:00",
+          "duration_ms": 1784,
+          "http_status": null
+        },
+        {
+          "source": "금투협회 증시자금",
+          "endpoint": "https://www.data.go.kr/data/15094809/openapi.do",
+          "status": "success",
+          "message": "2/3개 지표 자동 수집 (한국 CMA 잔고: 관측값 없음)",
+          "metric_count": 3,
+          "new_data_count": 2,
+          "started_at": "2026-08-21T08:23:55+09:00",
+          "duration_ms": 8157,
+          "http_status": null
+        },
+        {
+          "source": "대표주가/시장지수",
+          "endpoint": "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}",
+          "status": "success",
+          "message": "64/64개 지표 자동 수집",
+          "metric_count": 64,
+          "new_data_count": 43,
+          "started_at": "2026-08-21T08:24:03+09:00",
+          "duration_ms": 31560,
+          "http_status": null
+        },
+        {
+          "source": "스테이블코인",
+          "endpoint": "https://stablecoins.llama.fi/stablecoins",
+          "status": "success",
+          "message": "3/3개 지표 자동 수집",
+          "metric_count": 3,
+          "new_data_count": 3,
+          "started_at": "2026-08-21T08:24:34+09:00",
+          "duration_ms": 199,
+          "http_status": null
+        },
+        {
+          "source": "World Bank 원자재",
+          "endpoint": "https://thedocs.worldbank.org/",
+          "status": "no_new_data",
+          "message": "3/3개 지표 자동 수집",
+          "metric_count": 3,
+          "new_data_count": 0,
+          "started_at": "2026-08-21T08:24:35+09:00",
+          "duration_ms": 760,
+          "http_status": null
+        },
+        {
+          "source": "SEC CAPEX",
+          "endpoint": "https://data.sec.gov/submissions/{cik}.json",
+          "status": "no_new_data",
+          "message": "6/6개 지표 자동 수집",
+          "metric_count": 6,
+          "new_data_count": 0,
+          "started_at": "2026-08-21T08:24:35+09:00",
+          "duration_ms": 4471,
+          "http_status": null
+        },
+        {
+          "source": "USAspending 방산",
+          "endpoint": "https://api.usaspending.gov/api/v2/search/spending_over_time/",
+          "status": "success",
+          "message": "3/3개 지표 자동 수집",
+          "metric_count": 3,
+          "new_data_count": 1,
+          "started_at": "2026-08-21T08:24:40+09:00",
+          "duration_ms": 4808,
+          "http_status": null
+        },
+        {
+          "source": "EIA",
+          "endpoint": "https://api.eia.gov/v2/",
+          "status": "no_new_data",
+          "message": "5/5개 지표 자동 수집",
+          "metric_count": 5,
+          "new_data_count": 0,
+          "started_at": "2026-08-21T08:24:45+09:00",
+          "duration_ms": 3823,
+          "http_status": null
+        },
+        {
+          "source": "openFDA",
+          "endpoint": "https://api.fda.gov/",
+          "status": "no_new_data",
+          "message": "1/1개 지표 자동 수집",
+          "metric_count": 1,
+          "new_data_count": 0,
+          "started_at": "2026-08-21T08:24:48+09:00",
+          "duration_ms": 8766,
+          "http_status": null
+        },
+        {
+          "source": "ClinicalTrials.gov",
+          "endpoint": "https://clinicaltrials.gov/api/v2/studies",
+          "status": "success",
+          "message": "1/1개 지표 자동 수집",
+          "metric_count": 1,
+          "new_data_count": 1,
+          "started_at": "2026-08-21T08:24:57+09:00",
+          "duration_ms": 8528,
+          "http_status": null
+        },
+        {
+          "source": "Launch Library",
+          "endpoint": "https://ll.thespacedevs.com/2.3.0/launches/",
+          "status": "no_new_data",
+          "message": "1/1개 지표 자동 수집",
+          "metric_count": 1,
+          "new_data_count": 0,
+          "started_at": "2026-08-21T08:25:06+09:00",
+          "duration_ms": 25163,
+          "http_status": null
+        },
+        {
+          "source": "AFDC EV 충전",
+          "endpoint": "https://developer.nrel.gov/api/alt-fuel-stations/v1/count.json",
+          "status": "success",
+          "message": "2/2개 지표 자동 수집",
+          "metric_count": 2,
+          "new_data_count": 2,
+          "started_at": "2026-08-21T08:25:31+09:00",
+          "duration_ms": 994,
+          "http_status": null
+        },
+        {
+          "source": "KOSIS",
+          "endpoint": "https://kosis.kr/openapi/",
+          "status": "no_new_data",
+          "message": "3/3개 지표 자동 수집 (한국 미분양 주택: KOSIS 응답 실패: 데이터가 존재하지 않습니다.; 이전 저장값 표시)",
+          "metric_count": 3,
+          "new_data_count": 0,
+          "started_at": "2026-08-21T08:25:32+09:00",
+          "duration_ms": 2204,
+          "http_status": null
+        },
+        {
+          "source": "한국 수출",
+          "endpoint": "https://apis.data.go.kr/1220000/Itemtrade",
+          "status": "no_new_data",
+          "message": "16/16개 지표 자동 수집",
+          "metric_count": 16,
+          "new_data_count": 0,
+          "started_at": "2026-08-21T08:25:34+09:00",
+          "duration_ms": 13241,
+          "http_status": null
+        },
+        {
+          "source": "밸류에이션/수급",
+          "endpoint": "https://finance.naver.com/",
+          "status": "success",
+          "message": "2/4개 지표 자동 수집 (코스피 PER/PBR/배당수익률: KRX 응답 실패(차단 가능): 400 Client Error: Bad Request for url: https://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd / 코스닥 PER/PBR/배당수익률: KRX 응답 실패(차단 가능): 400 Client Error: Bad Request for url: https://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd)",
+          "metric_count": 4,
+          "new_data_count": 1,
+          "started_at": "2026-08-21T08:25:47+09:00",
+          "duration_ms": 3004,
+          "http_status": null
+        },
+        {
+          "source": "시장 수급",
+          "endpoint": "https://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd",
+          "status": "success",
+          "message": "36/36개 지표 자동 수집",
+          "metric_count": 36,
+          "new_data_count": 36,
+          "started_at": "2026-08-21T08:25:50+09:00",
+          "duration_ms": 12516,
+          "http_status": null
+        },
+        {
+          "source": "미국 유동성",
+          "endpoint": "https://api.stlouisfed.org/fred/series/observations",
+          "status": "success",
+          "message": "4/4개 지표 자동 수집",
+          "metric_count": 4,
+          "new_data_count": 4,
+          "started_at": "2026-08-21T08:26:03+09:00",
+          "duration_ms": 768,
+          "http_status": null
+        },
+        {
+          "source": "국제 유동성",
+          "endpoint": "",
+          "status": "success",
+          "message": "13/13개 지표 자동 수집",
+          "metric_count": 13,
+          "new_data_count": 1,
+          "started_at": "2026-08-21T08:26:04+09:00",
+          "duration_ms": 10057,
+          "http_status": null
+        },
+        {
+          "source": "시장 심리",
+          "endpoint": "https://production.dataviz.cnn.io/index/fearandgreed/graphdata/{start_date}",
+          "status": "success",
+          "message": "4/4개 지표 자동 수집",
+          "metric_count": 4,
+          "new_data_count": 4,
+          "started_at": "2026-08-21T08:26:14+09:00",
+          "duration_ms": 11236,
+          "http_status": null
+        },
+        {
+          "source": "시장 파생지표",
+          "endpoint": "https://api.upbit.com/v1/ticker",
+          "status": "success",
+          "message": "2/2개 지표 자동 수집",
+          "metric_count": 2,
+          "new_data_count": 2,
+          "started_at": "2026-08-21T08:26:25+09:00",
+          "duration_ms": 2834,
+          "http_status": null
+        },
+        {
+          "source": "미래 타임라인",
+          "endpoint": "data/future/technologies.yaml",
+          "status": "success",
+          "message": "15개 기술 타임라인 생성",
+          "metric_count": 15,
+          "new_data_count": 0,
+          "started_at": "2026-08-21T08:26:29+09:00",
+          "duration_ms": 548,
           "http_status": null
         }
       ]
