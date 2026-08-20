@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-21T05:20:32+09:00",
+  "updated_at": "2026-08-21T05:54:59+09:00",
   "cards": [
+    {
+      "id": "2026-08-21-intraday-37af08c9c5",
+      "date": "2026-08-21",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-21T05:54:59+09:00",
+      "generated_label": "2026-08-21 05:54 KST",
+      "headline": "미국 증시 변동성 확대와 반도체 약세 흐름",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:데이터인프라:strong",
+        "산업:로봇:strong"
+      ]
+    },
     {
       "id": "2026-08-21-intraday-8a1944bd12",
       "date": "2026-08-21",
@@ -1398,24 +1416,6 @@
       "narrative_topics": [
         "산업:반도체:weak",
         "산업:전기차:weak",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-18-intraday-a7d3c11482",
-      "date": "2026-08-18",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-18T18:56:52+09:00",
-      "generated_label": "2026-08-18 18:56 KST",
-      "headline": "미국 증시 변동성 확대와 반도체·배터리 동반 약세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:배터리:weak",
         "산업:매크로:weak"
       ]
     }
