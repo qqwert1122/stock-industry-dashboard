@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-08-20T12:30:53+09:00",
+  "updated_at": "2026-08-20T13:22:02+09:00",
   "cards": [
+    {
+      "id": "2026-08-20-intraday-802c156496",
+      "date": "2026-08-20",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-20T13:22:02+09:00",
+      "generated_label": "2026-08-20 13:22 KST",
+      "headline": "반도체 중심의 강한 반등과 외국인 수급 변화",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 이더리움",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-20-intraday-9f898c2651",
       "date": "2026-08-20",
@@ -1409,24 +1426,6 @@
         "산업:반도체:strong",
         "산업:로봇:strong",
         "산업:데이터인프라:weak"
-      ]
-    },
-    {
-      "id": "2026-08-18-intraday-fe42fd9692",
-      "date": "2026-08-18",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-18T01:19:22+09:00",
-      "generated_label": "2026-08-18 01:19 KST",
-      "headline": "반도체 장비·메모리 강세 속 VIX 상승에 따른 경계감",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Micron(MU)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:로봇:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
