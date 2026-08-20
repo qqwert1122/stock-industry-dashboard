@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-20T15:52:53+09:00",
+  "updated_at": "2026-08-20T16:35:13+09:00",
   "cards": [
+    {
+      "id": "2026-08-20-intraday-53bfad38d8",
+      "date": "2026-08-20",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-20T16:35:13+09:00",
+      "generated_label": "2026-08-20 16:35 KST",
+      "headline": "원/달러 환율 하락과 에너지 가격 상승 속 시장 관망",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 원/달러 환율",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:weak",
+        "산업:화학/정유:strong",
+        "산업:바이오:strong"
+      ]
+    },
     {
       "id": "2026-08-20-intraday-c5f4750704",
       "date": "2026-08-20",
@@ -1405,24 +1423,6 @@
         "산업:반도체:strong",
         "산업:로봇:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-18-intraday-4d26b71604",
-      "date": "2026-08-18",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-18T03:27:23+09:00",
-      "generated_label": "2026-08-18 03:27 KST",
-      "headline": "미국 반도체 장비주 강세와 VIX 상승의 공존",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:로봇:strong",
-        "산업:데이터인프라:weak"
       ]
     }
   ]
