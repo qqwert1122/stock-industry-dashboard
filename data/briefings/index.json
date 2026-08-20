@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-21T00:57:52+09:00",
+  "updated_at": "2026-08-21T01:32:32+09:00",
   "cards": [
+    {
+      "id": "2026-08-21-intraday-6f8461e134",
+      "date": "2026-08-21",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-21T01:32:32+09:00",
+      "generated_label": "2026-08-21 01:32 KST",
+      "headline": "스테이블코인 강세와 VIX 급등, 시장 변동성 확대",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Circle(CRCL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:로봇:strong",
+        "산업:데이터인프라:weak"
+      ]
+    },
     {
       "id": "2026-08-21-intraday-b00fe97ddd",
       "date": "2026-08-21",
@@ -1399,24 +1417,6 @@
         "산업:데이터인프라:weak",
         "산업:전기차:weak",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-18-intraday-9cbe83375c",
-      "date": "2026-08-18",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-18T13:53:52+09:00",
-      "generated_label": "2026-08-18 13:53 KST",
-      "headline": "반도체 홀로 강세, 대형주 중심의 차익실현 압력",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:weak",
-        "산업:데이터인프라:weak"
       ]
     }
   ]
