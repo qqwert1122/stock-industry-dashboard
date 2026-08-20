@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-20T20:19:55+09:00",
+  "updated_at": "2026-08-20T20:51:23+09:00",
   "cards": [
+    {
+      "id": "2026-08-20-intraday-23719f6fb7",
+      "date": "2026-08-20",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-20T20:51:23+09:00",
+      "generated_label": "2026-08-20 20:51 KST",
+      "headline": "스테이블코인 강세와 반도체·금융의 약세 흐름",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Coinbase(COIN)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:반도체:weak",
+        "산업:은행/금융:weak"
+      ]
+    },
     {
       "id": "2026-08-20-intraday-fb111ee044",
       "date": "2026-08-20",
@@ -1403,24 +1421,6 @@
         "산업:스테이블코인:strong",
         "산업:로봇:strong",
         "산업:반도체:strong"
-      ]
-    },
-    {
-      "id": "2026-08-18-intraday-87d644c58b",
-      "date": "2026-08-18",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-18T06:48:34+09:00",
-      "generated_label": "2026-08-18 06:48 KST",
-      "headline": "자동차·배터리 주도 속 비트코인 반등과 시장 관망",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 비트코인",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:자동차:strong",
-        "산업:배터리:strong",
-        "산업:매크로:strong"
       ]
     }
   ]
