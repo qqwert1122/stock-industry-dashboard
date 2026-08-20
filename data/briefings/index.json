@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-20T18:58:57+09:00",
+  "updated_at": "2026-08-20T19:31:16+09:00",
   "cards": [
+    {
+      "id": "2026-08-20-intraday-fa06e8e978",
+      "date": "2026-08-20",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-20T19:31:16+09:00",
+      "generated_label": "2026-08-20 19:31 KST",
+      "headline": "스테이블코인 강세와 원/달러 환율 하락으로 보는 시장 변화",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Coinbase(COIN)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:자동차:strong",
+        "산업:은행/금융:weak"
+      ]
+    },
     {
       "id": "2026-08-20-intraday-cd6a6c7fa4",
       "date": "2026-08-20",
@@ -1403,24 +1421,6 @@
         "산업:자동차:strong",
         "산업:배터리:strong",
         "산업:화학/정유:strong"
-      ]
-    },
-    {
-      "id": "2026-08-18-intraday-e57a587f74",
-      "date": "2026-08-18",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-18T05:51:48+09:00",
-      "generated_label": "2026-08-18 05:51 KST",
-      "headline": "유가 급등과 위험 회피 심리 확산, 미국 증시 하방 압력",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: WTI 선물(CL)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:화학/정유:strong",
-        "산업:매크로:weak",
-        "산업:반도체:weak"
       ]
     }
   ]
