@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-21T02:54:57+09:00",
+  "updated_at": "2026-08-21T03:27:44+09:00",
   "cards": [
+    {
+      "id": "2026-08-21-intraday-05b356b799",
+      "date": "2026-08-21",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-21T03:27:44+09:00",
+      "generated_label": "2026-08-21 03:27 KST",
+      "headline": "스테이블코인 강세와 VIX 상승이 이끄는 미국장",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Coinbase(COIN)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:데이터인프라:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-21-intraday-5ddf58ab92",
       "date": "2026-08-21",
@@ -1399,24 +1417,6 @@
         "산업:매크로:weak",
         "산업:건설/부동산:weak",
         "산업:철강/소재:weak"
-      ]
-    },
-    {
-      "id": "2026-08-18-intraday-d8225c6b6f",
-      "date": "2026-08-18",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-18T16:06:01+09:00",
-      "generated_label": "2026-08-18 16:06 KST",
-      "headline": "반도체 주도권 다툼과 건설·스테이블코인 약세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: S&P 500",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:건설/부동산:weak",
-        "산업:스테이블코인:weak"
       ]
     }
   ]
