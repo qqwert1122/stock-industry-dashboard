@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-20T21:32:32+09:00",
+  "updated_at": "2026-08-20T22:40:42+09:00",
   "cards": [
+    {
+      "id": "2026-08-20-intraday-32f3e90074",
+      "date": "2026-08-20",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-20T22:40:42+09:00",
+      "generated_label": "2026-08-20 22:40 KST",
+      "headline": "VIX 급등과 외국인 순매도 지속, 시장 변동성 확대",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:매크로:weak",
+        "산업:반도체:weak"
+      ]
+    },
     {
       "id": "2026-08-20-intraday-4ac18ef4c0",
       "date": "2026-08-20",
@@ -1401,24 +1419,6 @@
         "산업:반도체:strong",
         "산업:매크로:weak",
         "산업:데이터인프라:weak"
-      ]
-    },
-    {
-      "id": "2026-08-18-intraday-b18d2ee8a5",
-      "date": "2026-08-18",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-18T10:24:55+09:00",
-      "generated_label": "2026-08-18 10:24 KST",
-      "headline": "반도체 대표주 급등에 코스피 2%대 강세",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:weak",
-        "산업:조선:weak"
       ]
     }
   ]
