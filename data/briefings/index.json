@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-08-21T22:39:26+09:00",
+  "updated_at": "2026-08-21T23:26:53+09:00",
   "cards": [
+    {
+      "id": "2026-08-21-intraday-c256fff36f",
+      "date": "2026-08-21",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-21T23:26:53+09:00",
+      "generated_label": "2026-08-21 23:26 KST",
+      "headline": "미국 반도체 약세와 스테이블코인 강세의 엇갈린 흐름",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥100 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:반도체:weak"
+      ]
+    },
     {
       "id": "2026-08-21-intraday-05e942159d",
       "date": "2026-08-21",
@@ -1395,24 +1412,6 @@
       "narrative_topics": [
         "산업:로봇:weak",
         "산업:반도체:weak",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-19-intraday-6e6e56e4ac",
-      "date": "2026-08-19",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-19T06:45:50+09:00",
-      "generated_label": "2026-08-19 06:45 KST",
-      "headline": "전기차·배터리 중심의 약세 흐름과 시장 관망",
-      "low_signal": true,
-      "session_label": "세션 외",
-      "gate_reason": "변화는 있으나 유의미성 낮음",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:전기차:weak",
-        "산업:배터리:weak",
         "산업:매크로:weak"
       ]
     }
