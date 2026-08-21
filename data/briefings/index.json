@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-22T00:56:53+09:00",
+  "updated_at": "2026-08-22T01:28:42+09:00",
   "cards": [
+    {
+      "id": "2026-08-22-intraday-09a1ce6944",
+      "date": "2026-08-22",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-22T01:28:42+09:00",
+      "generated_label": "2026-08-22 01:28 KST",
+      "headline": "비트코인 급등과 VIX 하락, 위험자산 선호 심리 회복",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 비트코인",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:반도체:weak",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-08-22-intraday-e407ae17b2",
       "date": "2026-08-22",
@@ -1395,24 +1413,6 @@
       "narrative_topics": [
         "산업:반도체:weak",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-19-intraday-5a5ab89520",
-      "date": "2026-08-19",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-19T11:42:01+09:00",
-      "generated_label": "2026-08-19 11:42 KST",
-      "headline": "반도체 대표주 급락에 코스피·코스닥 동반 하락",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak",
-        "산업:데이터인프라:weak"
       ]
     }
   ]
