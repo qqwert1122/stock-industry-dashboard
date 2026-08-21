@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-21T18:28:59+09:00",
+  "updated_at": "2026-08-21T19:01:08+09:00",
   "cards": [
+    {
+      "id": "2026-08-21-intraday-523869bc1a",
+      "date": "2026-08-21",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-21T19:01:08+09:00",
+      "generated_label": "2026-08-21 19:01 KST",
+      "headline": "스테이블코인 강세와 반도체 반등, 외국인 선물 수급 주목",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Circle(CRCL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:반도체:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-21-intraday-93c0fa374c",
       "date": "2026-08-21",
@@ -1388,24 +1406,6 @@
       "generated_at": "2026-08-19T04:06:44+09:00",
       "generated_label": "2026-08-19 04:06 KST",
       "headline": "반도체·로봇 동반 급락, 미국 증시 투자심리 위축",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Teradyne(TER)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:로봇:weak",
-        "산업:데이터인프라:strong"
-      ]
-    },
-    {
-      "id": "2026-08-19-intraday-6478306765",
-      "date": "2026-08-19",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-19T03:26:42+09:00",
-      "generated_label": "2026-08-19 03:26 KST",
-      "headline": "미국 반도체·로봇주 급락, 기술주 투자심리 위축",
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: Teradyne(TER)",
