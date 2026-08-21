@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-08-21T08:23:16+09:00",
+  "updated_at": "2026-08-21T10:35:57+09:00",
   "cards": [
+    {
+      "id": "2026-08-21-intraday-4c38275fa1",
+      "date": "2026-08-21",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-21T10:35:57+09:00",
+      "generated_label": "2026-08-21 10:35 KST",
+      "headline": "코스피 급등 속 반도체 주도, 코스닥은 약세",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-08-21-morning-32a3b72e14",
       "date": "2026-08-21",
@@ -1398,24 +1415,6 @@
       "narrative_topics": [
         "산업:반도체:weak",
         "산업:배터리:weak",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-18-intraday-cc4d3b3973",
-      "date": "2026-08-18",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-18T20:49:44+09:00",
-      "generated_label": "2026-08-18 20:49 KST",
-      "headline": "미국 증시 변동성 확대와 반도체·전기차 동반 약세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:전기차:weak",
         "산업:매크로:weak"
       ]
     }
