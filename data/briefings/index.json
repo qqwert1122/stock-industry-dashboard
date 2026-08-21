@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-08-21T13:42:15+09:00",
+  "updated_at": "2026-08-21T14:17:15+09:00",
   "cards": [
+    {
+      "id": "2026-08-21-intraday-a565086331",
+      "date": "2026-08-21",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-21T14:17:15+09:00",
+      "generated_label": "2026-08-21 14:17 KST",
+      "headline": "반도체 주도권 강화 속 외국인 수급 이탈 주의",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-21-intraday-6d4bf9c950",
       "date": "2026-08-21",
@@ -1390,24 +1407,6 @@
       "generated_at": "2026-08-19T00:37:11+09:00",
       "generated_label": "2026-08-19 00:37 KST",
       "headline": "미국 반도체 투심 위축과 VIX 급등으로 시장 경계감 확산",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:weak",
-        "산업:로봇:weak"
-      ]
-    },
-    {
-      "id": "2026-08-19-intraday-8a03658cf1",
-      "date": "2026-08-19",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-19T00:00:34+09:00",
-      "generated_label": "2026-08-19 00:00 KST",
-      "headline": "미국 반도체 투심 급랭과 VIX 급등으로 시장 변동성 확대",
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: VIX",
