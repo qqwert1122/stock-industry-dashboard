@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-08-21T12:53:21+09:00",
+  "updated_at": "2026-08-21T13:42:15+09:00",
   "cards": [
+    {
+      "id": "2026-08-21-intraday-6d4bf9c950",
+      "date": "2026-08-21",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-21T13:42:15+09:00",
+      "generated_label": "2026-08-21 13:42 KST",
+      "headline": "반도체 중심의 시장 방어와 외국인 수급 이탈 지속",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-21-intraday-c4cebbaa6d",
       "date": "2026-08-21",
@@ -1399,22 +1416,6 @@
         "산업:반도체:weak",
         "산업:데이터인프라:weak",
         "산업:로봇:weak"
-      ]
-    },
-    {
-      "id": "2026-08-18-intraday-cd8b600ed2",
-      "date": "2026-08-18",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-18T23:04:46+09:00",
-      "generated_label": "2026-08-18 23:04 KST",
-      "headline": "데이터인프라 약세 흐름이 두드러집니다.",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체"
       ]
     }
   ]
