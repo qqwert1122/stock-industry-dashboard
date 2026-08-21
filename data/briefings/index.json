@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-08-21T11:49:26+09:00",
+  "updated_at": "2026-08-21T12:53:21+09:00",
   "cards": [
+    {
+      "id": "2026-08-21-intraday-c4cebbaa6d",
+      "date": "2026-08-21",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-21T12:53:21+09:00",
+      "generated_label": "2026-08-21 12:53 KST",
+      "headline": "반도체 중심의 차별화 장세와 외국인 수급 이탈",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 쎄트렉아이(099320.KQ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-21-intraday-eb1cdce63e",
       "date": "2026-08-21",
@@ -1398,24 +1415,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체"
-      ]
-    },
-    {
-      "id": "2026-08-18-intraday-ff0cf7b782",
-      "date": "2026-08-18",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-18T22:25:44+09:00",
-      "generated_label": "2026-08-18 22:25 KST",
-      "headline": "미국 증시 변동성 확대와 기술주 중심의 차익실현",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:배터리:weak",
-        "산업:매크로:weak"
       ]
     }
   ]
