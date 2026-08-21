@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-21T19:55:55+09:00",
+  "updated_at": "2026-08-21T20:19:10+09:00",
   "cards": [
+    {
+      "id": "2026-08-21-intraday-3bed70759e",
+      "date": "2026-08-21",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-21T20:19:10+09:00",
+      "generated_label": "2026-08-21 20:19 KST",
+      "headline": "비트코인 급등과 반도체 반등, 시장 위험선호 회복",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 비트코인",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:반도체:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-08-21-intraday-74d7345834",
       "date": "2026-08-21",
@@ -1396,24 +1414,6 @@
         "산업:반도체:weak",
         "산업:데이터인프라:weak",
         "산업:로봇:strong"
-      ]
-    },
-    {
-      "id": "2026-08-19-intraday-ef3f447729",
-      "date": "2026-08-19",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-19T04:47:47+09:00",
-      "generated_label": "2026-08-19 04:47 KST",
-      "headline": "반도체·로봇 동반 급락, 미국 증시 투자심리 위축",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Teradyne(TER)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:로봇:weak",
-        "산업:데이터인프라:strong"
       ]
     }
   ]
