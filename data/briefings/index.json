@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-21T20:19:10+09:00",
+  "updated_at": "2026-08-21T20:50:28+09:00",
   "cards": [
+    {
+      "id": "2026-08-21-intraday-7090bf2e33",
+      "date": "2026-08-21",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-21T20:50:28+09:00",
+      "generated_label": "2026-08-21 20:50 KST",
+      "headline": "스테이블코인 강세와 방산·우주 약세의 교차",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 비트코인",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:방산:weak",
+        "산업:우주:weak"
+      ]
+    },
     {
       "id": "2026-08-21-intraday-3bed70759e",
       "date": "2026-08-21",
@@ -1396,24 +1414,6 @@
         "산업:반도체:weak",
         "산업:데이터인프라:weak",
         "산업:로봇:weak"
-      ]
-    },
-    {
-      "id": "2026-08-19-intraday-45b2b3b156",
-      "date": "2026-08-19",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-19T05:15:11+09:00",
-      "generated_label": "2026-08-19 05:15 KST",
-      "headline": "미국 증시 변동성 확대와 기술주 투자심리 위축",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:weak",
-        "산업:로봇:strong"
       ]
     }
   ]
