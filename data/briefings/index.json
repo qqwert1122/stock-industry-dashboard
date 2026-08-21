@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-21T23:26:53+09:00",
+  "updated_at": "2026-08-22T00:02:24+09:00",
   "cards": [
+    {
+      "id": "2026-08-22-intraday-7cc9a26bd7",
+      "date": "2026-08-22",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-22T00:02:24+09:00",
+      "generated_label": "2026-08-22 00:02 KST",
+      "headline": "비트코인 급등과 VIX 하락, 위험자산 선호 심리 회복",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 비트코인",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:반도체:weak",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-08-21-intraday-c256fff36f",
       "date": "2026-08-21",
@@ -1394,24 +1412,6 @@
       "narrative_topics": [
         "산업:반도체:weak",
         "산업:방산:strong",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-19-morning-e443bdf4aa",
-      "date": "2026-08-19",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-08-19T08:19:43+09:00",
-      "generated_label": "2026-08-19 08:19 KST",
-      "headline": "로봇·반도체 중심의 차익실현과 미국 금리 상승 압력",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:로봇:weak",
-        "산업:반도체:weak",
         "산업:매크로:weak"
       ]
     }
