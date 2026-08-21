@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-21T21:31:20+09:00",
+  "updated_at": "2026-08-21T22:39:26+09:00",
   "cards": [
+    {
+      "id": "2026-08-21-intraday-05e942159d",
+      "date": "2026-08-21",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-21T22:39:26+09:00",
+      "generated_label": "2026-08-21 22:39 KST",
+      "headline": "스테이블코인 강세와 미국 증시 변동성 완화",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Circle(CRCL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:자동차:strong",
+        "산업:방산:weak"
+      ]
+    },
     {
       "id": "2026-08-21-intraday-4e44d378f5",
       "date": "2026-08-21",
@@ -1395,24 +1413,6 @@
       "narrative_topics": [
         "산업:전기차:weak",
         "산업:배터리:weak",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-19-intraday-8d883fe2b6",
-      "date": "2026-08-19",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-19T06:16:22+09:00",
-      "generated_label": "2026-08-19 06:16 KST",
-      "headline": "구리 선물 급락과 나스닥 선물 약세로 투자심리 위축",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 구리 선물(HG)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:철강/소재:weak",
-        "산업:반도체:weak",
         "산업:매크로:weak"
       ]
     }
