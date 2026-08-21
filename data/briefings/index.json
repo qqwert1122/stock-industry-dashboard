@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-22T06:46:30+09:00",
+  "updated_at": "2026-08-22T08:21:21+09:00",
   "cards": [
+    {
+      "id": "2026-08-22-morning-9f80962b58",
+      "date": "2026-08-22",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-08-22T08:21:21+09:00",
+      "generated_label": "2026-08-22 08:21 KST",
+      "headline": "스테이블코인 강세와 방산·우주 약세의 교차",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:방산:weak",
+        "산업:우주:weak"
+      ]
+    },
     {
       "id": "2026-08-22-intraday-3a3ea5f4c4",
       "date": "2026-08-22",
@@ -1399,24 +1417,6 @@
         "산업:반도체:weak",
         "산업:전력:weak",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-19-intraday-0bab25af3b",
-      "date": "2026-08-19",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-19T19:24:32+09:00",
-      "generated_label": "2026-08-19 19:24 KST",
-      "headline": "건설·방산 강세 속 반도체·자동차 약세 지속",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Rocket Lab(RKLB)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:건설/부동산:strong",
-        "산업:방산:strong",
-        "산업:반도체:weak"
       ]
     }
   ]
