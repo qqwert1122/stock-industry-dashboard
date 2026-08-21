@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-22T04:45:35+09:00",
+  "updated_at": "2026-08-22T05:16:53+09:00",
   "cards": [
+    {
+      "id": "2026-08-22-intraday-1a45417978",
+      "date": "2026-08-22",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-22T05:16:53+09:00",
+      "generated_label": "2026-08-22 05:16 KST",
+      "headline": "비트코인 급등과 VIX 하락, 위험선호 심리 회복",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 비트코인",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:매크로:strong",
+        "산업:반도체:weak"
+      ]
+    },
     {
       "id": "2026-08-22-intraday-1243f24897",
       "date": "2026-08-22",
@@ -1398,24 +1416,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체"
-      ]
-    },
-    {
-      "id": "2026-08-19-intraday-5361a084ba",
-      "date": "2026-08-19",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-19T16:32:15+09:00",
-      "generated_label": "2026-08-19 16:32 KST",
-      "headline": "반도체 약세 지속과 환율 하락 속 시장 관망",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Intel(INTC)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:방산:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
