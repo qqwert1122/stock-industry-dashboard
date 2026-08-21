@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-22T01:28:42+09:00",
+  "updated_at": "2026-08-22T02:01:38+09:00",
   "cards": [
+    {
+      "id": "2026-08-22-intraday-9f227dc00c",
+      "date": "2026-08-22",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-22T02:01:38+09:00",
+      "generated_label": "2026-08-22 02:01 KST",
+      "headline": "비트코인 급등과 VIX 하락, 위험자산 선호 심리 회복",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 비트코인",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:매크로:strong",
+        "산업:반도체:weak"
+      ]
+    },
     {
       "id": "2026-08-22-intraday-09a1ce6944",
       "date": "2026-08-22",
@@ -1389,23 +1407,6 @@
       "generated_at": "2026-08-19T13:22:08+09:00",
       "generated_label": "2026-08-19 13:22 KST",
       "headline": "반도체 대표주 급락에 코스피·코스닥 동반 하락",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: SK하이닉스(000660.KS)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-19-intraday-bd496368bf",
-      "date": "2026-08-19",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-19T12:31:26+09:00",
-      "generated_label": "2026-08-19 12:31 KST",
-      "headline": "반도체 대표주 급락에 코스피 5%대 하락",
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "유의미한 변화: SK하이닉스(000660.KS)",
