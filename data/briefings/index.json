@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-24T10:39:11+09:00",
+  "updated_at": "2026-08-24T11:52:24+09:00",
   "cards": [
+    {
+      "id": "2026-08-24-intraday-8a7c9be23e",
+      "date": "2026-08-24",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-24T11:52:24+09:00",
+      "generated_label": "2026-08-24 11:52 KST",
+      "headline": "삼성전자 급락에 코스피 하락, 이차전지·소재는 반등",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:전기차:strong",
+        "산업:철강/소재:strong"
+      ]
+    },
     {
       "id": "2026-08-24-intraday-4db03be6ae",
       "date": "2026-08-24",
@@ -1398,24 +1416,6 @@
         "산업:건설/부동산:strong",
         "산업:스테이블코인:strong",
         "산업:데이터인프라:weak"
-      ]
-    },
-    {
-      "id": "2026-08-19-intraday-32c375135c",
-      "date": "2026-08-19",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-19T21:30:42+09:00",
-      "generated_label": "2026-08-19 21:30 KST",
-      "headline": "건설·방산 강세 속 자동차·우주 약세, 환율 하락 주목",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Rocket Lab(RKLB)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:건설/부동산:strong",
-        "산업:방산:strong",
-        "산업:자동차:weak"
       ]
     }
   ]
