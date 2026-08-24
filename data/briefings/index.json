@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-24T22:46:53+09:00",
+  "updated_at": "2026-08-24T23:37:26+09:00",
   "cards": [
+    {
+      "id": "2026-08-24-intraday-86f8110a70",
+      "date": "2026-08-24",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-24T23:37:26+09:00",
+      "generated_label": "2026-08-24 23:37 KST",
+      "headline": "반도체 약세와 VIX 상승, 미국 증시 조정 압력",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Micron(MU)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:데이터인프라:strong",
+        "산업:스테이블코인:strong"
+      ]
+    },
     {
       "id": "2026-08-24-intraday-0a61fce46b",
       "date": "2026-08-24",
@@ -1401,22 +1419,6 @@
         "산업:스테이블코인:strong",
         "산업:매크로:strong",
         "산업:반도체:weak"
-      ]
-    },
-    {
-      "id": "2026-08-20-intraday-3443d48ac6",
-      "date": "2026-08-20",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-20T06:19:07+09:00",
-      "generated_label": "2026-08-20 06:19 KST",
-      "headline": "건설/부동산 주도 흐름이 두드러집니다.",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 이더리움",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체"
       ]
     }
   ]
