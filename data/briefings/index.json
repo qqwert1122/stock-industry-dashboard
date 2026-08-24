@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-24T08:19:02+09:00",
+  "updated_at": "2026-08-24T10:39:11+09:00",
   "cards": [
+    {
+      "id": "2026-08-24-intraday-4db03be6ae",
+      "date": "2026-08-24",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-24T10:39:11+09:00",
+      "generated_label": "2026-08-24 10:39 KST",
+      "headline": "코스닥 반등 속 삼성전자 급락, 반도체와 2차전지 차별화",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:전기차:strong",
+        "산업:철강/소재:strong"
+      ]
+    },
     {
       "id": "2026-08-24-morning-cb6fb0471f",
       "date": "2026-08-24",
@@ -1398,24 +1416,6 @@
         "산업:건설/부동산:strong",
         "산업:방산:strong",
         "산업:자동차:weak"
-      ]
-    },
-    {
-      "id": "2026-08-19-intraday-42ef28b765",
-      "date": "2026-08-19",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-19T20:48:43+09:00",
-      "generated_label": "2026-08-19 20:48 KST",
-      "headline": "바이오 강세 속 반도체·로봇 약세 지속",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Rocket Lab(RKLB)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:바이오:strong",
-        "산업:로봇:weak",
-        "산업:반도체:weak"
       ]
     }
   ]
