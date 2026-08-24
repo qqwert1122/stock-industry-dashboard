@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-24T12:59:31+09:00",
+  "updated_at": "2026-08-24T13:57:27+09:00",
   "cards": [
+    {
+      "id": "2026-08-24-intraday-31318bb5d2",
+      "date": "2026-08-24",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-24T13:57:27+09:00",
+      "generated_label": "2026-08-24 13:57 KST",
+      "headline": "삼성전자 급락에 코스피 3%대 하락, 이차전지·소재는 반등",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 삼성전자(005930.KS)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:전기차:strong",
+        "산업:철강/소재:strong"
+      ]
+    },
     {
       "id": "2026-08-24-intraday-82d5171c0f",
       "date": "2026-08-24",
@@ -1393,24 +1411,6 @@
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: 나스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:스테이블코인:strong",
-        "산업:로봇:strong"
-      ]
-    },
-    {
-      "id": "2026-08-19-intraday-d8cfb026c4",
-      "date": "2026-08-19",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-19T23:05:50+09:00",
-      "generated_label": "2026-08-19 23:05 KST",
-      "headline": "반도체 약세 속 스테이블코인 강세, 미국장 변동성 확대",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥100 선물",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:weak",
