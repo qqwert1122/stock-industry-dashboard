@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-24T11:52:24+09:00",
+  "updated_at": "2026-08-24T12:59:31+09:00",
   "cards": [
+    {
+      "id": "2026-08-24-intraday-82d5171c0f",
+      "date": "2026-08-24",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-24T12:59:31+09:00",
+      "generated_label": "2026-08-24 12:59 KST",
+      "headline": "반도체 투매 속 2차전지·소재로의 수급 이동",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:전기차:strong",
+        "산업:철강/소재:strong"
+      ]
+    },
     {
       "id": "2026-08-24-intraday-8a7c9be23e",
       "date": "2026-08-24",
@@ -1398,24 +1416,6 @@
         "산업:반도체:weak",
         "산업:스테이블코인:strong",
         "산업:로봇:strong"
-      ]
-    },
-    {
-      "id": "2026-08-19-intraday-d56081ae1e",
-      "date": "2026-08-19",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-19T22:26:56+09:00",
-      "generated_label": "2026-08-19 22:26 KST",
-      "headline": "금 선물 급등과 환율 하락, 건설·부동산 주도",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 금 선물",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:건설/부동산:strong",
-        "산업:스테이블코인:strong",
-        "산업:데이터인프라:weak"
       ]
     }
   ]
