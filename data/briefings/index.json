@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-26T05:54:22+09:00",
+  "updated_at": "2026-08-26T06:20:38+09:00",
   "cards": [
+    {
+      "id": "2026-08-26-intraday-354f0004e5",
+      "date": "2026-08-26",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-26T06:20:38+09:00",
+      "generated_label": "2026-08-26 06:20 KST",
+      "headline": "국제 유가 급락과 반도체·전기차의 엇갈린 흐름",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:화학/정유:weak",
+        "산업:반도체:strong",
+        "산업:전기차:weak"
+      ]
+    },
     {
       "id": "2026-08-26-intraday-32268a29bc",
       "date": "2026-08-26",
@@ -1416,24 +1434,6 @@
         "산업:스테이블코인:strong",
         "산업:우주:weak",
         "산업:건설/부동산:weak"
-      ]
-    },
-    {
-      "id": "2026-08-21-intraday-7763be82b8",
-      "date": "2026-08-21",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-21T16:02:17+09:00",
-      "generated_label": "2026-08-21 16:02 KST",
-      "headline": "비트코인 급등과 한국 증시 외국인 수급 변화",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 비트코인",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:strong",
-        "산업:스테이블코인:strong",
-        "산업:방산:weak"
       ]
     }
   ]
