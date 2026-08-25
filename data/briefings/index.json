@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-25T14:49:02+09:00",
+  "updated_at": "2026-08-25T15:54:32+09:00",
   "cards": [
+    {
+      "id": "2026-08-25-intraday-77777848e5",
+      "date": "2026-08-25",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-25T15:54:32+09:00",
+      "generated_label": "2026-08-25 15:54 KST",
+      "headline": "코스닥 반등과 금융주 강세, 건설업종의 뚜렷한 회복",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:건설/부동산:strong",
+        "산업:은행/금융:strong",
+        "산업:전기차:weak"
+      ]
+    },
     {
       "id": "2026-08-25-intraday-93d7639f0e",
       "date": "2026-08-25",
@@ -1410,24 +1428,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체"
-      ]
-    },
-    {
-      "id": "2026-08-20-intraday-f857cb2684",
-      "date": "2026-08-20",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-20T23:28:16+09:00",
-      "generated_label": "2026-08-20 23:28 KST",
-      "headline": "미국 증시 변동성 확대와 스테이블코인 강세",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:데이터인프라:weak",
-        "산업:반도체:strong"
       ]
     }
   ]
