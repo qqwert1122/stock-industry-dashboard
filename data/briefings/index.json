@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-26T04:54:10+09:00",
+  "updated_at": "2026-08-26T05:20:13+09:00",
   "cards": [
+    {
+      "id": "2026-08-26-intraday-4ee7c6a458",
+      "date": "2026-08-26",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-26T05:20:13+09:00",
+      "generated_label": "2026-08-26 05:20 KST",
+      "headline": "유가 급락과 NVIDIA 실적 대기 속 미국장 강보합",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:화학/정유:weak",
+        "산업:반도체:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-08-26-intraday-ead8612e35",
       "date": "2026-08-26",
@@ -1411,23 +1429,6 @@
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "유의미한 변화: 비트코인",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-21-intraday-a565086331",
-      "date": "2026-08-21",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-21T14:17:15+09:00",
-      "generated_label": "2026-08-21 14:17 KST",
-      "headline": "반도체 주도권 강화 속 외국인 수급 이탈 주의",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스닥",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:strong",
