@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-25T12:34:02+09:00",
+  "updated_at": "2026-08-25T13:24:23+09:00",
   "cards": [
+    {
+      "id": "2026-08-25-intraday-db3fc42ce4",
+      "date": "2026-08-25",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-25T13:24:23+09:00",
+      "generated_label": "2026-08-25 13:24 KST",
+      "headline": "코스피·코스닥 동반 상승 속 반도체 약세 지속",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:strong",
+        "산업:건설/부동산:strong"
+      ]
+    },
     {
       "id": "2026-08-25-intraday-62e3fd60bd",
       "date": "2026-08-25",
@@ -1408,24 +1426,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체"
-      ]
-    },
-    {
-      "id": "2026-08-20-intraday-23719f6fb7",
-      "date": "2026-08-20",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-20T20:51:23+09:00",
-      "generated_label": "2026-08-20 20:51 KST",
-      "headline": "스테이블코인 강세와 반도체·금융의 약세 흐름",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Coinbase(COIN)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:반도체:weak",
-        "산업:은행/금융:weak"
       ]
     }
   ]
