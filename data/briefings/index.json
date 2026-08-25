@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-25T20:52:58+09:00",
+  "updated_at": "2026-08-25T21:33:20+09:00",
   "cards": [
+    {
+      "id": "2026-08-25-intraday-a67c23a14a",
+      "date": "2026-08-25",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-25T21:33:20+09:00",
+      "generated_label": "2026-08-25 21:33 KST",
+      "headline": "국제 유가 급락과 반도체 반등 속 건설·전력주 강세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:건설/부동산:strong",
+        "산업:전력:strong",
+        "산업:반도체:strong"
+      ]
+    },
     {
       "id": "2026-08-25-intraday-86d12781c5",
       "date": "2026-08-25",
@@ -1412,24 +1430,6 @@
         "산업:반도체:strong",
         "산업:스테이블코인:strong",
         "산업:로봇:weak"
-      ]
-    },
-    {
-      "id": "2026-08-21-intraday-c199781e33",
-      "date": "2026-08-21",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-21T04:54:16+09:00",
-      "generated_label": "2026-08-21 04:54 KST",
-      "headline": "스테이블코인 강세 속 미국 증시 변동성 확대",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Coinbase(COIN)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:로봇:strong",
-        "산업:데이터인프라:weak"
       ]
     }
   ]
