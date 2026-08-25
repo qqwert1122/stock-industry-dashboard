@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-08-25T22:42:40+09:00",
+  "updated_at": "2026-08-25T23:37:33+09:00",
   "cards": [
+    {
+      "id": "2026-08-25-intraday-36b4ee75cb",
+      "date": "2026-08-25",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-25T23:37:33+09:00",
+      "generated_label": "2026-08-25 23:37 KST",
+      "headline": "스테이블코인·반도체 강세 속 NVIDIA 실적 대기",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Albemarle(ALB)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:반도체:strong"
+      ]
+    },
     {
       "id": "2026-08-25-intraday-64de5c4856",
       "date": "2026-08-25",
@@ -1412,24 +1429,6 @@
         "산업:바이오:strong",
         "산업:전력:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-21-intraday-37af08c9c5",
-      "date": "2026-08-21",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-21T05:54:59+09:00",
-      "generated_label": "2026-08-21 05:54 KST",
-      "headline": "미국 증시 변동성 확대와 반도체 약세 흐름",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:strong",
-        "산업:로봇:strong"
       ]
     }
   ]
