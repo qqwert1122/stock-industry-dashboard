@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-26T04:09:10+09:00",
+  "updated_at": "2026-08-26T04:54:10+09:00",
   "cards": [
+    {
+      "id": "2026-08-26-intraday-ead8612e35",
+      "date": "2026-08-26",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-26T04:54:10+09:00",
+      "generated_label": "2026-08-26 04:54 KST",
+      "headline": "반도체·스테이블코인 주도 속 NVIDIA 실적 대기",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Albemarle(ALB)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:스테이블코인:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-08-26-intraday-b6b81c8da7",
       "date": "2026-08-26",
@@ -1410,23 +1428,6 @@
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "유의미한 변화: 코스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-21-intraday-6d4bf9c950",
-      "date": "2026-08-21",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-21T13:42:15+09:00",
-      "generated_label": "2026-08-21 13:42 KST",
-      "headline": "반도체 중심의 시장 방어와 외국인 수급 이탈 지속",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:strong",
