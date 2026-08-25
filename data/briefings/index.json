@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-08-25T11:47:44+09:00",
+  "updated_at": "2026-08-25T12:34:02+09:00",
   "cards": [
+    {
+      "id": "2026-08-25-intraday-62e3fd60bd",
+      "date": "2026-08-25",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-25T12:34:02+09:00",
+      "generated_label": "2026-08-25 12:34 KST",
+      "headline": "반도체 약세 지속과 외국인 순매도에 따른 시장 조정",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: SK하이닉스(000660.KS)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-25-intraday-b0892306d3",
       "date": "2026-08-25",
@@ -1409,24 +1426,6 @@
         "산업:스테이블코인:strong",
         "산업:반도체:weak",
         "산업:은행/금융:weak"
-      ]
-    },
-    {
-      "id": "2026-08-20-intraday-fb111ee044",
-      "date": "2026-08-20",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-20T20:19:55+09:00",
-      "generated_label": "2026-08-20 20:19 KST",
-      "headline": "스테이블코인 강세와 건설/부동산 약세의 교차",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Coinbase(COIN)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:건설/부동산:weak",
-        "산업:매크로:weak"
       ]
     }
   ]
