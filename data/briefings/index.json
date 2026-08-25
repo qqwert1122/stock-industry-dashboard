@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-25T18:28:05+09:00",
+  "updated_at": "2026-08-25T19:00:45+09:00",
   "cards": [
+    {
+      "id": "2026-08-25-intraday-5c754b3d25",
+      "date": "2026-08-25",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-25T19:00:45+09:00",
+      "generated_label": "2026-08-25 19:00 KST",
+      "headline": "유가 급락과 반도체 반등, 내일 한국장 주목",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:화학/정유:weak",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-08-25-intraday-5b559cdb9c",
       "date": "2026-08-25",
@@ -1403,24 +1421,6 @@
       "card_type_label": "장중",
       "generated_at": "2026-08-21T02:54:57+09:00",
       "generated_label": "2026-08-21 02:54 KST",
-      "headline": "스테이블코인 강세와 VIX 상승이 공존하는 미국장",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Coinbase(COIN)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:데이터인프라:weak",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-21-intraday-28d7045dbf",
-      "date": "2026-08-21",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-21T02:22:16+09:00",
-      "generated_label": "2026-08-21 02:22 KST",
       "headline": "스테이블코인 강세와 VIX 상승이 공존하는 미국장",
       "low_signal": false,
       "session_label": "미국장",
