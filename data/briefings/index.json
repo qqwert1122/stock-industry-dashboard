@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-25T14:06:26+09:00",
+  "updated_at": "2026-08-25T14:49:02+09:00",
   "cards": [
+    {
+      "id": "2026-08-25-intraday-93d7639f0e",
+      "date": "2026-08-25",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-25T14:49:02+09:00",
+      "generated_label": "2026-08-25 14:49 KST",
+      "headline": "건설·전력주 강세 속 코스피 반등, 외국인 수급은 여전히 부담",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:건설/부동산:strong",
+        "산업:전력:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-25-intraday-4923b85b6f",
       "date": "2026-08-25",
@@ -1410,24 +1428,6 @@
         "산업:스테이블코인:strong",
         "산업:데이터인프라:weak",
         "산업:반도체:strong"
-      ]
-    },
-    {
-      "id": "2026-08-20-intraday-32f3e90074",
-      "date": "2026-08-20",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-20T22:40:42+09:00",
-      "generated_label": "2026-08-20 22:40 KST",
-      "headline": "VIX 급등과 외국인 순매도 지속, 시장 변동성 확대",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:매크로:weak",
-        "산업:반도체:weak"
       ]
     }
   ]
