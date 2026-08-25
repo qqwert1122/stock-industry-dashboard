@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-25T10:26:43+09:00",
+  "updated_at": "2026-08-25T11:47:44+09:00",
   "cards": [
+    {
+      "id": "2026-08-25-intraday-b0892306d3",
+      "date": "2026-08-25",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-25T11:47:44+09:00",
+      "generated_label": "2026-08-25 11:47 KST",
+      "headline": "반도체 약세 속 현대건설의 이례적 급등과 수급 변화",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 현대건설(000720.KS)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:건설/부동산:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-25-intraday-c576a9337c",
       "date": "2026-08-25",
@@ -1409,24 +1427,6 @@
         "산업:스테이블코인:strong",
         "산업:건설/부동산:weak",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-20-intraday-fa06e8e978",
-      "date": "2026-08-20",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-20T19:31:16+09:00",
-      "generated_label": "2026-08-20 19:31 KST",
-      "headline": "스테이블코인 강세와 원/달러 환율 하락으로 보는 시장 변화",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Coinbase(COIN)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:자동차:strong",
-        "산업:은행/금융:weak"
       ]
     }
   ]
