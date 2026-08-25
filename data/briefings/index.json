@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-08-25T08:20:18+09:00",
+  "updated_at": "2026-08-25T10:26:43+09:00",
   "cards": [
+    {
+      "id": "2026-08-25-intraday-c576a9337c",
+      "date": "2026-08-25",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-25T10:26:43+09:00",
+      "generated_label": "2026-08-25 10:26 KST",
+      "headline": "반도체 약세 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체",
+        "산업:데이터인프라"
+      ]
+    },
     {
       "id": "2026-08-25-morning-9a50b03617",
       "date": "2026-08-25",
@@ -1410,22 +1427,6 @@
         "산업:스테이블코인:strong",
         "산업:자동차:strong",
         "산업:은행/금융:weak"
-      ]
-    },
-    {
-      "id": "2026-08-20-intraday-cd6a6c7fa4",
-      "date": "2026-08-20",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-20T18:58:57+09:00",
-      "generated_label": "2026-08-20 18:58 KST",
-      "headline": "스테이블코인 주도 흐름이 두드러집니다.",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Circle(CRCL)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체"
       ]
     }
   ]
