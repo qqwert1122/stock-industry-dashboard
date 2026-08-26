@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-26T13:45:31+09:00",
+  "updated_at": "2026-08-26T14:18:56+09:00",
   "cards": [
+    {
+      "id": "2026-08-26-intraday-0655246444",
+      "date": "2026-08-26",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-26T14:18:56+09:00",
+      "generated_label": "2026-08-26 14:18 KST",
+      "headline": "반도체 중심의 시장 반등과 건설·전력주의 강세",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 현대건설(000720.KS)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:건설/부동산:strong",
+        "산업:전력:strong"
+      ]
+    },
     {
       "id": "2026-08-26-intraday-3f9e0783eb",
       "date": "2026-08-26",
@@ -1416,24 +1434,6 @@
         "산업:스테이블코인:strong",
         "산업:은행/금융:strong",
         "산업:화학/정유:weak"
-      ]
-    },
-    {
-      "id": "2026-08-21-intraday-7090bf2e33",
-      "date": "2026-08-21",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-21T20:50:28+09:00",
-      "generated_label": "2026-08-21 20:50 KST",
-      "headline": "스테이블코인 강세와 방산·우주 약세의 교차",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 비트코인",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:방산:weak",
-        "산업:우주:weak"
       ]
     }
   ]
