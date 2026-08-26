@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-27T01:12:23+09:00",
+  "updated_at": "2026-08-27T03:11:29+09:00",
   "cards": [
+    {
+      "id": "2026-08-27-intraday-95b9499a48",
+      "date": "2026-08-27",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-27T03:11:29+09:00",
+      "generated_label": "2026-08-27 03:11 KST",
+      "headline": "미국 증시 관망세 속 바이오·스테이블코인 약세",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Eli Lilly(LLY)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:바이오:weak",
+        "산업:스테이블코인:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-27-intraday-f8c91f07c9",
       "date": "2026-08-27",
@@ -1416,24 +1434,6 @@
         "산업:스테이블코인:strong",
         "산업:매크로:strong",
         "산업:방산:weak"
-      ]
-    },
-    {
-      "id": "2026-08-22-intraday-ef644c0949",
-      "date": "2026-08-22",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-22T05:46:58+09:00",
-      "generated_label": "2026-08-22 05:46 KST",
-      "headline": "비트코인 급등과 VIX 하락, 위험자산 선호 심리 회복",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 비트코인",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:매크로:strong",
-        "산업:반도체:weak"
       ]
     }
   ]
