@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-26T16:40:05+09:00",
+  "updated_at": "2026-08-26T17:34:47+09:00",
   "cards": [
+    {
+      "id": "2026-08-26-intraday-5413f08c5a",
+      "date": "2026-08-26",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-26T17:34:47+09:00",
+      "generated_label": "2026-08-26 17:34 KST",
+      "headline": "에너지 가격 급락과 건설·전력 인프라의 강세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:건설/부동산:strong",
+        "산업:전력:strong",
+        "산업:화학/정유:weak"
+      ]
+    },
     {
       "id": "2026-08-26-intraday-325b2613f5",
       "date": "2026-08-26",
@@ -1407,24 +1425,6 @@
       "card_type_label": "장중",
       "generated_at": "2026-08-22T00:56:53+09:00",
       "generated_label": "2026-08-22 00:56 KST",
-      "headline": "비트코인 급등과 VIX 하락, 위험자산 선호 심리 회복",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 비트코인",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:반도체:weak",
-        "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-08-22-intraday-7cc9a26bd7",
-      "date": "2026-08-22",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-22T00:02:24+09:00",
-      "generated_label": "2026-08-22 00:02 KST",
       "headline": "비트코인 급등과 VIX 하락, 위험자산 선호 심리 회복",
       "low_signal": false,
       "session_label": "미국장",
