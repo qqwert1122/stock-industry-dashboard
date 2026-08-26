@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-26T22:47:56+09:00",
+  "updated_at": "2026-08-26T23:37:37+09:00",
   "cards": [
+    {
+      "id": "2026-08-26-intraday-5e752420f8",
+      "date": "2026-08-26",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-26T23:37:37+09:00",
+      "generated_label": "2026-08-26 23:37 KST",
+      "headline": "유가 급락과 로봇주 약세, 내일 한국장 경계감",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:로봇:weak",
+        "산업:화학/정유:weak",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-08-26-intraday-e6dd269de6",
       "date": "2026-08-26",
@@ -1416,24 +1434,6 @@
         "산업:스테이블코인:strong",
         "산업:매크로:strong",
         "산업:반도체:weak"
-      ]
-    },
-    {
-      "id": "2026-08-22-intraday-1243f24897",
-      "date": "2026-08-22",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-22T04:45:35+09:00",
-      "generated_label": "2026-08-22 04:45 KST",
-      "headline": "비트코인 급등과 VIX 하락, 위험자산 선호 심리 회복",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 비트코인",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:반도체:weak",
-        "산업:매크로:strong"
       ]
     }
   ]
