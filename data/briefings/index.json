@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-26T16:10:37+09:00",
+  "updated_at": "2026-08-26T16:40:05+09:00",
   "cards": [
+    {
+      "id": "2026-08-26-intraday-325b2613f5",
+      "date": "2026-08-26",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-26T16:40:05+09:00",
+      "generated_label": "2026-08-26 16:40 KST",
+      "headline": "유가 급락과 엔비디아 실적 대기 속 시장 관망",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:화학/정유:weak",
+        "산업:데이터인프라:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-26-intraday-ab3f6113db",
       "date": "2026-08-26",
@@ -1416,23 +1434,6 @@
         "산업:스테이블코인:strong",
         "산업:반도체:weak",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-08-21-intraday-c256fff36f",
-      "date": "2026-08-21",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-21T23:26:53+09:00",
-      "generated_label": "2026-08-21 23:26 KST",
-      "headline": "미국 반도체 약세와 스테이블코인 강세의 엇갈린 흐름",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥100 선물",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:반도체:weak"
       ]
     }
   ]
