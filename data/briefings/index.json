@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-08-26T15:01:04+09:00",
+  "updated_at": "2026-08-26T16:10:37+09:00",
   "cards": [
+    {
+      "id": "2026-08-26-intraday-ab3f6113db",
+      "date": "2026-08-26",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-26T16:10:37+09:00",
+      "generated_label": "2026-08-26 16:10 KST",
+      "headline": "스테이블코인 주도 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:화학/정유",
+        "산업:매크로"
+      ]
+    },
     {
       "id": "2026-08-26-intraday-448d91c94f",
       "date": "2026-08-26",
@@ -1416,24 +1433,6 @@
       "narrative_topics": [
         "산업:스테이블코인:strong",
         "산업:반도체:weak"
-      ]
-    },
-    {
-      "id": "2026-08-21-intraday-05e942159d",
-      "date": "2026-08-21",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-21T22:39:26+09:00",
-      "generated_label": "2026-08-21 22:39 KST",
-      "headline": "스테이블코인 강세와 미국 증시 변동성 완화",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Circle(CRCL)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:자동차:strong",
-        "산업:방산:weak"
       ]
     }
   ]
