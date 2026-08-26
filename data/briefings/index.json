@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-26T23:37:37+09:00",
+  "updated_at": "2026-08-27T01:12:23+09:00",
   "cards": [
+    {
+      "id": "2026-08-27-intraday-f8c91f07c9",
+      "date": "2026-08-27",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-27T01:12:23+09:00",
+      "generated_label": "2026-08-27 01:12 KST",
+      "headline": "스테이블코인·로봇·반도체 동반 약세, 위험 회피 심리 확산",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Circle(CRCL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:weak",
+        "산업:로봇:weak",
+        "산업:반도체:weak"
+      ]
+    },
     {
       "id": "2026-08-26-intraday-5e752420f8",
       "date": "2026-08-26",
@@ -1408,24 +1426,6 @@
       "generated_at": "2026-08-22T05:46:58+09:00",
       "generated_label": "2026-08-22 05:46 KST",
       "headline": "비트코인 급등과 VIX 하락, 위험자산 선호 심리 회복",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 비트코인",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:매크로:strong",
-        "산업:반도체:weak"
-      ]
-    },
-    {
-      "id": "2026-08-22-intraday-1a45417978",
-      "date": "2026-08-22",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-22T05:16:53+09:00",
-      "generated_label": "2026-08-22 05:16 KST",
-      "headline": "비트코인 급등과 VIX 하락, 위험선호 심리 회복",
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: 비트코인",
