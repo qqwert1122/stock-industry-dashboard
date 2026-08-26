@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-26T12:56:09+09:00",
+  "updated_at": "2026-08-26T13:45:31+09:00",
   "cards": [
+    {
+      "id": "2026-08-26-intraday-3f9e0783eb",
+      "date": "2026-08-26",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-26T13:45:31+09:00",
+      "generated_label": "2026-08-26 13:45 KST",
+      "headline": "반도체 중심의 반등과 전력·건설 인프라의 동반 강세",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 한국전력(015760.KS)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:전력:strong",
+        "산업:건설/부동산:strong"
+      ]
+    },
     {
       "id": "2026-08-26-intraday-ac90e66e36",
       "date": "2026-08-26",
@@ -1416,24 +1434,6 @@
         "산업:스테이블코인:strong",
         "산업:방산:weak",
         "산업:우주:weak"
-      ]
-    },
-    {
-      "id": "2026-08-21-intraday-3bed70759e",
-      "date": "2026-08-21",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-21T20:19:10+09:00",
-      "generated_label": "2026-08-21 20:19 KST",
-      "headline": "비트코인 급등과 반도체 반등, 시장 위험선호 회복",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 비트코인",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:반도체:strong",
-        "산업:매크로:strong"
       ]
     }
   ]
