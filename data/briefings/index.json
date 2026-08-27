@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-08-27T08:54:40+09:00",
+  "updated_at": "2026-08-27T13:14:11+09:00",
   "cards": [
+    {
+      "id": "2026-08-27-morning-015dfb0846",
+      "date": "2026-08-27",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-08-27T13:14:11+09:00",
+      "generated_label": "2026-08-27 13:14 KST",
+      "headline": "반도체 주도 반등 속 기관·외국인 수급 변동성 확대",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-27-intraday-e1ecffa1ca",
       "date": "2026-08-27",
@@ -1417,24 +1434,6 @@
         "산업:스테이블코인:strong",
         "산업:매크로:weak",
         "산업:반도체:strong"
-      ]
-    },
-    {
-      "id": "2026-08-22-morning-9f80962b58",
-      "date": "2026-08-22",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-08-22T08:21:21+09:00",
-      "generated_label": "2026-08-22 08:21 KST",
-      "headline": "스테이블코인 강세와 방산·우주 약세의 교차",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:방산:weak",
-        "산업:우주:weak"
       ]
     }
   ]
