@@ -425,8 +425,8 @@
     },
     {
       "name": "미래 타임라인",
-      "status": "ok",
-      "message": "15개 기술 타임라인 생성"
+      "status": "partial",
+      "message": "15개 기술 타임라인 생성, YAML 경고 1건"
     }
   ],
   "metrics": [
@@ -77140,7 +77140,7 @@
   },
   "future": {
     "version": 1,
-    "updated_at": "2026-08-28",
+    "updated_at": "2026-08-29",
     "categories": [
       "전체",
       "AI",
@@ -89036,7 +89036,7 @@
               "is_bottleneck": true,
               "satisfied": false,
               "confidence": "high",
-              "stale": false,
+              "stale": true,
               "as_of": "2026-03-01",
               "source": "https://www.ibm.com/roadmaps/quantum/2030/",
               "source_label": "IBM Quantum 2030 로드맵",
@@ -102123,7 +102123,13 @@
       "timeline_start": 2026,
       "timeline_end": 2045
     },
-    "warnings": []
+    "warnings": [
+      {
+        "kind": "future_breakdown",
+        "id": "quantum:error-correction",
+        "message": "as_of가 180일을 넘었습니다."
+      }
+    ]
   },
   "collection_issues": [
     {
@@ -110211,8 +110217,8 @@
     ]
   },
   "fetch_log_summary": {
-    "success": 2,
-    "no_new_data": 0,
+    "success": 0,
+    "no_new_data": 2,
     "failed": 0
   },
   "prices_refreshed_at": "2026-08-28T19:24:51+09:00"
