@@ -1,7 +1,7 @@
 {
   "title": "산업별 지표 대시보드",
-  "generated_at": "2026-08-28T03:01:03+09:00",
-  "generated_label": "2026-08-28 03:01 KST",
+  "generated_at": "2026-08-28T11:14:28+09:00",
+  "generated_label": "2026-08-28 11:14 KST",
   "timezone": "Asia/Seoul",
   "industries": [
     "반도체",
@@ -21837,50 +21837,37 @@
     },
     {
       "id": "73605cb1caf0",
-      "status": "ok",
-      "history_key": "equity-005930.KS",
-      "history_merge": "full",
+      "industry": "반도체",
       "section": "",
       "market_category": "",
-      "also_market_category": [],
+      "also_market_category": "",
       "refresh_scope": "",
       "chart_style": "",
       "exclude_from_movers": false,
-      "source": "Yahoo Finance chart API",
-      "country": "KR",
-      "industry": "반도체",
-      "industry_en": "Semiconductors",
       "depth": "메모리 반도체",
-      "depth_en": "Memory Semiconductors",
       "group": "대표주가",
-      "group_en": "Representative Stock Prices",
       "name": "삼성전자(005930.KS)",
-      "name_en": "(005930.KS)",
       "meaning": "삼성전자 주가는 메모리 반도체, 파운드리, 스마트폰 사업에 대한 시장 기대를 보여줍니다.",
-      "meaning_en": "Market indicator used to track investment conditions.",
-      "value": 267000.0,
-      "unit": "원",
-      "unit_en": "KRW",
-      "display_value": "267,000원",
+      "source": "Yahoo Finance chart API",
+      "source_url": "https://finance.yahoo.com/quote/005930.KS",
       "frequency": "일간",
-      "frequency_en": "Daily",
-      "observed_at": "2026-08-27",
-      "observed_label": "2026.08.27",
-      "fetched_at": "2026-08-27T13:14:11+09:00",
-      "fetch_status": "success",
-      "fetch_status_label": "업데이트됨",
-      "next_update_label": "2026.08.28",
-      "change_abs": 5500.0,
-      "change_pct": 2.103250478011476,
-      "change_abs_label": "+5,500원",
-      "change_pct_label": "+2.1%",
-      "yoy_pct": 283.0703012912482,
-      "yoy_pct_label": "+283.1%",
+      "automation": "무료 공개 JSON 자동 수집",
+      "status": "ok",
+      "status_label": "자동 수집",
+      "value": 260500.0,
+      "unit": "원",
+      "display_value": "260,500원",
+      "observed_at": "2026-08-28",
+      "observed_label": "2026.08.28",
+      "next_update_label": "2026.08.29",
+      "previous_value": 266000.0,
+      "change_abs": -5500.0,
+      "change_pct": -2.0676691729323293,
+      "change_abs_label": "-5,500원",
+      "change_pct_label": "-2.1%",
+      "yoy_pct": 273.7446197991392,
+      "yoy_pct_label": "+273.7%",
       "history": [
-        {
-          "date": "2026-06-02",
-          "value": 360500.0
-        },
         {
           "date": "2026-06-04",
           "value": 351500.0
@@ -22115,54 +22102,64 @@
         },
         {
           "date": "2026-08-27",
-          "value": 267000.0
+          "value": 266000.0
+        },
+        {
+          "date": "2026-08-28",
+          "value": 260500.0
         }
       ],
-      "period_label": "2026.06.02 - 2026.08.27",
-      "interpretation": {
-        "zone": "warm",
-        "level_label": "10년 범위 상위 74.9% - 평균보다 높은 구간",
-        "headline": "현재값은 10년 범위 상위 74.9% - 평균보다 높은 구간에 있습니다.",
-        "detail_text": "최근 2개 관측치 연속 상승, 직전 대비 +5500.00원",
-        "trend_label": "최근 2개 관측치 연속 상승, 직전 대비 +5500.00원",
-        "text": "현재값은 10년 범위 상위 74.9% - 평균보다 높은 구간에 있습니다. 최근 2개 관측치 연속 상승, 직전 대비 +5500.00원",
-        "caption": "계산 기반 해석",
-        "source": "percentile"
-      },
+      "period_label": "2026.06.04 - 2026.08.28",
+      "note": "",
+      "history_key": "equity-005930.KS",
+      "history_merge": "full",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
+      "fetch_status": "success",
+      "fetch_status_label": "업데이트됨",
       "percentiles": {
         "span_years": 26.6,
         "all": {
-          "count": 412,
+          "count": 413,
           "from": "2000-02-01",
-          "to": "2026-08-27",
-          "pct": 87.0,
+          "to": "2026-08-28",
+          "pct": 85.7,
           "min": 2810.0,
-          "p20": 11368.0,
-          "median": 40330.0,
-          "p80": 220400.0,
+          "p20": 11376.0,
+          "median": 41200.0,
+          "p80": 220500.0,
           "max": 362500.0
         },
         "y10": {
-          "count": 213,
+          "count": 214,
           "from": "2016-09-01",
-          "to": "2026-08-27",
-          "pct": 74.9,
+          "to": "2026-08-28",
+          "pct": 72.4,
           "min": 31960.0,
-          "p20": 53040.0,
-          "median": 82500.0,
-          "p80": 276900.00000000006,
+          "p20": 53060.0,
+          "median": 83200.0,
+          "p80": 276600.0,
           "max": 362500.0
         }
       },
-      "is_stale": false,
-      "freshness_age_days": 1,
-      "freshness_due_at": "2026-09-03",
       "daily_status": "updated",
       "is_new": false,
       "is_updated_today": true,
       "previous_run_observed_at": "2026-08-26",
       "previous_run_value": 261500.0,
-      "previous_run_display_value": "261,500원"
+      "previous_run_display_value": "261,500원",
+      "is_stale": false,
+      "freshness_age_days": 0,
+      "freshness_due_at": "2026-09-04",
+      "interpretation": {
+        "zone": "warm",
+        "level_label": "10년 범위 상위 72.4% - 평균보다 높은 구간",
+        "headline": "현재값은 10년 범위 상위 72.4% - 평균보다 높은 구간에 있습니다.",
+        "detail_text": "직전 대비 -5500.00원",
+        "trend_label": "직전 대비 -5500.00원",
+        "text": "현재값은 10년 범위 상위 72.4% - 평균보다 높은 구간에 있습니다. 직전 대비 -5500.00원",
+        "caption": "계산 기반 해석",
+        "source": "percentile"
+      }
     },
     {
       "id": "308bbd1b432a",
@@ -22492,50 +22489,37 @@
     },
     {
       "id": "4bffa8579327",
-      "status": "ok",
-      "history_key": "equity-000660.KS",
-      "history_merge": "full",
+      "industry": "반도체",
       "section": "",
       "market_category": "",
-      "also_market_category": [],
+      "also_market_category": "",
       "refresh_scope": "",
       "chart_style": "",
       "exclude_from_movers": false,
-      "source": "Yahoo Finance chart API",
-      "country": "KR",
-      "industry": "반도체",
-      "industry_en": "Semiconductors",
       "depth": "메모리 반도체",
-      "depth_en": "Memory Semiconductors",
       "group": "대표주가",
-      "group_en": "Representative Stock Prices",
       "name": "SK하이닉스(000660.KS)",
-      "name_en": "SK(000660.KS)",
       "meaning": "SK하이닉스 주가는 DRAM, NAND, HBM 같은 메모리 업황에 대한 시장 기대를 보여줍니다.",
-      "meaning_en": "Market indicator used to track investment conditions.",
-      "value": 1740000.0,
-      "unit": "원",
-      "unit_en": "KRW",
-      "display_value": "1,740,000원",
+      "source": "Yahoo Finance chart API",
+      "source_url": "https://finance.yahoo.com/quote/000660.KS",
       "frequency": "일간",
-      "frequency_en": "Daily",
-      "observed_at": "2026-08-27",
-      "observed_label": "2026.08.27",
-      "fetched_at": "2026-08-27T13:14:11+09:00",
-      "fetch_status": "success",
-      "fetch_status_label": "업데이트됨",
-      "next_update_label": "2026.08.28",
-      "change_abs": 52000.0,
-      "change_pct": 3.08056872037914,
-      "change_abs_label": "+52,000원",
-      "change_pct_label": "+3.1%",
-      "yoy_pct": 546.8401486988847,
-      "yoy_pct_label": "+546.8%",
+      "automation": "무료 공개 JSON 자동 수집",
+      "status": "ok",
+      "status_label": "자동 수집",
+      "value": 1707000.0,
+      "unit": "원",
+      "display_value": "1,707,000원",
+      "observed_at": "2026-08-28",
+      "observed_label": "2026.08.28",
+      "next_update_label": "2026.08.29",
+      "previous_value": 1730000.0,
+      "change_abs": -23000.0,
+      "change_pct": -1.3294797687861237,
+      "change_abs_label": "-23,000원",
+      "change_pct_label": "-1.3%",
+      "yoy_pct": 534.5724907063196,
+      "yoy_pct_label": "+534.6%",
       "history": [
-        {
-          "date": "2026-06-02",
-          "value": 2360000.0
-        },
         {
           "date": "2026-06-04",
           "value": 2298000.0
@@ -22770,54 +22754,64 @@
         },
         {
           "date": "2026-08-27",
-          "value": 1740000.0
+          "value": 1730000.0
+        },
+        {
+          "date": "2026-08-28",
+          "value": 1707000.0
         }
       ],
-      "period_label": "2026.06.02 - 2026.08.27",
-      "interpretation": {
-        "zone": "warm",
-        "level_label": "10년 범위 상위 74.4% - 평균보다 높은 구간",
-        "headline": "현재값은 10년 범위 상위 74.4% - 평균보다 높은 구간에 있습니다.",
-        "detail_text": "최근 3개 관측치 연속 상승, 직전 대비 +52000.00원",
-        "trend_label": "최근 3개 관측치 연속 상승, 직전 대비 +52000.00원",
-        "text": "현재값은 10년 범위 상위 74.4% - 평균보다 높은 구간에 있습니다. 최근 3개 관측치 연속 상승, 직전 대비 +52000.00원",
-        "caption": "계산 기반 해석",
-        "source": "percentile"
-      },
+      "period_label": "2026.06.04 - 2026.08.28",
+      "note": "",
+      "history_key": "equity-000660.KS",
+      "history_merge": "full",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
+      "fetch_status": "success",
+      "fetch_status_label": "업데이트됨",
       "percentiles": {
         "span_years": 26.6,
         "all": {
-          "count": 412,
+          "count": 413,
           "from": "2000-02-01",
-          "to": "2026-08-27",
-          "pct": 86.8,
+          "to": "2026-08-28",
+          "pct": 86.1,
           "min": 2835.0,
-          "p20": 24050.0,
-          "median": 74050.0,
-          "p80": 1290800.0,
+          "p20": 24100.0,
+          "median": 74200.0,
+          "p80": 1292600.0,
           "max": 2919000.0
         },
         "y10": {
-          "count": 213,
+          "count": 214,
           "from": "2016-09-01",
-          "to": "2026-08-27",
-          "pct": 74.4,
+          "to": "2026-08-28",
+          "pct": 73.1,
           "min": 40200.0,
-          "p20": 83460.0,
-          "median": 273500.0,
-          "p80": 1843800.0,
+          "p20": 83540.0,
+          "median": 282750.0,
+          "p80": 1843200.0,
           "max": 2919000.0
         }
       },
-      "is_stale": false,
-      "freshness_age_days": 1,
-      "freshness_due_at": "2026-09-03",
       "daily_status": "updated",
       "is_new": false,
       "is_updated_today": true,
       "previous_run_observed_at": "2026-08-26",
       "previous_run_value": 1688000.0,
-      "previous_run_display_value": "1,688,000원"
+      "previous_run_display_value": "1,688,000원",
+      "is_stale": false,
+      "freshness_age_days": 0,
+      "freshness_due_at": "2026-09-04",
+      "interpretation": {
+        "zone": "warm",
+        "level_label": "10년 범위 상위 73.1% - 평균보다 높은 구간",
+        "headline": "현재값은 10년 범위 상위 73.1% - 평균보다 높은 구간에 있습니다.",
+        "detail_text": "직전 대비 -23000.00원",
+        "trend_label": "직전 대비 -23000.00원",
+        "text": "현재값은 10년 범위 상위 73.1% - 평균보다 높은 구간에 있습니다. 직전 대비 -23000.00원",
+        "caption": "계산 기반 해석",
+        "source": "percentile"
+      }
     },
     {
       "id": "df08e35f00ed",
@@ -25429,50 +25423,37 @@
     },
     {
       "id": "978b7b09e6c6",
-      "status": "ok",
-      "history_key": "equity-035420.KS",
-      "history_merge": "full",
+      "industry": "데이터인프라",
       "section": "",
       "market_category": "",
-      "also_market_category": [],
+      "also_market_category": "",
       "refresh_scope": "",
       "chart_style": "",
       "exclude_from_movers": false,
-      "source": "Yahoo Finance chart API",
-      "country": "KR",
-      "industry": "데이터인프라",
-      "industry_en": "Data Infrastructure",
       "depth": "",
-      "depth_en": "",
       "group": "대표주가",
-      "group_en": "Representative Stock Prices",
       "name": "NAVER(035420.KS)",
-      "name_en": "NAVER(035420.KS)",
       "meaning": "NAVER 주가는 국내 클라우드, AI, 인터넷 서비스 성장에 대한 시장 기대를 보여줍니다.",
-      "meaning_en": "Helps read the economic cycle and recession risk.",
-      "value": 217000.0,
-      "unit": "원",
-      "unit_en": "KRW",
-      "display_value": "217,000원",
+      "source": "Yahoo Finance chart API",
+      "source_url": "https://finance.yahoo.com/quote/035420.KS",
       "frequency": "일간",
-      "frequency_en": "Daily",
-      "observed_at": "2026-08-27",
-      "observed_label": "2026.08.27",
-      "fetched_at": "2026-08-27T13:14:11+09:00",
-      "fetch_status": "success",
-      "fetch_status_label": "업데이트됨",
-      "next_update_label": "2026.08.28",
-      "change_abs": -3000.0,
-      "change_pct": -1.3636363636363669,
-      "change_abs_label": "-3,000원",
-      "change_pct_label": "-1.4%",
-      "yoy_pct": 1.1655011655011593,
-      "yoy_pct_label": "+1.2%",
+      "automation": "무료 공개 JSON 자동 수집",
+      "status": "ok",
+      "status_label": "자동 수집",
+      "value": 219500.0,
+      "unit": "원",
+      "display_value": "219,500원",
+      "observed_at": "2026-08-28",
+      "observed_label": "2026.08.28",
+      "next_update_label": "2026.08.29",
+      "previous_value": 216500.0,
+      "change_abs": 3000.0,
+      "change_pct": 1.385681293302543,
+      "change_abs_label": "+3,000원",
+      "change_pct_label": "+1.4%",
+      "yoy_pct": 2.331002331002341,
+      "yoy_pct_label": "+2.3%",
       "history": [
-        {
-          "date": "2026-06-02",
-          "value": 280500.0
-        },
         {
           "date": "2026-06-04",
           "value": 267500.0
@@ -25707,54 +25688,64 @@
         },
         {
           "date": "2026-08-27",
-          "value": 217000.0
+          "value": 216500.0
+        },
+        {
+          "date": "2026-08-28",
+          "value": 219500.0
         }
       ],
-      "period_label": "2026.06.02 - 2026.08.27",
-      "interpretation": {
-        "zone": "neutral",
-        "level_label": "10년 범위 상위 64.3% - 중간 구간",
-        "headline": "현재값은 10년 범위 상위 64.3% - 중간 구간에 있습니다.",
-        "detail_text": "최근 3개 관측치 연속 하락, 직전 대비 -3000.00원",
-        "trend_label": "최근 3개 관측치 연속 하락, 직전 대비 -3000.00원",
-        "text": "현재값은 10년 범위 상위 64.3% - 중간 구간에 있습니다. 최근 3개 관측치 연속 하락, 직전 대비 -3000.00원",
-        "caption": "계산 기반 해석",
-        "source": "percentile"
-      },
+      "period_label": "2026.06.04 - 2026.08.28",
+      "note": "",
+      "history_key": "equity-035420.KS",
+      "history_merge": "full",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
+      "fetch_status": "success",
+      "fetch_status_label": "업데이트됨",
       "percentiles": {
         "span_years": 23.8,
         "all": {
-          "count": 404,
+          "count": 405,
           "from": "2002-11-01",
-          "to": "2026-08-27",
-          "pct": 79.0,
+          "to": "2026-08-28",
+          "pct": 80.4,
           "min": 1801.810546875,
-          "p20": 45425.2375,
-          "median": 169750.0,
-          "p80": 218500.0,
+          "p20": 45449.7515625,
+          "median": 170000.0,
+          "p80": 218700.00000000006,
           "max": 439000.0
         },
         "y10": {
-          "count": 238,
+          "count": 239,
           "from": "2016-09-01",
-          "to": "2026-08-27",
-          "pct": 64.3,
+          "to": "2026-08-28",
+          "pct": 66.7,
           "min": 111500.0,
-          "p20": 179080.0,
+          "p20": 179220.0,
           "median": 207500.0,
           "p80": 234000.0,
           "max": 439000.0
         }
       },
-      "is_stale": false,
-      "freshness_age_days": 1,
-      "freshness_due_at": "2026-09-03",
       "daily_status": "updated",
       "is_new": false,
       "is_updated_today": true,
       "previous_run_observed_at": "2026-08-26",
       "previous_run_value": 220000.0,
-      "previous_run_display_value": "220,000원"
+      "previous_run_display_value": "220,000원",
+      "is_stale": false,
+      "freshness_age_days": 0,
+      "freshness_due_at": "2026-09-04",
+      "interpretation": {
+        "zone": "neutral",
+        "level_label": "10년 범위 상위 66.7% - 중간 구간",
+        "headline": "현재값은 10년 범위 상위 66.7% - 중간 구간에 있습니다.",
+        "detail_text": "직전 대비 +3000.00원",
+        "trend_label": "직전 대비 +3000.00원",
+        "text": "현재값은 10년 범위 상위 66.7% - 중간 구간에 있습니다. 직전 대비 +3000.00원",
+        "caption": "계산 기반 해석",
+        "source": "percentile"
+      }
     },
     {
       "id": "4af5a09d8c1f",
@@ -26410,50 +26401,37 @@
     },
     {
       "id": "357faedb889d",
-      "status": "ok",
-      "history_key": "equity-005380.KS",
-      "history_merge": "full",
+      "industry": "자동차",
       "section": "",
       "market_category": "",
-      "also_market_category": [],
+      "also_market_category": "",
       "refresh_scope": "",
       "chart_style": "",
       "exclude_from_movers": false,
-      "source": "Yahoo Finance chart API",
-      "country": "KR",
-      "industry": "자동차",
-      "industry_en": "Automobiles",
       "depth": "",
-      "depth_en": "",
       "group": "대표주가",
-      "group_en": "Representative Stock Prices",
       "name": "현대차(005380.KS)",
-      "name_en": "(005380.KS)",
       "meaning": "현대차 주가는 글로벌 자동차 판매와 전동화 전략에 대한 시장 평가를 보여줍니다.",
-      "meaning_en": "Tracks demand and investment momentum for the related industry.",
-      "value": 399000.0,
-      "unit": "원",
-      "unit_en": "KRW",
-      "display_value": "399,000원",
+      "source": "Yahoo Finance chart API",
+      "source_url": "https://finance.yahoo.com/quote/005380.KS",
       "frequency": "일간",
-      "frequency_en": "Daily",
-      "observed_at": "2026-08-27",
-      "observed_label": "2026.08.27",
-      "fetched_at": "2026-08-27T13:14:11+09:00",
-      "fetch_status": "success",
-      "fetch_status_label": "업데이트됨",
-      "next_update_label": "2026.08.28",
-      "change_abs": -9000.0,
-      "change_pct": -2.2058823529411797,
-      "change_abs_label": "-9,000원",
-      "change_pct_label": "-2.2%",
-      "yoy_pct": 81.36363636363637,
-      "yoy_pct_label": "+81.4%",
+      "automation": "무료 공개 JSON 자동 수집",
+      "status": "ok",
+      "status_label": "자동 수집",
+      "value": 399500.0,
+      "unit": "원",
+      "display_value": "399,500원",
+      "observed_at": "2026-08-28",
+      "observed_label": "2026.08.28",
+      "next_update_label": "2026.08.29",
+      "previous_value": 398000.0,
+      "change_abs": 1500.0,
+      "change_pct": 0.37688442211054607,
+      "change_abs_label": "+1,500원",
+      "change_pct_label": "+0.4%",
+      "yoy_pct": 81.5909090909091,
+      "yoy_pct_label": "+81.6%",
       "history": [
-        {
-          "date": "2026-06-02",
-          "value": 729000.0
-        },
         {
           "date": "2026-06-04",
           "value": 700000.0
@@ -26688,54 +26666,64 @@
         },
         {
           "date": "2026-08-27",
-          "value": 399000.0
+          "value": 398000.0
+        },
+        {
+          "date": "2026-08-28",
+          "value": 399500.0
         }
       ],
-      "period_label": "2026.06.02 - 2026.08.27",
-      "interpretation": {
-        "zone": "neutral",
-        "level_label": "10년 범위 상위 56.6% - 중간 구간",
-        "headline": "현재값은 10년 범위 상위 56.6% - 중간 구간에 있습니다.",
-        "detail_text": "최근 2개 관측치 연속 하락, 직전 대비 -9000.00원",
-        "trend_label": "최근 2개 관측치 연속 하락, 직전 대비 -9000.00원",
-        "text": "현재값은 10년 범위 상위 56.6% - 중간 구간에 있습니다. 최근 2개 관측치 연속 하락, 직전 대비 -9000.00원",
-        "caption": "계산 기반 해석",
-        "source": "percentile"
-      },
+      "period_label": "2026.06.04 - 2026.08.28",
+      "note": "",
+      "history_key": "equity-005380.KS",
+      "history_merge": "full",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
+      "fetch_status": "success",
+      "fetch_status_label": "업데이트됨",
       "percentiles": {
         "span_years": 26.6,
         "all": {
-          "count": 412,
+          "count": 413,
           "from": "2000-02-01",
-          "to": "2026-08-27",
-          "pct": 77.5,
+          "to": "2026-08-28",
+          "pct": 77.8,
           "min": 10450.0,
-          "p20": 70460.0,
-          "median": 173750.0,
-          "p80": 413100.00000000006,
+          "p20": 70520.0,
+          "median": 174000.0,
+          "p80": 412200.0000000001,
           "max": 750000.0
         },
         "y10": {
-          "count": 213,
+          "count": 214,
           "from": "2016-09-01",
-          "to": "2026-08-27",
-          "pct": 56.6,
+          "to": "2026-08-28",
+          "pct": 57.2,
           "min": 88700.0,
-          "p20": 160400.0,
-          "median": 253000.0,
+          "p20": 160600.0,
+          "median": 254250.0,
           "p80": 531000.0,
           "max": 750000.0
         }
       },
-      "is_stale": false,
-      "freshness_age_days": 1,
-      "freshness_due_at": "2026-09-03",
       "daily_status": "updated",
       "is_new": false,
       "is_updated_today": true,
       "previous_run_observed_at": "2026-08-26",
       "previous_run_value": 408000.0,
-      "previous_run_display_value": "408,000원"
+      "previous_run_display_value": "408,000원",
+      "is_stale": false,
+      "freshness_age_days": 0,
+      "freshness_due_at": "2026-09-04",
+      "interpretation": {
+        "zone": "neutral",
+        "level_label": "10년 범위 상위 57.2% - 중간 구간",
+        "headline": "현재값은 10년 범위 상위 57.2% - 중간 구간에 있습니다.",
+        "detail_text": "직전 대비 +1500.00원",
+        "trend_label": "직전 대비 +1500.00원",
+        "text": "현재값은 10년 범위 상위 57.2% - 중간 구간에 있습니다. 직전 대비 +1500.00원",
+        "caption": "계산 기반 해석",
+        "source": "percentile"
+      }
     },
     {
       "id": "bb4517dfeb65",
@@ -27065,50 +27053,37 @@
     },
     {
       "id": "401396037f0e",
-      "status": "ok",
-      "history_key": "equity-373220.KS",
-      "history_merge": "full",
+      "industry": "전기차",
       "section": "",
       "market_category": "",
-      "also_market_category": [],
+      "also_market_category": "",
       "refresh_scope": "",
       "chart_style": "",
       "exclude_from_movers": false,
-      "source": "Yahoo Finance chart API",
-      "country": "KR",
-      "industry": "전기차",
-      "industry_en": "EVs",
       "depth": "",
-      "depth_en": "",
       "group": "대표주가",
-      "group_en": "Representative Stock Prices",
       "name": "LG에너지솔루션(373220.KS)",
-      "name_en": "LG(373220.KS)",
       "meaning": "LG에너지솔루션 주가는 전기차 배터리 수요와 셀 업체 수익성 기대를 보여줍니다.",
-      "meaning_en": "Market indicator used to track investment conditions.",
-      "value": 368500.0,
-      "unit": "원",
-      "unit_en": "KRW",
-      "display_value": "368,500원",
+      "source": "Yahoo Finance chart API",
+      "source_url": "https://finance.yahoo.com/quote/373220.KS",
       "frequency": "일간",
-      "frequency_en": "Daily",
-      "observed_at": "2026-08-27",
-      "observed_label": "2026.08.27",
-      "fetched_at": "2026-08-27T13:14:11+09:00",
-      "fetch_status": "success",
-      "fetch_status_label": "업데이트됨",
-      "next_update_label": "2026.08.28",
-      "change_abs": 17500.0,
-      "change_pct": 4.985754985754975,
-      "change_abs_label": "+17,500원",
-      "change_pct_label": "+5.0%",
-      "yoy_pct": 4.6875,
-      "yoy_pct_label": "+4.7%",
+      "automation": "무료 공개 JSON 자동 수집",
+      "status": "ok",
+      "status_label": "자동 수집",
+      "value": 367500.0,
+      "unit": "원",
+      "display_value": "367,500원",
+      "observed_at": "2026-08-28",
+      "observed_label": "2026.08.28",
+      "next_update_label": "2026.08.29",
+      "previous_value": 370500.0,
+      "change_abs": -3000.0,
+      "change_pct": -0.8097165991902799,
+      "change_abs_label": "-3,000원",
+      "change_pct_label": "-0.8%",
+      "yoy_pct": 4.403409090909083,
+      "yoy_pct_label": "+4.4%",
       "history": [
-        {
-          "date": "2026-06-02",
-          "value": 442500.0
-        },
         {
           "date": "2026-06-04",
           "value": 422000.0
@@ -27343,54 +27318,64 @@
         },
         {
           "date": "2026-08-27",
-          "value": 368500.0
+          "value": 370500.0
+        },
+        {
+          "date": "2026-08-28",
+          "value": 367500.0
         }
       ],
-      "period_label": "2026.06.02 - 2026.08.27",
-      "interpretation": {
-        "zone": "neutral",
-        "level_label": "10년 범위 상위 31.1% - 중간 구간",
-        "headline": "현재값은 10년 범위 상위 31.1% - 중간 구간에 있습니다.",
-        "detail_text": "최근 2개 관측치 연속 상승, 직전 대비 +17500.00원",
-        "trend_label": "최근 2개 관측치 연속 상승, 직전 대비 +17500.00원",
-        "text": "현재값은 10년 범위 상위 31.1% - 중간 구간에 있습니다. 최근 2개 관측치 연속 상승, 직전 대비 +17500.00원",
-        "caption": "계산 기반 해석",
-        "source": "percentile"
-      },
+      "period_label": "2026.06.04 - 2026.08.28",
+      "note": "",
+      "history_key": "equity-373220.KS",
+      "history_merge": "full",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
+      "fetch_status": "success",
+      "fetch_status_label": "업데이트됨",
       "percentiles": {
         "span_years": 4.6,
         "all": {
-          "count": 317,
+          "count": 318,
           "from": "2022-01-24",
-          "to": "2026-08-27",
-          "pct": 31.1,
+          "to": "2026-08-28",
+          "pct": 30.7,
           "min": 268000.0,
           "p20": 352000.0,
-          "median": 400500.0,
+          "median": 400250.0,
           "p80": 472000.0,
           "max": 624000.0
         },
         "y10": {
-          "count": 317,
+          "count": 318,
           "from": "2022-01-24",
-          "to": "2026-08-27",
-          "pct": 31.1,
+          "to": "2026-08-28",
+          "pct": 30.7,
           "min": 268000.0,
           "p20": 352000.0,
-          "median": 400500.0,
+          "median": 400250.0,
           "p80": 472000.0,
           "max": 624000.0
         }
       },
-      "is_stale": false,
-      "freshness_age_days": 1,
-      "freshness_due_at": "2026-09-03",
       "daily_status": "updated",
       "is_new": false,
       "is_updated_today": true,
       "previous_run_observed_at": "2026-08-26",
       "previous_run_value": 351000.0,
-      "previous_run_display_value": "351,000원"
+      "previous_run_display_value": "351,000원",
+      "is_stale": false,
+      "freshness_age_days": 0,
+      "freshness_due_at": "2026-09-04",
+      "interpretation": {
+        "zone": "neutral",
+        "level_label": "10년 범위 상위 30.7% - 중간 구간",
+        "headline": "현재값은 10년 범위 상위 30.7% - 중간 구간에 있습니다.",
+        "detail_text": "직전 대비 -3000.00원",
+        "trend_label": "직전 대비 -3000.00원",
+        "text": "현재값은 10년 범위 상위 30.7% - 중간 구간에 있습니다. 직전 대비 -3000.00원",
+        "caption": "계산 기반 해석",
+        "source": "percentile"
+      }
     },
     {
       "id": "b410cee1fb25",
@@ -28372,50 +28357,37 @@
     },
     {
       "id": "dc57e5380aee",
-      "status": "ok",
-      "history_key": "equity-329180.KS",
-      "history_merge": "full",
+      "industry": "조선",
       "section": "",
       "market_category": "",
-      "also_market_category": [],
+      "also_market_category": "",
       "refresh_scope": "",
       "chart_style": "",
       "exclude_from_movers": false,
-      "source": "Yahoo Finance chart API",
-      "country": "KR",
-      "industry": "조선",
-      "industry_en": "Shipbuilding",
       "depth": "",
-      "depth_en": "",
       "group": "대표주가",
-      "group_en": "Representative Stock Prices",
       "name": "HD현대중공업(329180.KS)",
-      "name_en": "HD(329180.KS)",
       "meaning": "HD현대중공업 주가는 선박 수주와 조선업 이익 개선 기대를 보여줍니다.",
-      "meaning_en": "Market indicator used to track investment conditions.",
-      "value": 467500.0,
-      "unit": "원",
-      "unit_en": "KRW",
-      "display_value": "467,500원",
+      "source": "Yahoo Finance chart API",
+      "source_url": "https://finance.yahoo.com/quote/329180.KS",
       "frequency": "일간",
-      "frequency_en": "Daily",
-      "observed_at": "2026-08-27",
-      "observed_label": "2026.08.27",
-      "fetched_at": "2026-08-27T13:14:11+09:00",
-      "fetch_status": "success",
-      "fetch_status_label": "업데이트됨",
-      "next_update_label": "2026.08.28",
-      "change_abs": 3000.0,
-      "change_pct": 0.6458557588805203,
-      "change_abs_label": "+3,000원",
-      "change_pct_label": "+0.6%",
-      "yoy_pct": -10.096153846153843,
-      "yoy_pct_label": "-10.1%",
+      "automation": "무료 공개 JSON 자동 수집",
+      "status": "ok",
+      "status_label": "자동 수집",
+      "value": 456500.0,
+      "unit": "원",
+      "display_value": "456,500원",
+      "observed_at": "2026-08-28",
+      "observed_label": "2026.08.28",
+      "next_update_label": "2026.08.29",
+      "previous_value": 470000.0,
+      "change_abs": -13500.0,
+      "change_pct": -2.8723404255319163,
+      "change_abs_label": "-13,500원",
+      "change_pct_label": "-2.9%",
+      "yoy_pct": -12.211538461538463,
+      "yoy_pct_label": "-12.2%",
       "history": [
-        {
-          "date": "2026-06-02",
-          "value": 673000.0
-        },
         {
           "date": "2026-06-04",
           "value": 651000.0
@@ -28650,54 +28622,64 @@
         },
         {
           "date": "2026-08-27",
-          "value": 467500.0
+          "value": 470000.0
+        },
+        {
+          "date": "2026-08-28",
+          "value": 456500.0
         }
       ],
-      "period_label": "2026.06.02 - 2026.08.27",
-      "interpretation": {
-        "zone": "neutral",
-        "level_label": "10년 범위 상위 64.1% - 중간 구간",
-        "headline": "현재값은 10년 범위 상위 64.1% - 중간 구간에 있습니다.",
-        "detail_text": "직전 대비 +3000.00원",
-        "trend_label": "직전 대비 +3000.00원",
-        "text": "현재값은 10년 범위 상위 64.1% - 중간 구간에 있습니다. 직전 대비 +3000.00원",
-        "caption": "계산 기반 해석",
-        "source": "percentile"
-      },
+      "period_label": "2026.06.04 - 2026.08.28",
+      "note": "",
+      "history_key": "equity-329180.KS",
+      "history_merge": "full",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
+      "fetch_status": "success",
+      "fetch_status_label": "업데이트됨",
       "percentiles": {
         "span_years": 5.0,
         "all": {
-          "count": 336,
+          "count": 337,
           "from": "2021-09-13",
-          "to": "2026-08-27",
-          "pct": 64.1,
+          "to": "2026-08-28",
+          "pct": 62.2,
           "min": 91500.0,
-          "p20": 116000.0,
-          "median": 228500.0,
-          "p80": 543000.0,
+          "p20": 116100.0,
+          "median": 237000.0,
+          "p80": 542200.0,
           "max": 745000.0
         },
         "y10": {
-          "count": 336,
+          "count": 337,
           "from": "2021-09-13",
-          "to": "2026-08-27",
-          "pct": 64.1,
+          "to": "2026-08-28",
+          "pct": 62.2,
           "min": 91500.0,
-          "p20": 116000.0,
-          "median": 228500.0,
-          "p80": 543000.0,
+          "p20": 116100.0,
+          "median": 237000.0,
+          "p80": 542200.0,
           "max": 745000.0
         }
       },
-      "is_stale": false,
-      "freshness_age_days": 1,
-      "freshness_due_at": "2026-09-03",
       "daily_status": "updated",
       "is_new": false,
       "is_updated_today": true,
       "previous_run_observed_at": "2026-08-26",
       "previous_run_value": 464500.0,
-      "previous_run_display_value": "464,500원"
+      "previous_run_display_value": "464,500원",
+      "is_stale": false,
+      "freshness_age_days": 0,
+      "freshness_due_at": "2026-09-04",
+      "interpretation": {
+        "zone": "neutral",
+        "level_label": "10년 범위 상위 62.2% - 중간 구간",
+        "headline": "현재값은 10년 범위 상위 62.2% - 중간 구간에 있습니다.",
+        "detail_text": "직전 대비 -13500.00원",
+        "trend_label": "직전 대비 -13500.00원",
+        "text": "현재값은 10년 범위 상위 62.2% - 중간 구간에 있습니다. 직전 대비 -13500.00원",
+        "caption": "계산 기반 해석",
+        "source": "percentile"
+      }
     },
     {
       "id": "d240866c2602",
@@ -29027,50 +29009,37 @@
     },
     {
       "id": "f18445e2954e",
-      "status": "ok",
-      "history_key": "equity-005490.KS",
-      "history_merge": "full",
+      "industry": "철강/소재",
       "section": "",
       "market_category": "",
-      "also_market_category": [],
+      "also_market_category": "",
       "refresh_scope": "",
       "chart_style": "",
       "exclude_from_movers": false,
-      "source": "Yahoo Finance chart API",
-      "country": "KR",
-      "industry": "철강/소재",
-      "industry_en": "Steel & Materials",
       "depth": "",
-      "depth_en": "",
       "group": "대표주가",
-      "group_en": "Representative Stock Prices",
       "name": "POSCO홀딩스(005490.KS)",
-      "name_en": "POSCO(005490.KS)",
       "meaning": "POSCO홀딩스 주가는 철강 경기와 배터리 소재 사업 기대를 함께 보여줍니다.",
-      "meaning_en": "Helps read the economic cycle and recession risk.",
-      "value": 340500.0,
-      "unit": "원",
-      "unit_en": "KRW",
-      "display_value": "340,500원",
+      "source": "Yahoo Finance chart API",
+      "source_url": "https://finance.yahoo.com/quote/005490.KS",
       "frequency": "일간",
-      "frequency_en": "Daily",
-      "observed_at": "2026-08-27",
-      "observed_label": "2026.08.27",
-      "fetched_at": "2026-08-27T13:14:11+09:00",
-      "fetch_status": "success",
-      "fetch_status_label": "업데이트됨",
-      "next_update_label": "2026.08.28",
-      "change_abs": 12500.0,
-      "change_pct": 3.8109756097560954,
-      "change_abs_label": "+12,500원",
-      "change_pct_label": "+3.8%",
-      "yoy_pct": 19.264448336252183,
-      "yoy_pct_label": "+19.3%",
+      "automation": "무료 공개 JSON 자동 수집",
+      "status": "ok",
+      "status_label": "자동 수집",
+      "value": 334500.0,
+      "unit": "원",
+      "display_value": "334,500원",
+      "observed_at": "2026-08-28",
+      "observed_label": "2026.08.28",
+      "next_update_label": "2026.08.29",
+      "previous_value": 339500.0,
+      "change_abs": -5000.0,
+      "change_pct": -1.4727540500736325,
+      "change_abs_label": "-5,000원",
+      "change_pct_label": "-1.5%",
+      "yoy_pct": 17.162872154115583,
+      "yoy_pct_label": "+17.2%",
       "history": [
-        {
-          "date": "2026-06-02",
-          "value": 399000.0
-        },
         {
           "date": "2026-06-04",
           "value": 402000.0
@@ -29305,54 +29274,64 @@
         },
         {
           "date": "2026-08-27",
-          "value": 340500.0
+          "value": 339500.0
+        },
+        {
+          "date": "2026-08-28",
+          "value": 334500.0
         }
       ],
-      "period_label": "2026.06.02 - 2026.08.27",
-      "interpretation": {
-        "zone": "neutral",
-        "level_label": "10년 범위 상위 62.2% - 중간 구간",
-        "headline": "현재값은 10년 범위 상위 62.2% - 중간 구간에 있습니다.",
-        "detail_text": "직전 대비 +12500.00원",
-        "trend_label": "직전 대비 +12500.00원",
-        "text": "현재값은 10년 범위 상위 62.2% - 중간 구간에 있습니다. 직전 대비 +12500.00원",
-        "caption": "계산 기반 해석",
-        "source": "percentile"
-      },
+      "period_label": "2026.06.04 - 2026.08.28",
+      "note": "",
+      "history_key": "equity-005490.KS",
+      "history_merge": "full",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
+      "fetch_status": "success",
+      "fetch_status_label": "업데이트됨",
       "percentiles": {
         "span_years": 26.6,
         "all": {
-          "count": 412,
+          "count": 413,
           "from": "2000-02-01",
-          "to": "2026-08-27",
-          "pct": 63.5,
+          "to": "2026-08-28",
+          "pct": 61.4,
           "min": 66100.0,
-          "p20": 205500.0,
-          "median": 315750.0,
-          "p80": 412700.00000000006,
+          "p20": 206000.0,
+          "median": 316000.0,
+          "p80": 412400.00000000006,
           "max": 673000.0
         },
         "y10": {
-          "count": 213,
+          "count": 214,
           "from": "2016-09-01",
-          "to": "2026-08-27",
-          "pct": 62.2,
+          "to": "2026-08-28",
+          "pct": 59.1,
           "min": 161000.0,
-          "p20": 268900.0,
-          "median": 324500.0,
-          "p80": 393000.0000000001,
+          "p20": 269600.0,
+          "median": 324750.0,
+          "p80": 392000.0,
           "max": 642000.0
         }
       },
-      "is_stale": false,
-      "freshness_age_days": 1,
-      "freshness_due_at": "2026-09-03",
       "daily_status": "updated",
       "is_new": false,
       "is_updated_today": true,
       "previous_run_observed_at": "2026-08-26",
       "previous_run_value": 328000.0,
-      "previous_run_display_value": "328,000원"
+      "previous_run_display_value": "328,000원",
+      "is_stale": false,
+      "freshness_age_days": 0,
+      "freshness_due_at": "2026-09-04",
+      "interpretation": {
+        "zone": "neutral",
+        "level_label": "10년 범위 상위 59.1% - 중간 구간",
+        "headline": "현재값은 10년 범위 상위 59.1% - 중간 구간에 있습니다.",
+        "detail_text": "직전 대비 -5000.00원",
+        "trend_label": "직전 대비 -5000.00원",
+        "text": "현재값은 10년 범위 상위 59.1% - 중간 구간에 있습니다. 직전 대비 -5000.00원",
+        "caption": "계산 기반 해석",
+        "source": "percentile"
+      }
     },
     {
       "id": "4e6caef16f26",
@@ -29682,50 +29661,37 @@
     },
     {
       "id": "ecc828144f7e",
-      "status": "ok",
-      "history_key": "equity-051910.KS",
-      "history_merge": "full",
+      "industry": "화학/정유",
       "section": "",
       "market_category": "",
-      "also_market_category": [],
+      "also_market_category": "",
       "refresh_scope": "",
       "chart_style": "",
       "exclude_from_movers": false,
-      "source": "Yahoo Finance chart API",
-      "country": "KR",
-      "industry": "화학/정유",
-      "industry_en": "Chemicals & Refining",
       "depth": "",
-      "depth_en": "",
       "group": "대표주가",
-      "group_en": "Representative Stock Prices",
       "name": "LG화학(051910.KS)",
-      "name_en": "LG(051910.KS)",
       "meaning": "LG화학 주가는 화학 제품 마진과 배터리 소재 성장 기대를 보여줍니다.",
-      "meaning_en": "Helps read the economic cycle and recession risk.",
-      "value": 273500.0,
-      "unit": "원",
-      "unit_en": "KRW",
-      "display_value": "273,500원",
+      "source": "Yahoo Finance chart API",
+      "source_url": "https://finance.yahoo.com/quote/051910.KS",
       "frequency": "일간",
-      "frequency_en": "Daily",
-      "observed_at": "2026-08-27",
-      "observed_label": "2026.08.27",
-      "fetched_at": "2026-08-27T13:14:11+09:00",
-      "fetch_status": "success",
-      "fetch_status_label": "업데이트됨",
-      "next_update_label": "2026.08.28",
-      "change_abs": 10000.0,
-      "change_pct": 3.795066413662229,
-      "change_abs_label": "+10,000원",
-      "change_pct_label": "+3.8%",
-      "yoy_pct": -1.4414414414414378,
-      "yoy_pct_label": "-1.4%",
+      "automation": "무료 공개 JSON 자동 수집",
+      "status": "ok",
+      "status_label": "자동 수집",
+      "value": 274000.0,
+      "unit": "원",
+      "display_value": "274,000원",
+      "observed_at": "2026-08-28",
+      "observed_label": "2026.08.28",
+      "next_update_label": "2026.08.29",
+      "previous_value": 274500.0,
+      "change_abs": -500.0,
+      "change_pct": -0.18214936247723523,
+      "change_abs_label": "-500원",
+      "change_pct_label": "-0.2%",
+      "yoy_pct": -1.2612612612612595,
+      "yoy_pct_label": "-1.3%",
       "history": [
-        {
-          "date": "2026-06-02",
-          "value": 355000.0
-        },
         {
           "date": "2026-06-04",
           "value": 352000.0
@@ -29960,54 +29926,64 @@
         },
         {
           "date": "2026-08-27",
-          "value": 273500.0
+          "value": 274500.0
+        },
+        {
+          "date": "2026-08-28",
+          "value": 274000.0
         }
       ],
-      "period_label": "2026.06.02 - 2026.08.27",
-      "interpretation": {
-        "zone": "cool",
-        "level_label": "10년 범위 상위 20.0% - 평균보다 낮은 구간",
-        "headline": "현재값은 10년 범위 상위 20.0% - 평균보다 낮은 구간에 있습니다.",
-        "detail_text": "최근 2개 관측치 연속 상승, 직전 대비 +10000.00원",
-        "trend_label": "최근 2개 관측치 연속 상승, 직전 대비 +10000.00원",
-        "text": "현재값은 10년 범위 상위 20.0% - 평균보다 낮은 구간에 있습니다. 최근 2개 관측치 연속 상승, 직전 대비 +10000.00원",
-        "caption": "계산 기반 해석",
-        "source": "percentile"
-      },
+      "period_label": "2026.06.04 - 2026.08.28",
+      "note": "",
+      "history_key": "equity-051910.KS",
+      "history_merge": "full",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
+      "fetch_status": "success",
+      "fetch_status_label": "업데이트됨",
       "percentiles": {
         "span_years": 25.3,
         "all": {
-          "count": 397,
+          "count": 398,
           "from": "2001-05-01",
-          "to": "2026-08-27",
-          "pct": 44.1,
+          "to": "2026-08-28",
+          "pct": 44.3,
           "min": 13700.0,
-          "p20": 80200.0,
-          "median": 287500.0,
-          "p80": 387900.0,
+          "p20": 80400.00000000001,
+          "median": 286500.0,
+          "p80": 387800.0,
           "max": 932000.0
         },
         "y10": {
-          "count": 213,
+          "count": 214,
           "from": "2016-09-01",
-          "to": "2026-08-27",
-          "pct": 20.0,
+          "to": "2026-08-28",
+          "pct": 20.3,
           "min": 197300.0,
-          "p20": 273700.0,
-          "median": 351000.0,
-          "p80": 447800.0000000003,
+          "p20": 274000.0,
+          "median": 350750.0,
+          "p80": 445200.00000000006,
           "max": 932000.0
         }
       },
-      "is_stale": false,
-      "freshness_age_days": 1,
-      "freshness_due_at": "2026-09-03",
       "daily_status": "updated",
       "is_new": false,
       "is_updated_today": true,
       "previous_run_observed_at": "2026-08-26",
       "previous_run_value": 263500.0,
-      "previous_run_display_value": "263,500원"
+      "previous_run_display_value": "263,500원",
+      "is_stale": false,
+      "freshness_age_days": 0,
+      "freshness_due_at": "2026-09-04",
+      "interpretation": {
+        "zone": "cool",
+        "level_label": "10년 범위 상위 20.3% - 평균보다 낮은 구간",
+        "headline": "현재값은 10년 범위 상위 20.3% - 평균보다 낮은 구간에 있습니다.",
+        "detail_text": "직전 대비 -500.00원",
+        "trend_label": "직전 대비 -500.00원",
+        "text": "현재값은 10년 범위 상위 20.3% - 평균보다 낮은 구간에 있습니다. 직전 대비 -500.00원",
+        "caption": "계산 기반 해석",
+        "source": "percentile"
+      }
     },
     {
       "id": "844af39f856d",
@@ -30337,50 +30313,37 @@
     },
     {
       "id": "98de535a0a23",
-      "status": "ok",
-      "history_key": "equity-105560.KS",
-      "history_merge": "full",
+      "industry": "은행/금융",
       "section": "",
       "market_category": "",
-      "also_market_category": [],
+      "also_market_category": "",
       "refresh_scope": "",
       "chart_style": "",
       "exclude_from_movers": false,
-      "source": "Yahoo Finance chart API",
-      "country": "KR",
-      "industry": "은행/금융",
-      "industry_en": "Banks & Financials",
       "depth": "",
-      "depth_en": "",
       "group": "대표주가",
-      "group_en": "Representative Stock Prices",
       "name": "KB금융(105560.KS)",
-      "name_en": "KB(105560.KS)",
       "meaning": "KB금융 주가는 국내 금리, 대출 성장, 은행 건전성에 대한 시장 평가를 보여줍니다.",
-      "meaning_en": "Helps read the economic cycle and recession risk.",
-      "value": 168800.0,
-      "unit": "원",
-      "unit_en": "KRW",
-      "display_value": "168,800원",
+      "source": "Yahoo Finance chart API",
+      "source_url": "https://finance.yahoo.com/quote/105560.KS",
       "frequency": "일간",
-      "frequency_en": "Daily",
-      "observed_at": "2026-08-27",
-      "observed_label": "2026.08.27",
-      "fetched_at": "2026-08-27T13:14:11+09:00",
-      "fetch_status": "success",
-      "fetch_status_label": "업데이트됨",
-      "next_update_label": "2026.08.28",
-      "change_abs": 2200.0,
-      "change_pct": 1.3205282112845218,
-      "change_abs_label": "+2,200원",
-      "change_pct_label": "+1.3%",
-      "yoy_pct": 56.007393715341955,
-      "yoy_pct_label": "+56.0%",
+      "automation": "무료 공개 JSON 자동 수집",
+      "status": "ok",
+      "status_label": "자동 수집",
+      "value": 168600.0,
+      "unit": "원",
+      "display_value": "168,600원",
+      "observed_at": "2026-08-28",
+      "observed_label": "2026.08.28",
+      "next_update_label": "2026.08.29",
+      "previous_value": 168100.0,
+      "change_abs": 500.0,
+      "change_pct": 0.2974419988102328,
+      "change_abs_label": "+500원",
+      "change_pct_label": "+0.3%",
+      "yoy_pct": 55.822550831792974,
+      "yoy_pct_label": "+55.8%",
       "history": [
-        {
-          "date": "2026-06-02",
-          "value": 156600.0
-        },
         {
           "date": "2026-06-04",
           "value": 164200.0
@@ -30615,54 +30578,64 @@
         },
         {
           "date": "2026-08-27",
-          "value": 168800.0
+          "value": 168100.0
+        },
+        {
+          "date": "2026-08-28",
+          "value": 168600.0
         }
       ],
-      "period_label": "2026.06.02 - 2026.08.27",
-      "interpretation": {
-        "zone": "warm",
-        "level_label": "10년 범위 상위 88.5% - 평균보다 높은 구간",
-        "headline": "현재값은 10년 범위 상위 88.5% - 평균보다 높은 구간에 있습니다.",
-        "detail_text": "최근 3개 관측치 연속 상승, 직전 대비 +2200.00원",
-        "trend_label": "최근 3개 관측치 연속 상승, 직전 대비 +2200.00원",
-        "text": "현재값은 10년 범위 상위 88.5% - 평균보다 높은 구간에 있습니다. 최근 3개 관측치 연속 상승, 직전 대비 +2200.00원",
-        "caption": "계산 기반 해석",
-        "source": "percentile"
-      },
+      "period_label": "2026.06.04 - 2026.08.28",
+      "note": "",
+      "history_key": "equity-105560.KS",
+      "history_merge": "full",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
+      "fetch_status": "success",
+      "fetch_status_label": "업데이트됨",
       "percentiles": {
         "span_years": 24.7,
         "all": {
-          "count": 389,
+          "count": 390,
           "from": "2002-01-01",
-          "to": "2026-08-27",
-          "pct": 93.7,
+          "to": "2026-08-28",
+          "pct": 93.5,
           "min": 28764.619140625,
-          "p20": 39574.83828125,
-          "median": 55800.0,
-          "p80": 155680.0,
+          "p20": 39599.784375,
+          "median": 55900.0,
+          "p80": 155820.0,
           "max": 186200.0
         },
         "y10": {
-          "count": 213,
+          "count": 214,
           "from": "2016-09-01",
-          "to": "2026-08-27",
-          "pct": 88.5,
+          "to": "2026-08-28",
+          "pct": 88.1,
           "min": 33950.0,
-          "p20": 48700.0,
+          "p20": 48800.0,
           "median": 110900.0,
-          "p80": 162780.00000000003,
+          "p80": 163100.0,
           "max": 186200.0
         }
       },
-      "is_stale": false,
-      "freshness_age_days": 1,
-      "freshness_due_at": "2026-09-03",
       "daily_status": "updated",
       "is_new": false,
       "is_updated_today": true,
       "previous_run_observed_at": "2026-08-26",
       "previous_run_value": 166600.0,
-      "previous_run_display_value": "166,600원"
+      "previous_run_display_value": "166,600원",
+      "is_stale": false,
+      "freshness_age_days": 0,
+      "freshness_due_at": "2026-09-04",
+      "interpretation": {
+        "zone": "warm",
+        "level_label": "10년 범위 상위 88.1% - 평균보다 높은 구간",
+        "headline": "현재값은 10년 범위 상위 88.1% - 평균보다 높은 구간에 있습니다.",
+        "detail_text": "최근 4개 관측치 연속 상승, 직전 대비 +500.00원",
+        "trend_label": "최근 4개 관측치 연속 상승, 직전 대비 +500.00원",
+        "text": "현재값은 10년 범위 상위 88.1% - 평균보다 높은 구간에 있습니다. 최근 4개 관측치 연속 상승, 직전 대비 +500.00원",
+        "caption": "계산 기반 해석",
+        "source": "percentile"
+      }
     },
     {
       "id": "0b637efd9c49",
@@ -30992,50 +30965,37 @@
     },
     {
       "id": "20977ed178d1",
-      "status": "ok",
-      "history_key": "equity-000720.KS",
-      "history_merge": "full",
+      "industry": "건설/부동산",
       "section": "",
       "market_category": "",
-      "also_market_category": [],
+      "also_market_category": "",
       "refresh_scope": "",
       "chart_style": "",
       "exclude_from_movers": false,
-      "source": "Yahoo Finance chart API",
-      "country": "KR",
-      "industry": "건설/부동산",
-      "industry_en": "Construction & Real Estate",
       "depth": "",
-      "depth_en": "",
       "group": "대표주가",
-      "group_en": "Representative Stock Prices",
       "name": "현대건설(000720.KS)",
-      "name_en": "(000720.KS)",
       "meaning": "현대건설 주가는 국내외 건설 수주와 부동산 경기 기대를 보여줍니다.",
-      "meaning_en": "Helps read the economic cycle and recession risk.",
-      "value": 129600.0,
-      "unit": "원",
-      "unit_en": "KRW",
-      "display_value": "129,600원",
+      "source": "Yahoo Finance chart API",
+      "source_url": "https://finance.yahoo.com/quote/000720.KS",
       "frequency": "일간",
-      "frequency_en": "Daily",
-      "observed_at": "2026-08-27",
-      "observed_label": "2026.08.27",
-      "fetched_at": "2026-08-27T13:14:11+09:00",
-      "fetch_status": "success",
-      "fetch_status_label": "업데이트됨",
-      "next_update_label": "2026.08.28",
-      "change_abs": -800.0,
-      "change_pct": -0.6134969325153339,
-      "change_abs_label": "-800원",
-      "change_pct_label": "-0.6%",
-      "yoy_pct": 108.69565217391303,
-      "yoy_pct_label": "+108.7%",
+      "automation": "무료 공개 JSON 자동 수집",
+      "status": "ok",
+      "status_label": "자동 수집",
+      "value": 125300.0,
+      "unit": "원",
+      "display_value": "125,300원",
+      "observed_at": "2026-08-28",
+      "observed_label": "2026.08.28",
+      "next_update_label": "2026.08.29",
+      "previous_value": 129300.0,
+      "change_abs": -4000.0,
+      "change_pct": -3.0935808197989134,
+      "change_abs_label": "-4,000원",
+      "change_pct_label": "-3.1%",
+      "yoy_pct": 101.77133655394526,
+      "yoy_pct_label": "+101.8%",
       "history": [
-        {
-          "date": "2026-06-02",
-          "value": 134200.0
-        },
         {
           "date": "2026-06-04",
           "value": 136600.0
@@ -31270,54 +31230,64 @@
         },
         {
           "date": "2026-08-27",
-          "value": 129600.0
+          "value": 129300.0
+        },
+        {
+          "date": "2026-08-28",
+          "value": 125300.0
         }
       ],
-      "period_label": "2026.06.02 - 2026.08.27",
-      "interpretation": {
-        "zone": "warm",
-        "level_label": "10년 범위 상위 76.3% - 평균보다 높은 구간",
-        "headline": "현재값은 10년 범위 상위 76.3% - 평균보다 높은 구간에 있습니다.",
-        "detail_text": "직전 대비 -800.00원",
-        "trend_label": "직전 대비 -800.00원",
-        "text": "현재값은 10년 범위 상위 76.3% - 평균보다 높은 구간에 있습니다. 직전 대비 -800.00원",
-        "caption": "계산 기반 해석",
-        "source": "percentile"
-      },
+      "period_label": "2026.06.04 - 2026.08.28",
+      "note": "",
+      "history_key": "equity-000720.KS",
+      "history_merge": "full",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
+      "fetch_status": "success",
+      "fetch_status_label": "업데이트됨",
       "percentiles": {
         "span_years": 26.6,
         "all": {
-          "count": 412,
+          "count": 413,
           "from": "2000-02-01",
-          "to": "2026-08-27",
-          "pct": 85.8,
+          "to": "2026-08-28",
+          "pct": 85.1,
           "min": 7140.0,
-          "p20": 34740.0,
+          "p20": 34780.0,
           "median": 57400.0,
-          "p80": 111960.00000000003,
+          "p80": 112480.0,
           "max": 226054.234375
         },
         "y10": {
-          "count": 213,
+          "count": 214,
           "from": "2016-09-01",
-          "to": "2026-08-27",
-          "pct": 76.3,
+          "to": "2026-08-28",
+          "pct": 75.0,
           "min": 25400.0,
-          "p20": 38240.0,
+          "p20": 38260.0,
           "median": 67500.0,
-          "p80": 137980.00000000006,
+          "p80": 137520.00000000003,
           "max": 188700.0
         }
       },
-      "is_stale": false,
-      "freshness_age_days": 1,
-      "freshness_due_at": "2026-09-03",
       "daily_status": "updated",
       "is_new": false,
       "is_updated_today": true,
       "previous_run_observed_at": "2026-08-26",
       "previous_run_value": 130400.0,
-      "previous_run_display_value": "130,400원"
+      "previous_run_display_value": "130,400원",
+      "is_stale": false,
+      "freshness_age_days": 0,
+      "freshness_due_at": "2026-09-04",
+      "interpretation": {
+        "zone": "warm",
+        "level_label": "10년 범위 상위 75.0% - 평균보다 높은 구간",
+        "headline": "현재값은 10년 범위 상위 75.0% - 평균보다 높은 구간에 있습니다.",
+        "detail_text": "최근 2개 관측치 연속 하락, 직전 대비 -4000.00원",
+        "trend_label": "최근 2개 관측치 연속 하락, 직전 대비 -4000.00원",
+        "text": "현재값은 10년 범위 상위 75.0% - 평균보다 높은 구간에 있습니다. 최근 2개 관측치 연속 하락, 직전 대비 -4000.00원",
+        "caption": "계산 기반 해석",
+        "source": "percentile"
+      }
     },
     {
       "id": "7e86761dbeda",
@@ -31647,50 +31617,37 @@
     },
     {
       "id": "f1309b1d96bf",
-      "status": "ok",
-      "history_key": "equity-012450.KS",
-      "history_merge": "full",
+      "industry": "방산",
       "section": "",
       "market_category": "",
-      "also_market_category": [],
+      "also_market_category": "",
       "refresh_scope": "",
       "chart_style": "",
       "exclude_from_movers": false,
-      "source": "Yahoo Finance chart API",
-      "country": "KR",
-      "industry": "방산",
-      "industry_en": "Defense",
       "depth": "",
-      "depth_en": "",
       "group": "대표주가",
-      "group_en": "Representative Stock Prices",
       "name": "한화에어로스페이스(012450.KS)",
-      "name_en": "(012450.KS)",
       "meaning": "한화에어로스페이스 주가는 방산 수주와 항공우주 성장 기대를 보여줍니다.",
-      "meaning_en": "Helps read the economic cycle and recession risk.",
-      "value": 1129000.0,
-      "unit": "원",
-      "unit_en": "KRW",
-      "display_value": "1,129,000원",
+      "source": "Yahoo Finance chart API",
+      "source_url": "https://finance.yahoo.com/quote/012450.KS",
       "frequency": "일간",
-      "frequency_en": "Daily",
-      "observed_at": "2026-08-27",
-      "observed_label": "2026.08.27",
-      "fetched_at": "2026-08-27T13:14:11+09:00",
-      "fetch_status": "success",
-      "fetch_status_label": "업데이트됨",
-      "next_update_label": "2026.08.28",
-      "change_abs": 42000.0,
-      "change_pct": 3.863845446182146,
-      "change_abs_label": "+42,000원",
-      "change_pct_label": "+3.9%",
-      "yoy_pct": 27.714932126696823,
-      "yoy_pct_label": "+27.7%",
+      "automation": "무료 공개 JSON 자동 수집",
+      "status": "ok",
+      "status_label": "자동 수집",
+      "value": 1119500.0,
+      "unit": "원",
+      "display_value": "1,119,500원",
+      "observed_at": "2026-08-28",
+      "observed_label": "2026.08.28",
+      "next_update_label": "2026.08.29",
+      "previous_value": 1150000.0,
+      "change_abs": -30500.0,
+      "change_pct": -2.6521739130434763,
+      "change_abs_label": "-30,500원",
+      "change_pct_label": "-2.7%",
+      "yoy_pct": 26.640271493212666,
+      "yoy_pct_label": "+26.6%",
       "history": [
-        {
-          "date": "2026-06-02",
-          "value": 1070000.0
-        },
         {
           "date": "2026-06-04",
           "value": 1068000.0
@@ -31925,54 +31882,64 @@
         },
         {
           "date": "2026-08-27",
-          "value": 1129000.0
+          "value": 1150000.0
+        },
+        {
+          "date": "2026-08-28",
+          "value": 1119500.0
         }
       ],
-      "period_label": "2026.06.02 - 2026.08.27",
-      "interpretation": {
-        "zone": "warm",
-        "level_label": "10년 범위 상위 74.9% - 평균보다 높은 구간",
-        "headline": "현재값은 10년 범위 상위 74.9% - 평균보다 높은 구간에 있습니다.",
-        "detail_text": "직전 대비 +42000.00원",
-        "trend_label": "직전 대비 +42000.00원",
-        "text": "현재값은 10년 범위 상위 74.9% - 평균보다 높은 구간에 있습니다. 직전 대비 +42000.00원",
-        "caption": "계산 기반 해석",
-        "source": "percentile"
-      },
+      "period_label": "2026.06.04 - 2026.08.28",
+      "note": "",
+      "history_key": "equity-012450.KS",
+      "history_merge": "full",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
+      "fetch_status": "success",
+      "fetch_status_label": "업데이트됨",
       "percentiles": {
         "span_years": 26.6,
         "all": {
-          "count": 412,
+          "count": 413,
           "from": "2000-02-01",
-          "to": "2026-08-27",
-          "pct": 87.0,
+          "to": "2026-08-28",
+          "pct": 86.1,
           "min": 3149.021240234375,
-          "p20": 27680.2859375,
-          "median": 62924.888671875,
-          "p80": 1005600.0,
+          "p20": 27702.5015625,
+          "median": 62980.42578125,
+          "p80": 1006600.0,
           "max": 1530000.0
         },
         "y10": {
-          "count": 213,
+          "count": 214,
           "from": "2016-09-01",
-          "to": "2026-08-27",
-          "pct": 74.9,
+          "to": "2026-08-28",
+          "pct": 73.1,
           "min": 22826.240234375,
-          "p20": 44652.78828125,
-          "median": 848000.0,
-          "p80": 1176200.0,
+          "p20": 44819.403125,
+          "median": 850000.0,
+          "p80": 1175800.0,
           "max": 1530000.0
         }
       },
-      "is_stale": false,
-      "freshness_age_days": 1,
-      "freshness_due_at": "2026-09-03",
       "daily_status": "updated",
       "is_new": false,
       "is_updated_today": true,
       "previous_run_observed_at": "2026-08-26",
       "previous_run_value": 1087000.0,
-      "previous_run_display_value": "1,087,000원"
+      "previous_run_display_value": "1,087,000원",
+      "is_stale": false,
+      "freshness_age_days": 0,
+      "freshness_due_at": "2026-09-04",
+      "interpretation": {
+        "zone": "warm",
+        "level_label": "10년 범위 상위 73.1% - 평균보다 높은 구간",
+        "headline": "현재값은 10년 범위 상위 73.1% - 평균보다 높은 구간에 있습니다.",
+        "detail_text": "직전 대비 -30500.00원",
+        "trend_label": "직전 대비 -30500.00원",
+        "text": "현재값은 10년 범위 상위 73.1% - 평균보다 높은 구간에 있습니다. 직전 대비 -30500.00원",
+        "caption": "계산 기반 해석",
+        "source": "percentile"
+      }
     },
     {
       "id": "880406c0aba7",
@@ -32954,50 +32921,37 @@
     },
     {
       "id": "6b5151610375",
-      "status": "ok",
-      "history_key": "equity-015760.KS",
-      "history_merge": "full",
+      "industry": "전력",
       "section": "",
       "market_category": "",
-      "also_market_category": [],
+      "also_market_category": "",
       "refresh_scope": "",
       "chart_style": "",
       "exclude_from_movers": false,
-      "source": "Yahoo Finance chart API",
-      "country": "KR",
-      "industry": "전력",
-      "industry_en": "Power",
       "depth": "",
-      "depth_en": "",
       "group": "대표주가",
-      "group_en": "Representative Stock Prices",
       "name": "한국전력(015760.KS)",
-      "name_en": "Korea(015760.KS)",
       "meaning": "한국전력 주가는 전력요금, 발전 원가, 전력 수요에 대한 시장 평가를 보여줍니다.",
-      "meaning_en": "Market indicator used to track investment conditions.",
-      "value": 33300.0,
-      "unit": "원",
-      "unit_en": "KRW",
-      "display_value": "33,300원",
+      "source": "Yahoo Finance chart API",
+      "source_url": "https://finance.yahoo.com/quote/015760.KS",
       "frequency": "일간",
-      "frequency_en": "Daily",
-      "observed_at": "2026-08-27",
-      "observed_label": "2026.08.27",
-      "fetched_at": "2026-08-27T13:14:11+09:00",
-      "fetch_status": "success",
-      "fetch_status_label": "업데이트됨",
-      "next_update_label": "2026.08.28",
-      "change_abs": -1500.0,
-      "change_pct": -4.31034482758621,
-      "change_abs_label": "-1,500원",
-      "change_pct_label": "-4.3%",
-      "yoy_pct": -8.390646492434662,
-      "yoy_pct_label": "-8.4%",
+      "automation": "무료 공개 JSON 자동 수집",
+      "status": "ok",
+      "status_label": "자동 수집",
+      "value": 32625.0,
+      "unit": "원",
+      "display_value": "32,625원",
+      "observed_at": "2026-08-28",
+      "observed_label": "2026.08.28",
+      "next_update_label": "2026.08.29",
+      "previous_value": 33950.0,
+      "change_abs": -1325.0,
+      "change_pct": -3.902798232695137,
+      "change_abs_label": "-1,325원",
+      "change_pct_label": "-3.9%",
+      "yoy_pct": -10.247592847317744,
+      "yoy_pct_label": "-10.2%",
       "history": [
-        {
-          "date": "2026-06-02",
-          "value": 37750.0
-        },
         {
           "date": "2026-06-04",
           "value": 38700.0
@@ -33232,54 +33186,64 @@
         },
         {
           "date": "2026-08-27",
-          "value": 33300.0
+          "value": 33950.0
+        },
+        {
+          "date": "2026-08-28",
+          "value": 32625.0
         }
       ],
-      "period_label": "2026.06.02 - 2026.08.27",
-      "interpretation": {
-        "zone": "neutral",
-        "level_label": "10년 범위 상위 45.1% - 중간 구간",
-        "headline": "현재값은 10년 범위 상위 45.1% - 중간 구간에 있습니다.",
-        "detail_text": "직전 대비 -1500.00원",
-        "trend_label": "직전 대비 -1500.00원",
-        "text": "현재값은 10년 범위 상위 45.1% - 중간 구간에 있습니다. 직전 대비 -1500.00원",
-        "caption": "계산 기반 해석",
-        "source": "percentile"
-      },
+      "period_label": "2026.06.04 - 2026.08.28",
+      "note": "",
+      "history_key": "equity-015760.KS",
+      "history_merge": "full",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
+      "fetch_status": "success",
+      "fetch_status_label": "업데이트됨",
       "percentiles": {
         "span_years": 26.6,
         "all": {
-          "count": 412,
+          "count": 413,
           "from": "2000-02-01",
-          "to": "2026-08-27",
-          "pct": 53.8,
+          "to": "2026-08-28",
+          "pct": 49.8,
           "min": 16750.0,
-          "p20": 22610.0,
-          "median": 32675.0,
-          "p80": 40490.0,
+          "p20": 22620.0,
+          "median": 32650.0,
+          "p80": 40480.0,
           "max": 62900.0
         },
         "y10": {
-          "count": 213,
+          "count": 214,
           "from": "2016-09-01",
-          "to": "2026-08-27",
-          "pct": 45.1,
+          "to": "2026-08-28",
+          "pct": 40.0,
           "min": 16750.0,
-          "p20": 22430.0,
-          "median": 34800.0,
-          "p80": 40780.0,
+          "p20": 22470.0,
+          "median": 34650.0,
+          "p80": 40770.0,
           "max": 58500.0
         }
       },
-      "is_stale": false,
-      "freshness_age_days": 1,
-      "freshness_due_at": "2026-09-03",
       "daily_status": "updated",
       "is_new": false,
       "is_updated_today": true,
       "previous_run_observed_at": "2026-08-26",
       "previous_run_value": 34800.0,
-      "previous_run_display_value": "34,800원"
+      "previous_run_display_value": "34,800원",
+      "is_stale": false,
+      "freshness_age_days": 0,
+      "freshness_due_at": "2026-09-04",
+      "interpretation": {
+        "zone": "neutral",
+        "level_label": "10년 범위 상위 40.0% - 중간 구간",
+        "headline": "현재값은 10년 범위 상위 40.0% - 중간 구간에 있습니다.",
+        "detail_text": "최근 2개 관측치 연속 하락, 직전 대비 -1325.00원",
+        "trend_label": "최근 2개 관측치 연속 하락, 직전 대비 -1325.00원",
+        "text": "현재값은 10년 범위 상위 40.0% - 중간 구간에 있습니다. 최근 2개 관측치 연속 하락, 직전 대비 -1325.00원",
+        "caption": "계산 기반 해석",
+        "source": "percentile"
+      }
     },
     {
       "id": "5c34f945ce51",
@@ -33609,50 +33573,37 @@
     },
     {
       "id": "3484513a5bdb",
-      "status": "ok",
-      "history_key": "equity-454910.KS",
-      "history_merge": "full",
+      "industry": "로봇",
       "section": "",
       "market_category": "",
-      "also_market_category": [],
+      "also_market_category": "",
       "refresh_scope": "",
       "chart_style": "",
       "exclude_from_movers": false,
-      "source": "Yahoo Finance chart API",
-      "country": "KR",
-      "industry": "로봇",
-      "industry_en": "Robotics",
       "depth": "",
-      "depth_en": "",
       "group": "대표주가",
-      "group_en": "Representative Stock Prices",
       "name": "두산로보틱스(454910.KS)",
-      "name_en": "(454910.KS)",
-      "meaning": "두산로보틱스 주가는 협동로봇 수요와 설비투자 투자 기대를 보여줍니다.",
-      "meaning_en": "Tracks demand and investment momentum for the related industry.",
-      "value": 73200.0,
-      "unit": "원",
-      "unit_en": "KRW",
-      "display_value": "73,200원",
+      "meaning": "두산로보틱스 주가는 협동로봇 수요와 자동화 투자 기대를 보여줍니다.",
+      "source": "Yahoo Finance chart API",
+      "source_url": "https://finance.yahoo.com/quote/454910.KS",
       "frequency": "일간",
-      "frequency_en": "Daily",
-      "observed_at": "2026-08-27",
-      "observed_label": "2026.08.27",
-      "fetched_at": "2026-08-27T13:14:11+09:00",
-      "fetch_status": "success",
-      "fetch_status_label": "업데이트됨",
-      "next_update_label": "2026.08.28",
-      "change_abs": 1400.0,
-      "change_pct": 1.949860724233976,
-      "change_abs_label": "+1,400원",
-      "change_pct_label": "+1.9%",
-      "yoy_pct": 17.12,
-      "yoy_pct_label": "+17.1%",
+      "automation": "무료 공개 JSON 자동 수집",
+      "status": "ok",
+      "status_label": "자동 수집",
+      "value": 70650.0,
+      "unit": "원",
+      "display_value": "70,650원",
+      "observed_at": "2026-08-28",
+      "observed_label": "2026.08.28",
+      "next_update_label": "2026.08.29",
+      "previous_value": 73100.0,
+      "change_abs": -2450.0,
+      "change_pct": -3.3515731874145027,
+      "change_abs_label": "-2,450원",
+      "change_pct_label": "-3.4%",
+      "yoy_pct": 13.040000000000006,
+      "yoy_pct_label": "+13.0%",
       "history": [
-        {
-          "date": "2026-06-02",
-          "value": 166700.0
-        },
         {
           "date": "2026-06-04",
           "value": 157900.0
@@ -33887,54 +33838,64 @@
         },
         {
           "date": "2026-08-27",
-          "value": 73200.0
+          "value": 73100.0
+        },
+        {
+          "date": "2026-08-28",
+          "value": 70650.0
         }
       ],
-      "period_label": "2026.06.02 - 2026.08.27",
-      "interpretation": {
-        "zone": "neutral",
-        "level_label": "10년 범위 상위 46.9% - 중간 구간",
-        "headline": "현재값은 10년 범위 상위 46.9% - 중간 구간에 있습니다.",
-        "detail_text": "최근 3개 관측치 연속 상승, 직전 대비 +1400.00원",
-        "trend_label": "최근 3개 관측치 연속 상승, 직전 대비 +1400.00원",
-        "text": "현재값은 10년 범위 상위 46.9% - 중간 구간에 있습니다. 최근 3개 관측치 연속 상승, 직전 대비 +1400.00원",
-        "caption": "계산 기반 해석",
-        "source": "percentile"
-      },
+      "period_label": "2026.06.04 - 2026.08.28",
+      "note": "",
+      "history_key": "equity-454910.KS",
+      "history_merge": "full",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
+      "fetch_status": "success",
+      "fetch_status_label": "업데이트됨",
       "percentiles": {
         "span_years": 2.9,
         "all": {
-          "count": 229,
+          "count": 230,
           "from": "2023-10-02",
-          "to": "2026-08-27",
-          "pct": 46.9,
+          "to": "2026-08-28",
+          "pct": 38.9,
           "min": 32300.0,
-          "p20": 63560.0,
-          "median": 74600.0,
-          "p80": 99500.0,
+          "p20": 63580.0,
+          "median": 74550.0,
+          "p80": 99300.00000000001,
           "max": 166700.0
         },
         "y10": {
-          "count": 229,
+          "count": 230,
           "from": "2023-10-02",
-          "to": "2026-08-27",
-          "pct": 46.9,
+          "to": "2026-08-28",
+          "pct": 38.9,
           "min": 32300.0,
-          "p20": 63560.0,
-          "median": 74600.0,
-          "p80": 99500.0,
+          "p20": 63580.0,
+          "median": 74550.0,
+          "p80": 99300.00000000001,
           "max": 166700.0
         }
       },
-      "is_stale": false,
-      "freshness_age_days": 1,
-      "freshness_due_at": "2026-09-03",
       "daily_status": "updated",
       "is_new": false,
       "is_updated_today": true,
       "previous_run_observed_at": "2026-08-26",
       "previous_run_value": 71800.0,
-      "previous_run_display_value": "71,800원"
+      "previous_run_display_value": "71,800원",
+      "is_stale": false,
+      "freshness_age_days": 0,
+      "freshness_due_at": "2026-09-04",
+      "interpretation": {
+        "zone": "neutral",
+        "level_label": "10년 범위 상위 38.9% - 중간 구간",
+        "headline": "현재값은 10년 범위 상위 38.9% - 중간 구간에 있습니다.",
+        "detail_text": "직전 대비 -2450.00원",
+        "trend_label": "직전 대비 -2450.00원",
+        "text": "현재값은 10년 범위 상위 38.9% - 중간 구간에 있습니다. 직전 대비 -2450.00원",
+        "caption": "계산 기반 해석",
+        "source": "percentile"
+      }
     },
     {
       "id": "d9b2a105ae08",
@@ -34264,50 +34225,37 @@
     },
     {
       "id": "1708f3deb23c",
-      "status": "ok",
-      "history_key": "equity-099320.KQ",
-      "history_merge": "full",
+      "industry": "우주",
       "section": "",
       "market_category": "",
-      "also_market_category": [],
+      "also_market_category": "",
       "refresh_scope": "",
       "chart_style": "",
       "exclude_from_movers": false,
-      "source": "Yahoo Finance chart API",
-      "country": "KR",
-      "industry": "우주",
-      "industry_en": "Space",
       "depth": "",
-      "depth_en": "",
       "group": "대표주가",
-      "group_en": "Representative Stock Prices",
       "name": "쎄트렉아이(099320.KQ)",
-      "name_en": "(099320.KQ)",
       "meaning": "쎄트렉아이 주가는 위성 시스템 수주와 국내 우주 산업 성장 기대를 보여줍니다.",
-      "meaning_en": "Helps read the economic cycle and recession risk.",
-      "value": 73900.0,
-      "unit": "원",
-      "unit_en": "KRW",
-      "display_value": "73,900원",
+      "source": "Yahoo Finance chart API",
+      "source_url": "https://finance.yahoo.com/quote/099320.KQ",
       "frequency": "일간",
-      "frequency_en": "Daily",
-      "observed_at": "2026-08-27",
-      "observed_label": "2026.08.27",
-      "fetched_at": "2026-08-27T13:14:11+09:00",
-      "fetch_status": "success",
-      "fetch_status_label": "업데이트됨",
-      "next_update_label": "2026.08.28",
-      "change_abs": 2000.0,
-      "change_pct": 2.781641168289295,
-      "change_abs_label": "+2,000원",
-      "change_pct_label": "+2.8%",
-      "yoy_pct": 45.759368836291905,
-      "yoy_pct_label": "+45.8%",
+      "automation": "무료 공개 JSON 자동 수집",
+      "status": "ok",
+      "status_label": "자동 수집",
+      "value": 73300.0,
+      "unit": "원",
+      "display_value": "73,300원",
+      "observed_at": "2026-08-28",
+      "observed_label": "2026.08.28",
+      "next_update_label": "2026.08.29",
+      "previous_value": 74200.0,
+      "change_abs": -900.0,
+      "change_pct": -1.21293800539084,
+      "change_abs_label": "-900원",
+      "change_pct_label": "-1.2%",
+      "yoy_pct": 44.5759368836292,
+      "yoy_pct_label": "+44.6%",
       "history": [
-        {
-          "date": "2026-06-02",
-          "value": 129400.0
-        },
         {
           "date": "2026-06-04",
           "value": 125000.0
@@ -34542,54 +34490,64 @@
         },
         {
           "date": "2026-08-27",
-          "value": 73900.0
+          "value": 74200.0
+        },
+        {
+          "date": "2026-08-28",
+          "value": 73300.0
         }
       ],
-      "period_label": "2026.06.02 - 2026.08.27",
-      "interpretation": {
-        "zone": "neutral",
-        "level_label": "10년 범위 상위 58.5% - 중간 구간",
-        "headline": "현재값은 10년 범위 상위 58.5% - 중간 구간에 있습니다.",
-        "detail_text": "직전 대비 +2000.00원",
-        "trend_label": "직전 대비 +2000.00원",
-        "text": "현재값은 10년 범위 상위 58.5% - 중간 구간에 있습니다. 직전 대비 +2000.00원",
-        "caption": "계산 기반 해석",
-        "source": "percentile"
-      },
+      "period_label": "2026.06.04 - 2026.08.28",
+      "note": "",
+      "history_key": "equity-099320.KQ",
+      "history_merge": "full",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
+      "fetch_status": "success",
+      "fetch_status_label": "업데이트됨",
       "percentiles": {
         "span_years": 18.2,
         "all": {
-          "count": 311,
+          "count": 312,
           "from": "2008-07-01",
-          "to": "2026-08-27",
-          "pct": 71.5,
+          "to": "2026-08-28",
+          "pct": 70.5,
           "min": 5750.0,
-          "p20": 11625.0,
-          "median": 30000.0,
-          "p80": 85700.0,
+          "p20": 11645.0,
+          "median": 30250.0,
+          "p80": 85600.0,
           "max": 196500.0
         },
         "y10": {
-          "count": 213,
+          "count": 214,
           "from": "2016-09-01",
-          "to": "2026-08-27",
-          "pct": 58.5,
+          "to": "2026-08-28",
+          "pct": 57.0,
           "min": 11350.0,
-          "p20": 23270.0,
-          "median": 59500.0,
-          "p80": 122760.00000000012,
+          "p20": 23330.0,
+          "median": 59900.0,
+          "p80": 121640.00000000003,
           "max": 196500.0
         }
       },
-      "is_stale": false,
-      "freshness_age_days": 1,
-      "freshness_due_at": "2026-09-03",
       "daily_status": "updated",
       "is_new": false,
       "is_updated_today": true,
       "previous_run_observed_at": "2026-08-26",
       "previous_run_value": 71900.0,
-      "previous_run_display_value": "71,900원"
+      "previous_run_display_value": "71,900원",
+      "is_stale": false,
+      "freshness_age_days": 0,
+      "freshness_due_at": "2026-09-04",
+      "interpretation": {
+        "zone": "neutral",
+        "level_label": "10년 범위 상위 57.0% - 중간 구간",
+        "headline": "현재값은 10년 범위 상위 57.0% - 중간 구간에 있습니다.",
+        "detail_text": "직전 대비 -900.00원",
+        "trend_label": "직전 대비 -900.00원",
+        "text": "현재값은 10년 범위 상위 57.0% - 중간 구간에 있습니다. 직전 대비 -900.00원",
+        "caption": "계산 기반 해석",
+        "source": "percentile"
+      }
     },
     {
       "id": "f23893f07b0e",
@@ -34919,50 +34877,37 @@
     },
     {
       "id": "95cabb4c530d",
-      "status": "ok",
-      "history_key": "equity-207940.KS",
-      "history_merge": "full",
+      "industry": "바이오",
       "section": "",
       "market_category": "",
-      "also_market_category": [],
+      "also_market_category": "",
       "refresh_scope": "",
       "chart_style": "",
       "exclude_from_movers": false,
-      "source": "Yahoo Finance chart API",
-      "country": "KR",
-      "industry": "바이오",
-      "industry_en": "Biotech",
       "depth": "",
-      "depth_en": "",
       "group": "대표주가",
-      "group_en": "Representative Stock Prices",
       "name": "삼성바이오로직스(207940.KS)",
-      "name_en": "(207940.KS)",
       "meaning": "삼성바이오로직스 주가는 바이오의약품 위탁생산 수요와 증설 기대를 보여줍니다.",
-      "meaning_en": "Market indicator used to track investment conditions.",
-      "value": 1593000.0,
-      "unit": "원",
-      "unit_en": "KRW",
-      "display_value": "1,593,000원",
+      "source": "Yahoo Finance chart API",
+      "source_url": "https://finance.yahoo.com/quote/207940.KS",
       "frequency": "일간",
-      "frequency_en": "Daily",
-      "observed_at": "2026-08-27",
-      "observed_label": "2026.08.27",
-      "fetched_at": "2026-08-27T13:14:11+09:00",
-      "fetch_status": "success",
-      "fetch_status_label": "업데이트됨",
-      "next_update_label": "2026.08.28",
-      "change_abs": -6000.0,
-      "change_pct": -0.37523452157598447,
-      "change_abs_label": "-6,000원",
-      "change_pct_label": "-0.4%",
-      "yoy_pct": 3.503828764513206,
-      "yoy_pct_label": "+3.5%",
+      "automation": "무료 공개 JSON 자동 수집",
+      "status": "ok",
+      "status_label": "자동 수집",
+      "value": 1515000.0,
+      "unit": "원",
+      "display_value": "1,515,000원",
+      "observed_at": "2026-08-28",
+      "observed_label": "2026.08.28",
+      "next_update_label": "2026.08.29",
+      "previous_value": 1594000.0,
+      "change_abs": -79000.0,
+      "change_pct": -4.9560853199498105,
+      "change_abs_label": "-79,000원",
+      "change_pct_label": "-5.0%",
+      "yoy_pct": -1.564155318118332,
+      "yoy_pct_label": "-1.6%",
       "history": [
-        {
-          "date": "2026-06-02",
-          "value": 1367000.0
-        },
         {
           "date": "2026-06-04",
           "value": 1350000.0
@@ -35197,54 +35142,64 @@
         },
         {
           "date": "2026-08-27",
-          "value": 1593000.0
+          "value": 1594000.0
+        },
+        {
+          "date": "2026-08-28",
+          "value": 1515000.0
         }
       ],
-      "period_label": "2026.06.02 - 2026.08.27",
-      "interpretation": {
-        "zone": "hot",
-        "level_label": "10년 범위 상위 92.1% - 역사적 고점권",
-        "headline": "현재값은 10년 범위 상위 92.1% - 역사적 고점권에 있습니다.",
-        "detail_text": "직전 대비 -6000.00원",
-        "trend_label": "직전 대비 -6000.00원",
-        "text": "현재값은 10년 범위 상위 92.1% - 역사적 고점권에 있습니다. 직전 대비 -6000.00원",
-        "caption": "계산 기반 해석",
-        "source": "percentile"
-      },
+      "period_label": "2026.06.04 - 2026.08.28",
+      "note": "",
+      "history_key": "equity-207940.KS",
+      "history_merge": "full",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
+      "fetch_status": "success",
+      "fetch_status_label": "업데이트됨",
       "percentiles": {
         "span_years": 9.7,
         "all": {
-          "count": 210,
+          "count": 211,
           "from": "2016-12-01",
-          "to": "2026-08-27",
-          "pct": 92.1,
+          "to": "2026-08-28",
+          "pct": 78.4,
           "min": 229729.34375,
-          "p20": 1019328.9250000003,
+          "p20": 1037585.5625,
           "median": 1363000.0,
-          "p80": 1527200.0,
+          "p80": 1527000.0,
           "max": 1877331.375
         },
         "y10": {
-          "count": 210,
+          "count": 211,
           "from": "2016-12-01",
-          "to": "2026-08-27",
-          "pct": 92.1,
+          "to": "2026-08-28",
+          "pct": 78.4,
           "min": 229729.34375,
-          "p20": 1019328.9250000003,
+          "p20": 1037585.5625,
           "median": 1363000.0,
-          "p80": 1527200.0,
+          "p80": 1527000.0,
           "max": 1877331.375
         }
       },
-      "is_stale": false,
-      "freshness_age_days": 1,
-      "freshness_due_at": "2026-09-03",
       "daily_status": "updated",
       "is_new": false,
       "is_updated_today": true,
       "previous_run_observed_at": "2026-08-26",
       "previous_run_value": 1599000.0,
-      "previous_run_display_value": "1,599,000원"
+      "previous_run_display_value": "1,599,000원",
+      "is_stale": false,
+      "freshness_age_days": 0,
+      "freshness_due_at": "2026-09-04",
+      "interpretation": {
+        "zone": "warm",
+        "level_label": "10년 범위 상위 78.4% - 평균보다 높은 구간",
+        "headline": "현재값은 10년 범위 상위 78.4% - 평균보다 높은 구간에 있습니다.",
+        "detail_text": "최근 2개 관측치 연속 하락, 직전 대비 -79000.00원",
+        "trend_label": "최근 2개 관측치 연속 하락, 직전 대비 -79000.00원",
+        "text": "현재값은 10년 범위 상위 78.4% - 평균보다 높은 구간에 있습니다. 최근 2개 관측치 연속 하락, 직전 대비 -79000.00원",
+        "caption": "계산 기반 해석",
+        "source": "percentile"
+      }
     },
     {
       "id": "426f63931dfa",
@@ -35574,50 +35529,37 @@
     },
     {
       "id": "c04f98aa050d",
-      "status": "ok",
-      "history_key": "equity-006400.KS",
-      "history_merge": "full",
+      "industry": "배터리",
       "section": "",
       "market_category": "",
-      "also_market_category": [],
+      "also_market_category": "",
       "refresh_scope": "",
       "chart_style": "",
       "exclude_from_movers": false,
-      "source": "Yahoo Finance chart API",
-      "country": "KR",
-      "industry": "배터리",
-      "industry_en": "Batteries",
       "depth": "",
-      "depth_en": "",
       "group": "대표주가",
-      "group_en": "Representative Stock Prices",
       "name": "삼성SDI(006400.KS)",
-      "name_en": "SDI(006400.KS)",
       "meaning": "삼성SDI 주가는 전기차 배터리와 에너지저장장치 수요에 대한 시장 평가를 보여줍니다.",
-      "meaning_en": "Market indicator used to track investment conditions.",
-      "value": 564000.0,
-      "unit": "원",
-      "unit_en": "KRW",
-      "display_value": "564,000원",
+      "source": "Yahoo Finance chart API",
+      "source_url": "https://finance.yahoo.com/quote/006400.KS",
       "frequency": "일간",
-      "frequency_en": "Daily",
-      "observed_at": "2026-08-27",
-      "observed_label": "2026.08.27",
-      "fetched_at": "2026-08-27T13:14:11+09:00",
-      "fetch_status": "success",
-      "fetch_status_label": "업데이트됨",
-      "next_update_label": "2026.08.28",
-      "change_abs": 48000.0,
-      "change_pct": 9.302325581395344,
-      "change_abs_label": "+48,000원",
-      "change_pct_label": "+9.3%",
-      "yoy_pct": 172.46376811594203,
-      "yoy_pct_label": "+172.5%",
+      "automation": "무료 공개 JSON 자동 수집",
+      "status": "ok",
+      "status_label": "자동 수집",
+      "value": 570500.0,
+      "unit": "원",
+      "display_value": "570,500원",
+      "observed_at": "2026-08-28",
+      "observed_label": "2026.08.28",
+      "next_update_label": "2026.08.29",
+      "previous_value": 569000.0,
+      "change_abs": 1500.0,
+      "change_pct": 0.2636203866432263,
+      "change_abs_label": "+1,500원",
+      "change_pct_label": "+0.3%",
+      "yoy_pct": 175.6038647342995,
+      "yoy_pct_label": "+175.6%",
       "history": [
-        {
-          "date": "2026-06-02",
-          "value": 602000.0
-        },
         {
           "date": "2026-06-04",
           "value": 607000.0
@@ -35852,54 +35794,64 @@
         },
         {
           "date": "2026-08-27",
-          "value": 564000.0
+          "value": 569000.0
+        },
+        {
+          "date": "2026-08-28",
+          "value": 570500.0
         }
       ],
-      "period_label": "2026.06.02 - 2026.08.27",
-      "interpretation": {
-        "zone": "warm",
-        "level_label": "10년 범위 상위 70.7% - 평균보다 높은 구간",
-        "headline": "현재값은 10년 범위 상위 70.7% - 평균보다 높은 구간에 있습니다.",
-        "detail_text": "직전 대비 +48000.00원",
-        "trend_label": "직전 대비 +48000.00원",
-        "text": "현재값은 10년 범위 상위 70.7% - 평균보다 높은 구간에 있습니다. 직전 대비 +48000.00원",
-        "caption": "계산 기반 해석",
-        "source": "percentile"
-      },
+      "period_label": "2026.06.04 - 2026.08.28",
+      "note": "",
+      "history_key": "equity-006400.KS",
+      "history_merge": "full",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
+      "fetch_status": "success",
+      "fetch_status_label": "업데이트됨",
       "percentiles": {
         "span_years": 26.6,
         "all": {
-          "count": 412,
+          "count": 413,
           "from": "2000-02-01",
-          "to": "2026-08-27",
-          "pct": 84.8,
+          "to": "2026-08-28",
+          "pct": 85.6,
           "min": 32900.0,
-          "p20": 95760.0,
-          "median": 172150.0,
-          "p80": 510200.0000000001,
+          "p20": 95820.0,
+          "median": 172800.0,
+          "p80": 512000.0,
           "max": 793000.0
         },
         "y10": {
-          "count": 213,
+          "count": 214,
           "from": "2016-09-01",
-          "to": "2026-08-27",
-          "pct": 70.7,
+          "to": "2026-08-28",
+          "pct": 72.2,
           "min": 92300.0,
-          "p20": 236200.0,
-          "median": 470500.0,
-          "p80": 629600.0,
+          "p20": 236300.0,
+          "median": 470750.0,
+          "p80": 629400.0,
           "max": 793000.0
         }
       },
-      "is_stale": false,
-      "freshness_age_days": 1,
-      "freshness_due_at": "2026-09-03",
       "daily_status": "updated",
       "is_new": false,
       "is_updated_today": true,
       "previous_run_observed_at": "2026-08-26",
       "previous_run_value": 516000.0,
-      "previous_run_display_value": "516,000원"
+      "previous_run_display_value": "516,000원",
+      "is_stale": false,
+      "freshness_age_days": 0,
+      "freshness_due_at": "2026-09-04",
+      "interpretation": {
+        "zone": "warm",
+        "level_label": "10년 범위 상위 72.2% - 평균보다 높은 구간",
+        "headline": "현재값은 10년 범위 상위 72.2% - 평균보다 높은 구간에 있습니다.",
+        "detail_text": "최근 2개 관측치 연속 상승, 직전 대비 +1500.00원",
+        "trend_label": "최근 2개 관측치 연속 상승, 직전 대비 +1500.00원",
+        "text": "현재값은 10년 범위 상위 72.2% - 평균보다 높은 구간에 있습니다. 최근 2개 관측치 연속 상승, 직전 대비 +1500.00원",
+        "caption": "계산 기반 해석",
+        "source": "percentile"
+      }
     },
     {
       "id": "8f9705d7a4f7",
@@ -36246,19 +36198,19 @@
       "automation": "무료 공개 JSON 자동 수집",
       "status": "ok",
       "status_label": "자동 수집",
-      "value": 83.04000091552734,
+      "value": 83.19000244140625,
       "unit": "$",
-      "display_value": "$83.04",
+      "display_value": "$83.19",
       "observed_at": "2026-08-27",
       "observed_label": "2026.08.27",
       "next_update_label": "2026.08.28",
       "previous_value": 82.2300033569336,
-      "change_abs": 0.80999755859375,
-      "change_pct": 0.9850389462807252,
-      "change_abs_label": "$+0.81",
-      "change_pct_label": "+1.0%",
-      "yoy_pct": 29.729726830497416,
-      "yoy_pct_label": "+29.7%",
+      "change_abs": 0.9599990844726562,
+      "change_pct": 1.1674559713996446,
+      "change_abs_label": "$+0.96",
+      "change_pct_label": "+1.2%",
+      "yoy_pct": 29.964067591117384,
+      "yoy_pct_label": "+30.0%",
       "history": [
         {
           "date": "2026-06-12",
@@ -36498,14 +36450,14 @@
         },
         {
           "date": "2026-08-27",
-          "value": 83.04000091552734
+          "value": 83.19000244140625
         }
       ],
       "period_label": "2026.06.12 - 2026.08.27",
       "note": "",
       "history_key": "equity-CL=F",
       "history_merge": "full",
-      "fetched_at": "2026-08-28T03:00:25+09:00",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
       "fetch_status": "success",
       "fetch_status_label": "업데이트됨",
       "percentiles": {
@@ -36514,7 +36466,7 @@
           "count": 366,
           "from": "2000-09-01",
           "to": "2026-08-27",
-          "pct": 64.6,
+          "pct": 64.9,
           "min": 18.84000015258789,
           "p20": 49.33000183105469,
           "median": 74.2750015258789,
@@ -36525,7 +36477,7 @@
           "count": 203,
           "from": "2016-09-01",
           "to": "2026-08-27",
-          "pct": 61.8,
+          "pct": 62.3,
           "min": 18.84000015258789,
           "p20": 60.86600036621094,
           "median": 78.18000030517578,
@@ -36544,11 +36496,11 @@
       "freshness_due_at": "2026-09-03",
       "interpretation": {
         "zone": "neutral",
-        "level_label": "10년 범위 상위 61.8% - 중간 구간",
-        "headline": "현재값은 10년 범위 상위 61.8% - 중간 구간에 있습니다.",
-        "detail_text": "직전 대비 +0.81$",
-        "trend_label": "직전 대비 +0.81$",
-        "text": "현재값은 10년 범위 상위 61.8% - 중간 구간에 있습니다. 직전 대비 +0.81$",
+        "level_label": "10년 범위 상위 62.3% - 중간 구간",
+        "headline": "현재값은 10년 범위 상위 62.3% - 중간 구간에 있습니다.",
+        "detail_text": "직전 대비 +0.96$",
+        "trend_label": "직전 대비 +0.96$",
+        "text": "현재값은 10년 범위 상위 62.3% - 중간 구간에 있습니다. 직전 대비 +0.96$",
         "caption": "계산 기반 해석",
         "source": "percentile"
       }
@@ -36572,19 +36524,19 @@
       "automation": "무료 공개 JSON 자동 수집",
       "status": "ok",
       "status_label": "자동 수집",
-      "value": 87.91000366210938,
+      "value": 88.30000305175781,
       "unit": "$",
-      "display_value": "$87.91",
+      "display_value": "$88.30",
       "observed_at": "2026-08-27",
       "observed_label": "2026.08.27",
       "next_update_label": "2026.08.28",
       "previous_value": 87.83999633789062,
-      "change_abs": 0.07000732421875,
-      "change_pct": 0.07969868754258425,
-      "change_abs_label": "$+0.07",
-      "change_pct_label": "+0.1%",
-      "yoy_pct": 29.05167368995787,
-      "yoy_pct_label": "+29.1%",
+      "change_abs": 0.4600067138671875,
+      "change_pct": 0.5236870822463269,
+      "change_abs_label": "$+0.46",
+      "change_pct_label": "+0.5%",
+      "yoy_pct": 29.62419185484888,
+      "yoy_pct_label": "+29.6%",
       "history": [
         {
           "date": "2026-06-11",
@@ -36824,14 +36776,14 @@
         },
         {
           "date": "2026-08-27",
-          "value": 87.91000366210938
+          "value": 88.30000305175781
         }
       ],
       "period_label": "2026.06.11 - 2026.08.27",
       "note": "",
       "history_key": "equity-BZ=F",
       "history_merge": "full",
-      "fetched_at": "2026-08-28T03:00:25+09:00",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
       "fetch_status": "success",
       "fetch_status_label": "업데이트됨",
       "percentiles": {
@@ -36840,7 +36792,7 @@
           "count": 295,
           "from": "2007-08-01",
           "to": "2026-08-27",
-          "pct": 56.1,
+          "pct": 57.1,
           "min": 25.270000457763672,
           "p20": 65.55199737548828,
           "median": 84.37999725341797,
@@ -36851,7 +36803,7 @@
           "count": 202,
           "from": "2016-09-01",
           "to": "2026-08-27",
-          "pct": 60.6,
+          "pct": 61.6,
           "min": 25.270000457763672,
           "p20": 66.21399841308595,
           "median": 83.42500305175781,
@@ -36870,11 +36822,11 @@
       "freshness_due_at": "2026-09-03",
       "interpretation": {
         "zone": "neutral",
-        "level_label": "10년 범위 상위 60.6% - 중간 구간",
-        "headline": "현재값은 10년 범위 상위 60.6% - 중간 구간에 있습니다.",
-        "detail_text": "직전 대비 +0.07$",
-        "trend_label": "직전 대비 +0.07$",
-        "text": "현재값은 10년 범위 상위 60.6% - 중간 구간에 있습니다. 직전 대비 +0.07$",
+        "level_label": "10년 범위 상위 61.6% - 중간 구간",
+        "headline": "현재값은 10년 범위 상위 61.6% - 중간 구간에 있습니다.",
+        "detail_text": "직전 대비 +0.46$",
+        "trend_label": "직전 대비 +0.46$",
+        "text": "현재값은 10년 범위 상위 61.6% - 중간 구간에 있습니다. 직전 대비 +0.46$",
         "caption": "계산 기반 해석",
         "source": "percentile"
       }
@@ -36898,19 +36850,19 @@
       "automation": "무료 공개 JSON 자동 수집",
       "status": "ok",
       "status_label": "자동 수집",
-      "value": 6.696499824523926,
+      "value": 6.69350004196167,
       "unit": "$",
-      "display_value": "$6.70",
+      "display_value": "$6.69",
       "observed_at": "2026-08-27",
       "observed_label": "2026.08.27",
       "next_update_label": "2026.08.28",
       "previous_value": 6.5945000648498535,
-      "change_abs": 0.10199975967407227,
-      "change_pct": 1.5467398388204323,
+      "change_abs": 0.0989999771118164,
+      "change_pct": 1.5012506806923565,
       "change_abs_label": "$+0.10",
       "change_pct_label": "+1.5%",
-      "yoy_pct": 48.20183788886872,
-      "yoy_pct_label": "+48.2%",
+      "yoy_pct": 48.13544898412101,
+      "yoy_pct_label": "+48.1%",
       "history": [
         {
           "date": "2026-06-12",
@@ -37150,14 +37102,14 @@
         },
         {
           "date": "2026-08-27",
-          "value": 6.696499824523926
+          "value": 6.69350004196167
         }
       ],
       "period_label": "2026.06.12 - 2026.08.27",
       "note": "",
       "history_key": "equity-HG=F",
       "history_merge": "full",
-      "fetched_at": "2026-08-28T03:00:25+09:00",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
       "fetch_status": "success",
       "fetch_status_label": "업데이트됨",
       "percentiles": {
@@ -37224,19 +37176,19 @@
       "automation": "무료 공개 JSON 자동 수집",
       "status": "ok",
       "status_label": "자동 수집",
-      "value": 3392.0,
+      "value": 3371.0,
       "unit": "$",
-      "display_value": "$3,392.0",
+      "display_value": "$3,371.0",
       "observed_at": "2026-08-27",
       "observed_label": "2026.08.27",
       "next_update_label": "2026.08.28",
       "previous_value": 3343.5,
-      "change_abs": 48.5,
-      "change_pct": 1.4505757439808642,
-      "change_abs_label": "$+48.50",
-      "change_pct_label": "+1.5%",
-      "yoy_pct": 34.884183318421314,
-      "yoy_pct_label": "+34.9%",
+      "change_abs": 27.5,
+      "change_pct": 0.8224914012262552,
+      "change_abs_label": "$+27.50",
+      "change_pct_label": "+0.8%",
+      "yoy_pct": 34.04911024952779,
+      "yoy_pct_label": "+34.0%",
       "history": [
         {
           "date": "2026-06-09",
@@ -37476,14 +37428,14 @@
         },
         {
           "date": "2026-08-27",
-          "value": 3392.0
+          "value": 3371.0
         }
       ],
       "period_label": "2026.06.09 - 2026.08.27",
       "note": "",
       "history_key": "equity-ALI=F",
       "history_merge": "full",
-      "fetched_at": "2026-08-28T03:00:25+09:00",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
       "fetch_status": "success",
       "fetch_status_label": "업데이트됨",
       "percentiles": {
@@ -37492,7 +37444,7 @@
           "count": 222,
           "from": "2014-07-01",
           "to": "2026-08-27",
-          "pct": 59.7,
+          "pct": 57.9,
           "min": 1491.25,
           "p20": 2167.8,
           "median": 2783.25,
@@ -37503,7 +37455,7 @@
           "count": 200,
           "from": "2016-09-01",
           "to": "2026-08-27",
-          "pct": 55.2,
+          "pct": 53.2,
           "min": 1491.25,
           "p20": 2228.2000000000003,
           "median": 3347.0,
@@ -37522,61 +37474,48 @@
       "freshness_due_at": "2026-09-03",
       "interpretation": {
         "zone": "neutral",
-        "level_label": "10년 범위 상위 55.2% - 중간 구간",
-        "headline": "현재값은 10년 범위 상위 55.2% - 중간 구간에 있습니다.",
-        "detail_text": "직전 대비 +48.50$",
-        "trend_label": "직전 대비 +48.50$",
-        "text": "현재값은 10년 범위 상위 55.2% - 중간 구간에 있습니다. 직전 대비 +48.50$",
+        "level_label": "10년 범위 상위 53.2% - 중간 구간",
+        "headline": "현재값은 10년 범위 상위 53.2% - 중간 구간에 있습니다.",
+        "detail_text": "직전 대비 +27.50$",
+        "trend_label": "직전 대비 +27.50$",
+        "text": "현재값은 10년 범위 상위 53.2% - 중간 구간에 있습니다. 직전 대비 +27.50$",
         "caption": "계산 기반 해석",
         "source": "percentile"
       }
     },
     {
       "id": "890be20fa286",
-      "status": "ok",
-      "history_key": "equity-^KS11",
-      "history_merge": "full",
-      "section": "market",
-      "market_category": "종합",
-      "also_market_category": [],
+      "industry": "매크로",
+      "section": "",
+      "market_category": "",
+      "also_market_category": "",
       "refresh_scope": "",
       "chart_style": "",
       "exclude_from_movers": false,
-      "source": "Yahoo Finance chart API",
-      "country": "KR",
-      "industry": "매크로",
-      "industry_en": "Macro",
       "depth": "",
-      "depth_en": "",
       "group": "시장지수",
-      "group_en": "Market Indexes",
       "name": "코스피",
-      "name_en": "KOSPI",
       "meaning": "코스피는 한국 유가증권시장 전체 흐름을 보여주는 대표 지수입니다. 국내 대형주와 한국 증시 전반의 투자심리를 볼 때 사용합니다.",
-      "meaning_en": "Shows market sentiment and risk appetite.",
-      "value": 6920.64990234375,
-      "unit": "지수",
-      "unit_en": "Index",
-      "display_value": "6,920.6 지수",
+      "source": "Yahoo Finance chart API",
+      "source_url": "https://finance.yahoo.com/quote/^KS11",
       "frequency": "일간",
-      "frequency_en": "Daily",
-      "observed_at": "2026-08-27",
-      "observed_label": "2026.08.27",
-      "fetched_at": "2026-08-27T13:14:11+09:00",
-      "fetch_status": "success",
-      "fetch_status_label": "업데이트됨",
-      "next_update_label": "2026.08.28",
-      "change_abs": 112.43994140625,
-      "change_pct": 1.6515345744532173,
-      "change_abs_label": "+112.44 지수",
-      "change_pct_label": "+1.7%",
-      "yoy_pct": 117.21996733001036,
-      "yoy_pct_label": "+117.2%",
+      "automation": "무료 공개 JSON 자동 수집",
+      "status": "ok",
+      "status_label": "자동 수집",
+      "value": 6834.52001953125,
+      "unit": "지수",
+      "display_value": "6,834.5 지수",
+      "observed_at": "2026-08-28",
+      "observed_label": "2026.08.28",
+      "next_update_label": "2026.08.29",
+      "previous_value": 6912.3701171875,
+      "change_abs": -77.85009765625,
+      "change_pct": -1.1262431891874147,
+      "change_abs_label": "-77.85 지수",
+      "change_pct_label": "-1.1%",
+      "yoy_pct": 114.51658967116751,
+      "yoy_pct_label": "+114.5%",
       "history": [
-        {
-          "date": "2026-06-02",
-          "value": 8801.490234375
-        },
         {
           "date": "2026-06-04",
           "value": 8639.41015625
@@ -37811,101 +37750,98 @@
         },
         {
           "date": "2026-08-27",
-          "value": 6920.64990234375
+          "value": 6912.3701171875
+        },
+        {
+          "date": "2026-08-28",
+          "value": 6834.52001953125
         }
       ],
-      "period_label": "2026.06.02 - 2026.08.27",
-      "interpretation": {
-        "zone": "warm",
-        "level_label": "10년 범위 상위 75.8% - 평균보다 높은 구간",
-        "headline": "현재값은 10년 범위 상위 75.8% - 평균보다 높은 구간에 있습니다.",
-        "detail_text": "최근 3개 관측치 연속 상승, 직전 대비 +112.44지수",
-        "trend_label": "최근 3개 관측치 연속 상승, 직전 대비 +112.44지수",
-        "text": "현재값은 10년 범위 상위 75.8% - 평균보다 높은 구간에 있습니다. 최근 3개 관측치 연속 상승, 직전 대비 +112.44지수",
-        "caption": "계산 기반 해석",
-        "source": "percentile"
-      },
+      "period_label": "2026.06.04 - 2026.08.28",
+      "note": "",
+      "history_key": "equity-^KS11",
+      "history_merge": "full",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
+      "fetch_status": "success",
+      "fetch_status_label": "업데이트됨",
       "percentiles": {
         "span_years": 29.7,
         "all": {
-          "count": 449,
+          "count": 450,
           "from": "1997-01-01",
-          "to": "2026-08-27",
-          "pct": 88.5,
+          "to": "2026-08-28",
+          "pct": 87.4,
           "min": 297.8800048828125,
-          "p20": 895.7839965820312,
-          "median": 2029.469970703125,
-          "p80": 6131.602050781254,
+          "p20": 895.8519897460938,
+          "median": 2029.5349731445312,
+          "p80": 6197.353906250001,
           "max": 9114.5498046875
         },
         "y10": {
-          "count": 213,
+          "count": 214,
           "from": "2016-09-01",
-          "to": "2026-08-27",
-          "pct": 75.8,
+          "to": "2026-08-28",
+          "pct": 73.6,
           "min": 1754.6400146484375,
-          "p20": 2353.7039062500003,
-          "median": 3245.43994140625,
-          "p80": 7347.5000976562515,
+          "p20": 2356.86591796875,
+          "median": 3271.0599365234375,
+          "p80": 7328.9701171875,
           "max": 9114.5498046875
         }
       },
-      "is_stale": false,
-      "freshness_age_days": 1,
-      "freshness_due_at": "2026-09-03",
       "daily_status": "updated",
       "is_new": false,
       "is_updated_today": true,
       "previous_run_observed_at": "2026-08-25",
       "previous_run_value": 6742.740234375,
-      "previous_run_display_value": "6,742.7 지수"
+      "previous_run_display_value": "6,742.7 지수",
+      "is_stale": false,
+      "freshness_age_days": 0,
+      "freshness_due_at": "2026-09-04",
+      "interpretation": {
+        "zone": "warm",
+        "level_label": "10년 범위 상위 73.6% - 평균보다 높은 구간",
+        "headline": "현재값은 10년 범위 상위 73.6% - 평균보다 높은 구간에 있습니다.",
+        "detail_text": "직전 대비 -77.85지수",
+        "trend_label": "직전 대비 -77.85지수",
+        "text": "현재값은 10년 범위 상위 73.6% - 평균보다 높은 구간에 있습니다. 직전 대비 -77.85지수",
+        "caption": "계산 기반 해석",
+        "source": "percentile"
+      }
     },
     {
       "id": "d101ffa7a785",
-      "status": "ok",
-      "history_key": "equity-^KQ11",
-      "history_merge": "full",
-      "section": "market",
-      "market_category": "종합",
-      "also_market_category": [],
+      "industry": "매크로",
+      "section": "",
+      "market_category": "",
+      "also_market_category": "",
       "refresh_scope": "",
       "chart_style": "",
       "exclude_from_movers": false,
-      "source": "Yahoo Finance chart API",
-      "country": "KR",
-      "industry": "매크로",
-      "industry_en": "Macro",
       "depth": "",
-      "depth_en": "",
       "group": "시장지수",
-      "group_en": "Market Indexes",
       "name": "코스닥",
-      "name_en": "KOSDAQ",
       "meaning": "코스닥은 한국 성장주와 중소형 기술주 흐름을 보여주는 대표 지수입니다. 개인투자 심리와 성장주 선호가 강한지 볼 때 사용합니다.",
-      "meaning_en": "Tracks investor trading flows and helps show which group is buying or selling the market.",
-      "value": 834.7899780273438,
-      "unit": "지수",
-      "unit_en": "Index",
-      "display_value": "834.8 지수",
+      "source": "Yahoo Finance chart API",
+      "source_url": "https://finance.yahoo.com/quote/^KQ11",
       "frequency": "일간",
-      "frequency_en": "Daily",
-      "observed_at": "2026-08-27",
-      "observed_label": "2026.08.27",
-      "fetched_at": "2026-08-27T13:14:11+09:00",
-      "fetch_status": "success",
-      "fetch_status_label": "업데이트됨",
-      "next_update_label": "2026.08.28",
-      "change_abs": 7.91998291015625,
-      "change_pct": 0.9578268599568451,
-      "change_abs_label": "+7.92 지수",
-      "change_pct_label": "+1.0%",
-      "yoy_pct": 4.753360625334069,
-      "yoy_pct_label": "+4.8%",
+      "automation": "무료 공개 JSON 자동 수집",
+      "status": "ok",
+      "status_label": "자동 수집",
+      "value": 830.6099853515625,
+      "unit": "지수",
+      "display_value": "830.6 지수",
+      "observed_at": "2026-08-28",
+      "observed_label": "2026.08.28",
+      "next_update_label": "2026.08.29",
+      "previous_value": 837.6500244140625,
+      "change_abs": -7.0400390625,
+      "change_pct": -0.8404511260444947,
+      "change_abs_label": "-7.04 지수",
+      "change_pct_label": "-0.8%",
+      "yoy_pct": 4.228835545131182,
+      "yoy_pct_label": "+4.2%",
       "history": [
-        {
-          "date": "2026-06-02",
-          "value": 1026.030029296875
-        },
         {
           "date": "2026-06-04",
           "value": 1049.72998046875
@@ -38140,54 +38076,64 @@
         },
         {
           "date": "2026-08-27",
-          "value": 834.7899780273438
+          "value": 837.6500244140625
+        },
+        {
+          "date": "2026-08-28",
+          "value": 830.6099853515625
         }
       ],
-      "period_label": "2026.06.02 - 2026.08.27",
-      "interpretation": {
-        "zone": "neutral",
-        "level_label": "10년 범위 상위 45.8% - 중간 구간",
-        "headline": "현재값은 10년 범위 상위 45.8% - 중간 구간에 있습니다.",
-        "detail_text": "직전 대비 +7.92지수",
-        "trend_label": "직전 대비 +7.92지수",
-        "text": "현재값은 10년 범위 상위 45.8% - 중간 구간에 있습니다. 직전 대비 +7.92지수",
-        "caption": "계산 기반 해석",
-        "source": "percentile"
-      },
+      "period_label": "2026.06.04 - 2026.08.28",
+      "note": "",
+      "history_key": "equity-^KQ11",
+      "history_merge": "full",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
+      "fetch_status": "success",
+      "fetch_status_label": "업데이트됨",
       "percentiles": {
         "span_years": 25.8,
         "all": {
-          "count": 403,
+          "count": 404,
           "from": "2000-11-01",
-          "to": "2026-08-27",
-          "pct": 70.8,
+          "to": "2026-08-28",
+          "pct": 69.9,
           "min": 307.4800109863281,
-          "p20": 516.00400390625,
-          "median": 699.77001953125,
-          "p80": 903.0179931640625,
+          "p20": 516.1360107421875,
+          "median": 700.7799987792969,
+          "p80": 902.1519897460939,
           "max": 1226.1800537109375
         },
         "y10": {
-          "count": 213,
+          "count": 214,
           "from": "2016-09-01",
-          "to": "2026-08-27",
-          "pct": 45.8,
+          "to": "2026-08-28",
+          "pct": 44.2,
           "min": 569.0700073242188,
-          "p20": 728.6979858398438,
-          "median": 847.52001953125,
-          "p80": 1036.6099853515625,
+          "p20": 728.9019897460937,
+          "median": 847.2950134277344,
+          "p80": 1035.75,
           "max": 1226.1800537109375
         }
       },
-      "is_stale": false,
-      "freshness_age_days": 1,
-      "freshness_due_at": "2026-09-03",
       "daily_status": "updated",
       "is_new": false,
       "is_updated_today": true,
       "previous_run_observed_at": "2026-08-25",
       "previous_run_value": 827.1500244140625,
-      "previous_run_display_value": "827.2 지수"
+      "previous_run_display_value": "827.2 지수",
+      "is_stale": false,
+      "freshness_age_days": 0,
+      "freshness_due_at": "2026-09-04",
+      "interpretation": {
+        "zone": "neutral",
+        "level_label": "10년 범위 상위 44.2% - 중간 구간",
+        "headline": "현재값은 10년 범위 상위 44.2% - 중간 구간에 있습니다.",
+        "detail_text": "직전 대비 -7.04지수",
+        "trend_label": "직전 대비 -7.04지수",
+        "text": "현재값은 10년 범위 상위 44.2% - 중간 구간에 있습니다. 직전 대비 -7.04지수",
+        "caption": "계산 기반 해석",
+        "source": "percentile"
+      }
     },
     {
       "id": "8ccfe639730a",
@@ -39188,19 +39134,19 @@
       "automation": "무료 공개 JSON 자동 수집",
       "status": "ok",
       "status_label": "자동 수집",
-      "value": 14.65999984741211,
+      "value": 14.510000228881836,
       "unit": "지수",
-      "display_value": "14.66 지수",
+      "display_value": "14.51 지수",
       "observed_at": "2026-08-27",
       "observed_label": "2026.08.27",
       "next_update_label": "2026.08.28",
       "previous_value": 15.210000038146973,
-      "change_abs": -0.5500001907348633,
-      "change_pct": -3.6160433225210564,
-      "change_abs_label": "-0.55 지수",
-      "change_pct_label": "-3.6%",
-      "yoy_pct": -4.557290526766611,
-      "yoy_pct_label": "-4.6%",
+      "change_abs": -0.6999998092651367,
+      "change_pct": -4.602234105914027,
+      "change_abs_label": "-0.70 지수",
+      "change_pct_label": "-4.6%",
+      "yoy_pct": -5.533850565067566,
+      "yoy_pct_label": "-5.5%",
       "history": [
         {
           "date": "2026-06-03",
@@ -39440,14 +39386,14 @@
         },
         {
           "date": "2026-08-27",
-          "value": 14.65999984741211
+          "value": 14.510000228881836
         }
       ],
       "period_label": "2026.06.03 - 2026.08.27",
       "note": "",
       "history_key": "equity-^VIX",
       "history_merge": "full",
-      "fetched_at": "2026-08-28T03:00:25+09:00",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
       "fetch_status": "success",
       "fetch_status_label": "업데이트됨",
       "percentiles": {
@@ -39456,7 +39402,7 @@
           "count": 533,
           "from": "1990-02-01",
           "to": "2026-08-27",
-          "pct": 24.9,
+          "pct": 23.7,
           "min": 9.510000228881836,
           "p20": 13.77400016784668,
           "median": 17.350000381469727,
@@ -39467,7 +39413,7 @@
           "count": 214,
           "from": "2016-09-01",
           "to": "2026-08-27",
-          "pct": 18.0,
+          "pct": 17.1,
           "min": 9.510000228881836,
           "p20": 14.979999923706055,
           "median": 17.0,
@@ -39488,9 +39434,9 @@
         "zone": "good",
         "level_label": "안정 구간",
         "headline": "VIX가 안정 기준 20 미만입니다. 기준 20 대비 시장 변동성 기대가 낮은 구간입니다.",
-        "detail_text": "10년 범위 상위 18.0% - 평균보다 낮은 구간 최근 3개 관측치 연속 하락, 직전 대비 -0.55지수",
-        "trend_label": "최근 3개 관측치 연속 하락, 직전 대비 -0.55지수",
-        "text": "VIX가 안정 기준 20 미만입니다. 기준 20 대비 시장 변동성 기대가 낮은 구간입니다. 10년 범위 상위 18.0% - 평균보다 낮은 구간 최근 3개 관측치 연속 하락, 직전 대비 -0.55지수",
+        "detail_text": "10년 범위 상위 17.1% - 평균보다 낮은 구간 최근 3개 관측치 연속 하락, 직전 대비 -0.70지수",
+        "trend_label": "최근 3개 관측치 연속 하락, 직전 대비 -0.70지수",
+        "text": "VIX가 안정 기준 20 미만입니다. 기준 20 대비 시장 변동성 기대가 낮은 구간입니다. 10년 범위 상위 17.1% - 평균보다 낮은 구간 최근 3개 관측치 연속 하락, 직전 대비 -0.70지수",
         "caption": "계산 기반 해석",
         "source": "threshold"
       }
@@ -39514,24 +39460,20 @@
       "automation": "무료 공개 JSON 자동 수집",
       "status": "ok",
       "status_label": "자동 수집",
-      "value": 1381.0899658203125,
+      "value": 1377.6300048828125,
       "unit": "원",
-      "display_value": "1,381.1원",
-      "observed_at": "2026-08-27",
-      "observed_label": "2026.08.27",
-      "next_update_label": "2026.08.28",
-      "previous_value": 1381.489990234375,
-      "change_abs": -0.4000244140625,
-      "change_pct": -0.028956012485814586,
-      "change_abs_label": "-0.40원",
-      "change_pct_label": "-0.0%",
-      "yoy_pct": -0.42394608441533865,
-      "yoy_pct_label": "-0.4%",
+      "display_value": "1,377.6원",
+      "observed_at": "2026-08-28",
+      "observed_label": "2026.08.28",
+      "next_update_label": "2026.08.29",
+      "previous_value": 1383.489990234375,
+      "change_abs": -5.8599853515625,
+      "change_pct": -0.4235654318373361,
+      "change_abs_label": "-5.86원",
+      "change_pct_label": "-0.4%",
+      "yoy_pct": -0.6734079336683574,
+      "yoy_pct_label": "-0.7%",
       "history": [
-        {
-          "date": "2026-06-16",
-          "value": 1513.31005859375
-        },
         {
           "date": "2026-06-17",
           "value": 1510.9599609375
@@ -39766,38 +39708,42 @@
         },
         {
           "date": "2026-08-27",
-          "value": 1381.0899658203125
+          "value": 1383.489990234375
+        },
+        {
+          "date": "2026-08-28",
+          "value": 1377.6300048828125
         }
       ],
-      "period_label": "2026.06.16 - 2026.08.27",
+      "period_label": "2026.06.17 - 2026.08.28",
       "note": "",
       "history_key": "equity-KRW=X",
       "history_merge": "full",
-      "fetched_at": "2026-08-28T03:00:25+09:00",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
       "fetch_status": "success",
       "fetch_status_label": "업데이트됨",
       "percentiles": {
         "span_years": 22.7,
         "all": {
-          "count": 377,
+          "count": 378,
           "from": "2003-12-01",
-          "to": "2026-08-27",
-          "pct": 65.9,
+          "to": "2026-08-28",
+          "pct": 64.9,
           "min": 0.11025399714708328,
-          "p20": 1079.3180419921875,
-          "median": 1189.8900146484375,
-          "p80": 1469.4180419921875,
+          "p20": 1079.33603515625,
+          "median": 1189.89501953125,
+          "p80": 1469.4160400390624,
           "max": 1554.47998046875
         },
         "y10": {
-          "count": 224,
+          "count": 225,
           "from": "2016-09-01",
-          "to": "2026-08-27",
-          "pct": 43.5,
+          "to": "2026-08-28",
+          "pct": 42.0,
           "min": 0.11537999659776688,
-          "p20": 1168.669970703125,
-          "median": 1412.8800048828125,
-          "p80": 1492.5879638671875,
+          "p20": 1168.9399658203124,
+          "median": 1412.1800537109375,
+          "p80": 1492.453955078125,
           "max": 1554.47998046875
         }
       },
@@ -39808,15 +39754,15 @@
       "previous_run_value": 1383.949951171875,
       "previous_run_display_value": "1,383.9원",
       "is_stale": false,
-      "freshness_age_days": 1,
-      "freshness_due_at": "2026-09-03",
+      "freshness_age_days": 0,
+      "freshness_due_at": "2026-09-04",
       "interpretation": {
         "zone": "neutral",
-        "level_label": "10년 범위 상위 43.5% - 중간 구간",
-        "headline": "현재값은 10년 범위 상위 43.5% - 중간 구간에 있습니다.",
-        "detail_text": "직전 대비 -0.40원",
-        "trend_label": "직전 대비 -0.40원",
-        "text": "현재값은 10년 범위 상위 43.5% - 중간 구간에 있습니다. 직전 대비 -0.40원",
+        "level_label": "10년 범위 상위 42.0% - 중간 구간",
+        "headline": "현재값은 10년 범위 상위 42.0% - 중간 구간에 있습니다.",
+        "detail_text": "직전 대비 -5.86원",
+        "trend_label": "직전 대비 -5.86원",
+        "text": "현재값은 10년 범위 상위 42.0% - 중간 구간에 있습니다. 직전 대비 -5.86원",
         "caption": "계산 기반 해석",
         "source": "percentile"
       }
@@ -39842,24 +39788,20 @@
       "automation": "무료 공개 JSON 자동 수집",
       "status": "ok",
       "status_label": "자동 수집",
-      "value": 159.40899658203125,
+      "value": 159.44200134277344,
       "unit": "엔",
       "display_value": "159.4 엔",
-      "observed_at": "2026-08-27",
-      "observed_label": "2026.08.27",
-      "next_update_label": "2026.08.28",
-      "previous_value": 159.22300720214844,
-      "change_abs": 0.1859893798828125,
-      "change_pct": 0.11681061873594079,
+      "observed_at": "2026-08-28",
+      "observed_label": "2026.08.28",
+      "next_update_label": "2026.08.29",
+      "previous_value": 159.2550048828125,
+      "change_abs": 0.1869964599609375,
+      "change_pct": 0.11741951852535237,
       "change_abs_label": "+0.19 엔",
       "change_pct_label": "+0.1%",
-      "yoy_pct": 8.426739184832787,
+      "yoy_pct": 8.449188348064363,
       "yoy_pct_label": "+8.4%",
       "history": [
-        {
-          "date": "2026-06-09",
-          "value": 160.1739959716797
-        },
         {
           "date": "2026-06-10",
           "value": 160.38400268554688
@@ -40094,38 +40036,42 @@
         },
         {
           "date": "2026-08-27",
-          "value": 159.40899658203125
+          "value": 159.2550048828125
+        },
+        {
+          "date": "2026-08-28",
+          "value": 159.44200134277344
         }
       ],
-      "period_label": "2026.06.09 - 2026.08.27",
+      "period_label": "2026.06.10 - 2026.08.28",
       "note": "",
       "history_key": "equity-JPY=X",
       "history_merge": "full",
-      "fetched_at": "2026-08-28T03:00:25+09:00",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
       "fetch_status": "success",
       "fetch_status_label": "업데이트됨",
       "percentiles": {
         "span_years": 29.8,
         "all": {
-          "count": 457,
+          "count": 458,
           "from": "1996-11-01",
-          "to": "2026-08-27",
-          "pct": 87.6,
+          "to": "2026-08-28",
+          "pct": 87.9,
           "min": 75.73999786376953,
-          "p20": 104.68059997558593,
-          "median": 118.08999633789062,
-          "p80": 157.81919860839844,
+          "p20": 104.68119964599609,
+          "median": 118.0999984741211,
+          "p80": 157.8750030517578,
           "max": 163.86399841308594
         },
         "y10": {
-          "count": 219,
+          "count": 220,
           "from": "2016-09-01",
-          "to": "2026-08-27",
-          "pct": 74.2,
+          "to": "2026-08-28",
+          "pct": 74.8,
           "min": 101.1989974975586,
-          "p20": 110.99700164794922,
-          "median": 156.31399536132812,
-          "p80": 159.9602020263672,
+          "p20": 110.99800109863281,
+          "median": 156.36349487304688,
+          "p80": 159.95760192871094,
           "max": 163.86399841308594
         }
       },
@@ -40136,15 +40082,15 @@
       "previous_run_value": 159.2570037841797,
       "previous_run_display_value": "159.3 엔",
       "is_stale": false,
-      "freshness_age_days": 1,
-      "freshness_due_at": "2026-09-03",
+      "freshness_age_days": 0,
+      "freshness_due_at": "2026-09-04",
       "interpretation": {
         "zone": "warm",
-        "level_label": "10년 범위 상위 74.2% - 평균보다 높은 구간",
-        "headline": "현재값은 10년 범위 상위 74.2% - 평균보다 높은 구간에 있습니다.",
-        "detail_text": "최근 5개 관측치 연속 상승, 직전 대비 +0.19엔",
-        "trend_label": "최근 5개 관측치 연속 상승, 직전 대비 +0.19엔",
-        "text": "현재값은 10년 범위 상위 74.2% - 평균보다 높은 구간에 있습니다. 최근 5개 관측치 연속 상승, 직전 대비 +0.19엔",
+        "level_label": "10년 범위 상위 74.8% - 평균보다 높은 구간",
+        "headline": "현재값은 10년 범위 상위 74.8% - 평균보다 높은 구간에 있습니다.",
+        "detail_text": "최근 6개 관측치 연속 상승, 직전 대비 +0.19엔",
+        "trend_label": "최근 6개 관측치 연속 상승, 직전 대비 +0.19엔",
+        "text": "현재값은 10년 범위 상위 74.8% - 평균보다 높은 구간에 있습니다. 최근 6개 관측치 연속 상승, 직전 대비 +0.19엔",
         "caption": "계산 기반 해석",
         "source": "percentile"
       }
@@ -40170,24 +40116,20 @@
       "automation": "무료 공개 JSON 자동 수집",
       "status": "ok",
       "status_label": "자동 수집",
-      "value": 8.647000312805176,
+      "value": 8.619000434875488,
       "unit": "원",
-      "display_value": "8.65원",
-      "observed_at": "2026-08-27",
-      "observed_label": "2026.08.27",
-      "next_update_label": "2026.08.28",
-      "previous_value": 8.671734809875488,
-      "change_abs": -0.0247344970703125,
-      "change_pct": -0.2852312439506899,
-      "change_abs_label": "-0.02원",
-      "change_pct_label": "-0.3%",
-      "yoy_pct": -8.306773722226179,
-      "yoy_pct_label": "-8.3%",
+      "display_value": "8.62원",
+      "observed_at": "2026-08-28",
+      "observed_label": "2026.08.28",
+      "next_update_label": "2026.08.29",
+      "previous_value": 8.687565803527832,
+      "change_abs": -0.06856536865234375,
+      "change_pct": -0.7892356754811702,
+      "change_abs_label": "-0.07원",
+      "change_pct_label": "-0.8%",
+      "yoy_pct": -8.603685836240427,
+      "yoy_pct_label": "-8.6%",
       "history": [
-        {
-          "date": "2026-06-08",
-          "value": 9.693187713623047
-        },
         {
           "date": "2026-06-09",
           "value": 9.542614936828613
@@ -40422,38 +40364,42 @@
         },
         {
           "date": "2026-08-27",
-          "value": 8.647000312805176
+          "value": 8.687565803527832
+        },
+        {
+          "date": "2026-08-28",
+          "value": 8.619000434875488
         }
       ],
-      "period_label": "2026.06.08 - 2026.08.27",
+      "period_label": "2026.06.09 - 2026.08.28",
       "note": "",
       "history_key": "equity-JPYKRW=X",
       "history_merge": "full",
-      "fetched_at": "2026-08-28T03:00:25+09:00",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
       "fetch_status": "success",
       "fetch_status_label": "업데이트됨",
       "percentiles": {
         "span_years": 22.7,
         "all": {
-          "count": 371,
+          "count": 372,
           "from": "2003-12-01",
-          "to": "2026-08-27",
+          "to": "2026-08-28",
           "pct": 7.4,
           "min": 7.330999851226807,
-          "p20": 9.106407165527344,
-          "median": 9.594820976257324,
-          "p80": 10.994999885559082,
+          "p20": 9.09464111328125,
+          "median": 9.587355136871338,
+          "p80": 10.988599967956542,
           "max": 15.684000015258789
         },
         "y10": {
-          "count": 218,
+          "count": 219,
           "from": "2016-09-01",
-          "to": "2026-08-27",
+          "to": "2026-08-28",
           "pct": 0.7,
           "min": 8.578539848327637,
-          "p20": 9.139479446411134,
-          "median": 9.463257312774658,
-          "p80": 10.166800117492677,
+          "p20": 9.126174163818359,
+          "median": 9.460700035095215,
+          "p80": 10.166200065612793,
           "max": 11.40780258178711
         }
       },
@@ -40464,15 +40410,15 @@
       "previous_run_value": 8.670999526977539,
       "previous_run_display_value": "8.67원",
       "is_stale": false,
-      "freshness_age_days": 1,
-      "freshness_due_at": "2026-09-03",
+      "freshness_age_days": 0,
+      "freshness_due_at": "2026-09-04",
       "interpretation": {
         "zone": "cold",
         "level_label": "10년 범위 상위 0.7% - 역사적 저점권",
         "headline": "현재값은 10년 범위 상위 0.7% - 역사적 저점권에 있습니다.",
-        "detail_text": "최근 3개 관측치 연속 하락, 직전 대비 -0.02원",
-        "trend_label": "최근 3개 관측치 연속 하락, 직전 대비 -0.02원",
-        "text": "현재값은 10년 범위 상위 0.7% - 역사적 저점권에 있습니다. 최근 3개 관측치 연속 하락, 직전 대비 -0.02원",
+        "detail_text": "직전 대비 -0.07원",
+        "trend_label": "직전 대비 -0.07원",
+        "text": "현재값은 10년 범위 상위 0.7% - 역사적 저점권에 있습니다. 직전 대비 -0.07원",
         "caption": "계산 기반 해석",
         "source": "percentile"
       }
@@ -40496,19 +40442,19 @@
       "automation": "무료 공개 JSON 자동 수집",
       "status": "ok",
       "status_label": "자동 수집",
-      "value": 7744.75,
+      "value": 7744.25,
       "unit": "지수",
-      "display_value": "7,744.8 지수",
+      "display_value": "7,744.2 지수",
       "observed_at": "2026-08-27",
       "observed_label": "2026.08.27",
       "next_update_label": "2026.08.28",
       "previous_value": 7690.0,
-      "change_abs": 54.75,
-      "change_pct": 0.7119635890767251,
-      "change_abs_label": "+54.75 지수",
+      "change_abs": 54.25,
+      "change_pct": 0.7054616384915446,
+      "change_abs_label": "+54.25 지수",
       "change_pct_label": "+0.7%",
-      "yoy_pct": 19.651616391796377,
-      "yoy_pct_label": "+19.7%",
+      "yoy_pct": 19.64389169981846,
+      "yoy_pct_label": "+19.6%",
       "history": [
         {
           "date": "2026-06-12",
@@ -40748,14 +40694,14 @@
         },
         {
           "date": "2026-08-27",
-          "value": 7744.75
+          "value": 7744.25
         }
       ],
       "period_label": "2026.06.12 - 2026.08.27",
       "note": "",
       "history_key": "equity-ES=F",
       "history_merge": "full",
-      "fetched_at": "2026-08-28T03:00:25+09:00",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
       "fetch_status": "success",
       "fetch_status_label": "업데이트됨",
       "percentiles": {
@@ -40796,9 +40742,9 @@
         "zone": "hot",
         "level_label": "10년 범위 상위 94.4% - 역사적 고점권",
         "headline": "현재값은 10년 범위 상위 94.4% - 역사적 고점권에 있습니다.",
-        "detail_text": "직전 대비 +54.75지수",
-        "trend_label": "직전 대비 +54.75지수",
-        "text": "현재값은 10년 범위 상위 94.4% - 역사적 고점권에 있습니다. 직전 대비 +54.75지수",
+        "detail_text": "직전 대비 +54.25지수",
+        "trend_label": "직전 대비 +54.25지수",
+        "text": "현재값은 10년 범위 상위 94.4% - 역사적 고점권에 있습니다. 직전 대비 +54.25지수",
         "caption": "계산 기반 해석",
         "source": "percentile"
       }
@@ -40822,19 +40768,19 @@
       "automation": "무료 공개 JSON 자동 수집",
       "status": "ok",
       "status_label": "자동 수집",
-      "value": 29614.25,
+      "value": 29688.75,
       "unit": "지수",
-      "display_value": "29,614.2 지수",
+      "display_value": "29,688.8 지수",
       "observed_at": "2026-08-27",
       "observed_label": "2026.08.27",
       "next_update_label": "2026.08.28",
       "previous_value": 29289.5,
-      "change_abs": 324.75,
-      "change_pct": 1.1087591116270445,
-      "change_abs_label": "+324.75 지수",
-      "change_pct_label": "+1.1%",
-      "yoy_pct": 26.223534050102828,
-      "yoy_pct_label": "+26.2%",
+      "change_abs": 399.25,
+      "change_pct": 1.3631164751873648,
+      "change_abs_label": "+399.25 지수",
+      "change_pct_label": "+1.4%",
+      "yoy_pct": 26.54107217066075,
+      "yoy_pct_label": "+26.5%",
       "history": [
         {
           "date": "2026-06-12",
@@ -41074,14 +41020,14 @@
         },
         {
           "date": "2026-08-27",
-          "value": 29614.25
+          "value": 29688.75
         }
       ],
       "period_label": "2026.06.12 - 2026.08.27",
       "note": "",
       "history_key": "equity-NQ=F",
       "history_merge": "full",
-      "fetched_at": "2026-08-28T03:00:25+09:00",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
       "fetch_status": "success",
       "fetch_status_label": "업데이트됨",
       "percentiles": {
@@ -41090,7 +41036,7 @@
           "count": 367,
           "from": "2000-11-01",
           "to": "2026-08-27",
-          "pct": 89.8,
+          "pct": 91.4,
           "min": 943.5,
           "p20": 1790.55,
           "median": 6977.0,
@@ -41101,7 +41047,7 @@
           "count": 205,
           "from": "2016-09-01",
           "to": "2026-08-27",
-          "pct": 81.7,
+          "pct": 84.6,
           "min": 4796.75,
           "p20": 11032.85,
           "median": 26004.0,
@@ -41120,11 +41066,11 @@
       "freshness_due_at": "2026-09-03",
       "interpretation": {
         "zone": "warm",
-        "level_label": "10년 범위 상위 81.7% - 평균보다 높은 구간",
-        "headline": "현재값은 10년 범위 상위 81.7% - 평균보다 높은 구간에 있습니다.",
-        "detail_text": "최근 3개 관측치 연속 상승, 직전 대비 +324.75지수",
-        "trend_label": "최근 3개 관측치 연속 상승, 직전 대비 +324.75지수",
-        "text": "현재값은 10년 범위 상위 81.7% - 평균보다 높은 구간에 있습니다. 최근 3개 관측치 연속 상승, 직전 대비 +324.75지수",
+        "level_label": "10년 범위 상위 84.6% - 평균보다 높은 구간",
+        "headline": "현재값은 10년 범위 상위 84.6% - 평균보다 높은 구간에 있습니다.",
+        "detail_text": "최근 3개 관측치 연속 상승, 직전 대비 +399.25지수",
+        "trend_label": "최근 3개 관측치 연속 상승, 직전 대비 +399.25지수",
+        "text": "현재값은 10년 범위 상위 84.6% - 평균보다 높은 구간에 있습니다. 최근 3개 관측치 연속 상승, 직전 대비 +399.25지수",
         "caption": "계산 기반 해석",
         "source": "percentile"
       }
@@ -41148,19 +41094,19 @@
       "automation": "무료 공개 JSON 자동 수집",
       "status": "ok",
       "status_label": "자동 수집",
-      "value": 4664.10009765625,
+      "value": 4629.2001953125,
       "unit": "$",
-      "display_value": "$4,664.1",
+      "display_value": "$4,629.2",
       "observed_at": "2026-08-27",
       "observed_label": "2026.08.27",
       "next_update_label": "2026.08.28",
       "previous_value": 4598.2001953125,
-      "change_abs": 65.89990234375,
-      "change_pct": 1.4331673164411196,
-      "change_abs_label": "$+65.90",
-      "change_pct_label": "+1.4%",
-      "yoy_pct": 34.268939839861126,
-      "yoy_pct_label": "+34.3%",
+      "change_abs": 31.0,
+      "change_pct": 0.6741768231753431,
+      "change_abs_label": "$+31.00",
+      "change_pct_label": "+0.7%",
+      "yoy_pct": 33.264250234128866,
+      "yoy_pct_label": "+33.3%",
       "history": [
         {
           "date": "2026-06-12",
@@ -41400,14 +41346,14 @@
         },
         {
           "date": "2026-08-27",
-          "value": 4664.10009765625
+          "value": 4629.2001953125
         }
       ],
       "period_label": "2026.06.12 - 2026.08.27",
       "note": "",
       "history_key": "equity-GC=F",
       "history_merge": "full",
-      "fetched_at": "2026-08-28T03:00:25+09:00",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
       "fetch_status": "success",
       "fetch_status_label": "업데이트됨",
       "percentiles": {
@@ -41416,7 +41362,7 @@
           "count": 368,
           "from": "2000-09-01",
           "to": "2026-08-27",
-          "pct": 93.6,
+          "pct": 92.8,
           "min": 257.8999938964844,
           "p20": 786.1200073242188,
           "median": 1588.8500366210938,
@@ -41427,7 +41373,7 @@
           "count": 205,
           "from": "2016-09-01",
           "to": "2026-08-27",
-          "pct": 88.5,
+          "pct": 87.1,
           "min": 1150.0,
           "p20": 1725.239990234375,
           "median": 4030.300048828125,
@@ -41446,11 +41392,11 @@
       "freshness_due_at": "2026-09-03",
       "interpretation": {
         "zone": "warm",
-        "level_label": "10년 범위 상위 88.5% - 평균보다 높은 구간",
-        "headline": "현재값은 10년 범위 상위 88.5% - 평균보다 높은 구간에 있습니다.",
-        "detail_text": "직전 대비 +65.90$",
-        "trend_label": "직전 대비 +65.90$",
-        "text": "현재값은 10년 범위 상위 88.5% - 평균보다 높은 구간에 있습니다. 직전 대비 +65.90$",
+        "level_label": "10년 범위 상위 87.1% - 평균보다 높은 구간",
+        "headline": "현재값은 10년 범위 상위 87.1% - 평균보다 높은 구간에 있습니다.",
+        "detail_text": "직전 대비 +31.00$",
+        "trend_label": "직전 대비 +31.00$",
+        "text": "현재값은 10년 범위 상위 87.1% - 평균보다 높은 구간에 있습니다. 직전 대비 +31.00$",
         "caption": "계산 기반 해석",
         "source": "percentile"
       }
@@ -41474,24 +41420,20 @@
       "automation": "무료 공개 JSON 자동 수집",
       "status": "ok",
       "status_label": "자동 수집",
-      "value": 80409.0,
+      "value": 80292.46875,
       "unit": "$",
-      "display_value": "$80,409.0",
-      "observed_at": "2026-08-27",
-      "observed_label": "2026.08.27",
-      "next_update_label": "2026.08.28",
+      "display_value": "$80,292.5",
+      "observed_at": "2026-08-28",
+      "observed_label": "2026.08.28",
+      "next_update_label": "2026.08.29",
       "previous_value": 79027.421875,
-      "change_abs": 1381.578125,
-      "change_pct": 1.748226238716577,
-      "change_abs_label": "$+1,381.58",
-      "change_pct_label": "+1.7%",
-      "yoy_pct": -25.71004855604747,
-      "yoy_pct_label": "-25.7%",
+      "change_abs": 1265.046875,
+      "change_pct": 1.6007695113741116,
+      "change_abs_label": "$+1,265.05",
+      "change_pct_label": "+1.6%",
+      "yoy_pct": -25.817711888562535,
+      "yoy_pct_label": "-25.8%",
       "history": [
-        {
-          "date": "2026-06-29",
-          "value": 60138.37890625
-        },
         {
           "date": "2026-06-30",
           "value": 58558.859375
@@ -41727,37 +41669,41 @@
         {
           "date": "2026-08-27",
           "value": 80409.0
+        },
+        {
+          "date": "2026-08-28",
+          "value": 80292.46875
         }
       ],
-      "period_label": "2026.06.29 - 2026.08.27",
+      "period_label": "2026.06.30 - 2026.08.28",
       "note": "",
       "history_key": "equity-BTC-USD",
       "history_merge": "full",
-      "fetched_at": "2026-08-28T03:00:25+09:00",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
       "fetch_status": "success",
       "fetch_status_label": "업데이트됨",
       "percentiles": {
         "span_years": 11.9,
         "all": {
-          "count": 280,
+          "count": 281,
           "from": "2014-10-01",
-          "to": "2026-08-27",
-          "pct": 92.3,
+          "to": "2026-08-28",
+          "pct": 92.0,
           "min": 217.46400451660156,
-          "p20": 8646.7447265625,
-          "median": 63089.447265625,
+          "p20": 8658.5537109375,
+          "median": 63090.58984375,
           "p80": 76304.3203125,
           "max": 115758.203125
         },
         "y10": {
-          "count": 257,
+          "count": 258,
           "from": "2016-09-01",
-          "to": "2026-08-27",
-          "pct": 91.6,
+          "to": "2026-08-28",
+          "pct": 91.3,
           "min": 609.7349853515625,
-          "p20": 17621.210937500007,
-          "median": 63543.19921875,
-          "p80": 76735.3984375,
+          "p20": 18073.855468750015,
+          "median": 63545.541015625,
+          "p80": 76872.865625,
           "max": 115758.203125
         }
       },
@@ -41768,15 +41714,15 @@
       "previous_run_value": 79061.578125,
       "previous_run_display_value": "$79,061.6",
       "is_stale": false,
-      "freshness_age_days": 1,
-      "freshness_due_at": "2026-09-03",
+      "freshness_age_days": 0,
+      "freshness_due_at": "2026-09-04",
       "interpretation": {
         "zone": "hot",
-        "level_label": "10년 범위 상위 91.6% - 역사적 고점권",
-        "headline": "현재값은 10년 범위 상위 91.6% - 역사적 고점권에 있습니다.",
-        "detail_text": "최근 2개 관측치 연속 상승, 직전 대비 +1381.58$",
-        "trend_label": "최근 2개 관측치 연속 상승, 직전 대비 +1381.58$",
-        "text": "현재값은 10년 범위 상위 91.6% - 역사적 고점권에 있습니다. 최근 2개 관측치 연속 상승, 직전 대비 +1381.58$",
+        "level_label": "10년 범위 상위 91.3% - 역사적 고점권",
+        "headline": "현재값은 10년 범위 상위 91.3% - 역사적 고점권에 있습니다.",
+        "detail_text": "직전 대비 -116.53$",
+        "trend_label": "직전 대비 -116.53$",
+        "text": "현재값은 10년 범위 상위 91.3% - 역사적 고점권에 있습니다. 직전 대비 -116.53$",
         "caption": "계산 기반 해석",
         "source": "percentile"
       }
@@ -41800,24 +41746,20 @@
       "automation": "무료 공개 JSON 자동 수집",
       "status": "ok",
       "status_label": "자동 수집",
-      "value": 2517.030029296875,
+      "value": 2505.47998046875,
       "unit": "$",
-      "display_value": "$2,517.0",
-      "observed_at": "2026-08-27",
-      "observed_label": "2026.08.27",
-      "next_update_label": "2026.08.28",
+      "display_value": "$2,505.5",
+      "observed_at": "2026-08-28",
+      "observed_label": "2026.08.28",
+      "next_update_label": "2026.08.29",
       "previous_value": 2506.260986328125,
-      "change_abs": 10.76904296875,
-      "change_pct": 0.4296856164420326,
-      "change_abs_label": "$+10.77",
-      "change_pct_label": "+0.4%",
-      "yoy_pct": -42.6647127344866,
-      "yoy_pct_label": "-42.7%",
+      "change_abs": -0.781005859375,
+      "change_pct": -0.031162191951894513,
+      "change_abs_label": "$-0.78",
+      "change_pct_label": "-0.0%",
+      "yoy_pct": -42.927810655362904,
+      "yoy_pct_label": "-42.9%",
       "history": [
-        {
-          "date": "2026-06-29",
-          "value": 1610.205810546875
-        },
         {
           "date": "2026-06-30",
           "value": 1569.5838623046875
@@ -42053,37 +41995,41 @@
         {
           "date": "2026-08-27",
           "value": 2517.030029296875
+        },
+        {
+          "date": "2026-08-28",
+          "value": 2505.47998046875
         }
       ],
-      "period_label": "2026.06.29 - 2026.08.27",
+      "period_label": "2026.06.30 - 2026.08.28",
       "note": "",
       "history_key": "equity-ETH-USD",
       "history_merge": "full",
-      "fetched_at": "2026-08-28T03:00:25+09:00",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
       "fetch_status": "success",
       "fetch_status_label": "업데이트됨",
       "percentiles": {
         "span_years": 8.8,
         "all": {
-          "count": 581,
+          "count": 582,
           "from": "2017-11-06",
-          "to": "2026-08-27",
-          "pct": 78.2,
+          "to": "2026-08-28",
+          "pct": 76.9,
           "min": 85.26210021972656,
-          "p20": 396.3581848144531,
-          "median": 1860.345947265625,
-          "p80": 2561.85205078125,
+          "p20": 397.1881469726562,
+          "median": 1860.8690185546875,
+          "p80": 2560.489111328125,
           "max": 4779.6474609375
         },
         "y10": {
-          "count": 581,
+          "count": 582,
           "from": "2017-11-06",
-          "to": "2026-08-27",
-          "pct": 78.2,
+          "to": "2026-08-28",
+          "pct": 76.9,
           "min": 85.26210021972656,
-          "p20": 396.3581848144531,
-          "median": 1860.345947265625,
-          "p80": 2561.85205078125,
+          "p20": 397.1881469726562,
+          "median": 1860.8690185546875,
+          "p80": 2560.489111328125,
           "max": 4779.6474609375
         }
       },
@@ -42094,15 +42040,15 @@
       "previous_run_value": 2504.68994140625,
       "previous_run_display_value": "$2,504.7",
       "is_stale": false,
-      "freshness_age_days": 1,
-      "freshness_due_at": "2026-09-03",
+      "freshness_age_days": 0,
+      "freshness_due_at": "2026-09-04",
       "interpretation": {
         "zone": "warm",
-        "level_label": "10년 범위 상위 78.2% - 평균보다 높은 구간",
-        "headline": "현재값은 10년 범위 상위 78.2% - 평균보다 높은 구간에 있습니다.",
-        "detail_text": "최근 2개 관측치 연속 상승, 직전 대비 +10.77$",
-        "trend_label": "최근 2개 관측치 연속 상승, 직전 대비 +10.77$",
-        "text": "현재값은 10년 범위 상위 78.2% - 평균보다 높은 구간에 있습니다. 최근 2개 관측치 연속 상승, 직전 대비 +10.77$",
+        "level_label": "10년 범위 상위 76.9% - 평균보다 높은 구간",
+        "headline": "현재값은 10년 범위 상위 76.9% - 평균보다 높은 구간에 있습니다.",
+        "detail_text": "직전 대비 -11.55$",
+        "trend_label": "직전 대비 -11.55$",
+        "text": "현재값은 10년 범위 상위 76.9% - 평균보다 높은 구간에 있습니다. 직전 대비 -11.55$",
         "caption": "계산 기반 해석",
         "source": "percentile"
       }
@@ -42128,18 +42074,18 @@
       "automation": "무료 공개 JSON 자동 수집",
       "status": "ok",
       "status_label": "자동 수집",
-      "value": 99.15899658203125,
+      "value": 99.15599822998047,
       "unit": "지수",
       "display_value": "99.16 지수",
       "observed_at": "2026-08-27",
       "observed_label": "2026.08.27",
       "next_update_label": "2026.08.28",
       "previous_value": 99.16999816894531,
-      "change_abs": -0.0110015869140625,
-      "change_pct": -0.011093664532813019,
+      "change_abs": -0.01399993896484375,
+      "change_pct": -0.014117111246680913,
       "change_abs_label": "-0.01 지수",
       "change_pct_label": "-0.0%",
-      "yoy_pct": 1.4206811769010619,
+      "yoy_pct": 1.417614436434933,
       "yoy_pct_label": "+1.4%",
       "history": [
         {
@@ -42380,14 +42326,14 @@
         },
         {
           "date": "2026-08-27",
-          "value": 99.15899658203125
+          "value": 99.15599822998047
         }
       ],
       "period_label": "2026.06.12 - 2026.08.27",
       "note": "",
       "history_key": "equity-DX-Y.NYB",
       "history_merge": "full",
-      "fetched_at": "2026-08-28T03:00:25+09:00",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
       "fetch_status": "success",
       "fetch_status_label": "업데이트됨",
       "percentiles": {
@@ -42437,39 +42383,30 @@
     },
     {
       "id": "a3fb178fac70",
-      "status": "ok",
-      "history_key": "equity-^KS200",
-      "history_merge": "full",
+      "industry": "매크로",
       "section": "market",
       "market_category": "종합",
-      "also_market_category": [],
+      "also_market_category": "",
       "refresh_scope": "intraday",
       "chart_style": "",
       "exclude_from_movers": false,
-      "source": "Yahoo Finance chart API",
-      "country": "GLOBAL",
-      "industry": "매크로",
-      "industry_en": "Macro",
       "depth": "",
-      "depth_en": "",
       "group": "선물",
-      "group_en": "Futures",
       "name": "KOSPI200",
-      "name_en": "KOSPI200",
       "meaning": "코스피200 지수입니다. 국내 대형주 선물과 옵션시장의 기준이 되는 현물 지수입니다.",
-      "meaning_en": "Market indicator used to track investment conditions.",
-      "value": 1091.219970703125,
-      "unit": "지수",
-      "unit_en": "Index",
-      "display_value": "1,091.2 지수",
+      "source": "Yahoo Finance chart API",
+      "source_url": "https://finance.yahoo.com/quote/^KS200",
       "frequency": "일간",
-      "frequency_en": "Daily",
-      "observed_at": "2026-08-27",
-      "observed_label": "2026.08.27",
-      "fetched_at": "2026-08-27T13:14:11+09:00",
-      "fetch_status": "success",
-      "fetch_status_label": "업데이트됨",
-      "next_update_label": "2026.08.28",
+      "automation": "무료 공개 JSON 자동 수집",
+      "status": "ok",
+      "status_label": "자동 수집",
+      "value": 1076.1099853515625,
+      "unit": "지수",
+      "display_value": "1,076.1 지수",
+      "observed_at": "2026-08-28",
+      "observed_label": "2026.08.28",
+      "next_update_label": "2026.08.29",
+      "previous_value": null,
       "change_abs": null,
       "change_pct": null,
       "change_abs_label": "n/a",
@@ -42477,10 +42414,6 @@
       "yoy_pct": null,
       "yoy_pct_label": "n/a",
       "history": [
-        {
-          "date": "2026-06-02",
-          "value": 1407.22998046875
-        },
         {
           "date": "2026-06-04",
           "value": 1379.56005859375
@@ -42716,53 +42649,63 @@
         {
           "date": "2026-08-27",
           "value": 1091.219970703125
+        },
+        {
+          "date": "2026-08-28",
+          "value": 1076.1099853515625
         }
       ],
-      "period_label": "2026.06.02 - 2026.08.27",
-      "interpretation": {
-        "zone": "neutral",
-        "level_label": "10년 범위 상위 44.7% - 중간 구간",
-        "headline": "현재값은 10년 범위 상위 44.7% - 중간 구간에 있습니다.",
-        "detail_text": "최근 3개 관측치 연속 상승, 직전 대비 +20.06지수",
-        "trend_label": "최근 3개 관측치 연속 상승, 직전 대비 +20.06지수",
-        "text": "현재값은 10년 범위 상위 44.7% - 중간 구간에 있습니다. 최근 3개 관측치 연속 상승, 직전 대비 +20.06지수",
-        "caption": "계산 기반 해석",
-        "source": "percentile"
-      },
+      "period_label": "2026.06.04 - 2026.08.28",
+      "note": "",
+      "history_key": "equity-^KS200",
+      "history_merge": "full",
+      "fetched_at": "2026-08-28T11:14:10+09:00",
+      "fetch_status": "success",
+      "fetch_status_label": "업데이트됨",
       "percentiles": {
         "span_years": 0.4,
         "all": {
-          "count": 95,
+          "count": 96,
           "from": "2026-04-09",
-          "to": "2026-08-27",
-          "pct": 44.7,
+          "to": "2026-08-28",
+          "pct": 39.1,
           "min": 865.75,
-          "p20": 986.269970703125,
-          "median": 1118.6099853515625,
-          "p80": 1297.3880126953127,
+          "p20": 986.719970703125,
+          "median": 1109.8699951171875,
+          "p80": 1297.02001953125,
           "max": 1477.219970703125
         },
         "y10": {
-          "count": 95,
+          "count": 96,
           "from": "2026-04-09",
-          "to": "2026-08-27",
-          "pct": 44.7,
+          "to": "2026-08-28",
+          "pct": 39.1,
           "min": 865.75,
-          "p20": 986.269970703125,
-          "median": 1118.6099853515625,
-          "p80": 1297.3880126953127,
+          "p20": 986.719970703125,
+          "median": 1109.8699951171875,
+          "p80": 1297.02001953125,
           "max": 1477.219970703125
         }
       },
-      "is_stale": false,
-      "freshness_age_days": 1,
-      "freshness_due_at": "2026-09-03",
       "daily_status": "updated",
       "is_new": false,
       "is_updated_today": true,
       "previous_run_observed_at": "2026-08-26",
       "previous_run_value": 1071.1600341796875,
-      "previous_run_display_value": "1,071.2 지수"
+      "previous_run_display_value": "1,071.2 지수",
+      "is_stale": false,
+      "freshness_age_days": 0,
+      "freshness_due_at": "2026-09-04",
+      "interpretation": {
+        "zone": "neutral",
+        "level_label": "10년 범위 상위 39.1% - 중간 구간",
+        "headline": "현재값은 10년 범위 상위 39.1% - 중간 구간에 있습니다.",
+        "detail_text": "직전 대비 -15.11지수",
+        "trend_label": "직전 대비 -15.11지수",
+        "text": "현재값은 10년 범위 상위 39.1% - 중간 구간에 있습니다. 직전 대비 -15.11지수",
+        "caption": "계산 기반 해석",
+        "source": "percentile"
+      }
     },
     {
       "id": "c9e38f8f2070",
@@ -70833,7 +70776,7 @@
   ],
   "market_gauges": {
     "thermometer": {
-      "score": 91.0,
+      "score": 91.3,
       "label": "과열",
       "comment": "여러 지표가 역사적 고점 부근입니다. 신규 매수 속도를 늦추고 분할 접근이 필요한 구간입니다.",
       "components": [
@@ -70841,9 +70784,9 @@
           "name": "VIX (변동성)",
           "metric_id": "44ec20f58987",
           "metric_name": "VIX",
-          "value_label": "14.66 지수",
-          "percentile": 18.0,
-          "heat": 82.0,
+          "value_label": "14.51 지수",
+          "percentile": 17.1,
+          "heat": 82.9,
           "basis": "최근 10년 백분위"
         },
         {
@@ -70940,7 +70883,7 @@
   },
   "calendar": {
     "version": 1,
-    "generated_at": "2026-08-27T18:01:02",
+    "generated_at": "2026-08-28T02:14:27",
     "window": {
       "from": "2026-08-21",
       "to": "2026-11-26"
@@ -80238,20 +80181,20 @@
                 {
                   "symbol": "000660.KS",
                   "label": "SK하이닉스(000660.KS)",
-                  "label_en": "SK(000660.KS)",
+                  "label_en": "SK hynix",
                   "metric_id": "4bffa8579327",
-                  "display_value": "1,740,000원",
-                  "change_pct": 3.08056872037914,
-                  "change_pct_label": "+3.1%"
+                  "display_value": "1,707,000원",
+                  "change_pct": -1.3294797687861237,
+                  "change_pct_label": "-1.3%"
                 },
                 {
                   "symbol": "005930.KS",
                   "label": "삼성전자(005930.KS)",
-                  "label_en": "(005930.KS)",
+                  "label_en": "Samsung Electronics",
                   "metric_id": "73605cb1caf0",
-                  "display_value": "267,000원",
-                  "change_pct": 2.103250478011476,
-                  "change_pct_label": "+2.1%"
+                  "display_value": "260,500원",
+                  "change_pct": -2.0676691729323293,
+                  "change_pct_label": "-2.1%"
                 },
                 {
                   "symbol": "MU",
@@ -84012,11 +83955,11 @@
           {
             "symbol": "005930.KS",
             "label": "삼성전자(005930.KS)",
-            "label_en": "(005930.KS)",
+            "label_en": "005930.KS",
             "metric_id": "73605cb1caf0",
-            "display_value": "267,000원",
-            "change_pct": 2.103250478011476,
-            "change_pct_label": "+2.1%"
+            "display_value": "260,500원",
+            "change_pct": -2.0676691729323293,
+            "change_pct_label": "-2.1%"
           }
         ],
         "breakdown": {
@@ -96172,9 +96115,9 @@
     }
   ],
   "freshness_summary": {
-    "generated_at": "2026-08-28T03:00:25+09:00",
-    "last_checked_at": "2026-08-28T03:00:25+09:00",
-    "latest_observed_at": "2026-08-27",
+    "generated_at": "2026-08-28T11:14:10+09:00",
+    "last_checked_at": "2026-08-28T11:14:10+09:00",
+    "latest_observed_at": "2026-08-28",
     "status": "delayed",
     "as_of_date": "2026-08-28",
     "total_count": 218,
@@ -96423,8 +96366,8 @@
         "waiting_count": 0,
         "delayed_count": 0,
         "failed_count": 0,
-        "last_checked_at": "2026-08-28T03:00:25+09:00",
-        "latest_observed_at": "2026-08-27"
+        "last_checked_at": "2026-08-28T11:14:10+09:00",
+        "latest_observed_at": "2026-08-28"
       },
       {
         "name": "multpl.com",
@@ -98663,91 +98606,96 @@
     "status": "ok",
     "status_message": "Gemini 요약",
     "model": "gemini-3.1-flash-lite",
-    "generated_label": "2026-08-28 03:01 KST",
-    "headline": "나스닥 1.4% 급등, AI 반도체 중심의 위험선호 회복",
-    "summary": "NVIDIA의 8.9% 급등이 나스닥 지수 상승을 견인하며 AI 인프라 투자에 대한 시장 신뢰가 재확인되었습니다. VIX 지수 하락과 함께 위험자산 선호 심리가 강화되면서 내일 한국장에서도 반도체 및 AI 관련주를 중심으로 외국인 수급 개선이 기대됩니다.",
+    "generated_label": "2026-08-28 11:14 KST",
+    "headline": "코스피 1.2% 하락, 반도체·조선 등 주요 업종 동반 약세",
+    "summary": "코스피가 삼성전자와 주요 대형주들의 약세로 1.2% 하락하며 조정 흐름을 보이고 있습니다. 외국인과 기관의 수급 이탈이 지수 하락을 주도하고 있어 투자 심리 위축 여부를 면밀히 살펴야 합니다.",
     "bullets": [
       {
-        "title": "반도체 주도권 회복",
-        "body": "반도체 대표주가 NVIDIA(NVDA)가 +8.9% 급등하며 시장 상승을 주도했으나, Micron(MU)은 -2.6% 하락하며 메모리 업황에 대한 기대와 차익실현이 교차하고 있습니다.",
+        "title": "지수 하락 주도",
+        "body": "코스피가 -1.25% 하락한 가운데, 대표주가(주식 가격) 삼성전자(005930.KS)가 -2.1% 밀리며 시장 전반의 하락 압력을 높였습니다.",
         "metric_ids": [
-          "308bbd1b432a",
-          "df08e35f00ed"
+          "890be20fa286",
+          "73605cb1caf0"
         ]
       },
       {
-        "title": "위험선호 심리 개선",
-        "body": "공포지수 VIX가 -3.6% 하락하며 시장의 불안감이 완화되었고, 나스닥 지수가 +1.4% 상승하며 기술주 중심의 투자 심리가 살아나고 있습니다.",
+        "title": "주요 산업 약세",
+        "body": "대표주가(주식 가격) HD현대중공업(329180.KS)이 -2.9% 하락하는 등 조선업을 비롯한 주요 산업군에서 차익실현 매물이 출회되고 있습니다.",
         "metric_ids": [
-          "44ec20f58987",
-          "8ccfe639730a"
+          "dc57e5380aee"
         ]
       },
       {
-        "title": "스테이블코인 유동성",
-        "body": "스테이블코인 대표주가 Coinbase(COIN)와 Circle(CRCL)이 각각 +4.9%, +4.8% 상승하며 온체인 달러 유동성과 거래 수요에 대한 기대감을 반영했습니다.",
+        "title": "수급 불균형",
+        "body": "K200 선물에서 기관이 -14,170억 원을 순매도하며 시장의 하방 압력을 키우고 있어, 외국인과 기관의 선물 포지션 변화를 계속 확인해야 합니다.",
         "metric_ids": [
-          "3054b46e95f2",
-          "f1f724a230f7"
+          "krx-flow-k200-futures-institution-net"
+        ]
+      },
+      {
+        "title": "변동성 완화",
+        "body": "공포지수(공포지수) VIX가 -4.6% 하락하며 시장의 극단적인 공포는 다소 진정되는 모습이나, 현물 시장의 매도세가 이어지는지 관찰이 필요합니다.",
+        "metric_ids": [
+          "44ec20f58987"
         ]
       }
     ],
     "top_movers": [
       {
-        "id": "308bbd1b432a",
-        "industry": "반도체",
+        "id": "dc57e5380aee",
+        "industry": "조선",
         "group": "대표주가",
         "kind": "대표주가(주식 가격)",
-        "name": "NVIDIA(NVDA)",
-        "value": "$228.3",
-        "observed_label": "2026.08.27",
-        "change_pct": 8.904892608431947,
-        "change_pct_label": "+8.9%",
-        "yoy_pct": 31.08853567129739,
-        "yoy_pct_label": "+31.1%",
-        "meaning": "NVIDIA 주가는 AI GPU와 데이터센터 반도체 수요에 대한 시장 기대를 보여줍니다."
+        "name": "HD현대중공업(329180.KS)",
+        "value": "456,500원",
+        "observed_label": "2026.08.28",
+        "change_pct": -2.8723404255319163,
+        "change_pct_label": "-2.9%",
+        "yoy_pct": -12.211538461538463,
+        "yoy_pct_label": "-12.2%",
+        "meaning": "HD현대중공업 주가는 선박 수주와 조선업 이익 개선 기대를 보여줍니다."
       },
       {
-        "id": "95b1bd8b729a",
+        "id": "73605cb1caf0",
         "industry": "반도체",
         "group": "대표주가",
         "kind": "대표주가(주식 가격)",
-        "name": "Intel(INTC)",
-        "value": "$90.68",
-        "observed_label": "2026.08.27",
-        "change_pct": 2.7596378389272536,
-        "change_pct_label": "+2.8%",
-        "yoy_pct": 272.3823442027138,
-        "yoy_pct_label": "+272.4%",
-        "meaning": "Intel 주가는 CPU 수요와 파운드리 전환 전략에 대한 시장 평가를 보여줍니다."
+        "name": "삼성전자(005930.KS)",
+        "value": "260,500원",
+        "observed_label": "2026.08.28",
+        "change_pct": -2.0676691729323293,
+        "change_pct_label": "-2.1%",
+        "yoy_pct": 273.7446197991392,
+        "yoy_pct_label": "+273.7%",
+        "meaning": "삼성전자 주가는 메모리 반도체, 파운드리, 스마트폰 사업에 대한 시장 기대를 보여줍니다."
       },
       {
-        "id": "df08e35f00ed",
-        "industry": "반도체",
+        "id": "f18445e2954e",
+        "industry": "철강/소재",
         "group": "대표주가",
         "kind": "대표주가(주식 가격)",
-        "name": "Micron(MU)",
-        "value": "$913.6",
-        "observed_label": "2026.08.27",
-        "change_pct": -2.642801383515536,
-        "change_pct_label": "-2.6%",
-        "yoy_pct": 667.6665483461985,
-        "yoy_pct_label": "+667.7%",
-        "meaning": "Micron 주가는 글로벌 메모리 반도체 가격과 수요 회복 기대를 보여줍니다."
+        "name": "POSCO홀딩스(005490.KS)",
+        "value": "334,500원",
+        "observed_label": "2026.08.28",
+        "change_pct": -1.4727540500736325,
+        "change_pct_label": "-1.5%",
+        "yoy_pct": 17.162872154115583,
+        "yoy_pct_label": "+17.2%",
+        "meaning": "POSCO홀딩스 주가는 철강 경기와 배터리 소재 사업 기대를 함께 보여줍니다."
       },
       {
-        "id": "f52a4974e818",
-        "industry": "반도체",
+        "id": "978b7b09e6c6",
+        "industry": "데이터인프라",
         "group": "대표주가",
         "kind": "대표주가(주식 가격)",
-        "name": "TSMC(TSM)",
-        "value": "$426.6",
-        "observed_label": "2026.08.27",
-        "change_pct": 2.1367492017529743,
-        "change_pct_label": "+2.1%",
-        "yoy_pct": 84.78580987444,
-        "yoy_pct_label": "+84.8%",
-        "meaning": "TSMC 주가는 첨단 파운드리 수요와 주요 반도체 고객사의 주문 기대를 보여줍니다."
+        "name": "NAVER(035420.KS)",
+        "value": "219,500원",
+        "observed_label": "2026.08.28",
+        "change_pct": 1.385681293302543,
+        "change_pct_label": "+1.4%",
+        "yoy_pct": 2.331002331002341,
+        "yoy_pct_label": "+2.3%",
+        "meaning": "NAVER 주가는 국내 클라우드, AI, 인터넷 서비스 성장에 대한 시장 기대를 보여줍니다."
       },
       {
         "id": "krx-flow-k200-futures-foreign-net",
@@ -98767,7 +98715,7 @@
     "improving_industries": [
       {
         "industry": "방산",
-        "score": 23.71,
+        "score": 22.62,
         "drivers": [
           {
             "id": "29989cc3085a",
@@ -98801,7 +98749,7 @@
       },
       {
         "industry": "데이터인프라",
-        "score": 10.56,
+        "score": 10.87,
         "drivers": [
           {
             "id": "f532471276f5",
@@ -98835,7 +98783,7 @@
       },
       {
         "industry": "전력",
-        "score": 8.94,
+        "score": 8.99,
         "drivers": [
           {
             "id": "ad7cb981578a",
@@ -98871,7 +98819,7 @@
     "slowing_industries": [
       {
         "industry": "방산",
-        "score": -15.35,
+        "score": -15.53,
         "drivers": [
           {
             "id": "29989cc3085a",
@@ -98939,7 +98887,7 @@
       },
       {
         "industry": "은행/금융",
-        "score": -6.9,
+        "score": -6.89,
         "drivers": [
           {
             "id": "98de535a0a23",
@@ -98947,12 +98895,12 @@
             "group": "대표주가",
             "kind": "대표주가(주식 가격)",
             "name": "KB금융(105560.KS)",
-            "value": "168,800원",
-            "observed_label": "2026.08.27",
-            "change_pct": 1.3205282112845218,
-            "change_pct_label": "+1.3%",
-            "yoy_pct": 56.007393715341955,
-            "yoy_pct_label": "+56.0%",
+            "value": "168,600원",
+            "observed_label": "2026.08.28",
+            "change_pct": 0.2974419988102328,
+            "change_pct_label": "+0.3%",
+            "yoy_pct": 55.822550831792974,
+            "yoy_pct_label": "+55.8%",
             "meaning": "KB금융 주가는 국내 금리, 대출 성장, 은행 건전성에 대한 시장 평가를 보여줍니다."
           },
           {
@@ -98975,9 +98923,9 @@
     "equity_leads": [
       {
         "industry": "방산",
-        "equity_score": 1.77,
+        "equity_score": -1.49,
         "fundamental_score": 34.68,
-        "gap": -32.92,
+        "gap": -36.17,
         "drivers": [
           {
             "id": "f1309b1d96bf",
@@ -98985,12 +98933,12 @@
             "group": "대표주가",
             "kind": "대표주가(주식 가격)",
             "name": "한화에어로스페이스(012450.KS)",
-            "value": "1,129,000원",
-            "observed_label": "2026.08.27",
-            "change_pct": 3.863845446182146,
-            "change_pct_label": "+3.9%",
-            "yoy_pct": 27.714932126696823,
-            "yoy_pct_label": "+27.7%",
+            "value": "1,119,500원",
+            "observed_label": "2026.08.28",
+            "change_pct": -2.6521739130434763,
+            "change_pct_label": "-2.7%",
+            "yoy_pct": 26.640271493212666,
+            "yoy_pct_label": "+26.6%",
             "meaning": "한화에어로스페이스 주가는 방산 수주와 항공우주 성장 기대를 보여줍니다."
           },
           {
@@ -99011,9 +98959,9 @@
       },
       {
         "industry": "데이터인프라",
-        "equity_score": 0.01,
+        "equity_score": 0.93,
         "fundamental_score": 15.84,
-        "gap": -15.82,
+        "gap": -14.91,
         "drivers": [
           {
             "id": "4af5a09d8c1f",
@@ -99047,9 +98995,9 @@
       },
       {
         "industry": "전력",
-        "equity_score": -2.29,
+        "equity_score": -2.08,
         "fundamental_score": 12.15,
-        "gap": -14.44,
+        "gap": -14.23,
         "drivers": [
           {
             "id": "6b5151610375",
@@ -99057,12 +99005,12 @@
             "group": "대표주가",
             "kind": "대표주가(주식 가격)",
             "name": "한국전력(015760.KS)",
-            "value": "33,300원",
-            "observed_label": "2026.08.27",
-            "change_pct": -4.31034482758621,
-            "change_pct_label": "-4.3%",
-            "yoy_pct": -8.390646492434662,
-            "yoy_pct_label": "-8.4%",
+            "value": "32,625원",
+            "observed_label": "2026.08.28",
+            "change_pct": -3.902798232695137,
+            "change_pct_label": "-3.9%",
+            "yoy_pct": -10.247592847317744,
+            "yoy_pct_label": "-10.2%",
             "meaning": "한국전력 주가는 전력요금, 발전 원가, 전력 수요에 대한 시장 평가를 보여줍니다."
           },
           {
@@ -99105,146 +99053,144 @@
       }
     ],
     "narrative_topics": [
-      "산업:반도체:strong",
-      "산업:데이터인프라:strong",
-      "산업:스테이블코인:strong"
+      "산업:반도체:weak",
+      "산업:조선:weak",
+      "산업:매크로:weak"
     ],
     "briefing_context": {
       "card_type": "intraday",
       "session": {
-        "key": "us",
-        "label": "미국장",
+        "key": "korea",
+        "label": "한국장",
         "benchmark_names": [
-          "S&P 500",
-          "S&P500 선물",
-          "나스닥",
-          "나스닥100 선물"
+          "코스피",
+          "코스닥"
         ],
-        "prompt_focus": "미국 지수, 환율, 미국 대표주 흐름을 중심으로 쓰고, 내일 한국장에 줄 함의로 마무리한다."
+        "prompt_focus": "코스피·코스닥과 국내 수급 흐름을 중심으로 쓰고, 남은 한국장 또는 다음 한국장에 줄 함의로 마무리한다."
       },
       "low_signal": false,
-      "reason": "유의미한 변화: 나스닥",
+      "reason": "유의미한 변화: 코스피",
       "significant": true,
       "benchmark_drivers": [
         {
-          "id": "8ccfe639730a",
-          "name": "나스닥",
-          "change_pct": 1.403,
+          "id": "890be20fa286",
+          "name": "코스피",
+          "change_pct": -1.245,
           "basis": "직전 카드 대비 기준 지수 변화"
         },
         {
-          "id": "c3d9b26b0cca",
-          "name": "S&P 500",
-          "change_pct": 0.72,
+          "id": "d101ffa7a785",
+          "name": "코스닥",
+          "change_pct": -0.501,
           "basis": "직전 카드 대비 기준 지수 변화"
         }
       ],
       "daily_move_drivers": [
         {
-          "id": "308bbd1b432a",
-          "name": "NVIDIA(NVDA)",
-          "change_pct": 8.905,
-          "basis": "당일 등락률"
-        },
-        {
-          "id": "3054b46e95f2",
-          "name": "Coinbase(COIN)",
-          "change_pct": 4.882,
-          "basis": "당일 등락률"
-        },
-        {
-          "id": "f1f724a230f7",
-          "name": "Circle(CRCL)",
-          "change_pct": 4.805,
+          "id": "95cabb4c530d",
+          "name": "삼성바이오로직스(207940.KS)",
+          "change_pct": -4.956,
           "basis": "당일 등락률"
         },
         {
           "id": "44ec20f58987",
           "name": "VIX",
-          "change_pct": -3.616,
+          "change_pct": -4.602,
           "basis": "당일 등락률"
         },
         {
-          "id": "95b1bd8b729a",
-          "name": "Intel(INTC)",
-          "change_pct": 2.76,
+          "id": "6b5151610375",
+          "name": "한국전력(015760.KS)",
+          "change_pct": -3.903,
           "basis": "당일 등락률"
         },
         {
-          "id": "df08e35f00ed",
-          "name": "Micron(MU)",
-          "change_pct": -2.643,
+          "id": "3484513a5bdb",
+          "name": "두산로보틱스(454910.KS)",
+          "change_pct": -3.352,
           "basis": "당일 등락률"
         },
         {
-          "id": "7e86761dbeda",
-          "name": "D.R. Horton(DHI)",
-          "change_pct": -2.516,
+          "id": "20977ed178d1",
+          "name": "현대건설(000720.KS)",
+          "change_pct": -3.094,
           "basis": "당일 등락률"
         },
         {
-          "id": "b410cee1fb25",
-          "name": "Tesla(TSLA)",
-          "change_pct": 2.383,
+          "id": "dc57e5380aee",
+          "name": "HD현대중공업(329180.KS)",
+          "change_pct": -2.872,
+          "basis": "당일 등락률"
+        },
+        {
+          "id": "f1309b1d96bf",
+          "name": "한화에어로스페이스(012450.KS)",
+          "change_pct": -2.652,
+          "basis": "당일 등락률"
+        },
+        {
+          "id": "73605cb1caf0",
+          "name": "삼성전자(005930.KS)",
+          "change_pct": -2.068,
           "basis": "당일 등락률"
         }
       ],
       "changed_metrics": [
         {
-          "id": "308bbd1b432a",
-          "name": "NVIDIA(NVDA)",
-          "reason": "값 변화",
-          "previous_value": 223.98,
-          "value": 228.3300018310547
+          "id": "73605cb1caf0",
+          "name": "삼성전자(005930.KS)",
+          "reason": "관측일 전진",
+          "previous_observed_at": "2026-08-27",
+          "observed_at": "2026-08-28"
         },
         {
-          "id": "df08e35f00ed",
-          "name": "Micron(MU)",
-          "reason": "값 변화",
-          "previous_value": 979.49,
-          "value": 913.5999755859375
+          "id": "4bffa8579327",
+          "name": "SK하이닉스(000660.KS)",
+          "reason": "관측일 전진",
+          "previous_observed_at": "2026-08-27",
+          "observed_at": "2026-08-28"
         },
         {
-          "id": "75ff1ab8f86f",
-          "name": "AMD(AMD)",
-          "reason": "값 변화",
-          "previous_value": 487.8,
-          "value": 473.2650146484375
+          "id": "978b7b09e6c6",
+          "name": "NAVER(035420.KS)",
+          "reason": "관측일 전진",
+          "previous_observed_at": "2026-08-27",
+          "observed_at": "2026-08-28"
         },
         {
-          "id": "95b1bd8b729a",
-          "name": "Intel(INTC)",
-          "reason": "값 변화",
-          "previous_value": 90.45,
-          "value": 90.67510223388672
+          "id": "357faedb889d",
+          "name": "현대차(005380.KS)",
+          "reason": "관측일 전진",
+          "previous_observed_at": "2026-08-27",
+          "observed_at": "2026-08-28"
         },
         {
-          "id": "f52a4974e818",
-          "name": "TSMC(TSM)",
-          "reason": "값 변화",
-          "previous_value": 425.2,
-          "value": 426.614990234375
+          "id": "401396037f0e",
+          "name": "LG에너지솔루션(373220.KS)",
+          "reason": "관측일 전진",
+          "previous_observed_at": "2026-08-27",
+          "observed_at": "2026-08-28"
         },
         {
-          "id": "6410c11f526b",
-          "name": "ASML(ASML)",
-          "reason": "값 변화",
-          "previous_value": 1774.44,
-          "value": 1728.7900390625
+          "id": "dc57e5380aee",
+          "name": "HD현대중공업(329180.KS)",
+          "reason": "관측일 전진",
+          "previous_observed_at": "2026-08-27",
+          "observed_at": "2026-08-28"
         },
         {
-          "id": "64a572db5684",
-          "name": "Applied Materials(AMAT)",
-          "reason": "값 변화",
-          "previous_value": 492.0,
-          "value": 475.135009765625
+          "id": "f18445e2954e",
+          "name": "POSCO홀딩스(005490.KS)",
+          "reason": "관측일 전진",
+          "previous_observed_at": "2026-08-27",
+          "observed_at": "2026-08-28"
         },
         {
-          "id": "67fcc5136d2d",
-          "name": "Lam Research(LRCX)",
-          "reason": "값 변화",
-          "previous_value": 322.18,
-          "value": 315.67999267578125
+          "id": "ecc828144f7e",
+          "name": "LG화학(051910.KS)",
+          "reason": "관측일 전진",
+          "previous_observed_at": "2026-08-27",
+          "observed_at": "2026-08-28"
         }
       ],
       "persistent_events": [
@@ -99327,6 +99273,15 @@
       ],
       "recent_topic_history": [
         {
+          "generated_at": "2026-08-28T03:01:03+09:00",
+          "card_type": "intraday",
+          "narrative_topics": [
+            "산업:반도체:strong",
+            "산업:데이터인프라:strong",
+            "산업:스테이블코인:strong"
+          ]
+        },
+        {
           "generated_at": "2026-08-27T17:24:34+09:00",
           "card_type": "intraday",
           "narrative_topics": [
@@ -99351,248 +99306,61 @@
             "산업:전력:strong",
             "산업:자동차:weak"
           ]
-        },
-        {
-          "generated_at": "2026-08-27T05:26:05+09:00",
-          "card_type": "intraday",
-          "narrative_topics": [
-            "산업:화학/정유:weak",
-            "산업:매크로:strong",
-            "산업:반도체:strong"
-          ]
         }
       ],
-      "gemini_daily_count_before": 0,
+      "gemini_daily_count_before": 1,
       "market_narrative": {
-        "session": "us",
-        "benchmark_change_pct": 0.91,
+        "session": "korea",
+        "benchmark_change_pct": -0.98,
         "market_breadth": {
-          "positive": 16,
+          "positive": 4,
           "negative": 12,
           "unchanged": 0,
-          "sample_size": 28
+          "sample_size": 16
         },
         "candidates": [
           {
-            "topic": "산업:스테이블코인:strong",
-            "industry": "스테이블코인",
-            "direction": "strong",
-            "label": "스테이블코인 주도",
-            "median_change_pct": 4.84,
-            "benchmark_change_pct": 0.91,
-            "relative_change_pct_point": 3.93,
-            "breadth": "2/2",
-            "raw_score": 7.294,
-            "repetition_penalty": 0.0,
-            "score": 7.294,
-            "new_evidence_count": 2,
-            "persistent_major": true,
-            "evidence": [
-              {
-                "id": "3054b46e95f2",
-                "industry": "스테이블코인",
-                "group": "대표주가",
-                "kind": "대표주가(주식 가격)",
-                "name": "Coinbase(COIN)",
-                "value": "$190.7",
-                "observed_label": "2026.08.27",
-                "change_pct": 4.882275310594175,
-                "change_pct_label": "+4.9%",
-                "yoy_pct": -37.39574655880597,
-                "yoy_pct_label": "-37.4%",
-                "meaning": "Coinbase 주가는 암호자산 거래와 스테이블코인 관련 수익 기대를 보여줍니다."
-              },
-              {
-                "id": "f1f724a230f7",
-                "industry": "스테이블코인",
-                "group": "대표주가",
-                "kind": "대표주가(주식 가격)",
-                "name": "Circle(CRCL)",
-                "value": "$94.23",
-                "observed_label": "2026.08.27",
-                "change_pct": 4.804804269677487,
-                "change_pct_label": "+4.8%",
-                "yoy_pct": -28.602813754091162,
-                "yoy_pct_label": "-28.6%",
-                "meaning": "Circle 주가는 USDC 유통량과 스테이블코인 결제 시장 성장 기대를 보여줍니다."
-              }
-            ],
-            "fundamental_checks": [
-              {
-                "id": "c9e38f8f2070",
-                "industry": "스테이블코인",
-                "group": "유통량",
-                "kind": "유통량",
-                "name": "전체 스테이블코인 유통량",
-                "value": "$310.9B",
-                "observed_label": "2026.08.27",
-                "change_pct": 0.35523291911512267,
-                "change_pct_label": "+0.4%",
-                "yoy_pct": 10.372259508594306,
-                "yoy_pct_label": "+10.4%",
-                "meaning": "달러 연동 스테이블코인의 유통량 변화로 온체인 달러 유동성과 결제/거래 수요를 확인합니다."
-              },
-              {
-                "id": "9833e22b7865",
-                "industry": "스테이블코인",
-                "group": "유통량",
-                "kind": "유통량",
-                "name": "USDT 유통량",
-                "value": "$183.3B",
-                "observed_label": "2026.08.27",
-                "change_pct": 0.0776172890433191,
-                "change_pct_label": "+0.1%",
-                "yoy_pct": 9.114544001686763,
-                "yoy_pct_label": "+9.1%",
-                "meaning": "달러 연동 스테이블코인의 유통량 변화로 온체인 달러 유동성과 결제/거래 수요를 확인합니다."
-              }
-            ]
-          },
-          {
-            "topic": "산업:데이터인프라:strong",
-            "industry": "데이터인프라",
-            "direction": "strong",
-            "label": "데이터인프라 주도",
-            "median_change_pct": 0.7,
-            "benchmark_change_pct": 0.91,
-            "relative_change_pct_point": -0.21,
-            "breadth": "1/2",
-            "raw_score": 1.143,
-            "repetition_penalty": 0.0,
-            "score": 1.143,
-            "new_evidence_count": 2,
-            "persistent_major": false,
-            "evidence": [
-              {
-                "id": "4af5a09d8c1f",
-                "industry": "데이터인프라",
-                "group": "대표주가",
-                "kind": "대표주가(주식 가격)",
-                "name": "Microsoft(MSFT)",
-                "value": "$504.3",
-                "observed_label": "2026.08.27",
-                "change_pct": 1.5977999947371924,
-                "change_pct_label": "+1.6%",
-                "yoy_pct": -0.4714929358874853,
-                "yoy_pct_label": "-0.5%",
-                "meaning": "Microsoft 주가는 Azure, AI 서비스, 데이터센터 투자 기대를 보여줍니다."
-              },
-              {
-                "id": "fa487176a31c",
-                "industry": "데이터인프라",
-                "group": "대표주가",
-                "kind": "대표주가(주식 가격)",
-                "name": "Alphabet(GOOGL)",
-                "value": "$341.3",
-                "observed_label": "2026.08.27",
-                "change_pct": -0.19444694295961407,
-                "change_pct_label": "-0.2%",
-                "yoy_pct": 60.31890732423295,
-                "yoy_pct_label": "+60.3%",
-                "meaning": "Alphabet 주가는 Google Cloud, 검색, 유튜브와 AI 인프라 투자 기대를 보여줍니다."
-              }
-            ],
-            "fundamental_checks": [
-              {
-                "id": "9f6b665163ae",
-                "industry": "데이터인프라",
-                "group": "CAPEX",
-                "kind": "설비투자(CAPEX)",
-                "name": "Microsoft",
-                "value": "$35.80B",
-                "observed_label": "2026.06.30",
-                "change_pct": 15.954139137193923,
-                "change_pct_label": "+16.0%",
-                "yoy_pct": 109.6258563147725,
-                "yoy_pct_label": "+109.6%",
-                "meaning": "Microsoft의 CAPEX는 Azure와 AI 데이터센터를 짓기 위한 서버, GPU, 네트워크, 전력 설비 투자를 보여줍니다. 금액이 커질수록 클라우드와 AI 인프라 확장 속도가 빠르다는 뜻으로 볼 수 있습니다."
-              },
-              {
-                "id": "984268d55fcc",
-                "industry": "데이터인프라",
-                "group": "CAPEX",
-                "kind": "설비투자(CAPEX)",
-                "name": "Amazon",
-                "value": "$54.21B",
-                "observed_label": "2026.06.30",
-                "change_pct": 22.634210347713935,
-                "change_pct_label": "+22.6%",
-                "yoy_pct": 68.4367523226548,
-                "yoy_pct_label": "+68.4%",
-                "meaning": "Amazon의 CAPEX는 AWS 데이터센터와 물류 인프라에 들어가는 설비투자 규모를 보여줍니다. 특히 AWS 투자가 커질수록 클라우드·AI 서버 수요가 강하다는 신호로 볼 수 있습니다."
-              }
-            ]
-          },
-          {
-            "topic": "산업:반도체:strong",
+            "topic": "산업:반도체:weak",
             "industry": "반도체",
-            "direction": "strong",
-            "label": "반도체 주도",
-            "median_change_pct": 0.64,
-            "benchmark_change_pct": 0.91,
-            "relative_change_pct_point": -0.27,
-            "breadth": "5/9",
-            "raw_score": 1.742,
-            "repetition_penalty": 2.45,
-            "score": -0.708,
-            "new_evidence_count": 9,
+            "direction": "weak",
+            "label": "반도체 약세",
+            "median_change_pct": -1.7,
+            "benchmark_change_pct": -0.98,
+            "relative_change_pct_point": -0.72,
+            "breadth": "2/2",
+            "raw_score": 3.167,
+            "repetition_penalty": 2.7,
+            "score": 0.467,
+            "new_evidence_count": 2,
             "persistent_major": false,
             "evidence": [
               {
-                "id": "308bbd1b432a",
+                "id": "73605cb1caf0",
                 "industry": "반도체",
                 "group": "대표주가",
                 "kind": "대표주가(주식 가격)",
-                "name": "NVIDIA(NVDA)",
-                "value": "$228.3",
-                "observed_label": "2026.08.27",
-                "change_pct": 8.904892608431947,
-                "change_pct_label": "+8.9%",
-                "yoy_pct": 31.08853567129739,
-                "yoy_pct_label": "+31.1%",
-                "meaning": "NVIDIA 주가는 AI GPU와 데이터센터 반도체 수요에 대한 시장 기대를 보여줍니다."
+                "name": "삼성전자(005930.KS)",
+                "value": "260,500원",
+                "observed_label": "2026.08.28",
+                "change_pct": -2.0676691729323293,
+                "change_pct_label": "-2.1%",
+                "yoy_pct": 273.7446197991392,
+                "yoy_pct_label": "+273.7%",
+                "meaning": "삼성전자 주가는 메모리 반도체, 파운드리, 스마트폰 사업에 대한 시장 기대를 보여줍니다."
               },
               {
-                "id": "95b1bd8b729a",
+                "id": "4bffa8579327",
                 "industry": "반도체",
                 "group": "대표주가",
                 "kind": "대표주가(주식 가격)",
-                "name": "Intel(INTC)",
-                "value": "$90.68",
-                "observed_label": "2026.08.27",
-                "change_pct": 2.7596378389272536,
-                "change_pct_label": "+2.8%",
-                "yoy_pct": 272.3823442027138,
-                "yoy_pct_label": "+272.4%",
-                "meaning": "Intel 주가는 CPU 수요와 파운드리 전환 전략에 대한 시장 평가를 보여줍니다."
-              },
-              {
-                "id": "df08e35f00ed",
-                "industry": "반도체",
-                "group": "대표주가",
-                "kind": "대표주가(주식 가격)",
-                "name": "Micron(MU)",
-                "value": "$913.6",
-                "observed_label": "2026.08.27",
-                "change_pct": -2.642801383515536,
-                "change_pct_label": "-2.6%",
-                "yoy_pct": 667.6665483461985,
-                "yoy_pct_label": "+667.7%",
-                "meaning": "Micron 주가는 글로벌 메모리 반도체 가격과 수요 회복 기대를 보여줍니다."
-              },
-              {
-                "id": "f52a4974e818",
-                "industry": "반도체",
-                "group": "대표주가",
-                "kind": "대표주가(주식 가격)",
-                "name": "TSMC(TSM)",
-                "value": "$426.6",
-                "observed_label": "2026.08.27",
-                "change_pct": 2.1367492017529743,
-                "change_pct_label": "+2.1%",
-                "yoy_pct": 84.78580987444,
-                "yoy_pct_label": "+84.8%",
-                "meaning": "TSMC 주가는 첨단 파운드리 수요와 주요 반도체 고객사의 주문 기대를 보여줍니다."
+                "name": "SK하이닉스(000660.KS)",
+                "value": "1,707,000원",
+                "observed_label": "2026.08.28",
+                "change_pct": -1.3294797687861237,
+                "change_pct_label": "-1.3%",
+                "yoy_pct": 534.5724907063196,
+                "yoy_pct_label": "+534.6%",
+                "meaning": "SK하이닉스 주가는 DRAM, NAND, HBM 같은 메모리 업황에 대한 시장 기대를 보여줍니다."
               }
             ],
             "fundamental_checks": [
@@ -99648,12 +99416,12 @@
             "group": "유가",
             "kind": "원자재/에너지 가격",
             "name": "WTI 선물(CL)",
-            "value": "$83.04",
+            "value": "$83.19",
             "observed_label": "2026.08.27",
-            "change_pct": 0.9850389462807252,
-            "change_pct_label": "+1.0%",
-            "yoy_pct": 29.729726830497416,
-            "yoy_pct_label": "+29.7%",
+            "change_pct": 1.1674559713996446,
+            "change_pct_label": "+1.2%",
+            "yoy_pct": 29.964067591117384,
+            "yoy_pct_label": "+30.0%",
             "meaning": "WTI 선물은 국제 유가가 장중에 어떻게 움직이는지 보여줍니다. 정유사 마진과 화학 업체의 원가 부담을 빠르게 확인할 때 봅니다."
           },
           {
@@ -99662,12 +99430,12 @@
             "group": "유가",
             "kind": "원자재/에너지 가격",
             "name": "Brent 선물(BZ)",
-            "value": "$87.91",
+            "value": "$88.30",
             "observed_label": "2026.08.27",
-            "change_pct": 0.07969868754258425,
-            "change_pct_label": "+0.1%",
-            "yoy_pct": 29.05167368995787,
-            "yoy_pct_label": "+29.1%",
+            "change_pct": 0.5236870822463269,
+            "change_pct_label": "+0.5%",
+            "yoy_pct": 29.62419185484888,
+            "yoy_pct_label": "+29.6%",
             "meaning": "Brent 선물은 유럽과 글로벌 원유 시장의 장중 가격 흐름을 보여줍니다. 중동 리스크와 국제 에너지 비용 변화를 빠르게 확인할 때 봅니다."
           },
           {
@@ -99676,12 +99444,12 @@
             "group": "공포지수",
             "kind": "공포지수",
             "name": "VIX",
-            "value": "14.66 지수",
+            "value": "14.51 지수",
             "observed_label": "2026.08.27",
-            "change_pct": -3.6160433225210564,
-            "change_pct_label": "-3.6%",
-            "yoy_pct": -4.557290526766611,
-            "yoy_pct_label": "-4.6%",
+            "change_pct": -4.602234105914027,
+            "change_pct_label": "-4.6%",
+            "yoy_pct": -5.533850565067566,
+            "yoy_pct_label": "-5.5%",
             "meaning": "VIX는 S&P 500 옵션 가격에 반영된 향후 변동성 기대입니다. 높을수록 미국 증시의 불안과 위험회피가 커졌다는 뜻입니다."
           },
           {
@@ -99690,12 +99458,12 @@
             "group": "환율",
             "kind": "환율",
             "name": "원/달러 환율",
-            "value": "1,381.1원",
-            "observed_label": "2026.08.27",
-            "change_pct": -0.028956012485814586,
-            "change_pct_label": "-0.0%",
-            "yoy_pct": -0.42394608441533865,
-            "yoy_pct_label": "-0.4%",
+            "value": "1,377.6원",
+            "observed_label": "2026.08.28",
+            "change_pct": -0.4235654318373361,
+            "change_pct_label": "-0.4%",
+            "yoy_pct": -0.6734079336683574,
+            "yoy_pct_label": "-0.7%",
             "meaning": "달러 한 단위를 사는 데 필요한 원화 가격입니다. 수출주 실적과 외국인 수급에 큰 영향을 줍니다."
           },
           {
@@ -99704,12 +99472,12 @@
             "group": "선물",
             "kind": "선물",
             "name": "S&P500 선물",
-            "value": "7,744.8 지수",
+            "value": "7,744.2 지수",
             "observed_label": "2026.08.27",
-            "change_pct": 0.7119635890767251,
+            "change_pct": 0.7054616384915446,
             "change_pct_label": "+0.7%",
-            "yoy_pct": 19.651616391796377,
-            "yoy_pct_label": "+19.7%",
+            "yoy_pct": 19.64389169981846,
+            "yoy_pct_label": "+19.6%",
             "meaning": "미국 S&P500 선물 가격입니다. 한국 시간 장중에 미국 증시 기대가 어떻게 바뀌는지 빠르게 보여줍니다."
           },
           {
@@ -99718,12 +99486,12 @@
             "group": "선물",
             "kind": "선물",
             "name": "나스닥100 선물",
-            "value": "29,614.2 지수",
+            "value": "29,688.8 지수",
             "observed_label": "2026.08.27",
-            "change_pct": 1.1087591116270445,
-            "change_pct_label": "+1.1%",
-            "yoy_pct": 26.223534050102828,
-            "yoy_pct_label": "+26.2%",
+            "change_pct": 1.3631164751873648,
+            "change_pct_label": "+1.4%",
+            "yoy_pct": 26.54107217066075,
+            "yoy_pct_label": "+26.5%",
             "meaning": "미국 나스닥100 선물 가격입니다. AI, 반도체, 성장주 투자심리가 장중에 강해지는지 약해지는지 볼 때 사용합니다."
           },
           {
@@ -99732,12 +99500,12 @@
             "group": "크립토",
             "kind": "크립토",
             "name": "비트코인",
-            "value": "$80,409.0",
-            "observed_label": "2026.08.27",
-            "change_pct": 1.748226238716577,
-            "change_pct_label": "+1.7%",
-            "yoy_pct": -25.71004855604747,
-            "yoy_pct_label": "-25.7%",
+            "value": "$80,292.5",
+            "observed_label": "2026.08.28",
+            "change_pct": 1.6007695113741116,
+            "change_pct_label": "+1.6%",
+            "yoy_pct": -25.817711888562535,
+            "yoy_pct_label": "-25.8%",
             "meaning": "비트코인 가격입니다. 글로벌 위험선호와 암호자산 유동성 분위기를 빠르게 보여줍니다."
           },
           {
@@ -99748,17 +99516,17 @@
             "name": "달러인덱스",
             "value": "99.16 지수",
             "observed_label": "2026.08.27",
-            "change_pct": -0.011093664532813019,
+            "change_pct": -0.014117111246680913,
             "change_pct_label": "-0.0%",
-            "yoy_pct": 1.4206811769010619,
+            "yoy_pct": 1.417614436434933,
             "yoy_pct_label": "+1.4%",
             "meaning": "달러가 주요 통화 대비 강한지 보여주는 지수입니다. 달러 강세는 원자재와 신흥국 증시에 부담으로 작용할 수 있습니다."
           }
         ],
         "freshness": {
-          "generated_at": "2026-08-28T03:00:25+09:00",
-          "last_checked_at": "2026-08-28T03:00:25+09:00",
-          "latest_observed_at": "2026-08-27",
+          "generated_at": "2026-08-28T11:14:10+09:00",
+          "last_checked_at": "2026-08-28T11:14:10+09:00",
+          "latest_observed_at": "2026-08-28",
           "status": "delayed",
           "as_of_date": "2026-08-28",
           "total_count": 218,
@@ -100007,8 +99775,8 @@
               "waiting_count": 0,
               "delayed_count": 0,
               "failed_count": 0,
-              "last_checked_at": "2026-08-28T03:00:25+09:00",
-              "latest_observed_at": "2026-08-27"
+              "last_checked_at": "2026-08-28T11:14:10+09:00",
+              "latest_observed_at": "2026-08-28"
             },
             {
               "name": "multpl.com",
@@ -100048,30 +99816,34 @@
         "recent_topic_history": [
           {
             "industry": "반도체",
-            "penalty": 2.45
+            "penalty": 2.7
           },
           {
             "industry": "매크로",
-            "penalty": 2.45
+            "penalty": 1.55
           },
           {
-            "industry": "배터리",
+            "industry": "데이터인프라",
             "penalty": 1.15
           },
           {
+            "industry": "스테이블코인",
+            "penalty": 1.15
+          },
+          {
+            "industry": "배터리",
+            "penalty": 0.9
+          },
+          {
             "industry": "건설/부동산",
-            "penalty": 0.65
+            "penalty": 0.4
           },
           {
             "industry": "전력",
-            "penalty": 0.65
+            "penalty": 0.4
           },
           {
             "industry": "자동차",
-            "penalty": 0.65
-          },
-          {
-            "industry": "화학/정유",
             "penalty": 0.4
           }
         ],
@@ -100080,23 +99852,21 @@
     },
     "low_signal": false,
     "gemini_call_attempted": true,
-    "gemini_daily_count": 1,
-    "id": "2026-08-28-intraday-2e71c35b89",
+    "gemini_daily_count": 2,
+    "id": "2026-08-28-intraday-a0f4738ed3",
     "card_type": "intraday",
     "card_type_label": "장중",
-    "generated_at": "2026-08-28T03:01:03+09:00",
+    "generated_at": "2026-08-28T11:14:28+09:00",
     "session_context": {
-      "key": "us",
-      "label": "미국장",
+      "key": "korea",
+      "label": "한국장",
       "benchmark_names": [
-        "S&P 500",
-        "S&P500 선물",
-        "나스닥",
-        "나스닥100 선물"
+        "코스피",
+        "코스닥"
       ],
-      "prompt_focus": "미국 지수, 환율, 미국 대표주 흐름을 중심으로 쓰고, 내일 한국장에 줄 함의로 마무리한다."
+      "prompt_focus": "코스피·코스닥과 국내 수급 흐름을 중심으로 쓰고, 남은 한국장 또는 다음 한국장에 줄 함의로 마무리한다."
     },
-    "gate_reason": "유의미한 변화: 나스닥",
+    "gate_reason": "유의미한 변화: 코스피",
     "metric_snapshot": {
       "5ed091c07283": {
         "id": "5ed091c07283",
@@ -100753,10 +100523,10 @@
         "name": "삼성전자(005930.KS)",
         "industry": "반도체",
         "group": "대표주가",
-        "value": 267000.0,
-        "display_value": "267,000원",
-        "observed_at": "2026-08-27",
-        "change_pct": 2.103250478011476
+        "value": 260500.0,
+        "display_value": "260,500원",
+        "observed_at": "2026-08-28",
+        "change_pct": -2.0676691729323293
       },
       "308bbd1b432a": {
         "id": "308bbd1b432a",
@@ -100773,10 +100543,10 @@
         "name": "SK하이닉스(000660.KS)",
         "industry": "반도체",
         "group": "대표주가",
-        "value": 1740000.0,
-        "display_value": "1,740,000원",
-        "observed_at": "2026-08-27",
-        "change_pct": 3.08056872037914
+        "value": 1707000.0,
+        "display_value": "1,707,000원",
+        "observed_at": "2026-08-28",
+        "change_pct": -1.3294797687861237
       },
       "df08e35f00ed": {
         "id": "df08e35f00ed",
@@ -100863,10 +100633,10 @@
         "name": "NAVER(035420.KS)",
         "industry": "데이터인프라",
         "group": "대표주가",
-        "value": 217000.0,
-        "display_value": "217,000원",
-        "observed_at": "2026-08-27",
-        "change_pct": -1.3636363636363669
+        "value": 219500.0,
+        "display_value": "219,500원",
+        "observed_at": "2026-08-28",
+        "change_pct": 1.385681293302543
       },
       "4af5a09d8c1f": {
         "id": "4af5a09d8c1f",
@@ -100893,10 +100663,10 @@
         "name": "현대차(005380.KS)",
         "industry": "자동차",
         "group": "대표주가",
-        "value": 399000.0,
-        "display_value": "399,000원",
-        "observed_at": "2026-08-27",
-        "change_pct": -2.2058823529411797
+        "value": 399500.0,
+        "display_value": "399,500원",
+        "observed_at": "2026-08-28",
+        "change_pct": 0.37688442211054607
       },
       "bb4517dfeb65": {
         "id": "bb4517dfeb65",
@@ -100913,10 +100683,10 @@
         "name": "LG에너지솔루션(373220.KS)",
         "industry": "전기차",
         "group": "대표주가",
-        "value": 368500.0,
-        "display_value": "368,500원",
-        "observed_at": "2026-08-27",
-        "change_pct": 4.985754985754975
+        "value": 367500.0,
+        "display_value": "367,500원",
+        "observed_at": "2026-08-28",
+        "change_pct": -0.8097165991902799
       },
       "b410cee1fb25": {
         "id": "b410cee1fb25",
@@ -100953,10 +100723,10 @@
         "name": "HD현대중공업(329180.KS)",
         "industry": "조선",
         "group": "대표주가",
-        "value": 467500.0,
-        "display_value": "467,500원",
-        "observed_at": "2026-08-27",
-        "change_pct": 0.6458557588805203
+        "value": 456500.0,
+        "display_value": "456,500원",
+        "observed_at": "2026-08-28",
+        "change_pct": -2.8723404255319163
       },
       "d240866c2602": {
         "id": "d240866c2602",
@@ -100973,10 +100743,10 @@
         "name": "POSCO홀딩스(005490.KS)",
         "industry": "철강/소재",
         "group": "대표주가",
-        "value": 340500.0,
-        "display_value": "340,500원",
-        "observed_at": "2026-08-27",
-        "change_pct": 3.8109756097560954
+        "value": 334500.0,
+        "display_value": "334,500원",
+        "observed_at": "2026-08-28",
+        "change_pct": -1.4727540500736325
       },
       "4e6caef16f26": {
         "id": "4e6caef16f26",
@@ -100993,10 +100763,10 @@
         "name": "LG화학(051910.KS)",
         "industry": "화학/정유",
         "group": "대표주가",
-        "value": 273500.0,
-        "display_value": "273,500원",
-        "observed_at": "2026-08-27",
-        "change_pct": 3.795066413662229
+        "value": 274000.0,
+        "display_value": "274,000원",
+        "observed_at": "2026-08-28",
+        "change_pct": -0.18214936247723523
       },
       "844af39f856d": {
         "id": "844af39f856d",
@@ -101013,10 +100783,10 @@
         "name": "KB금융(105560.KS)",
         "industry": "은행/금융",
         "group": "대표주가",
-        "value": 168800.0,
-        "display_value": "168,800원",
-        "observed_at": "2026-08-27",
-        "change_pct": 1.3205282112845218
+        "value": 168600.0,
+        "display_value": "168,600원",
+        "observed_at": "2026-08-28",
+        "change_pct": 0.2974419988102328
       },
       "0b637efd9c49": {
         "id": "0b637efd9c49",
@@ -101033,10 +100803,10 @@
         "name": "현대건설(000720.KS)",
         "industry": "건설/부동산",
         "group": "대표주가",
-        "value": 129600.0,
-        "display_value": "129,600원",
-        "observed_at": "2026-08-27",
-        "change_pct": -0.6134969325153339
+        "value": 125300.0,
+        "display_value": "125,300원",
+        "observed_at": "2026-08-28",
+        "change_pct": -3.0935808197989134
       },
       "7e86761dbeda": {
         "id": "7e86761dbeda",
@@ -101053,10 +100823,10 @@
         "name": "한화에어로스페이스(012450.KS)",
         "industry": "방산",
         "group": "대표주가",
-        "value": 1129000.0,
-        "display_value": "1,129,000원",
-        "observed_at": "2026-08-27",
-        "change_pct": 3.863845446182146
+        "value": 1119500.0,
+        "display_value": "1,119,500원",
+        "observed_at": "2026-08-28",
+        "change_pct": -2.6521739130434763
       },
       "880406c0aba7": {
         "id": "880406c0aba7",
@@ -101093,10 +100863,10 @@
         "name": "한국전력(015760.KS)",
         "industry": "전력",
         "group": "대표주가",
-        "value": 33300.0,
-        "display_value": "33,300원",
-        "observed_at": "2026-08-27",
-        "change_pct": -4.31034482758621
+        "value": 32625.0,
+        "display_value": "32,625원",
+        "observed_at": "2026-08-28",
+        "change_pct": -3.902798232695137
       },
       "5c34f945ce51": {
         "id": "5c34f945ce51",
@@ -101113,10 +100883,10 @@
         "name": "두산로보틱스(454910.KS)",
         "industry": "로봇",
         "group": "대표주가",
-        "value": 73200.0,
-        "display_value": "73,200원",
-        "observed_at": "2026-08-27",
-        "change_pct": 1.949860724233976
+        "value": 70650.0,
+        "display_value": "70,650원",
+        "observed_at": "2026-08-28",
+        "change_pct": -3.3515731874145027
       },
       "d9b2a105ae08": {
         "id": "d9b2a105ae08",
@@ -101133,10 +100903,10 @@
         "name": "쎄트렉아이(099320.KQ)",
         "industry": "우주",
         "group": "대표주가",
-        "value": 73900.0,
-        "display_value": "73,900원",
-        "observed_at": "2026-08-27",
-        "change_pct": 2.781641168289295
+        "value": 73300.0,
+        "display_value": "73,300원",
+        "observed_at": "2026-08-28",
+        "change_pct": -1.21293800539084
       },
       "f23893f07b0e": {
         "id": "f23893f07b0e",
@@ -101153,10 +100923,10 @@
         "name": "삼성바이오로직스(207940.KS)",
         "industry": "바이오",
         "group": "대표주가",
-        "value": 1593000.0,
-        "display_value": "1,593,000원",
-        "observed_at": "2026-08-27",
-        "change_pct": -0.37523452157598447
+        "value": 1515000.0,
+        "display_value": "1,515,000원",
+        "observed_at": "2026-08-28",
+        "change_pct": -4.9560853199498105
       },
       "426f63931dfa": {
         "id": "426f63931dfa",
@@ -101173,10 +100943,10 @@
         "name": "삼성SDI(006400.KS)",
         "industry": "배터리",
         "group": "대표주가",
-        "value": 564000.0,
-        "display_value": "564,000원",
-        "observed_at": "2026-08-27",
-        "change_pct": 9.302325581395344
+        "value": 570500.0,
+        "display_value": "570,500원",
+        "observed_at": "2026-08-28",
+        "change_pct": 0.2636203866432263
       },
       "8f9705d7a4f7": {
         "id": "8f9705d7a4f7",
@@ -101193,60 +100963,60 @@
         "name": "WTI 선물(CL)",
         "industry": "화학/정유",
         "group": "유가",
-        "value": 83.04000091552734,
-        "display_value": "$83.04",
+        "value": 83.19000244140625,
+        "display_value": "$83.19",
         "observed_at": "2026-08-27",
-        "change_pct": 0.9850389462807252
+        "change_pct": 1.1674559713996446
       },
       "83a5c9965b0c": {
         "id": "83a5c9965b0c",
         "name": "Brent 선물(BZ)",
         "industry": "화학/정유",
         "group": "유가",
-        "value": 87.91000366210938,
-        "display_value": "$87.91",
+        "value": 88.30000305175781,
+        "display_value": "$88.30",
         "observed_at": "2026-08-27",
-        "change_pct": 0.07969868754258425
+        "change_pct": 0.5236870822463269
       },
       "0181bdbc8322": {
         "id": "0181bdbc8322",
         "name": "구리 선물(HG)",
         "industry": "철강/소재",
         "group": "원자재 가격",
-        "value": 6.696499824523926,
-        "display_value": "$6.70",
+        "value": 6.69350004196167,
+        "display_value": "$6.69",
         "observed_at": "2026-08-27",
-        "change_pct": 1.5467398388204323
+        "change_pct": 1.5012506806923565
       },
       "a024cf5e5916": {
         "id": "a024cf5e5916",
         "name": "알루미늄 선물(ALI)",
         "industry": "철강/소재",
         "group": "원자재 가격",
-        "value": 3392.0,
-        "display_value": "$3,392.0",
+        "value": 3371.0,
+        "display_value": "$3,371.0",
         "observed_at": "2026-08-27",
-        "change_pct": 1.4505757439808642
+        "change_pct": 0.8224914012262552
       },
       "890be20fa286": {
         "id": "890be20fa286",
         "name": "코스피",
         "industry": "매크로",
         "group": "시장지수",
-        "value": 6920.64990234375,
-        "display_value": "6,920.6 지수",
-        "observed_at": "2026-08-27",
-        "change_pct": 1.6515345744532173
+        "value": 6834.52001953125,
+        "display_value": "6,834.5 지수",
+        "observed_at": "2026-08-28",
+        "change_pct": -1.1262431891874147
       },
       "d101ffa7a785": {
         "id": "d101ffa7a785",
         "name": "코스닥",
         "industry": "매크로",
         "group": "시장지수",
-        "value": 834.7899780273438,
-        "display_value": "834.8 지수",
-        "observed_at": "2026-08-27",
-        "change_pct": 0.9578268599568451
+        "value": 830.6099853515625,
+        "display_value": "830.6 지수",
+        "observed_at": "2026-08-28",
+        "change_pct": -0.8404511260444947
       },
       "8ccfe639730a": {
         "id": "8ccfe639730a",
@@ -101283,109 +101053,109 @@
         "name": "VIX",
         "industry": "매크로",
         "group": "공포지수",
-        "value": 14.65999984741211,
-        "display_value": "14.66 지수",
+        "value": 14.510000228881836,
+        "display_value": "14.51 지수",
         "observed_at": "2026-08-27",
-        "change_pct": -3.6160433225210564
+        "change_pct": -4.602234105914027
       },
       "c0e679b6845a": {
         "id": "c0e679b6845a",
         "name": "원/달러 환율",
         "industry": "매크로",
         "group": "환율",
-        "value": 1381.0899658203125,
-        "display_value": "1,381.1원",
-        "observed_at": "2026-08-27",
-        "change_pct": -0.028956012485814586
+        "value": 1377.6300048828125,
+        "display_value": "1,377.6원",
+        "observed_at": "2026-08-28",
+        "change_pct": -0.4235654318373361
       },
       "88b0c279358b": {
         "id": "88b0c279358b",
         "name": "엔/달러 환율",
         "industry": "매크로",
         "group": "엔캐리",
-        "value": 159.40899658203125,
+        "value": 159.44200134277344,
         "display_value": "159.4 엔",
-        "observed_at": "2026-08-27",
-        "change_pct": 0.11681061873594079
+        "observed_at": "2026-08-28",
+        "change_pct": 0.11741951852535237
       },
       "85e446c2ef95": {
         "id": "85e446c2ef95",
         "name": "엔/원 환율",
         "industry": "매크로",
         "group": "엔캐리",
-        "value": 8.647000312805176,
-        "display_value": "8.65원",
-        "observed_at": "2026-08-27",
-        "change_pct": -0.2852312439506899
+        "value": 8.619000434875488,
+        "display_value": "8.62원",
+        "observed_at": "2026-08-28",
+        "change_pct": -0.7892356754811702
       },
       "dafbb2c9961d": {
         "id": "dafbb2c9961d",
         "name": "S&P500 선물",
         "industry": "매크로",
         "group": "선물",
-        "value": 7744.75,
-        "display_value": "7,744.8 지수",
+        "value": 7744.25,
+        "display_value": "7,744.2 지수",
         "observed_at": "2026-08-27",
-        "change_pct": 0.7119635890767251
+        "change_pct": 0.7054616384915446
       },
       "b189df60a08a": {
         "id": "b189df60a08a",
         "name": "나스닥100 선물",
         "industry": "매크로",
         "group": "선물",
-        "value": 29614.25,
-        "display_value": "29,614.2 지수",
+        "value": 29688.75,
+        "display_value": "29,688.8 지수",
         "observed_at": "2026-08-27",
-        "change_pct": 1.1087591116270445
+        "change_pct": 1.3631164751873648
       },
       "7375616ee7f6": {
         "id": "7375616ee7f6",
         "name": "금 선물",
         "industry": "매크로",
         "group": "원자재 가격",
-        "value": 4664.10009765625,
-        "display_value": "$4,664.1",
+        "value": 4629.2001953125,
+        "display_value": "$4,629.2",
         "observed_at": "2026-08-27",
-        "change_pct": 1.4331673164411196
+        "change_pct": 0.6741768231753431
       },
       "956c2a3a9c19": {
         "id": "956c2a3a9c19",
         "name": "비트코인",
         "industry": "매크로",
         "group": "크립토",
-        "value": 80409.0,
-        "display_value": "$80,409.0",
-        "observed_at": "2026-08-27",
-        "change_pct": 1.748226238716577
+        "value": 80292.46875,
+        "display_value": "$80,292.5",
+        "observed_at": "2026-08-28",
+        "change_pct": 1.6007695113741116
       },
       "0712031212cf": {
         "id": "0712031212cf",
         "name": "이더리움",
         "industry": "매크로",
         "group": "크립토",
-        "value": 2517.030029296875,
-        "display_value": "$2,517.0",
-        "observed_at": "2026-08-27",
-        "change_pct": 0.4296856164420326
+        "value": 2505.47998046875,
+        "display_value": "$2,505.5",
+        "observed_at": "2026-08-28",
+        "change_pct": -0.031162191951894513
       },
       "ba953b12a4d4": {
         "id": "ba953b12a4d4",
         "name": "달러인덱스",
         "industry": "매크로",
         "group": "환율",
-        "value": 99.15899658203125,
+        "value": 99.15599822998047,
         "display_value": "99.16 지수",
         "observed_at": "2026-08-27",
-        "change_pct": -0.011093664532813019
+        "change_pct": -0.014117111246680913
       },
       "a3fb178fac70": {
         "id": "a3fb178fac70",
         "name": "KOSPI200",
         "industry": "매크로",
         "group": "선물",
-        "value": 1091.219970703125,
-        "display_value": "1,091.2 지수",
-        "observed_at": "2026-08-27",
+        "value": 1076.1099853515625,
+        "display_value": "1,076.1 지수",
+        "observed_at": "2026-08-28",
         "change_pct": null
       },
       "c9e38f8f2070": {
@@ -102280,15 +102050,49 @@
       }
     },
     "trajectory": {
-      "movers": [],
+      "movers": [
+        {
+          "name": "코스피",
+          "change_pct": -1.24,
+          "display_value": "6,834.5 지수"
+        },
+        {
+          "name": "코스닥",
+          "change_pct": -0.5,
+          "display_value": "830.6 지수"
+        },
+        {
+          "name": "엔/원 환율",
+          "change_pct": -0.32,
+          "display_value": "8.62원"
+        }
+      ],
       "yen_carry_risk": false,
       "summary": ""
     }
   },
   "briefing_index": {
     "version": 1,
-    "updated_at": "2026-08-28T03:01:03+09:00",
+    "updated_at": "2026-08-28T11:14:28+09:00",
     "cards": [
+      {
+        "id": "2026-08-28-intraday-a0f4738ed3",
+        "date": "2026-08-28",
+        "card_type": "intraday",
+        "card_type_label": "장중",
+        "generated_at": "2026-08-28T11:14:28+09:00",
+        "generated_label": "2026-08-28 11:14 KST",
+        "headline": "코스피 1.2% 하락, 반도체·조선 등 주요 업종 동반 약세",
+        "low_signal": false,
+        "session_label": "한국장",
+        "gate_reason": "유의미한 변화: 코스피",
+        "gemini_call_attempted": true,
+        "narrative_topics": [
+          "산업:반도체:weak",
+          "산업:조선:weak",
+          "산업:매크로:weak"
+        ]
+      },
       {
         "id": "2026-08-28-intraday-2e71c35b89",
         "date": "2026-08-28",
@@ -103705,24 +103509,6 @@
           "산업:전기차:strong",
           "산업:철강/소재:strong"
         ]
-      },
-      {
-        "id": "2026-08-24-intraday-4db03be6ae",
-        "date": "2026-08-24",
-        "card_type": "intraday",
-        "card_type_label": "장중",
-        "generated_at": "2026-08-24T10:39:11+09:00",
-        "generated_label": "2026-08-24 10:39 KST",
-        "headline": "코스닥 반등 속 삼성전자 급락, 반도체와 2차전지 차별화",
-        "low_signal": false,
-        "session_label": "한국장",
-        "gate_reason": "유의미한 변화: 코스닥",
-        "gemini_call_attempted": true,
-        "narrative_topics": [
-          "산업:반도체:weak",
-          "산업:전기차:strong",
-          "산업:철강/소재:strong"
-        ]
       }
     ]
   },
@@ -103731,5 +103517,5 @@
     "no_new_data": 0,
     "failed": 0
   },
-  "prices_refreshed_at": "2026-08-28T03:00:25+09:00"
+  "prices_refreshed_at": "2026-08-28T11:14:10+09:00"
 }
