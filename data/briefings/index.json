@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-28T15:45:40+09:00",
+  "updated_at": "2026-08-28T19:25:29+09:00",
   "cards": [
+    {
+      "id": "2026-08-28-intraday-d001f59b18",
+      "date": "2026-08-28",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-28T19:25:29+09:00",
+      "generated_label": "2026-08-28 19:25 KST",
+      "headline": "외국인 대규모 순매도 속 바이오·전력주 약세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Huntington Ingalls(HII)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:바이오:weak",
+        "산업:전력:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-28-morning-1b8e51d8ce",
       "date": "2026-08-28",
@@ -1411,24 +1429,6 @@
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "유의미한 변화: 삼성전자(005930.KS)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:전기차:strong",
-        "산업:철강/소재:strong"
-      ]
-    },
-    {
-      "id": "2026-08-24-intraday-82d5171c0f",
-      "date": "2026-08-24",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-24T12:59:31+09:00",
-      "generated_label": "2026-08-24 12:59 KST",
-      "headline": "반도체 투매 속 2차전지·소재로의 수급 이동",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:weak",
