@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-08-29T04:10:45+09:00",
+  "updated_at": "2026-08-29T11:20:33+09:00",
   "cards": [
+    {
+      "id": "2026-08-29-intraday-fce3cff8df",
+      "date": "2026-08-29",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-29T11:20:33+09:00",
+      "generated_label": "2026-08-29 11:20 KST",
+      "headline": "반도체 약세와 외국인 매도세 지속, 시장 변동성 경계",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 비트코인",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-08-29-intraday-97dc2f1d48",
       "date": "2026-08-29",
@@ -1408,24 +1425,6 @@
       "generated_at": "2026-08-24T15:27:02+09:00",
       "generated_label": "2026-08-24 15:27 KST",
       "headline": "삼성전자 급락에 코스피 3%대 하락, 전기차·소재는 반등",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 삼성전자(005930.KS)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:전기차:strong",
-        "산업:철강/소재:strong"
-      ]
-    },
-    {
-      "id": "2026-08-24-intraday-2dbaf91f29",
-      "date": "2026-08-24",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-24T14:43:22+09:00",
-      "generated_label": "2026-08-24 14:43 KST",
-      "headline": "삼성전자 급락에 코스피 하락, 이차전지·소재는 반등",
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "유의미한 변화: 삼성전자(005930.KS)",
