@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-31T23:44:07+09:00",
+  "updated_at": "2026-09-01T05:33:19+09:00",
   "cards": [
+    {
+      "id": "2026-09-01-intraday-eb2293383e",
+      "date": "2026-09-01",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-01T05:33:19+09:00",
+      "generated_label": "2026-09-01 05:33 KST",
+      "headline": "VIX 상승과 유가 급등에 따른 시장 경계감 확대",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:weak",
+        "산업:반도체:weak",
+        "산업:화학/정유:strong"
+      ]
+    },
     {
       "id": "2026-08-31-intraday-c1b9653e40",
       "date": "2026-08-31",
@@ -1412,24 +1430,6 @@
         "산업:철강/소재:strong",
         "산업:배터리:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-24-intraday-829e2dff6c",
-      "date": "2026-08-24",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-24T20:05:57+09:00",
-      "generated_label": "2026-08-24 20:05 KST",
-      "headline": "철강·배터리 강세 속 VIX 상승에 따른 경계감",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:철강/소재:strong",
-        "산업:배터리:strong",
-        "산업:반도체:weak"
       ]
     }
   ]
