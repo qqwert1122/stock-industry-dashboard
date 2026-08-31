@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-31T10:05:15+09:00",
+  "updated_at": "2026-08-31T13:42:32+09:00",
   "cards": [
+    {
+      "id": "2026-08-31-intraday-f43aefedcd",
+      "date": "2026-08-31",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-31T13:42:32+09:00",
+      "generated_label": "2026-08-31 13:42 KST",
+      "headline": "코스피·코스닥 동반 하락, 수급 이탈 가속화",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 현대건설(000720.KS)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak",
+        "산업:데이터인프라:weak"
+      ]
+    },
     {
       "id": "2026-08-31-morning-11b524555c",
       "date": "2026-08-31",
@@ -1404,24 +1422,6 @@
       "generated_at": "2026-08-24T18:40:52+09:00",
       "generated_label": "2026-08-24 18:40 KST",
       "headline": "철강·배터리 강세 속 VIX 상승에 따른 경계감",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:철강/소재:strong",
-        "산업:배터리:strong",
-        "산업:반도체:weak"
-      ]
-    },
-    {
-      "id": "2026-08-24-intraday-2e457e4cee",
-      "date": "2026-08-24",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-24T17:41:12+09:00",
-      "generated_label": "2026-08-24 17:41 KST",
-      "headline": "반도체 약세 속 철강·배터리·화학 주도 흐름",
       "low_signal": false,
       "session_label": "세션 외",
       "gate_reason": "유의미한 변화: VIX",
