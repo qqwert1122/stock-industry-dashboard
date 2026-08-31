@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-08-31T13:42:32+09:00",
+  "updated_at": "2026-08-31T20:11:49+09:00",
   "cards": [
+    {
+      "id": "2026-08-31-intraday-f8950a08f5",
+      "date": "2026-08-31",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-08-31T20:11:49+09:00",
+      "generated_label": "2026-08-31 20:11 KST",
+      "headline": "VIX 급등과 유가 상승 속 국내 증시 투자심리 위축",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:전력:weak",
+        "산업:화학/정유:strong",
+        "산업:건설/부동산:weak"
+      ]
+    },
     {
       "id": "2026-08-31-intraday-f43aefedcd",
       "date": "2026-08-31",
@@ -1404,24 +1422,6 @@
       "generated_at": "2026-08-24T19:32:45+09:00",
       "generated_label": "2026-08-24 19:32 KST",
       "headline": "철강·배터리 강세 속 VIX 상승에 따른 시장 경계감",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:철강/소재:strong",
-        "산업:배터리:strong",
-        "산업:반도체:weak"
-      ]
-    },
-    {
-      "id": "2026-08-24-intraday-4ac3f1533e",
-      "date": "2026-08-24",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-24T18:40:52+09:00",
-      "generated_label": "2026-08-24 18:40 KST",
-      "headline": "철강·배터리 강세 속 VIX 상승에 따른 경계감",
       "low_signal": false,
       "session_label": "세션 외",
       "gate_reason": "유의미한 변화: VIX",
