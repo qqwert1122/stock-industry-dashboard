@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-01T13:21:28+09:00",
+  "updated_at": "2026-09-01T18:33:34+09:00",
   "cards": [
+    {
+      "id": "2026-09-01-intraday-172939ab88",
+      "date": "2026-09-01",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-01T18:33:34+09:00",
+      "generated_label": "2026-09-01 18:33 KST",
+      "headline": "VIX 급등과 함께 반도체·로봇 등 성장주 조정",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:화학/정유:strong",
+        "산업:로봇:weak"
+      ]
+    },
     {
       "id": "2026-09-01-intraday-fd965a7569",
       "date": "2026-09-01",
@@ -1402,24 +1420,6 @@
       "generated_at": "2026-08-25T00:32:00+09:00",
       "generated_label": "2026-08-25 00:32 KST",
       "headline": "반도체 약세와 VIX 상승 속 데이터인프라·스테이블코인 강세",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Micron(MU)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:strong",
-        "산업:스테이블코인:strong"
-      ]
-    },
-    {
-      "id": "2026-08-24-intraday-86f8110a70",
-      "date": "2026-08-24",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-24T23:37:26+09:00",
-      "generated_label": "2026-08-24 23:37 KST",
-      "headline": "반도체 약세와 VIX 상승, 미국 증시 조정 압력",
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: Micron(MU)",
