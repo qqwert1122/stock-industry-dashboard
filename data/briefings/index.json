@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-01T10:38:38+09:00",
+  "updated_at": "2026-09-01T13:21:28+09:00",
   "cards": [
+    {
+      "id": "2026-09-01-intraday-fd965a7569",
+      "date": "2026-09-01",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-01T13:21:28+09:00",
+      "generated_label": "2026-09-01 13:21 KST",
+      "headline": "반도체 중심의 수급 쏠림과 건설·방산의 차익실현",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 현대건설(000720.KS)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:건설/부동산:weak",
+        "산업:방산:weak"
+      ]
+    },
     {
       "id": "2026-09-01-morning-d7c103d96b",
       "date": "2026-09-01",
@@ -1410,24 +1428,6 @@
         "산업:반도체:weak",
         "산업:데이터인프라:strong",
         "산업:스테이블코인:strong"
-      ]
-    },
-    {
-      "id": "2026-08-24-intraday-0a61fce46b",
-      "date": "2026-08-24",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-24T22:46:53+09:00",
-      "generated_label": "2026-08-24 22:46 KST",
-      "headline": "반도체 약세 속 철강·화학 중심의 소재주 강세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 나스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:철강/소재:strong",
-        "산업:화학/정유:strong"
       ]
     }
   ]
