@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-02T04:43:07+09:00",
+  "updated_at": "2026-09-02T07:15:38+09:00",
   "cards": [
+    {
+      "id": "2026-09-02-intraday-a35cee2860",
+      "date": "2026-09-02",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-02T07:15:38+09:00",
+      "generated_label": "2026-09-02 07:15 KST",
+      "headline": "유가 급등과 변동성 확대, 시장 경계감 고조",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:화학/정유:strong",
+        "산업:매크로:weak",
+        "산업:방산:weak"
+      ]
+    },
     {
       "id": "2026-09-02-intraday-39bf83cc53",
       "date": "2026-09-02",
@@ -1403,24 +1421,6 @@
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: Mobileye(MBLY)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:strong",
-        "산업:로봇:weak"
-      ]
-    },
-    {
-      "id": "2026-08-25-intraday-ea0d5e773e",
-      "date": "2026-08-25",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-25T02:56:29+09:00",
-      "generated_label": "2026-08-25 02:56 KST",
-      "headline": "반도체 대표주 동반 약세와 AI 인프라 투자 지속",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Micron(MU)",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:weak",
