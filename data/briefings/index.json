@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-02T01:48:36+09:00",
+  "updated_at": "2026-09-02T04:43:07+09:00",
   "cards": [
+    {
+      "id": "2026-09-02-intraday-39bf83cc53",
+      "date": "2026-09-02",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-02T04:43:07+09:00",
+      "generated_label": "2026-09-02 04:43 KST",
+      "headline": "미국 증시 변동성 확대와 반도체·스테이블코인 약세",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:스테이블코인:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-09-02-intraday-be3f694587",
       "date": "2026-09-02",
@@ -1400,24 +1418,6 @@
       "generated_at": "2026-08-25T02:56:29+09:00",
       "generated_label": "2026-08-25 02:56 KST",
       "headline": "반도체 대표주 동반 약세와 AI 인프라 투자 지속",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Micron(MU)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:strong",
-        "산업:로봇:weak"
-      ]
-    },
-    {
-      "id": "2026-08-25-intraday-a76bd41efd",
-      "date": "2026-08-25",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-25T02:04:33+09:00",
-      "generated_label": "2026-08-25 02:04 KST",
-      "headline": "반도체 약세 속 데이터인프라 차별화, NVIDIA 실적 앞둔 관망세",
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: Micron(MU)",
