@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-09-01T05:33:19+09:00",
+  "updated_at": "2026-09-01T09:16:23+09:00",
   "cards": [
+    {
+      "id": "2026-09-01-intraday-78d5b51b19",
+      "date": "2026-09-01",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-01T09:16:23+09:00",
+      "generated_label": "2026-09-01 09:16 KST",
+      "headline": "반도체 약세와 기관 수급 이탈로 코스피·코스닥 동반 하락",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-09-01-intraday-eb2293383e",
       "date": "2026-09-01",
@@ -1412,24 +1429,6 @@
         "산업:철강/소재:strong",
         "산업:배터리:strong",
         "산업:반도체:weak"
-      ]
-    },
-    {
-      "id": "2026-08-24-intraday-664627babf",
-      "date": "2026-08-24",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-24T20:53:56+09:00",
-      "generated_label": "2026-08-24 20:53 KST",
-      "headline": "철강·배터리 강세 속 VIX 상승에 따른 경계감",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:철강/소재:strong",
-        "산업:배터리:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
