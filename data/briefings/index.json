@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-03T00:44:31+09:00",
+  "updated_at": "2026-09-03T04:08:37+09:00",
   "cards": [
+    {
+      "id": "2026-09-03-intraday-a694a510a2",
+      "date": "2026-09-03",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-03T04:08:37+09:00",
+      "generated_label": "2026-09-03 04:08 KST",
+      "headline": "미국 증시 변동성 완화와 반도체·로봇 중심의 기술주 반등",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:로봇:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-09-03-intraday-b13f837369",
       "date": "2026-09-03",
@@ -1406,24 +1424,6 @@
         "산업:배터리:strong",
         "산업:전기차:strong",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-08-25-intraday-142ac71baa",
-      "date": "2026-08-25",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-25T06:25:34+09:00",
-      "generated_label": "2026-08-25 06:25 KST",
-      "headline": "배터리·소재 강세 속 MS 급락과 유가 하락",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Microsoft(MSFT)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:배터리:strong",
-        "산업:철강/소재:strong",
-        "산업:화학/정유:strong"
       ]
     }
   ]
