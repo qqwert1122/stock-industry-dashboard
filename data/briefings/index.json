@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-02T17:09:51+09:00",
+  "updated_at": "2026-09-02T20:54:11+09:00",
   "cards": [
+    {
+      "id": "2026-09-02-intraday-65e733f9f2",
+      "date": "2026-09-02",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-02T20:54:11+09:00",
+      "generated_label": "2026-09-02 20:54 KST",
+      "headline": "코스피·코스닥 동반 하락, 외국인 순매도 지속",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Uber(UBER)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:자동차:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-09-02-intraday-2f1b88b50e",
       "date": "2026-09-02",
@@ -1406,24 +1424,6 @@
         "산업:매크로:weak",
         "산업:화학/정유:weak",
         "산업:반도체:weak"
-      ]
-    },
-    {
-      "id": "2026-08-25-intraday-feeb9ca0d5",
-      "date": "2026-08-25",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-25T05:21:40+09:00",
-      "generated_label": "2026-08-25 05:21 KST",
-      "headline": "VIX 상승과 유가 하락, 시장의 경계감 확대",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:weak",
-        "산업:화학/정유:weak",
-        "산업:반도체:strong"
       ]
     }
   ]
