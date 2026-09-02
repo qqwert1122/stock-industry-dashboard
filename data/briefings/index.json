@@ -1,7 +1,23 @@
 {
   "version": 1,
-  "updated_at": "2026-09-02T07:15:38+09:00",
+  "updated_at": "2026-09-02T09:49:03+09:00",
   "cards": [
+    {
+      "id": "2026-09-02-morning-b107230ce8",
+      "date": "2026-09-02",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-09-02T09:49:03+09:00",
+      "generated_label": "2026-09-02 09:49 KST",
+      "headline": "반도체 약세 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로"
+      ]
+    },
     {
       "id": "2026-09-02-intraday-a35cee2860",
       "date": "2026-09-02",
@@ -1403,24 +1419,6 @@
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: Micron(MU)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:strong",
-        "산업:로봇:weak"
-      ]
-    },
-    {
-      "id": "2026-08-25-intraday-ac9f4bb722",
-      "date": "2026-08-25",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-25T03:30:54+09:00",
-      "generated_label": "2026-08-25 03:30 KST",
-      "headline": "반도체 약세와 빅테크 인프라 투자 지속의 공존",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Mobileye(MBLY)",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:weak",
