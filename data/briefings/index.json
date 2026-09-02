@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-02T12:44:14+09:00",
+  "updated_at": "2026-09-02T17:09:51+09:00",
   "cards": [
+    {
+      "id": "2026-09-02-intraday-2f1b88b50e",
+      "date": "2026-09-02",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-02T17:09:51+09:00",
+      "generated_label": "2026-09-02 17:09 KST",
+      "headline": "미국 증시 하락과 함께 국내 배터리·자동차주 동반 약세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Rocket Lab(RKLB)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:배터리:weak",
+        "산업:자동차:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-09-02-intraday-02bee0b710",
       "date": "2026-09-02",
@@ -1406,24 +1424,6 @@
         "산업:매크로:weak",
         "산업:화학/정유:weak",
         "산업:반도체:strong"
-      ]
-    },
-    {
-      "id": "2026-08-25-intraday-b35d20e9e0",
-      "date": "2026-08-25",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-25T04:52:46+09:00",
-      "generated_label": "2026-08-25 04:52 KST",
-      "headline": "반도체 약세와 빅테크 인프라 투자 지속의 공존",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Micron(MU)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:strong",
-        "산업:로봇:weak"
       ]
     }
   ]
