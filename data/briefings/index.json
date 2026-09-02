@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-03T04:08:37+09:00",
+  "updated_at": "2026-09-03T06:55:12+09:00",
   "cards": [
+    {
+      "id": "2026-09-03-intraday-1aae334b1f",
+      "date": "2026-09-03",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-03T06:55:12+09:00",
+      "generated_label": "2026-09-03 06:55 KST",
+      "headline": "VIX 하락과 금 선물 강세, 시장의 위험 회피 완화",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:strong",
+        "산업:건설/부동산:weak",
+        "산업:전기차:weak"
+      ]
+    },
     {
       "id": "2026-09-03-intraday-a694a510a2",
       "date": "2026-09-03",
@@ -1406,24 +1424,6 @@
         "산업:철강/소재:strong",
         "산업:반도체:weak",
         "산업:화학/정유:strong"
-      ]
-    },
-    {
-      "id": "2026-08-25-intraday-3376d48ff3",
-      "date": "2026-08-25",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-25T06:52:29+09:00",
-      "generated_label": "2026-08-25 06:52 KST",
-      "headline": "배터리·전기차 중심의 반등과 비트코인 강세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 비트코인",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:배터리:strong",
-        "산업:전기차:strong",
-        "산업:매크로:strong"
       ]
     }
   ]
