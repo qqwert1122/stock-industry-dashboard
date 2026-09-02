@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-02T09:49:03+09:00",
+  "updated_at": "2026-09-02T12:44:14+09:00",
   "cards": [
+    {
+      "id": "2026-09-02-intraday-02bee0b710",
+      "date": "2026-09-02",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-02T12:44:14+09:00",
+      "generated_label": "2026-09-02 12:44 KST",
+      "headline": "코스피·코스닥 동반 하락, 외국인 매도세와 유가 급등이 시장 압박",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak",
+        "산업:화학/정유:strong"
+      ]
+    },
     {
       "id": "2026-09-02-morning-b107230ce8",
       "date": "2026-09-02",
@@ -1398,24 +1416,6 @@
       "generated_at": "2026-08-25T04:52:46+09:00",
       "generated_label": "2026-08-25 04:52 KST",
       "headline": "반도체 약세와 빅테크 인프라 투자 지속의 공존",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Micron(MU)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:strong",
-        "산업:로봇:weak"
-      ]
-    },
-    {
-      "id": "2026-08-25-intraday-0410ee9a7e",
-      "date": "2026-08-25",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-25T04:11:32+09:00",
-      "generated_label": "2026-08-25 04:11 KST",
-      "headline": "반도체 차익실현과 변동성 확대, 내일 한국장 부담",
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: Micron(MU)",
