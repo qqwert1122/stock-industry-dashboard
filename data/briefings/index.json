@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-02T20:54:11+09:00",
+  "updated_at": "2026-09-03T00:44:31+09:00",
   "cards": [
+    {
+      "id": "2026-09-03-intraday-b13f837369",
+      "date": "2026-09-03",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-03T00:44:31+09:00",
+      "generated_label": "2026-09-03 00:44 KST",
+      "headline": "미국 증시 반등과 반도체 중심의 투자심리 회복",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: S&P500 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:로봇:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-09-02-intraday-65e733f9f2",
       "date": "2026-09-02",
@@ -1406,24 +1424,6 @@
         "산업:배터리:strong",
         "산업:철강/소재:strong",
         "산업:화학/정유:strong"
-      ]
-    },
-    {
-      "id": "2026-08-25-intraday-7a36b36c80",
-      "date": "2026-08-25",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-25T05:57:26+09:00",
-      "generated_label": "2026-08-25 05:57 KST",
-      "headline": "유가 급락과 안전자산 선호, 반도체 관망세 지속",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:weak",
-        "산업:화학/정유:weak",
-        "산업:반도체:weak"
       ]
     }
   ]
