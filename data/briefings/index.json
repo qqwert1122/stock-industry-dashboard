@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-03T09:56:49+09:00",
+  "updated_at": "2026-09-03T12:42:36+09:00",
   "cards": [
+    {
+      "id": "2026-09-03-intraday-a435015b51",
+      "date": "2026-09-03",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-03T12:42:36+09:00",
+      "generated_label": "2026-09-03 12:42 KST",
+      "headline": "코스피·코스닥 동반 하락 속 대형주 중심의 차별화 장세",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:화학/정유:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-09-03-morning-65f065ca4a",
       "date": "2026-09-03",
@@ -1406,23 +1424,6 @@
         "산업:반도체:weak",
         "산업:건설/부동산:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-25-intraday-c576a9337c",
-      "date": "2026-08-25",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-25T10:26:43+09:00",
-      "generated_label": "2026-08-25 10:26 KST",
-      "headline": "반도체 약세 흐름이 두드러집니다.",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체",
-        "산업:데이터인프라"
       ]
     }
   ]
