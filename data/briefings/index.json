@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-03T12:42:36+09:00",
+  "updated_at": "2026-09-03T17:18:55+09:00",
   "cards": [
+    {
+      "id": "2026-09-03-intraday-fab067be01",
+      "date": "2026-09-03",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-03T17:18:55+09:00",
+      "generated_label": "2026-09-03 17:18 KST",
+      "headline": "금 선물 급등과 엔화 약세 속 금융·전력주 강세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 금 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:은행/금융:strong",
+        "산업:전력:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-09-03-intraday-a435015b51",
       "date": "2026-09-03",
@@ -1405,24 +1423,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:weak",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-25-intraday-b0892306d3",
-      "date": "2026-08-25",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-25T11:47:44+09:00",
-      "generated_label": "2026-08-25 11:47 KST",
-      "headline": "반도체 약세 속 현대건설의 이례적 급등과 수급 변화",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 현대건설(000720.KS)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:건설/부동산:strong",
         "산업:매크로:weak"
       ]
     }
