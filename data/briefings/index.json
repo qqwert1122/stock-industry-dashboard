@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-03T17:18:55+09:00",
+  "updated_at": "2026-09-03T20:52:30+09:00",
   "cards": [
+    {
+      "id": "2026-09-03-intraday-8b8c0422ce",
+      "date": "2026-09-03",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-03T20:52:30+09:00",
+      "generated_label": "2026-09-03 20:52 KST",
+      "headline": "화학·정유 및 전기차 주도, 코스피·코스닥 수급 불안 지속",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 금 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:화학/정유:strong",
+        "산업:전기차:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-09-03-intraday-fab067be01",
       "date": "2026-09-03",
@@ -1407,23 +1425,6 @@
         "산업:반도체:weak",
         "산업:매크로:strong",
         "산업:건설/부동산:strong"
-      ]
-    },
-    {
-      "id": "2026-08-25-intraday-62e3fd60bd",
-      "date": "2026-08-25",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-25T12:34:02+09:00",
-      "generated_label": "2026-08-25 12:34 KST",
-      "headline": "반도체 약세 지속과 외국인 순매도에 따른 시장 조정",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: SK하이닉스(000660.KS)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak"
       ]
     }
   ]
