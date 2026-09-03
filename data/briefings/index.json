@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-03T20:52:30+09:00",
+  "updated_at": "2026-09-04T00:34:30+09:00",
   "cards": [
+    {
+      "id": "2026-09-04-intraday-a5b6af23ad",
+      "date": "2026-09-04",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-04T00:34:30+09:00",
+      "generated_label": "2026-09-04 00:34 KST",
+      "headline": "미국 증시 반등과 스테이블코인 강세, 한국장엔 하방 압력",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:데이터인프라:strong",
+        "산업:반도체:weak"
+      ]
+    },
     {
       "id": "2026-09-03-intraday-8b8c0422ce",
       "date": "2026-09-03",
@@ -1407,24 +1425,6 @@
         "산업:건설/부동산:strong",
         "산업:반도체:weak",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-25-intraday-db3fc42ce4",
-      "date": "2026-08-25",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-25T13:24:23+09:00",
-      "generated_label": "2026-08-25 13:24 KST",
-      "headline": "코스피·코스닥 동반 상승 속 반도체 약세 지속",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:strong",
-        "산업:건설/부동산:strong"
       ]
     }
   ]
