@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-09-03T06:55:12+09:00",
+  "updated_at": "2026-09-03T09:56:49+09:00",
   "cards": [
+    {
+      "id": "2026-09-03-morning-65f065ca4a",
+      "date": "2026-09-03",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-09-03T09:56:49+09:00",
+      "generated_label": "2026-09-03 09:56 KST",
+      "headline": "코스피·코스닥 동반 급락, 외국인 매도세 확대",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-09-03-intraday-1aae334b1f",
       "date": "2026-09-03",
@@ -1406,24 +1423,6 @@
       "narrative_topics": [
         "산업:반도체",
         "산업:데이터인프라"
-      ]
-    },
-    {
-      "id": "2026-08-25-morning-9a50b03617",
-      "date": "2026-08-25",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-08-25T08:20:18+09:00",
-      "generated_label": "2026-08-25 08:20 KST",
-      "headline": "철강·화학 강세 속 반도체 약세와 외국인 수급 이탈",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:철강/소재:strong",
-        "산업:반도체:weak",
-        "산업:화학/정유:strong"
       ]
     }
   ]
