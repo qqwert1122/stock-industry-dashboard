@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-05T06:10:06+09:00",
+  "updated_at": "2026-09-05T08:08:14+09:00",
   "cards": [
+    {
+      "id": "2026-09-05-intraday-cc55cfb8c2",
+      "date": "2026-09-05",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-05T08:08:14+09:00",
+      "generated_label": "2026-09-05 08:08 KST",
+      "headline": "우주 산업 강세 속 암호자산 약세와 수급 변화",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 이더리움",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:우주:strong",
+        "산업:전기차:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-09-05-intraday-8fd3504a9a",
       "date": "2026-09-05",
@@ -1404,24 +1422,6 @@
         "산업:건설/부동산:strong",
         "산업:전력:strong",
         "산업:반도체:strong"
-      ]
-    },
-    {
-      "id": "2026-08-25-intraday-86d12781c5",
-      "date": "2026-08-25",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-25T20:52:58+09:00",
-      "generated_label": "2026-08-25 20:52 KST",
-      "headline": "유가 급락과 반도체 반등, 시장의 온도 차",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:화학/정유:weak",
-        "산업:매크로:strong"
       ]
     }
   ]
