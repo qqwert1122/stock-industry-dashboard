@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-04T17:15:29+09:00",
+  "updated_at": "2026-09-04T20:55:24+09:00",
   "cards": [
+    {
+      "id": "2026-09-04-intraday-1800248e67",
+      "date": "2026-09-04",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-04T20:55:24+09:00",
+      "generated_label": "2026-09-04 20:55 KST",
+      "headline": "나스닥 1.4% 반등과 로봇·우주 산업의 강세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:로봇:strong",
+        "산업:우주:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-09-04-intraday-eeb277403d",
       "date": "2026-09-04",
@@ -1396,24 +1414,6 @@
       "generated_at": "2026-08-25T19:00:45+09:00",
       "generated_label": "2026-08-25 19:00 KST",
       "headline": "유가 급락과 반도체 반등, 내일 한국장 주목",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:화학/정유:weak",
-        "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-08-25-intraday-5b559cdb9c",
-      "date": "2026-08-25",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-25T18:28:05+09:00",
-      "generated_label": "2026-08-25 18:28 KST",
-      "headline": "유가 급락과 반도체 반등, 시장의 엇갈린 신호",
       "low_signal": false,
       "session_label": "세션 외",
       "gate_reason": "유의미한 변화: Brent 선물(BZ)",
