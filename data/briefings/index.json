@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-09-04T06:36:45+09:00",
+  "updated_at": "2026-09-04T09:46:38+09:00",
   "cards": [
+    {
+      "id": "2026-09-04-morning-bf8d51a0cf",
+      "date": "2026-09-04",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-09-04T09:46:38+09:00",
+      "generated_label": "2026-09-04 09:46 KST",
+      "headline": "반도체 주도 반등과 기관·외국인 수급 개선",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-09-04-intraday-38bd22f040",
       "date": "2026-09-04",
@@ -1405,24 +1422,6 @@
         "산업:반도체:weak",
         "산업:매크로:weak",
         "산업:데이터인프라:strong"
-      ]
-    },
-    {
-      "id": "2026-08-25-intraday-77777848e5",
-      "date": "2026-08-25",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-25T15:54:32+09:00",
-      "generated_label": "2026-08-25 15:54 KST",
-      "headline": "코스닥 반등과 금융주 강세, 건설업종의 뚜렷한 회복",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 코스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:건설/부동산:strong",
-        "산업:은행/금융:strong",
-        "산업:전기차:weak"
       ]
     }
   ]
