@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-04T09:46:38+09:00",
+  "updated_at": "2026-09-04T12:44:42+09:00",
   "cards": [
+    {
+      "id": "2026-09-04-intraday-bc6745108c",
+      "date": "2026-09-04",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-04T12:44:42+09:00",
+      "generated_label": "2026-09-04 12:44 KST",
+      "headline": "반도체·데이터인프라 강세 속 기관 선물 매도 지속",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 쎄트렉아이(099320.KQ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:데이터인프라:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-09-04-morning-bf8d51a0cf",
       "date": "2026-09-04",
@@ -1404,24 +1422,6 @@
         "산업:반도체:strong",
         "산업:건설/부동산:strong",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-08-25-intraday-71697a3187",
-      "date": "2026-08-25",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-25T16:38:34+09:00",
-      "generated_label": "2026-08-25 16:38 KST",
-      "headline": "반도체 약세와 외국인 순매도 지속, 내일 NVIDIA 실적 주목",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: AMD(AMD)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak",
-        "산업:데이터인프라:strong"
       ]
     }
   ]
