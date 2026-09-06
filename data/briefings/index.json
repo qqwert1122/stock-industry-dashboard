@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-09-05T09:36:31+09:00",
+  "updated_at": "2026-09-06T09:34:21+09:00",
   "cards": [
+    {
+      "id": "2026-09-06-morning-ccdfc21086",
+      "date": "2026-09-06",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-09-06T09:34:21+09:00",
+      "generated_label": "2026-09-06 09:34 KST",
+      "headline": "반도체 중심의 시장 반등과 외국인 수급 유입",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-09-05-morning-b11d37bd17",
       "date": "2026-09-05",
@@ -1403,24 +1420,6 @@
       "narrative_topics": [
         "산업:스테이블코인:strong",
         "산업:반도체:strong"
-      ]
-    },
-    {
-      "id": "2026-08-25-intraday-64de5c4856",
-      "date": "2026-08-25",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-25T22:42:40+09:00",
-      "generated_label": "2026-08-25 22:42 KST",
-      "headline": "나스닥 반등 속 반도체주 강세, 건설업은 주도권 유지",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 나스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:건설/부동산:strong",
-        "산업:화학/정유:weak"
       ]
     }
   ]
