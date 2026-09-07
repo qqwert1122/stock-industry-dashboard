@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-09-06T09:34:21+09:00",
+  "updated_at": "2026-09-07T09:41:21+09:00",
   "cards": [
+    {
+      "id": "2026-09-07-morning-5493033d92",
+      "date": "2026-09-07",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-09-07T09:41:21+09:00",
+      "generated_label": "2026-09-07 09:41 KST",
+      "headline": "반도체 주도 강세와 외국인 수급 개선으로 코스피 3% 급등",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-09-06-morning-ccdfc21086",
       "date": "2026-09-06",
@@ -1403,23 +1420,6 @@
         "산업:반도체:strong",
         "산업:스테이블코인:strong",
         "산업:화학/정유:weak"
-      ]
-    },
-    {
-      "id": "2026-08-25-intraday-36b4ee75cb",
-      "date": "2026-08-25",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-25T23:37:33+09:00",
-      "generated_label": "2026-08-25 23:37 KST",
-      "headline": "스테이블코인·반도체 강세 속 NVIDIA 실적 대기",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Albemarle(ALB)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:반도체:strong"
       ]
     }
   ]
