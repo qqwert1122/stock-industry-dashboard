@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-09-07T09:41:21+09:00",
+  "updated_at": "2026-09-07T12:47:35+09:00",
   "cards": [
+    {
+      "id": "2026-09-07-intraday-d458f572cc",
+      "date": "2026-09-07",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-07T12:47:35+09:00",
+      "generated_label": "2026-09-07 12:47 KST",
+      "headline": "반도체 주도 코스피 급등, 외국인 순매수 전환",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: SK하이닉스(000660.KS)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-09-07-morning-5493033d92",
       "date": "2026-09-07",
@@ -1394,24 +1411,6 @@
       "generated_at": "2026-08-26T01:27:53+09:00",
       "generated_label": "2026-08-26 01:27 KST",
       "headline": "미국 증시 반도체 중심 반등과 유가 급락",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:스테이블코인:strong",
-        "산업:화학/정유:weak"
-      ]
-    },
-    {
-      "id": "2026-08-26-intraday-ef392eea7c",
-      "date": "2026-08-26",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-26T00:35:31+09:00",
-      "generated_label": "2026-08-26 00:35 KST",
-      "headline": "반도체 반등과 유가 급락, 미국장 혼조세",
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: Brent 선물(BZ)",
