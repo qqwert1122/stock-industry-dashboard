@@ -426,7 +426,7 @@
     {
       "name": "미래 타임라인",
       "status": "partial",
-      "message": "15개 기술 타임라인 생성, YAML 경고 67건"
+      "message": "15개 기술 타임라인 생성, YAML 경고 65건"
     }
   ],
   "metrics": [
@@ -98719,11 +98719,6 @@
       },
       {
         "kind": "reading_link",
-        "id": "https://www.nasa.gov/clps/",
-        "message": "링크 점검이 2회 연속 실패했습니다."
-      },
-      {
-        "kind": "reading_link",
         "id": "https://www.oecd.org/en/publications/handbook-on-measuring-the-space-economy-2nd-edition_8bfef437-en.html",
         "message": "링크 점검이 2회 연속 실패했습니다."
       },
@@ -98775,11 +98770,6 @@
       {
         "kind": "reading_link",
         "id": "https://www.transportation.gov/briefing-room/advanced-air-mobility-national-strategy-2025",
-        "message": "링크 점검이 2회 연속 실패했습니다."
-      },
-      {
-        "kind": "reading_link",
-        "id": "https://www.nasa.gov/mission/aam/",
         "message": "링크 점검이 2회 연속 실패했습니다."
       },
       {
@@ -105905,8 +105895,8 @@
     ]
   },
   "fetch_log_summary": {
-    "success": 1,
-    "no_new_data": 1,
+    "success": 0,
+    "no_new_data": 2,
     "failed": 0
   },
   "prices_refreshed_at": "2026-09-07T18:07:34+09:00"
