@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-07T22:13:12+09:00",
+  "updated_at": "2026-09-08T03:19:11+09:00",
   "cards": [
+    {
+      "id": "2026-09-08-intraday-35d5ac00bb",
+      "date": "2026-09-08",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-08T03:19:11+09:00",
+      "generated_label": "2026-09-08 03:19 KST",
+      "headline": "VIX 상승과 비트코인 약세, 위험회피 심리 부각",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:weak",
+        "산업:데이터인프라:strong",
+        "산업:전력:strong"
+      ]
+    },
     {
       "id": "2026-09-07-intraday-3fb1cb83f7",
       "date": "2026-09-07",
@@ -1393,24 +1411,6 @@
       "generated_at": "2026-08-26T03:28:37+09:00",
       "generated_label": "2026-08-26 03:28 KST",
       "headline": "미국장 반도체 반등과 스테이블코인 강세, 내일 한국장 기대감",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Albemarle(ALB)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:스테이블코인:strong",
-        "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-08-26-intraday-00883ddb61",
-      "date": "2026-08-26",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-26T02:53:48+09:00",
-      "generated_label": "2026-08-26 02:53 KST",
-      "headline": "반도체 반등과 스테이블코인 강세, 미국장 위험선호 회복",
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: Albemarle(ALB)",
