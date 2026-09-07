@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-08T03:19:11+09:00",
+  "updated_at": "2026-09-08T06:39:25+09:00",
   "cards": [
+    {
+      "id": "2026-09-08-intraday-ba86bdd27b",
+      "date": "2026-09-08",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-08T06:39:25+09:00",
+      "generated_label": "2026-09-08 06:39 KST",
+      "headline": "건설·조선·자동차 주도, 코스피 외국인 순매수 전환",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 비트코인",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:건설/부동산:strong",
+        "산업:조선:strong",
+        "산업:자동차:strong"
+      ]
+    },
     {
       "id": "2026-09-08-intraday-35d5ac00bb",
       "date": "2026-09-08",
@@ -1393,24 +1411,6 @@
       "generated_at": "2026-08-26T04:09:10+09:00",
       "generated_label": "2026-08-26 04:09 KST",
       "headline": "미국 반도체·스테이블코인 강세와 유가 급락",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Albemarle(ALB)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:스테이블코인:strong",
-        "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-08-26-intraday-f35ee29d3b",
-      "date": "2026-08-26",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-26T03:28:37+09:00",
-      "generated_label": "2026-08-26 03:28 KST",
-      "headline": "미국장 반도체 반등과 스테이블코인 강세, 내일 한국장 기대감",
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: Albemarle(ALB)",
