@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-07T18:10:34+09:00",
+  "updated_at": "2026-09-07T22:13:12+09:00",
   "cards": [
+    {
+      "id": "2026-09-07-intraday-3fb1cb83f7",
+      "date": "2026-09-07",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-07T22:13:12+09:00",
+      "generated_label": "2026-09-07 22:13 KST",
+      "headline": "코스피 반등과 함께 커진 변동성 경계감",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:strong",
+        "산업:반도체:strong",
+        "산업:은행/금융:strong"
+      ]
+    },
     {
       "id": "2026-09-07-intraday-0e0baf79d4",
       "date": "2026-09-07",
@@ -1400,24 +1418,6 @@
       "narrative_topics": [
         "산업:반도체:strong",
         "산업:스테이블코인:strong",
-        "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-08-26-intraday-8547ea3f9b",
-      "date": "2026-08-26",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-26T02:05:18+09:00",
-      "generated_label": "2026-08-26 02:05 KST",
-      "headline": "반도체 반등과 유가 급락, 내일 한국장 변동성 예고",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Albemarle(ALB)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:화학/정유:weak",
         "산업:매크로:strong"
       ]
     }
