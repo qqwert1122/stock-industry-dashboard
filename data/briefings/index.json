@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-10T01:49:07+09:00",
+  "updated_at": "2026-09-10T04:34:56+09:00",
   "cards": [
+    {
+      "id": "2026-09-10-intraday-ddea15e4e7",
+      "date": "2026-09-10",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-10T04:34:56+09:00",
+      "generated_label": "2026-09-10 04:34 KST",
+      "headline": "미국 증시 변동성 확대와 유가 급등에 따른 투자심리 위축",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Mobileye(MBLY)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak",
+        "산업:데이터인프라:weak"
+      ]
+    },
     {
       "id": "2026-09-10-intraday-9d88cbe126",
       "date": "2026-09-10",
@@ -1399,24 +1417,6 @@
       "narrative_topics": [
         "산업:화학/정유",
         "산업:매크로"
-      ]
-    },
-    {
-      "id": "2026-08-26-intraday-448d91c94f",
-      "date": "2026-08-26",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-26T15:01:04+09:00",
-      "generated_label": "2026-08-26 15:01 KST",
-      "headline": "반도체 중심의 시장 반등과 건설·전력주 강세",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 현대건설(000720.KS)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:건설/부동산:strong",
-        "산업:전력:strong"
       ]
     }
   ]
