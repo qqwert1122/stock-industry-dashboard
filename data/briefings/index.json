@@ -1,7 +1,23 @@
 {
   "version": 1,
-  "updated_at": "2026-09-10T20:59:37+09:00",
+  "updated_at": "2026-09-11T01:01:50+09:00",
   "cards": [
+    {
+      "id": "2026-09-11-intraday-a9cb8836fd",
+      "date": "2026-09-11",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-11T01:01:50+09:00",
+      "generated_label": "2026-09-11 01:01 KST",
+      "headline": "스테이블코인 약세 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: WTI 선물(CL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체"
+      ]
+    },
     {
       "id": "2026-09-10-intraday-1335d03e6d",
       "date": "2026-09-10",
@@ -1399,24 +1415,6 @@
         "산업:반도체:weak",
         "산업:화학/정유:weak",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-08-26-intraday-d69e2e7d9d",
-      "date": "2026-08-26",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-26T20:01:14+09:00",
-      "generated_label": "2026-08-26 20:01 KST",
-      "headline": "유가 급락과 건설·전력의 강세, 내일 금통위 앞둔 관망세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:건설/부동산:strong",
-        "산업:전력:strong",
-        "산업:화학/정유:weak"
       ]
     }
   ]
