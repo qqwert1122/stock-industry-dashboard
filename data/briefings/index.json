@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-10T12:54:20+09:00",
+  "updated_at": "2026-09-10T17:50:08+09:00",
   "cards": [
+    {
+      "id": "2026-09-10-intraday-e6a7b31bf4",
+      "date": "2026-09-10",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-10T17:50:08+09:00",
+      "generated_label": "2026-09-10 17:50 KST",
+      "headline": "배터리·전력 약세 속 방산 주도, 선물 만기일 변동성 주의",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Albemarle(ALB)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:배터리:weak",
+        "산업:방산:strong",
+        "산업:전력:weak"
+      ]
+    },
     {
       "id": "2026-09-10-intraday-f4758ff461",
       "date": "2026-09-10",
@@ -1399,24 +1417,6 @@
         "산업:건설/부동산:strong",
         "산업:전력:strong",
         "산업:자동차:weak"
-      ]
-    },
-    {
-      "id": "2026-08-26-intraday-b49d1370ea",
-      "date": "2026-08-26",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-26T18:33:45+09:00",
-      "generated_label": "2026-08-26 18:33 KST",
-      "headline": "국제 유가 급락과 전력·건설 인프라의 강세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:전력:strong",
-        "산업:건설/부동산:strong",
-        "산업:화학/정유:weak"
       ]
     }
   ]
