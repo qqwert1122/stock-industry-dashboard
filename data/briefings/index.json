@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-11T01:01:50+09:00",
+  "updated_at": "2026-09-11T04:11:14+09:00",
   "cards": [
+    {
+      "id": "2026-09-11-intraday-f69338a573",
+      "date": "2026-09-11",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-11T04:11:14+09:00",
+      "generated_label": "2026-09-11 04:11 KST",
+      "headline": "미국 증시 변동성 확대와 반도체 약세 지속",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak",
+        "산업:데이터인프라:strong"
+      ]
+    },
     {
       "id": "2026-09-11-intraday-a9cb8836fd",
       "date": "2026-09-11",
@@ -1389,24 +1407,6 @@
       "generated_at": "2026-08-26T21:36:53+09:00",
       "generated_label": "2026-08-26 21:36 KST",
       "headline": "국제 유가 급락과 반도체 주가 조정, 내일 금통위 앞둔 관망세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:화학/정유:weak",
-        "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-08-26-intraday-cdd8c54347",
-      "date": "2026-08-26",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-26T20:54:34+09:00",
-      "generated_label": "2026-08-26 20:54 KST",
-      "headline": "국제 유가 급락과 반도체·기술주 관망세",
       "low_signal": false,
       "session_label": "세션 외",
       "gate_reason": "유의미한 변화: Brent 선물(BZ)",
