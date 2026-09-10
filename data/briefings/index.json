@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-10T09:50:39+09:00",
+  "updated_at": "2026-09-10T12:54:20+09:00",
   "cards": [
+    {
+      "id": "2026-09-10-intraday-f4758ff461",
+      "date": "2026-09-10",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-10T12:54:20+09:00",
+      "generated_label": "2026-09-10 12:54 KST",
+      "headline": "코스닥 1.6% 반등 속 선물 만기일 앞둔 수급 변동성",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:strong",
+        "산업:조선:strong",
+        "산업:전기차:weak"
+      ]
+    },
     {
       "id": "2026-09-10-morning-9c4b9baf4e",
       "date": "2026-09-10",
@@ -1398,24 +1416,6 @@
       "narrative_topics": [
         "산업:전력:strong",
         "산업:건설/부동산:strong",
-        "산업:화학/정유:weak"
-      ]
-    },
-    {
-      "id": "2026-08-26-intraday-5413f08c5a",
-      "date": "2026-08-26",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-26T17:34:47+09:00",
-      "generated_label": "2026-08-26 17:34 KST",
-      "headline": "에너지 가격 급락과 건설·전력 인프라의 강세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:건설/부동산:strong",
-        "산업:전력:strong",
         "산업:화학/정유:weak"
       ]
     }
