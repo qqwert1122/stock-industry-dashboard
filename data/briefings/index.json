@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-10T17:50:08+09:00",
+  "updated_at": "2026-09-10T20:59:37+09:00",
   "cards": [
+    {
+      "id": "2026-09-10-intraday-1335d03e6d",
+      "date": "2026-09-10",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-10T20:59:37+09:00",
+      "generated_label": "2026-09-10 20:59 KST",
+      "headline": "반도체 약세와 선물 만기 앞둔 국내 시장의 관망세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 구리 선물(HG)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak",
+        "산업:전기차:weak"
+      ]
+    },
     {
       "id": "2026-09-10-intraday-e6a7b31bf4",
       "date": "2026-09-10",
@@ -1399,24 +1417,6 @@
         "산업:건설/부동산:strong",
         "산업:전력:strong",
         "산업:화학/정유:weak"
-      ]
-    },
-    {
-      "id": "2026-08-26-intraday-858929e630",
-      "date": "2026-08-26",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-26T19:27:30+09:00",
-      "generated_label": "2026-08-26 19:27 KST",
-      "headline": "건설·전력 인프라 강세 속 자동차 약세, 내일 금통위 관망",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Huntington Ingalls(HII)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:건설/부동산:strong",
-        "산업:전력:strong",
-        "산업:자동차:weak"
       ]
     }
   ]
