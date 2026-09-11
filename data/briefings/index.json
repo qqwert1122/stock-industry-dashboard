@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-12T03:59:36+09:00",
+  "updated_at": "2026-09-12T06:36:17+09:00",
   "cards": [
+    {
+      "id": "2026-09-12-intraday-da34185a1a",
+      "date": "2026-09-12",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-12T06:36:17+09:00",
+      "generated_label": "2026-09-12 06:36 KST",
+      "headline": "변동성 완화 속 조선·금융 중심의 차별화 장세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:조선:strong",
+        "산업:은행/금융:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-09-12-intraday-54e58f572b",
       "date": "2026-09-12",
@@ -1395,23 +1413,6 @@
         "산업:반도체:strong",
         "산업:배터리:strong",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-08-27-morning-015dfb0846",
-      "date": "2026-08-27",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-08-27T13:14:11+09:00",
-      "generated_label": "2026-08-27 13:14 KST",
-      "headline": "반도체 주도 반등 속 기관·외국인 수급 변동성 확대",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
