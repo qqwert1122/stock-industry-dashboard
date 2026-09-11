@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-09-12T00:57:50+09:00",
+  "updated_at": "2026-09-12T03:59:36+09:00",
   "cards": [
+    {
+      "id": "2026-09-12-intraday-54e58f572b",
+      "date": "2026-09-12",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-12T03:59:36+09:00",
+      "generated_label": "2026-09-12 03:59 KST",
+      "headline": "로봇 주도 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로",
+        "산업:화학/정유"
+      ]
+    },
     {
       "id": "2026-09-12-intraday-27031b3928",
       "date": "2026-09-12",
@@ -1395,24 +1412,6 @@
       "narrative_topics": [
         "산업:반도체:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-27-intraday-e1ecffa1ca",
-      "date": "2026-08-27",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-27T08:54:40+09:00",
-      "generated_label": "2026-08-27 08:54 KST",
-      "headline": "건설·전력 강세 속 자동차·배터리 약세, 금통위 앞둔 관망세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:건설/부동산:strong",
-        "산업:전력:strong",
-        "산업:자동차:weak"
       ]
     }
   ]
