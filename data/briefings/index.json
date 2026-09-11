@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-11T17:46:29+09:00",
+  "updated_at": "2026-09-11T20:58:38+09:00",
   "cards": [
+    {
+      "id": "2026-09-11-intraday-462f3bef49",
+      "date": "2026-09-11",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-11T20:58:38+09:00",
+      "generated_label": "2026-09-11 20:58 KST",
+      "headline": "변동성 완화 속 조선·전력 강세, 반도체는 기대 재조정",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:조선:strong",
+        "산업:전력:strong",
+        "산업:반도체:weak"
+      ]
+    },
     {
       "id": "2026-09-11-intraday-0e209bef31",
       "date": "2026-09-11",
@@ -1396,24 +1414,6 @@
         "산업:화학/정유:weak",
         "산업:매크로:strong",
         "산업:반도체:strong"
-      ]
-    },
-    {
-      "id": "2026-08-27-intraday-95b9499a48",
-      "date": "2026-08-27",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-27T03:11:29+09:00",
-      "generated_label": "2026-08-27 03:11 KST",
-      "headline": "미국 증시 관망세 속 바이오·스테이블코인 약세",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Eli Lilly(LLY)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:바이오:weak",
-        "산업:스테이블코인:weak",
-        "산업:매크로:weak"
       ]
     }
   ]
