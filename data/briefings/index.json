@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-09-12T09:54:43+09:00",
+  "updated_at": "2026-09-13T09:37:11+09:00",
   "cards": [
+    {
+      "id": "2026-09-13-morning-5f26c183f8",
+      "date": "2026-09-13",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-09-13T09:37:11+09:00",
+      "generated_label": "2026-09-13 09:37 KST",
+      "headline": "반도체 약세 속 외국인 매도 지속, 시장 관망세",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-09-12-morning-f65cacac2c",
       "date": "2026-09-12",
@@ -1394,24 +1411,6 @@
         "산업:반도체:weak",
         "산업:조선:weak",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-28-intraday-2e71c35b89",
-      "date": "2026-08-28",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-28T03:01:03+09:00",
-      "generated_label": "2026-08-28 03:01 KST",
-      "headline": "나스닥 1.4% 급등, AI 반도체 중심의 위험선호 회복",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:데이터인프라:strong",
-        "산업:스테이블코인:strong"
       ]
     }
   ]
