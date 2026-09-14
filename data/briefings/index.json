@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-14T18:56:30+09:00",
+  "updated_at": "2026-09-14T22:34:14+09:00",
   "cards": [
+    {
+      "id": "2026-09-14-intraday-834fb0b574",
+      "date": "2026-09-14",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-14T22:34:14+09:00",
+      "generated_label": "2026-09-14 22:34 KST",
+      "headline": "나스닥 1.2% 하락 및 반도체 장비주 중심의 투자심리 위축",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:전력:weak",
+        "산업:로봇:weak"
+      ]
+    },
     {
       "id": "2026-09-14-intraday-b9c58d349b",
       "date": "2026-09-14",
@@ -1392,24 +1410,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:weak",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-29-intraday-97dc2f1d48",
-      "date": "2026-08-29",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-29T04:10:45+09:00",
-      "generated_label": "2026-08-29 04:10 KST",
-      "headline": "미국 증시 선물 하락과 위험자산 회피 심리 확산",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥100 선물",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:스테이블코인:weak",
         "산업:매크로:weak"
       ]
     }
