@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-15T03:59:09+09:00",
+  "updated_at": "2026-09-15T07:18:30+09:00",
   "cards": [
+    {
+      "id": "2026-09-15-intraday-d621e792ce",
+      "date": "2026-09-15",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-15T07:18:30+09:00",
+      "generated_label": "2026-09-15 07:18 KST",
+      "headline": "변동성 지표 VIX 상승과 에너지 가격 강세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:weak",
+        "산업:화학/정유:strong",
+        "산업:반도체:weak"
+      ]
+    },
     {
       "id": "2026-09-15-intraday-137ab1ae3d",
       "date": "2026-09-15",
@@ -1388,23 +1406,6 @@
       "generated_at": "2026-08-30T10:03:29+09:00",
       "generated_label": "2026-08-30 10:03 KST",
       "headline": "반도체 약세와 외국인 매도세가 코스피 압박",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-29-morning-4de643f4a5",
-      "date": "2026-08-29",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-08-29T13:01:06+09:00",
-      "generated_label": "2026-08-29 13:01 KST",
-      "headline": "반도체 약세 속 기관·외국인 동반 매도세 지속",
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "일일 전체 빌드",
