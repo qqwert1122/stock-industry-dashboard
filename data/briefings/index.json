@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-14T22:34:14+09:00",
+  "updated_at": "2026-09-15T03:59:09+09:00",
   "cards": [
+    {
+      "id": "2026-09-15-intraday-137ab1ae3d",
+      "date": "2026-09-15",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-15T03:59:09+09:00",
+      "generated_label": "2026-09-15 03:59 KST",
+      "headline": "미국 반도체 급락과 데이터인프라의 차별화",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥100 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:데이터인프라:strong",
+        "산업:스테이블코인:strong"
+      ]
+    },
     {
       "id": "2026-09-14-intraday-834fb0b574",
       "date": "2026-09-14",
@@ -1390,23 +1408,6 @@
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-29-intraday-fce3cff8df",
-      "date": "2026-08-29",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-29T11:20:33+09:00",
-      "generated_label": "2026-08-29 11:20 KST",
-      "headline": "반도체 약세와 외국인 매도세 지속, 시장 변동성 경계",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 비트코인",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:weak",
