@@ -1,7 +1,23 @@
 {
   "version": 1,
-  "updated_at": "2026-09-15T21:24:00+09:00",
+  "updated_at": "2026-09-16T02:11:11+09:00",
   "cards": [
+    {
+      "id": "2026-09-16-intraday-124e2de548",
+      "date": "2026-09-16",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-16T02:11:11+09:00",
+      "generated_label": "2026-09-16 02:11 KST",
+      "headline": "스테이블코인 약세 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체"
+      ]
+    },
     {
       "id": "2026-09-15-intraday-b49c7381c7",
       "date": "2026-09-15",
@@ -1396,24 +1412,6 @@
         "산업:매크로:weak",
         "산업:반도체:weak",
         "산업:화학/정유:strong"
-      ]
-    },
-    {
-      "id": "2026-08-31-intraday-c1b9653e40",
-      "date": "2026-08-31",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-08-31T23:44:07+09:00",
-      "generated_label": "2026-08-31 23:44 KST",
-      "headline": "미국 증시 변동성 확대와 반도체·스테이블코인 차별화",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:스테이블코인:strong",
-        "산업:데이터인프라:weak"
       ]
     }
   ]
