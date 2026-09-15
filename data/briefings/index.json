@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-09-15T07:18:30+09:00",
+  "updated_at": "2026-09-15T10:09:58+09:00",
   "cards": [
+    {
+      "id": "2026-09-15-morning-3411cdb8dc",
+      "date": "2026-09-15",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-09-15T10:09:58+09:00",
+      "generated_label": "2026-09-15 10:09 KST",
+      "headline": "코스피 3.4% 급락, 외국인 선물 매도와 기관 수급 이탈",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-09-15-intraday-d621e792ce",
       "date": "2026-09-15",
@@ -1389,23 +1406,6 @@
       "generated_at": "2026-08-31T10:05:15+09:00",
       "generated_label": "2026-08-31 10:05 KST",
       "headline": "코스피·코스닥 동반 하락, 반도체 약세와 수급 이탈",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-08-30-morning-98b9499494",
-      "date": "2026-08-30",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-08-30T10:03:29+09:00",
-      "generated_label": "2026-08-30 10:03 KST",
-      "headline": "반도체 약세와 외국인 매도세가 코스피 압박",
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "일일 전체 빌드",
