@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-16T05:20:42+09:00",
+  "updated_at": "2026-09-16T08:00:13+09:00",
   "cards": [
+    {
+      "id": "2026-09-16-intraday-ff7c939e8f",
+      "date": "2026-09-16",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-16T08:00:13+09:00",
+      "generated_label": "2026-09-16 08:00 KST",
+      "headline": "원/달러 환율 급등과 유가 상승이 시장 압박",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 이더리움",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:weak",
+        "산업:화학/정유:strong",
+        "산업:전기차:strong"
+      ]
+    },
     {
       "id": "2026-09-16-intraday-47385fab2f",
       "date": "2026-09-16",
@@ -1394,23 +1412,6 @@
       "narrative_topics": [
         "산업:반도체:strong",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-09-01-intraday-78d5b51b19",
-      "date": "2026-09-01",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-01T09:16:23+09:00",
-      "generated_label": "2026-09-01 09:16 KST",
-      "headline": "반도체 약세와 기관 수급 이탈로 코스피·코스닥 동반 하락",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak"
       ]
     }
   ]
