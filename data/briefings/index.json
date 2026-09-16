@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-09-16T08:00:13+09:00",
+  "updated_at": "2026-09-16T10:05:57+09:00",
   "cards": [
+    {
+      "id": "2026-09-16-morning-81ab448e0b",
+      "date": "2026-09-16",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-09-16T10:05:57+09:00",
+      "generated_label": "2026-09-16 10:05 KST",
+      "headline": "반도체 반등 속 환율 급등과 외국인 매도세 지속",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-09-16-intraday-ff7c939e8f",
       "date": "2026-09-16",
@@ -1395,23 +1412,6 @@
         "산업:반도체:strong",
         "산업:건설/부동산:weak",
         "산업:방산:weak"
-      ]
-    },
-    {
-      "id": "2026-09-01-morning-d7c103d96b",
-      "date": "2026-09-01",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-09-01T10:38:38+09:00",
-      "generated_label": "2026-09-01 10:38 KST",
-      "headline": "반도체 중심의 시장 방어와 기관의 선물 수급 변화",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:strong"
       ]
     }
   ]
