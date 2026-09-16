@@ -1,7 +1,23 @@
 {
   "version": 1,
-  "updated_at": "2026-09-16T18:19:37+09:00",
+  "updated_at": "2026-09-16T21:21:26+09:00",
   "cards": [
+    {
+      "id": "2026-09-16-intraday-d472bf0ca8",
+      "date": "2026-09-16",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-16T21:21:26+09:00",
+      "generated_label": "2026-09-16 21:21 KST",
+      "headline": "조선 약세 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Intel(INTC)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체"
+      ]
+    },
     {
       "id": "2026-09-16-intraday-6971271505",
       "date": "2026-09-16",
@@ -1393,24 +1409,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체"
-      ]
-    },
-    {
-      "id": "2026-09-01-intraday-fc5c3c9199",
-      "date": "2026-09-01",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-01T21:16:37+09:00",
-      "generated_label": "2026-09-01 21:16 KST",
-      "headline": "미국 증시 변동성 확대와 반도체·기술주 약세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:화학/정유:strong",
-        "산업:로봇:weak"
       ]
     }
   ]
