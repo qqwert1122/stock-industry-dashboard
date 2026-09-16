@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-09-16T10:05:57+09:00",
+  "updated_at": "2026-09-16T13:05:33+09:00",
   "cards": [
+    {
+      "id": "2026-09-16-intraday-293c40292e",
+      "date": "2026-09-16",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-16T13:05:33+09:00",
+      "generated_label": "2026-09-16 13:05 KST",
+      "headline": "반도체 주도 흐름 속 환율 급등과 수급 변동성",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-09-16-morning-81ab448e0b",
       "date": "2026-09-16",
@@ -1394,24 +1411,6 @@
         "산업:반도체:weak",
         "산업:화학/정유:strong",
         "산업:로봇:weak"
-      ]
-    },
-    {
-      "id": "2026-09-01-intraday-fd965a7569",
-      "date": "2026-09-01",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-01T13:21:28+09:00",
-      "generated_label": "2026-09-01 13:21 KST",
-      "headline": "반도체 중심의 수급 쏠림과 건설·방산의 차익실현",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 현대건설(000720.KS)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:건설/부동산:weak",
-        "산업:방산:weak"
       ]
     }
   ]
