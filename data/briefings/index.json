@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-17T02:11:46+09:00",
+  "updated_at": "2026-09-17T05:18:46+09:00",
   "cards": [
+    {
+      "id": "2026-09-17-intraday-b94514cc56",
+      "date": "2026-09-17",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-17T05:18:46+09:00",
+      "generated_label": "2026-09-17 05:18 KST",
+      "headline": "미국 증시 하락과 원/달러 환율 급등에 따른 투자심리 위축",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: S&P 500",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:weak",
+        "산업:화학/정유:weak",
+        "산업:반도체:weak"
+      ]
+    },
     {
       "id": "2026-09-17-intraday-86d3500ba8",
       "date": "2026-09-17",
@@ -1391,24 +1409,6 @@
         "산업:화학/정유:strong",
         "산업:매크로:weak",
         "산업:방산:weak"
-      ]
-    },
-    {
-      "id": "2026-09-02-intraday-39bf83cc53",
-      "date": "2026-09-02",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-02T04:43:07+09:00",
-      "generated_label": "2026-09-02 04:43 KST",
-      "headline": "미국 증시 변동성 확대와 반도체·스테이블코인 약세",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:스테이블코인:weak",
-        "산업:매크로:weak"
       ]
     }
   ]
