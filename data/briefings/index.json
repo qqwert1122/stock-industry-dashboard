@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-17T18:29:34+09:00",
+  "updated_at": "2026-09-17T21:21:04+09:00",
   "cards": [
+    {
+      "id": "2026-09-17-intraday-011364783e",
+      "date": "2026-09-17",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-17T21:21:04+09:00",
+      "generated_label": "2026-09-17 21:21 KST",
+      "headline": "VIX 급락과 반도체·조선·우주 중심의 위험선호 회복",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:조선:strong",
+        "산업:우주:strong"
+      ]
+    },
     {
       "id": "2026-09-17-intraday-6c474d0c5e",
       "date": "2026-09-17",
@@ -1393,24 +1411,6 @@
         "산업:반도체:strong",
         "산업:로봇:strong",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-09-02-intraday-65e733f9f2",
-      "date": "2026-09-02",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-02T20:54:11+09:00",
-      "generated_label": "2026-09-02 20:54 KST",
-      "headline": "코스피·코스닥 동반 하락, 외국인 순매도 지속",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Uber(UBER)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:자동차:weak",
-        "산업:매크로:weak"
       ]
     }
   ]
