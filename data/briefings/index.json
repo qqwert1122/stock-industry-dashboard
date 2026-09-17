@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-17T13:12:27+09:00",
+  "updated_at": "2026-09-17T18:29:34+09:00",
   "cards": [
+    {
+      "id": "2026-09-17-intraday-6c474d0c5e",
+      "date": "2026-09-17",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-17T18:29:34+09:00",
+      "generated_label": "2026-09-17 18:29 KST",
+      "headline": "반도체·우주·조선 중심의 강세와 VIX 하락으로 위험선호 회복",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:우주:strong",
+        "산업:조선:strong"
+      ]
+    },
     {
       "id": "2026-09-17-intraday-5fd7c4c6bf",
       "date": "2026-09-17",
@@ -1391,24 +1409,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:weak",
-        "산업:자동차:weak",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-09-02-intraday-2f1b88b50e",
-      "date": "2026-09-02",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-02T17:09:51+09:00",
-      "generated_label": "2026-09-02 17:09 KST",
-      "headline": "미국 증시 하락과 함께 국내 배터리·자동차주 동반 약세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Rocket Lab(RKLB)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:배터리:weak",
         "산업:자동차:weak",
         "산업:매크로:weak"
       ]
