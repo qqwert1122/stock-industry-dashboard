@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-17T21:21:04+09:00",
+  "updated_at": "2026-09-18T02:11:04+09:00",
   "cards": [
+    {
+      "id": "2026-09-18-intraday-08fde8e221",
+      "date": "2026-09-18",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-18T02:11:04+09:00",
+      "generated_label": "2026-09-18 02:11 KST",
+      "headline": "미국 반도체·기술주 반등과 VIX 급락으로 위험선호 회복",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:데이터인프라:strong",
+        "산업:로봇:strong"
+      ]
+    },
     {
       "id": "2026-09-17-intraday-011364783e",
       "date": "2026-09-17",
@@ -1388,24 +1406,6 @@
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:로봇:strong",
-        "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-09-03-intraday-b13f837369",
-      "date": "2026-09-03",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-03T00:44:31+09:00",
-      "generated_label": "2026-09-03 00:44 KST",
-      "headline": "미국 증시 반등과 반도체 중심의 투자심리 회복",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: S&P500 선물",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:strong",
