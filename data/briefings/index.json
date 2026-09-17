@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-17T08:05:44+09:00",
+  "updated_at": "2026-09-17T10:05:07+09:00",
   "cards": [
+    {
+      "id": "2026-09-17-morning-a7c13ef3be",
+      "date": "2026-09-17",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-09-17T10:05:07+09:00",
+      "generated_label": "2026-09-17 10:05 KST",
+      "headline": "방산·조선 강세 속 외국인 선물 매도 지속",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:방산:strong",
+        "산업:조선:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-09-17-intraday-aa501761af",
       "date": "2026-09-17",
@@ -1393,22 +1411,6 @@
         "산업:반도체:weak",
         "산업:매크로:weak",
         "산업:화학/정유:strong"
-      ]
-    },
-    {
-      "id": "2026-09-02-morning-b107230ce8",
-      "date": "2026-09-02",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-09-02T09:49:03+09:00",
-      "generated_label": "2026-09-02 09:49 KST",
-      "headline": "반도체 약세 흐름이 두드러집니다.",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로"
       ]
     }
   ]
