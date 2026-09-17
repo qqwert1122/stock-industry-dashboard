@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-18T05:27:17+09:00",
+  "updated_at": "2026-09-18T07:58:04+09:00",
   "cards": [
+    {
+      "id": "2026-09-18-intraday-8735eb5636",
+      "date": "2026-09-18",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-18T07:58:04+09:00",
+      "generated_label": "2026-09-18 07:58 KST",
+      "headline": "미국 변동성 완화와 선물 강세, 한국장 수급 개선 기대",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:조선:strong",
+        "산업:방산:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-09-18-intraday-ce4b1c63c6",
       "date": "2026-09-18",
@@ -1393,24 +1411,6 @@
       "narrative_topics": [
         "산업:반도체:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-09-03-intraday-1aae334b1f",
-      "date": "2026-09-03",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-03T06:55:12+09:00",
-      "generated_label": "2026-09-03 06:55 KST",
-      "headline": "VIX 하락과 금 선물 강세, 시장의 위험 회피 완화",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:strong",
-        "산업:건설/부동산:weak",
-        "산업:전기차:weak"
       ]
     }
   ]
