@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-17T10:05:07+09:00",
+  "updated_at": "2026-09-17T13:12:27+09:00",
   "cards": [
+    {
+      "id": "2026-09-17-intraday-5fd7c4c6bf",
+      "date": "2026-09-17",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-17T13:12:27+09:00",
+      "generated_label": "2026-09-17 13:12 KST",
+      "headline": "조선·방산 중심의 강세와 외국인 선물 매도",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:조선:strong",
+        "산업:방산:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-09-17-morning-a7c13ef3be",
       "date": "2026-09-17",
@@ -1393,24 +1411,6 @@
         "산업:배터리:weak",
         "산업:자동차:weak",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-09-02-intraday-02bee0b710",
-      "date": "2026-09-02",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-02T12:44:14+09:00",
-      "generated_label": "2026-09-02 12:44 KST",
-      "headline": "코스피·코스닥 동반 하락, 외국인 매도세와 유가 급등이 시장 압박",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak",
-        "산업:화학/정유:strong"
       ]
     }
   ]
