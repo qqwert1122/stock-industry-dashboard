@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-18T12:57:25+09:00",
+  "updated_at": "2026-09-18T17:57:54+09:00",
   "cards": [
+    {
+      "id": "2026-09-18-intraday-2f5eca4738",
+      "date": "2026-09-18",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-18T17:57:54+09:00",
+      "generated_label": "2026-09-18 17:57 KST",
+      "headline": "유가 급락과 스테이블코인 강세, 시장의 엇갈린 신호",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: WTI 선물(CL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:화학/정유:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-09-18-intraday-f65990cb01",
       "date": "2026-09-18",
@@ -1390,24 +1408,6 @@
       "narrative_topics": [
         "산업:화학/정유:strong",
         "산업:전기차:strong",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-09-03-intraday-fab067be01",
-      "date": "2026-09-03",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-03T17:18:55+09:00",
-      "generated_label": "2026-09-03 17:18 KST",
-      "headline": "금 선물 급등과 엔화 약세 속 금융·전력주 강세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 금 선물",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:은행/금융:strong",
-        "산업:전력:strong",
         "산업:매크로:weak"
       ]
     }
