@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-19T04:05:55+09:00",
+  "updated_at": "2026-09-19T06:45:44+09:00",
   "cards": [
+    {
+      "id": "2026-09-19-intraday-3af99d2d79",
+      "date": "2026-09-19",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-19T06:45:44+09:00",
+      "generated_label": "2026-09-19 06:45 KST",
+      "headline": "반도체 주도권 강화와 유가 급락에 따른 시장 변화",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 이더리움",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:화학/정유:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-09-19-intraday-ccdbd9d085",
       "date": "2026-09-19",
@@ -1393,22 +1411,6 @@
       "narrative_topics": [
         "산업:반도체:strong",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-09-04-intraday-38bd22f040",
-      "date": "2026-09-04",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-04T06:36:45+09:00",
-      "generated_label": "2026-09-04 06:36 KST",
-      "headline": "화학/정유 주도 흐름이 두드러집니다.",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체"
       ]
     }
   ]
