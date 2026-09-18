@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-19T01:11:15+09:00",
+  "updated_at": "2026-09-19T04:05:55+09:00",
   "cards": [
+    {
+      "id": "2026-09-19-intraday-ccdbd9d085",
+      "date": "2026-09-19",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-19T04:05:55+09:00",
+      "generated_label": "2026-09-19 04:05 KST",
+      "headline": "미국 증시 반등과 유가 급락, 위험선호 심리 회복",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 이더리움",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:데이터인프라:strong",
+        "산업:매크로:strong",
+        "산업:화학/정유:weak"
+      ]
+    },
     {
       "id": "2026-09-19-intraday-c774e21ce0",
       "date": "2026-09-19",
@@ -1391,24 +1409,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체"
-      ]
-    },
-    {
-      "id": "2026-09-04-intraday-6a8d8d3e6d",
-      "date": "2026-09-04",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-04T04:00:45+09:00",
-      "generated_label": "2026-09-04 04:00 KST",
-      "headline": "스테이블코인 강세와 VIX 하락으로 위험선호 회복",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Circle(CRCL)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:데이터인프라:strong",
-        "산업:반도체:strong"
       ]
     }
   ]
