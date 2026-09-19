@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-09-19T06:45:44+09:00",
+  "updated_at": "2026-09-19T09:57:52+09:00",
   "cards": [
+    {
+      "id": "2026-09-19-morning-bc349502bd",
+      "date": "2026-09-19",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-09-19T09:57:52+09:00",
+      "generated_label": "2026-09-19 09:57 KST",
+      "headline": "반도체 주도 장세 속 기관·개인 수급 불균형 심화",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-09-19-intraday-3af99d2d79",
       "date": "2026-09-19",
@@ -1394,23 +1411,6 @@
         "산업:반도체:strong",
         "산업:데이터인프라:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-09-04-morning-bf8d51a0cf",
-      "date": "2026-09-04",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-09-04T09:46:38+09:00",
-      "generated_label": "2026-09-04 09:46 KST",
-      "headline": "반도체 주도 반등과 기관·외국인 수급 개선",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:strong"
       ]
     }
   ]
