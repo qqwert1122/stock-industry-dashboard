@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-09-21T09:50:34+09:00",
+  "updated_at": "2026-09-21T13:11:07+09:00",
   "cards": [
+    {
+      "id": "2026-09-21-intraday-c807c43ff4",
+      "date": "2026-09-21",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-21T13:11:07+09:00",
+      "generated_label": "2026-09-21 13:11 KST",
+      "headline": "반도체 중심의 코스피 반등과 수급 변화",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-09-21-morning-81f25980c6",
       "date": "2026-09-21",
@@ -1391,24 +1408,6 @@
         "산업:반도체:strong",
         "산업:매크로:weak",
         "산업:스테이블코인:weak"
-      ]
-    },
-    {
-      "id": "2026-09-04-intraday-1800248e67",
-      "date": "2026-09-04",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-04T20:55:24+09:00",
-      "generated_label": "2026-09-04 20:55 KST",
-      "headline": "나스닥 1.4% 반등과 로봇·우주 산업의 강세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 나스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:로봇:strong",
-        "산업:우주:strong",
-        "산업:매크로:strong"
       ]
     }
   ]
