@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-21T13:11:07+09:00",
+  "updated_at": "2026-09-21T19:00:24+09:00",
   "cards": [
+    {
+      "id": "2026-09-21-intraday-b8e7546bfe",
+      "date": "2026-09-21",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-21T19:00:24+09:00",
+      "generated_label": "2026-09-21 19:00 KST",
+      "headline": "유가 급락과 반도체 반등, 시장의 엇갈린 신호",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: WTI 선물(CL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:화학/정유:weak",
+        "산업:로봇:strong"
+      ]
+    },
     {
       "id": "2026-09-21-intraday-c807c43ff4",
       "date": "2026-09-21",
@@ -1390,24 +1408,6 @@
         "산업:반도체:strong",
         "산업:스테이블코인:weak",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-09-05-intraday-a01b67bdcf",
-      "date": "2026-09-05",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-05T00:32:15+09:00",
-      "generated_label": "2026-09-05 00:32 KST",
-      "headline": "미국 선물 하락과 비트코인 약세, 반도체는 강세 지속",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: S&P500 선물",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:weak",
-        "산업:스테이블코인:weak"
       ]
     }
   ]
