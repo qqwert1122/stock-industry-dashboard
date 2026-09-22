@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-22T18:20:22+09:00",
+  "updated_at": "2026-09-22T21:16:06+09:00",
   "cards": [
+    {
+      "id": "2026-09-22-intraday-b90c08b034",
+      "date": "2026-09-22",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-22T21:16:06+09:00",
+      "generated_label": "2026-09-22 21:16 KST",
+      "headline": "유가 급락과 환율 안정 속 반도체·바이오 약세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: WTI 선물(CL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:화학/정유:weak",
+        "산업:바이오:weak"
+      ]
+    },
     {
       "id": "2026-09-22-intraday-89ec4e6b42",
       "date": "2026-09-22",
@@ -1391,23 +1409,6 @@
         "산업:건설/부동산:strong",
         "산업:은행/금융:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-09-07-intraday-d458f572cc",
-      "date": "2026-09-07",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-07T12:47:35+09:00",
-      "generated_label": "2026-09-07 12:47 KST",
-      "headline": "반도체 주도 코스피 급등, 외국인 순매수 전환",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: SK하이닉스(000660.KS)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:strong"
       ]
     }
   ]
