@@ -1,7 +1,23 @@
 {
   "version": 1,
-  "updated_at": "2026-09-24T02:22:48+09:00",
+  "updated_at": "2026-09-24T05:35:12+09:00",
   "cards": [
+    {
+      "id": "2026-09-24-intraday-85b21e1b9e",
+      "date": "2026-09-24",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-24T05:35:12+09:00",
+      "generated_label": "2026-09-24 05:35 KST",
+      "headline": "데이터인프라 주도 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 이더리움",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체"
+      ]
+    },
     {
       "id": "2026-09-24-intraday-8472008dd2",
       "date": "2026-09-24",
@@ -1375,24 +1391,6 @@
       "generated_at": "2026-09-09T04:10:52+09:00",
       "generated_label": "2026-09-09 04:10 KST",
       "headline": "반도체 주도권 강화와 미국 증시의 숨 고르기",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Intel(INTC)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:데이터인프라:weak",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-09-09-intraday-0e7a7dde76",
-      "date": "2026-09-09",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-09T00:46:23+09:00",
-      "generated_label": "2026-09-09 00:46 KST",
-      "headline": "반도체 주도권 강화와 미국 기술주 중심의 반등",
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: Intel(INTC)",
