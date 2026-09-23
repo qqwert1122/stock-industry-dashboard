@@ -1,7 +1,23 @@
 {
   "version": 1,
-  "updated_at": "2026-09-23T18:20:23+09:00",
+  "updated_at": "2026-09-23T21:28:58+09:00",
   "cards": [
+    {
+      "id": "2026-09-23-intraday-1458585da2",
+      "date": "2026-09-23",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-23T21:28:58+09:00",
+      "generated_label": "2026-09-23 21:28 KST",
+      "headline": "은행/금융 약세 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: WTI 선물(CL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체"
+      ]
+    },
     {
       "id": "2026-09-23-intraday-dba558cd5e",
       "date": "2026-09-23",
@@ -1387,24 +1403,6 @@
         "산업:반도체:strong",
         "산업:전력:strong",
         "산업:건설/부동산:strong"
-      ]
-    },
-    {
-      "id": "2026-09-08-intraday-78f522db73",
-      "date": "2026-09-08",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-08T17:44:52+09:00",
-      "generated_label": "2026-09-08 17:44 KST",
-      "headline": "건설·방산 주도 속 VIX 상승에 따른 변동성 경계",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:건설/부동산:strong",
-        "산업:방산:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
