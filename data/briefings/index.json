@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-09-24T05:35:12+09:00",
+  "updated_at": "2026-09-24T08:22:49+09:00",
   "cards": [
+    {
+      "id": "2026-09-24-intraday-873cc2f96a",
+      "date": "2026-09-24",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-24T08:22:49+09:00",
+      "generated_label": "2026-09-24 08:22 KST",
+      "headline": "건설/부동산 약세 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: WTI 선물(CL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:화학/정유",
+        "산업:매크로"
+      ]
+    },
     {
       "id": "2026-09-24-intraday-85b21e1b9e",
       "date": "2026-09-24",
@@ -1381,24 +1398,6 @@
         "산업:건설/부동산:strong",
         "산업:전력:strong",
         "산업:자동차:weak"
-      ]
-    },
-    {
-      "id": "2026-09-09-intraday-7a2f943067",
-      "date": "2026-09-09",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-09T04:10:52+09:00",
-      "generated_label": "2026-09-09 04:10 KST",
-      "headline": "반도체 주도권 강화와 미국 증시의 숨 고르기",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Intel(INTC)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:데이터인프라:weak",
-        "산업:매크로:weak"
       ]
     }
   ]
