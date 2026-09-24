@@ -1,7 +1,23 @@
 {
   "version": 1,
-  "updated_at": "2026-09-25T02:27:19+09:00",
+  "updated_at": "2026-09-25T05:38:55+09:00",
   "cards": [
+    {
+      "id": "2026-09-25-intraday-087200ac28",
+      "date": "2026-09-25",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-25T05:38:55+09:00",
+      "generated_label": "2026-09-25 05:38 KST",
+      "headline": "스테이블코인 약세 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체"
+      ]
+    },
     {
       "id": "2026-09-25-intraday-000ad11abe",
       "date": "2026-09-25",
@@ -1373,24 +1389,6 @@
         "산업:반도체:weak",
         "산업:매크로:weak",
         "산업:데이터인프라:weak"
-      ]
-    },
-    {
-      "id": "2026-09-10-intraday-9d88cbe126",
-      "date": "2026-09-10",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-10T01:49:07+09:00",
-      "generated_label": "2026-09-10 01:49 KST",
-      "headline": "미국 증시 변동성 확대와 유가 급등에 따른 투자심리 위축",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:weak",
-        "산업:매크로:weak"
       ]
     }
   ]
