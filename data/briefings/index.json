@@ -1,7 +1,23 @@
 {
   "version": 1,
-  "updated_at": "2026-09-24T21:28:06+09:00",
+  "updated_at": "2026-09-25T02:27:19+09:00",
   "cards": [
+    {
+      "id": "2026-09-25-intraday-000ad11abe",
+      "date": "2026-09-25",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-25T02:27:19+09:00",
+      "generated_label": "2026-09-25 02:27 KST",
+      "headline": "반도체 약세 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥100 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체"
+      ]
+    },
     {
       "id": "2026-09-24-intraday-57240c3111",
       "date": "2026-09-24",
@@ -1375,24 +1391,6 @@
         "산업:반도체:weak",
         "산업:데이터인프라:weak",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-09-09-intraday-460e983ddf",
-      "date": "2026-09-09",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-09T21:05:25+09:00",
-      "generated_label": "2026-09-09 21:05 KST",
-      "headline": "VIX 상승과 반도체 약세 속 방산·건설 주도",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:방산:strong",
-        "산업:반도체:weak",
-        "산업:건설/부동산:strong"
       ]
     }
   ]
