@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-25T05:38:55+09:00",
+  "updated_at": "2026-09-25T08:42:40+09:00",
   "cards": [
+    {
+      "id": "2026-09-25-intraday-10704f12c0",
+      "date": "2026-09-25",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-25T08:42:40+09:00",
+      "generated_label": "2026-09-25 08:42 KST",
+      "headline": "유가 상승과 환율 변동 속 건설·자동차 약세 지속",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:건설/부동산:weak",
+        "산업:자동차:weak",
+        "산업:화학/정유:strong"
+      ]
+    },
     {
       "id": "2026-09-25-intraday-087200ac28",
       "date": "2026-09-25",
@@ -1371,24 +1389,6 @@
         "산업:화학/정유:strong",
         "산업:매크로:weak",
         "산업:건설/부동산:strong"
-      ]
-    },
-    {
-      "id": "2026-09-10-intraday-ddea15e4e7",
-      "date": "2026-09-10",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-10T04:34:56+09:00",
-      "generated_label": "2026-09-10 04:34 KST",
-      "headline": "미국 증시 변동성 확대와 유가 급등에 따른 투자심리 위축",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Mobileye(MBLY)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak",
-        "산업:데이터인프라:weak"
       ]
     }
   ]
