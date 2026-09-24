@@ -1,7 +1,23 @@
 {
   "version": 1,
-  "updated_at": "2026-09-24T12:57:53+09:00",
+  "updated_at": "2026-09-24T18:13:50+09:00",
   "cards": [
+    {
+      "id": "2026-09-24-intraday-dabbd91981",
+      "date": "2026-09-24",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-24T18:13:50+09:00",
+      "generated_label": "2026-09-24 18:13 KST",
+      "headline": "건설/부동산 약세 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체"
+      ]
+    },
     {
       "id": "2026-09-24-intraday-f6a7acd368",
       "date": "2026-09-24",
@@ -1379,24 +1395,6 @@
         "산업:우주:strong",
         "산업:매크로:strong",
         "산업:배터리:strong"
-      ]
-    },
-    {
-      "id": "2026-09-09-intraday-791a0af1e7",
-      "date": "2026-09-09",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-09T12:54:57+09:00",
-      "generated_label": "2026-09-09 12:54 KST",
-      "headline": "반도체·로봇 중심의 기술주 반등과 외국인 수급 변화",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 두산로보틱스(454910.KS)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:로봇:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
