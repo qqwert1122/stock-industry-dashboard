@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-25T13:12:22+09:00",
+  "updated_at": "2026-09-25T18:39:17+09:00",
   "cards": [
+    {
+      "id": "2026-09-25-intraday-e64b053057",
+      "date": "2026-09-25",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-25T18:39:17+09:00",
+      "generated_label": "2026-09-25 18:39 KST",
+      "headline": "글로벌 반도체 반등과 유가 급락으로 보는 시장 변화",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:화학/정유:weak",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-09-25-intraday-e58dec1ca9",
       "date": "2026-09-25",
@@ -1371,24 +1389,6 @@
         "산업:배터리:weak",
         "산업:방산:strong",
         "산업:전력:weak"
-      ]
-    },
-    {
-      "id": "2026-09-10-intraday-f4758ff461",
-      "date": "2026-09-10",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-10T12:54:20+09:00",
-      "generated_label": "2026-09-10 12:54 KST",
-      "headline": "코스닥 1.6% 반등 속 선물 만기일 앞둔 수급 변동성",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:strong",
-        "산업:조선:strong",
-        "산업:전기차:weak"
       ]
     }
   ]
