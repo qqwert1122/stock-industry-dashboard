@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-25T10:08:31+09:00",
+  "updated_at": "2026-09-25T13:12:22+09:00",
   "cards": [
+    {
+      "id": "2026-09-25-intraday-e58dec1ca9",
+      "date": "2026-09-25",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-25T13:12:22+09:00",
+      "generated_label": "2026-09-25 13:12 KST",
+      "headline": "반도체 주도 흐름 속 유가 하락과 환율 안정",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: WTI 선물(CL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:화학/정유:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-09-25-morning-cca6376530",
       "date": "2026-09-25",
@@ -1371,23 +1389,6 @@
         "산업:매크로:strong",
         "산업:조선:strong",
         "산업:전기차:weak"
-      ]
-    },
-    {
-      "id": "2026-09-10-morning-9c4b9baf4e",
-      "date": "2026-09-10",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-09-10T09:50:39+09:00",
-      "generated_label": "2026-09-10 09:50 KST",
-      "headline": "선물옵션 동시만기일, 기관 수급 변동성 주의",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:weak",
-        "산업:반도체:weak"
       ]
     }
   ]
