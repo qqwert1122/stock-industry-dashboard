@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-25T18:39:17+09:00",
+  "updated_at": "2026-09-25T21:29:24+09:00",
   "cards": [
+    {
+      "id": "2026-09-25-intraday-846746eff2",
+      "date": "2026-09-25",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-25T21:29:24+09:00",
+      "generated_label": "2026-09-25 21:29 KST",
+      "headline": "국제 유가 급락과 반도체 기술주 중심의 반등",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:화학/정유:weak",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-09-25-intraday-e64b053057",
       "date": "2026-09-25",
@@ -1371,24 +1389,6 @@
         "산업:반도체:weak",
         "산업:매크로:weak",
         "산업:전기차:weak"
-      ]
-    },
-    {
-      "id": "2026-09-10-intraday-e6a7b31bf4",
-      "date": "2026-09-10",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-10T17:50:08+09:00",
-      "generated_label": "2026-09-10 17:50 KST",
-      "headline": "배터리·전력 약세 속 방산 주도, 선물 만기일 변동성 주의",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Albemarle(ALB)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:배터리:weak",
-        "산업:방산:strong",
-        "산업:전력:weak"
       ]
     }
   ]
