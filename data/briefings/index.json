@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-09-26T08:44:16+09:00",
+  "updated_at": "2026-09-26T10:11:45+09:00",
   "cards": [
+    {
+      "id": "2026-09-26-morning-5cae72e8d1",
+      "date": "2026-09-26",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-09-26T10:11:45+09:00",
+      "generated_label": "2026-09-26 10:11 KST",
+      "headline": "반도체 중심의 시장 반등과 외국인 수급 변화",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-09-26-intraday-7192bbd0cc",
       "date": "2026-09-26",
@@ -1373,24 +1390,6 @@
       "narrative_topics": [
         "산업:반도체:weak",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-09-11-intraday-ac7a40a8ad",
-      "date": "2026-09-11",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-11T06:44:09+09:00",
-      "generated_label": "2026-09-11 06:44 KST",
-      "headline": "VIX 급등과 유가 상승, 시장 변동성 확대",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:weak",
-        "산업:화학/정유:strong",
-        "산업:건설/부동산:weak"
       ]
     }
   ]
