@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-28T23:49:48+09:00",
+  "updated_at": "2026-09-29T05:59:13+09:00",
   "cards": [
+    {
+      "id": "2026-09-29-intraday-bb4100c503",
+      "date": "2026-09-29",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-29T05:59:13+09:00",
+      "generated_label": "2026-09-29 05:59 KST",
+      "headline": "VIX 급등과 유가 변동성 확대, 시장 경계감 고조",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:weak",
+        "산업:데이터인프라:weak",
+        "산업:로봇:strong"
+      ]
+    },
     {
       "id": "2026-09-28-intraday-5e0bf829a5",
       "date": "2026-09-28",
@@ -1375,23 +1393,6 @@
         "산업:조선:strong",
         "산업:은행/금융:strong",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-09-12-intraday-54e58f572b",
-      "date": "2026-09-12",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-12T03:59:36+09:00",
-      "generated_label": "2026-09-12 03:59 KST",
-      "headline": "로봇 주도 흐름이 두드러집니다.",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로",
-        "산업:화학/정유"
       ]
     }
   ]
