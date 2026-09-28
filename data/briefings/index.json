@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-28T10:24:23+09:00",
+  "updated_at": "2026-09-28T13:35:51+09:00",
   "cards": [
+    {
+      "id": "2026-09-28-intraday-02beaabfb6",
+      "date": "2026-09-28",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-28T13:35:51+09:00",
+      "generated_label": "2026-09-28 13:35 KST",
+      "headline": "반도체 투심 위축과 코스피·코스닥 동반 하락",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak",
+        "산업:화학/정유:strong"
+      ]
+    },
     {
       "id": "2026-09-28-morning-95f9280587",
       "date": "2026-09-28",
@@ -1373,24 +1391,6 @@
         "산업:조선:strong",
         "산업:전력:strong",
         "산업:반도체:weak"
-      ]
-    },
-    {
-      "id": "2026-09-11-intraday-0e209bef31",
-      "date": "2026-09-11",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-11T17:46:29+09:00",
-      "generated_label": "2026-09-11 17:46 KST",
-      "headline": "국제 유가 급락과 외국인 수급 이탈 속 조선·금융주 강세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:조선:strong",
-        "산업:은행/금융:strong",
-        "산업:매크로:strong"
       ]
     }
   ]
