@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-27T10:05:13+09:00",
+  "updated_at": "2026-09-28T10:24:23+09:00",
   "cards": [
+    {
+      "id": "2026-09-28-morning-95f9280587",
+      "date": "2026-09-28",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-09-28T10:24:23+09:00",
+      "generated_label": "2026-09-28 10:24 KST",
+      "headline": "반도체 약세 속 수급 엇갈림, 선물 시장 변동성 확대",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak",
+        "산업:전기차:strong"
+      ]
+    },
     {
       "id": "2026-09-27-morning-64fa451820",
       "date": "2026-09-27",
@@ -1373,24 +1391,6 @@
         "산업:조선:strong",
         "산업:은행/금융:strong",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-09-11-intraday-f7f93ce426",
-      "date": "2026-09-11",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-11T12:50:26+09:00",
-      "generated_label": "2026-09-11 12:50 KST",
-      "headline": "반도체 투매와 유가 급등에 코스피·코스닥 동반 하락",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:화학/정유:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
