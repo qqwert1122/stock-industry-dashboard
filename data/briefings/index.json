@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-28T13:35:51+09:00",
+  "updated_at": "2026-09-28T20:17:23+09:00",
   "cards": [
+    {
+      "id": "2026-09-28-intraday-367ebcb3bb",
+      "date": "2026-09-28",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-28T20:17:23+09:00",
+      "generated_label": "2026-09-28 20:17 KST",
+      "headline": "VIX 급등과 유가 변동성, 반도체 약세 지속",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:화학/정유:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-09-28-intraday-02beaabfb6",
       "date": "2026-09-28",
@@ -1373,24 +1391,6 @@
       "narrative_topics": [
         "산업:매크로",
         "산업:화학/정유"
-      ]
-    },
-    {
-      "id": "2026-09-11-intraday-462f3bef49",
-      "date": "2026-09-11",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-11T20:58:38+09:00",
-      "generated_label": "2026-09-11 20:58 KST",
-      "headline": "변동성 완화 속 조선·전력 강세, 반도체는 기대 재조정",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:조선:strong",
-        "산업:전력:strong",
-        "산업:반도체:weak"
       ]
     }
   ]
