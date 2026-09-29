@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-29T20:23:47+09:00",
+  "updated_at": "2026-09-29T22:37:46+09:00",
   "cards": [
+    {
+      "id": "2026-09-29-intraday-c3bb0db8cd",
+      "date": "2026-09-29",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-29T22:37:46+09:00",
+      "generated_label": "2026-09-29 22:37 KST",
+      "headline": "유가 급락과 반도체 장비주 반등, 엇갈린 시장 흐름",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:화학/정유:weak",
+        "산업:건설/부동산:weak"
+      ]
+    },
     {
       "id": "2026-09-29-intraday-ba744a1935",
       "date": "2026-09-29",
@@ -1377,24 +1395,6 @@
         "산업:반도체:weak",
         "산업:매크로:weak",
         "산업:방산:strong"
-      ]
-    },
-    {
-      "id": "2026-09-14-intraday-d0b70e693e",
-      "date": "2026-09-14",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-14T13:11:35+09:00",
-      "generated_label": "2026-09-14 13:11 KST",
-      "headline": "반도체 대표주 급락과 외국인 매도세에 코스피 2%대 하락",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:방산:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
