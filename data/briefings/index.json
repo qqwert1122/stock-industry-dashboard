@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-29T05:59:13+09:00",
+  "updated_at": "2026-09-29T09:51:21+09:00",
   "cards": [
+    {
+      "id": "2026-09-29-intraday-a117779511",
+      "date": "2026-09-29",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-29T09:51:21+09:00",
+      "generated_label": "2026-09-29 09:51 KST",
+      "headline": "코스피·코스닥 동반 하락, 외국인 선물 매도세 확대",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:weak",
+        "산업:화학/정유:weak",
+        "산업:반도체:strong"
+      ]
+    },
     {
       "id": "2026-09-29-intraday-bb4100c503",
       "date": "2026-09-29",
@@ -1374,24 +1392,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:weak",
-        "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-09-12-intraday-da34185a1a",
-      "date": "2026-09-12",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-12T06:36:17+09:00",
-      "generated_label": "2026-09-12 06:36 KST",
-      "headline": "변동성 완화 속 조선·금융 중심의 차별화 장세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:조선:strong",
-        "산업:은행/금융:strong",
         "산업:매크로:strong"
       ]
     }
