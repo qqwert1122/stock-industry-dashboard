@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-30T04:02:47+09:00",
+  "updated_at": "2026-09-30T08:04:36+09:00",
   "cards": [
+    {
+      "id": "2026-09-30-intraday-e7a9d3fa4e",
+      "date": "2026-09-30",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-30T08:04:36+09:00",
+      "generated_label": "2026-09-30 08:04 KST",
+      "headline": "국제 유가 급락과 원자재 시장의 변동성 확대",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:화학/정유:weak",
+        "산업:철강/소재:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-09-30-intraday-d7384232af",
       "date": "2026-09-30",
@@ -1376,24 +1394,6 @@
         "산업:반도체:weak",
         "산업:데이터인프라:strong",
         "산업:스테이블코인:strong"
-      ]
-    },
-    {
-      "id": "2026-09-14-intraday-834fb0b574",
-      "date": "2026-09-14",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-14T22:34:14+09:00",
-      "generated_label": "2026-09-14 22:34 KST",
-      "headline": "나스닥 1.2% 하락 및 반도체 장비주 중심의 투자심리 위축",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 나스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:전력:weak",
-        "산업:로봇:weak"
       ]
     }
   ]
