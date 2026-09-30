@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-09-30T13:49:16+09:00",
+  "updated_at": "2026-09-30T20:01:00+09:00",
   "cards": [
+    {
+      "id": "2026-09-30-intraday-c13c2ae842",
+      "date": "2026-09-30",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-09-30T20:01:00+09:00",
+      "generated_label": "2026-09-30 20:01 KST",
+      "headline": "조선업 주도 속 유가 급락과 외국인 선물 매도 주의",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:조선:strong",
+        "산업:매크로:weak",
+        "산업:화학/정유:weak"
+      ]
+    },
     {
       "id": "2026-09-30-intraday-1534186b87",
       "date": "2026-09-30",
@@ -1376,23 +1394,6 @@
         "산업:조선",
         "산업:전기차",
         "산업:철강/소재"
-      ]
-    },
-    {
-      "id": "2026-09-15-morning-3411cdb8dc",
-      "date": "2026-09-15",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-09-15T10:09:58+09:00",
-      "generated_label": "2026-09-15 10:09 KST",
-      "headline": "코스피 3.4% 급락, 외국인 선물 매도와 기관 수급 이탈",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
