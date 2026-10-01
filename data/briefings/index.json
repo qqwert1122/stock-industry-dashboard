@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-02T04:41:12+09:00",
+  "updated_at": "2026-10-02T08:36:46+09:00",
   "cards": [
+    {
+      "id": "2026-10-02-intraday-ce5b975f15",
+      "date": "2026-10-02",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-02T08:36:46+09:00",
+      "generated_label": "2026-10-02 08:36 KST",
+      "headline": "코스닥 급락 속 우주·로봇·반도체 대표주 강세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:우주:strong",
+        "산업:로봇:strong",
+        "산업:반도체:strong"
+      ]
+    },
     {
       "id": "2026-10-02-intraday-b32dc48d49",
       "date": "2026-10-02",
@@ -1377,24 +1395,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체"
-      ]
-    },
-    {
-      "id": "2026-09-16-intraday-6971271505",
-      "date": "2026-09-16",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-16T18:19:37+09:00",
-      "generated_label": "2026-09-16 18:19 KST",
-      "headline": "반도체 반등과 원/달러 환율 급등의 교차",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Intel(INTC)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:weak",
-        "산업:우주:strong"
       ]
     }
   ]
