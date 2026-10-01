@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-10-01T10:48:19+09:00",
+  "updated_at": "2026-10-01T14:02:07+09:00",
   "cards": [
+    {
+      "id": "2026-10-01-intraday-ede320a637",
+      "date": "2026-10-01",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-01T14:02:07+09:00",
+      "generated_label": "2026-10-01 14:02 KST",
+      "headline": "코스피·코스닥 반등 속 외국인 수급 변화 주목",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-10-01-morning-0e4438b185",
       "date": "2026-10-01",
@@ -1378,23 +1395,6 @@
         "산업:매크로:weak",
         "산업:화학/정유:strong",
         "산업:전기차:strong"
-      ]
-    },
-    {
-      "id": "2026-09-16-intraday-47385fab2f",
-      "date": "2026-09-16",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-16T05:20:42+09:00",
-      "generated_label": "2026-09-16 05:20 KST",
-      "headline": "유가 급등과 달러 강세, FOMC 앞둔 시장 경계감",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: WTI 선물(CL)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:화학/정유:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
