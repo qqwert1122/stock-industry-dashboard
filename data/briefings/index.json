@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-10-01T20:38:51+09:00",
+  "updated_at": "2026-10-01T23:04:59+09:00",
   "cards": [
+    {
+      "id": "2026-10-01-intraday-d5ead997e8",
+      "date": "2026-10-01",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-01T23:04:59+09:00",
+      "generated_label": "2026-10-01 23:04 KST",
+      "headline": "미국 증시 변동성 확대와 반도체 장비주의 엇갈린 흐름",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-10-01-intraday-31eb3bfa29",
       "date": "2026-10-01",
@@ -1374,23 +1391,6 @@
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "유의미한 변화: 코스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-09-16-morning-81ab448e0b",
-      "date": "2026-09-16",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-09-16T10:05:57+09:00",
-      "generated_label": "2026-09-16 10:05 KST",
-      "headline": "반도체 반등 속 환율 급등과 외국인 매도세 지속",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:strong",
