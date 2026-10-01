@@ -1,13 +1,13 @@
 {
   "version": 1,
-  "generated_at": "2026-10-01T14:04:58",
+  "generated_at": "2026-10-01T19:41:11",
   "window": {
-    "from": "2026-09-24",
-    "to": "2026-12-30"
+    "from": "2026-09-25",
+    "to": "2026-12-31"
   },
   "events": [
     {
-      "date": "2026-09-24",
+      "date": "2026-09-25",
       "name": "KRX 휴장",
       "category": "holiday",
       "country": "KR",
@@ -16,33 +16,13 @@
       "d_day_label": "D-7"
     },
     {
-      "date": "2026-09-24",
-      "name": "World Robotics 발표 시즌",
-      "category": "industry",
-      "country": "GLOBAL",
-      "note": "로봇 설치 대수와 지역별 자동화 수요를 확인하는 시즌",
-      "d_day": -7,
-      "d_day_label": "D-7",
-      "name_en": "World Robotics report season",
-      "note_en": "Season for checking robot installations and regional automation demand"
-    },
-    {
-      "date": "2026-09-25",
-      "name": "KRX 휴장",
-      "category": "holiday",
-      "country": "KR",
-      "note": "추석 연휴",
-      "d_day": -6,
-      "d_day_label": "D-6"
-    },
-    {
       "date": "2026-10-05",
       "name": "KRX 휴장",
       "category": "holiday",
       "country": "KR",
       "note": "개천절 대체휴일",
-      "d_day": 4,
-      "d_day_label": "D+4"
+      "d_day": 3,
+      "d_day_label": "D+3"
     },
     {
       "date": "2026-10-08",
@@ -50,8 +30,8 @@
       "category": "market",
       "country": "KR",
       "note": "매월 둘째 목요일 기준, 휴장 시 전영업일",
-      "d_day": 7,
-      "d_day_label": "D+7"
+      "d_day": 6,
+      "d_day_label": "D+6"
     },
     {
       "date": "2026-10-09",
@@ -59,8 +39,8 @@
       "category": "holiday",
       "country": "KR",
       "note": "한글날",
-      "d_day": 8,
-      "d_day_label": "D+8"
+      "d_day": 7,
+      "d_day_label": "D+7"
     },
     {
       "date": "2026-10-14",
@@ -68,8 +48,8 @@
       "category": "macro",
       "country": "US",
       "note": "2026년 9월 CPI",
-      "d_day": 13,
-      "d_day_label": "D+13",
+      "d_day": 12,
+      "d_day_label": "D+12",
       "metric_id": "e9b8cd241fa0"
     },
     {
@@ -78,8 +58,8 @@
       "category": "policy",
       "country": "KR",
       "note": "통화정책방향 결정회의",
-      "d_day": 21,
-      "d_day_label": "D+21"
+      "d_day": 20,
+      "d_day_label": "D+20"
     },
     {
       "date": "2026-10-28",
@@ -87,8 +67,8 @@
       "category": "policy",
       "country": "US",
       "note": "10월 FOMC",
-      "d_day": 27,
-      "d_day_label": "D+27"
+      "d_day": 26,
+      "d_day_label": "D+26"
     },
     {
       "date": "2026-11-10",
@@ -96,8 +76,8 @@
       "category": "macro",
       "country": "US",
       "note": "2026년 10월 CPI",
-      "d_day": 40,
-      "d_day_label": "D+40",
+      "d_day": 39,
+      "d_day_label": "D+39",
       "metric_id": "e9b8cd241fa0"
     },
     {
@@ -106,8 +86,8 @@
       "category": "market",
       "country": "KR",
       "note": "매월 둘째 목요일 기준, 휴장 시 전영업일",
-      "d_day": 42,
-      "d_day_label": "D+42"
+      "d_day": 41,
+      "d_day_label": "D+41"
     },
     {
       "date": "2026-11-26",
@@ -115,8 +95,8 @@
       "category": "holiday",
       "country": "US",
       "note": "Thanksgiving Day",
-      "d_day": 56,
-      "d_day_label": "D+56"
+      "d_day": 55,
+      "d_day_label": "D+55"
     },
     {
       "date": "2026-11-26",
@@ -124,8 +104,8 @@
       "category": "policy",
       "country": "KR",
       "note": "통화정책방향 결정회의",
-      "d_day": 56,
-      "d_day_label": "D+56"
+      "d_day": 55,
+      "d_day_label": "D+55"
     },
     {
       "date": "2026-12-09",
@@ -133,8 +113,8 @@
       "category": "policy",
       "country": "US",
       "note": "12월 FOMC·SEP",
-      "d_day": 69,
-      "d_day_label": "D+69"
+      "d_day": 68,
+      "d_day_label": "D+68"
     },
     {
       "date": "2026-12-10",
@@ -142,8 +122,8 @@
       "category": "macro",
       "country": "US",
       "note": "2026년 11월 CPI",
-      "d_day": 70,
-      "d_day_label": "D+70",
+      "d_day": 69,
+      "d_day_label": "D+69",
       "metric_id": "e9b8cd241fa0"
     },
     {
@@ -152,8 +132,8 @@
       "category": "market",
       "country": "KR",
       "note": "3·6·9·12월 둘째 목요일 기준",
-      "d_day": 70,
-      "d_day_label": "D+70"
+      "d_day": 69,
+      "d_day_label": "D+69"
     },
     {
       "date": "2026-12-10",
@@ -161,8 +141,8 @@
       "category": "market",
       "country": "KR",
       "note": "매월 둘째 목요일 기준, 휴장 시 전영업일",
-      "d_day": 70,
-      "d_day_label": "D+70"
+      "d_day": 69,
+      "d_day_label": "D+69"
     },
     {
       "date": "2026-12-18",
@@ -170,8 +150,8 @@
       "category": "market",
       "country": "US",
       "note": "3·6·9·12월 셋째 금요일 기준, 휴장 시 전영업일",
-      "d_day": 78,
-      "d_day_label": "D+78"
+      "d_day": 77,
+      "d_day_label": "D+77"
     },
     {
       "date": "2026-12-25",
@@ -179,8 +159,8 @@
       "category": "holiday",
       "country": "KR",
       "note": "성탄절",
-      "d_day": 85,
-      "d_day_label": "D+85"
+      "d_day": 84,
+      "d_day_label": "D+84"
     },
     {
       "date": "2026-12-25",
@@ -188,8 +168,17 @@
       "category": "holiday",
       "country": "US",
       "note": "Christmas Day",
-      "d_day": 85,
-      "d_day_label": "D+85"
+      "d_day": 84,
+      "d_day_label": "D+84"
+    },
+    {
+      "date": "2026-12-31",
+      "name": "KRX 휴장",
+      "category": "holiday",
+      "country": "KR",
+      "note": "연말 휴장일",
+      "d_day": 90,
+      "d_day_label": "D+90"
     }
   ],
   "upcoming": [],
