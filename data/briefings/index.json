@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-02T08:36:46+09:00",
+  "updated_at": "2026-10-02T11:00:34+09:00",
   "cards": [
+    {
+      "id": "2026-10-02-morning-eeb6dd422f",
+      "date": "2026-10-02",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-10-02T11:00:34+09:00",
+      "generated_label": "2026-10-02 11:00 KST",
+      "headline": "외국인 선물 순매수 전환과 기관의 수급 변화",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:strong",
+        "산업:방산:strong",
+        "산업:데이터인프라:strong"
+      ]
+    },
     {
       "id": "2026-10-02-intraday-ce5b975f15",
       "date": "2026-10-02",
@@ -1376,22 +1394,6 @@
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: 나스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체"
-      ]
-    },
-    {
-      "id": "2026-09-16-intraday-d472bf0ca8",
-      "date": "2026-09-16",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-16T21:21:26+09:00",
-      "generated_label": "2026-09-16 21:21 KST",
-      "headline": "조선 약세 흐름이 두드러집니다.",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Intel(INTC)",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체"
