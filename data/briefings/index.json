@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-02T22:24:58+09:00",
+  "updated_at": "2026-10-03T03:34:27+09:00",
   "cards": [
+    {
+      "id": "2026-10-03-intraday-3756cbfe51",
+      "date": "2026-10-03",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-03T03:34:27+09:00",
+      "generated_label": "2026-10-03 03:34 KST",
+      "headline": "미국 증시 변동성 완화와 반도체·로봇 중심의 기술주 반등",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:로봇:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-10-02-intraday-b7a8b838e5",
       "date": "2026-10-02",
@@ -1380,24 +1398,6 @@
       "narrative_topics": [
         "산업:조선:strong",
         "산업:방산:strong",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-09-17-morning-a7c13ef3be",
-      "date": "2026-09-17",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-09-17T10:05:07+09:00",
-      "generated_label": "2026-09-17 10:05 KST",
-      "headline": "방산·조선 강세 속 외국인 선물 매도 지속",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:방산:strong",
-        "산업:조선:strong",
         "산업:매크로:weak"
       ]
     }
