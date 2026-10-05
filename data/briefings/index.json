@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-04T11:23:54+09:00",
+  "updated_at": "2026-10-05T10:38:24+09:00",
   "cards": [
+    {
+      "id": "2026-10-05-morning-fa49bc9fab",
+      "date": "2026-10-05",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-10-05T10:38:24+09:00",
+      "generated_label": "2026-10-05 10:38 KST",
+      "headline": "원/달러 환율 하락과 위험자산 선호 심리 회복",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:strong",
+        "산업:방산:strong",
+        "산업:데이터인프라:strong"
+      ]
+    },
     {
       "id": "2026-10-04-morning-d96c749ab8",
       "date": "2026-10-04",
@@ -1380,24 +1398,6 @@
       "narrative_topics": [
         "산업:반도체:weak",
         "산업:데이터인프라:weak",
-        "산업:로봇:strong"
-      ]
-    },
-    {
-      "id": "2026-09-18-intraday-08fde8e221",
-      "date": "2026-09-18",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-18T02:11:04+09:00",
-      "generated_label": "2026-09-18 02:11 KST",
-      "headline": "미국 반도체·기술주 반등과 VIX 급락으로 위험선호 회복",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:데이터인프라:strong",
         "산업:로봇:strong"
       ]
     }
