@@ -1,7 +1,23 @@
 {
   "version": 1,
-  "updated_at": "2026-10-06T22:50:10+09:00",
+  "updated_at": "2026-10-07T04:16:15+09:00",
   "cards": [
+    {
+      "id": "2026-10-07-intraday-cf2e4c597d",
+      "date": "2026-10-07",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-07T04:16:15+09:00",
+      "generated_label": "2026-10-07 04:16 KST",
+      "headline": "로봇 약세 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: GE Vernova(GEV)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체"
+      ]
+    },
     {
       "id": "2026-10-06-intraday-222e4c5621",
       "date": "2026-10-06",
@@ -1378,24 +1394,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:strong",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-09-19-intraday-3af99d2d79",
-      "date": "2026-09-19",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-19T06:45:44+09:00",
-      "generated_label": "2026-09-19 06:45 KST",
-      "headline": "반도체 주도권 강화와 유가 급락에 따른 시장 변화",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 이더리움",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:화학/정유:weak",
         "산업:매크로:weak"
       ]
     }
