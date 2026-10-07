@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-07T23:07:34+09:00",
+  "updated_at": "2026-10-08T05:03:10+09:00",
   "cards": [
+    {
+      "id": "2026-10-08-intraday-317cdf06ab",
+      "date": "2026-10-08",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-08T05:03:10+09:00",
+      "generated_label": "2026-10-08 05:03 KST",
+      "headline": "미국 증시 반등 속 반도체 차익실현과 금리 부담 지속",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:strong",
+        "산업:데이터인프라:strong"
+      ]
+    },
     {
       "id": "2026-10-07-intraday-957608879c",
       "date": "2026-10-07",
@@ -1375,24 +1393,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체"
-      ]
-    },
-    {
-      "id": "2026-09-21-intraday-80b7332efb",
-      "date": "2026-09-21",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-21T22:32:51+09:00",
-      "generated_label": "2026-09-21 22:32 KST",
-      "headline": "나스닥 반등과 반도체주 강세, 유가 급락이 시장 변수",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 나스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:화학/정유:weak",
-        "산업:매크로:strong"
       ]
     }
   ]
