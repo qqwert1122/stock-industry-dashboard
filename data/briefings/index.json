@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-07T11:05:34+09:00",
+  "updated_at": "2026-10-07T14:09:19+09:00",
   "cards": [
+    {
+      "id": "2026-10-07-intraday-fcbe138e84",
+      "date": "2026-10-07",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-07T14:09:19+09:00",
+      "generated_label": "2026-10-07 14:09 KST",
+      "headline": "반도체·조선 등 주도주 조정 속 코스닥 하락세",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak",
+        "산업:조선:weak"
+      ]
+    },
     {
       "id": "2026-10-07-morning-190d2b06f5",
       "date": "2026-10-07",
@@ -1374,23 +1392,6 @@
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-09-21-morning-81f25980c6",
-      "date": "2026-09-21",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-09-21T09:50:34+09:00",
-      "generated_label": "2026-09-21 09:50 KST",
-      "headline": "삼성전자 주도 반도체 강세와 코스피 지수 반등",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:strong",
