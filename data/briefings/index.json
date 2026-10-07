@@ -1,7 +1,23 @@
 {
   "version": 1,
-  "updated_at": "2026-10-07T14:09:19+09:00",
+  "updated_at": "2026-10-07T20:49:04+09:00",
   "cards": [
+    {
+      "id": "2026-10-07-intraday-569153842e",
+      "date": "2026-10-07",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-07T20:49:04+09:00",
+      "generated_label": "2026-10-07 20:49 KST",
+      "headline": "우주 약세 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체"
+      ]
+    },
     {
       "id": "2026-10-07-intraday-fcbe138e84",
       "date": "2026-10-07",
@@ -1379,23 +1395,6 @@
         "산업:반도체:strong",
         "산업:화학/정유:weak",
         "산업:로봇:strong"
-      ]
-    },
-    {
-      "id": "2026-09-21-intraday-c807c43ff4",
-      "date": "2026-09-21",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-21T13:11:07+09:00",
-      "generated_label": "2026-09-21 13:11 KST",
-      "headline": "반도체 중심의 코스피 반등과 수급 변화",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:strong"
       ]
     }
   ]
