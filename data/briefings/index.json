@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-08T14:19:40+09:00",
+  "updated_at": "2026-10-08T21:12:01+09:00",
   "cards": [
+    {
+      "id": "2026-10-08-intraday-6e575c810e",
+      "date": "2026-10-08",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-08T21:12:01+09:00",
+      "generated_label": "2026-10-08 21:12 KST",
+      "headline": "VIX 급등과 유가 상승, 시장 변동성 확대 주의",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:우주:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-10-08-intraday-9d9657f3d0",
       "date": "2026-10-08",
@@ -1377,24 +1395,6 @@
         "산업:건설/부동산:strong",
         "산업:우주:strong",
         "산업:화학/정유:weak"
-      ]
-    },
-    {
-      "id": "2026-09-22-intraday-7820df6451",
-      "date": "2026-09-22",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-22T13:06:05+09:00",
-      "generated_label": "2026-09-22 13:06 KST",
-      "headline": "반도체 주도 장세 속 코스피·코스닥 동반 상승",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 비트코인",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:strong",
-        "산업:데이터인프라:strong"
       ]
     }
   ]
