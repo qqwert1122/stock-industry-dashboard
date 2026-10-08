@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-08T11:31:03+09:00",
+  "updated_at": "2026-10-08T14:19:40+09:00",
   "cards": [
+    {
+      "id": "2026-10-08-intraday-9d9657f3d0",
+      "date": "2026-10-08",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-08T14:19:40+09:00",
+      "generated_label": "2026-10-08 14:19 KST",
+      "headline": "코스피·코스닥 동반 하락, 외국인 선물 매도세 지속",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:weak",
+        "산업:방산:weak",
+        "산업:조선:weak"
+      ]
+    },
     {
       "id": "2026-10-08-morning-337ae51abe",
       "date": "2026-10-08",
@@ -1377,23 +1395,6 @@
         "산업:반도체:strong",
         "산업:매크로:strong",
         "산업:데이터인프라:strong"
-      ]
-    },
-    {
-      "id": "2026-09-22-morning-5f8da02891",
-      "date": "2026-09-22",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-09-22T10:26:11+09:00",
-      "generated_label": "2026-09-22 10:26 KST",
-      "headline": "반도체 주도 코스피·코스닥 동반 상승",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:strong"
       ]
     }
   ]
