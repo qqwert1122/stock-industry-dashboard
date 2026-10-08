@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-08T23:17:56+09:00",
+  "updated_at": "2026-10-09T05:01:45+09:00",
   "cards": [
+    {
+      "id": "2026-10-09-intraday-952b646d0a",
+      "date": "2026-10-09",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-09T05:01:45+09:00",
+      "generated_label": "2026-10-09 05:01 KST",
+      "headline": "미국 증시 반도체 약세와 유가 급등에 따른 투자심리 위축",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥100 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:데이터인프라:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-10-08-intraday-5bdfb6501a",
       "date": "2026-10-08",
@@ -1377,24 +1395,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체"
-      ]
-    },
-    {
-      "id": "2026-09-22-intraday-b90c08b034",
-      "date": "2026-09-22",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-22T21:16:06+09:00",
-      "generated_label": "2026-09-22 21:16 KST",
-      "headline": "유가 급락과 환율 안정 속 반도체·바이오 약세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: WTI 선물(CL)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:화학/정유:weak",
-        "산업:바이오:weak"
       ]
     }
   ]
