@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-09T14:23:03+09:00",
+  "updated_at": "2026-10-09T21:03:35+09:00",
   "cards": [
+    {
+      "id": "2026-10-09-intraday-a5b84c779f",
+      "date": "2026-10-09",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-09T21:03:35+09:00",
+      "generated_label": "2026-10-09 21:03 KST",
+      "headline": "반도체 장비주 반등과 스테이블코인 강세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: ASML(ASML)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:스테이블코인:strong",
+        "산업:전기차:strong"
+      ]
+    },
     {
       "id": "2026-10-09-intraday-7809f86162",
       "date": "2026-10-09",
@@ -1381,23 +1399,6 @@
         "산업:반도체:strong",
         "산업:매크로:strong",
         "산업:조선:weak"
-      ]
-    },
-    {
-      "id": "2026-09-23-morning-11cf9ba07c",
-      "date": "2026-09-23",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-09-23T10:15:11+09:00",
-      "generated_label": "2026-09-23 10:15 KST",
-      "headline": "반도체 주도 장세와 외국인 선물 순매수 확대",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:strong"
       ]
     }
   ]
