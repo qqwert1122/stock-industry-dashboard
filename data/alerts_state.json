@@ -2,15 +2,15 @@
   "rules": {
     "S&P 500 Shiller CAPE|pct_above=95": {
       "triggered": true,
-      "value": 41.62,
+      "value": 41.87,
       "observed_at": "2026-10-01",
       "metric_id": "b0b6e0910209",
       "metric_name": "S&P 500 Shiller CAPE"
     },
     "하이일드 회사채 OAS|above=5.0": {
       "triggered": false,
-      "value": 3.09,
-      "observed_at": "2026-10-07",
+      "value": 3.15,
+      "observed_at": "2026-10-08",
       "metric_id": "1dbb497f2b22",
       "metric_name": "미국 하이일드 회사채 OAS"
     },
@@ -24,7 +24,7 @@
     "10Y-3M 금리차|below=0": {
       "triggered": false,
       "value": 0.99,
-      "observed_at": "2026-10-08",
+      "observed_at": "2026-10-09",
       "metric_id": "0f9e337e8716",
       "metric_name": "미국 10Y-3M 금리차"
     },

@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-10-10T08:44:39+09:00",
+  "updated_at": "2026-10-10T11:04:54+09:00",
   "cards": [
+    {
+      "id": "2026-10-10-morning-1dc8198d42",
+      "date": "2026-10-10",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-10-10T11:04:54+09:00",
+      "generated_label": "2026-10-10 11:04 KST",
+      "headline": "반도체 실적 호조에도 주가 약세, 수급 부담 지속",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-10-10-intraday-cbcc4dfd7d",
       "date": "2026-10-10",
@@ -1382,22 +1399,6 @@
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: 이더리움",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체"
-      ]
-    },
-    {
-      "id": "2026-09-24-intraday-8472008dd2",
-      "date": "2026-09-24",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-24T02:22:48+09:00",
-      "generated_label": "2026-09-24 02:22 KST",
-      "headline": "데이터인프라 약세 흐름이 두드러집니다.",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥100 선물",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체"
