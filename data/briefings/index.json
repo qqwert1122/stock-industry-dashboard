@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-12T14:13:03+09:00",
+  "updated_at": "2026-10-12T22:15:20+09:00",
   "cards": [
+    {
+      "id": "2026-10-12-intraday-ee1677fa0b",
+      "date": "2026-10-12",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-12T22:15:20+09:00",
+      "generated_label": "2026-10-12 22:15 KST",
+      "headline": "VIX 상승과 주요 산업 약세, 시장 변동성 확대",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:우주:weak",
+        "산업:화학/정유:weak",
+        "산업:건설/부동산:weak"
+      ]
+    },
     {
       "id": "2026-10-12-intraday-60a9a3cdaa",
       "date": "2026-10-12",
@@ -1387,23 +1405,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체"
-      ]
-    },
-    {
-      "id": "2026-09-24-intraday-f6a7acd368",
-      "date": "2026-09-24",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-24T12:57:53+09:00",
-      "generated_label": "2026-09-24 12:57 KST",
-      "headline": "반도체 중심의 코스피 반등과 외국인 수급 이탈",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
