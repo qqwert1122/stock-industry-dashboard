@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-13T01:23:01+09:00",
+  "updated_at": "2026-10-13T08:06:48+09:00",
   "cards": [
+    {
+      "id": "2026-10-13-intraday-6b6ca97d16",
+      "date": "2026-10-13",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-13T08:06:48+09:00",
+      "generated_label": "2026-10-13 08:06 KST",
+      "headline": "에너지 가격 상승과 위험 회피 심리 속 우주·로봇 약세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 이더리움",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:우주:weak",
+        "산업:로봇:weak",
+        "산업:화학/정유:strong"
+      ]
+    },
     {
       "id": "2026-10-13-intraday-e1f50606dd",
       "date": "2026-10-13",
@@ -1388,22 +1406,6 @@
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: 나스닥100 선물",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체"
-      ]
-    },
-    {
-      "id": "2026-09-24-intraday-57240c3111",
-      "date": "2026-09-24",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-24T21:28:06+09:00",
-      "generated_label": "2026-09-24 21:28 KST",
-      "headline": "건설/부동산 약세 흐름이 두드러집니다.",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체"
