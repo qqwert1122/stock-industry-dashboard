@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-12T11:03:42+09:00",
+  "updated_at": "2026-10-12T14:13:03+09:00",
   "cards": [
+    {
+      "id": "2026-10-12-intraday-60a9a3cdaa",
+      "date": "2026-10-12",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-12T14:13:03+09:00",
+      "generated_label": "2026-10-12 14:13 KST",
+      "headline": "반도체·화학 동반 약세에 코스피 0.8% 하락",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:화학/정유:weak",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-10-12-morning-532879841b",
       "date": "2026-10-12",
@@ -1382,23 +1400,6 @@
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-09-24-morning-408e1d610a",
-      "date": "2026-09-24",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-09-24T10:05:04+09:00",
-      "generated_label": "2026-09-24 10:05 KST",
-      "headline": "반도체 주도 흐름 속 외국인 수급 이탈 주의",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:strong",
