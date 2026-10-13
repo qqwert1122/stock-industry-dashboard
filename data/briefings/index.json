@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-14T05:27:56+09:00",
+  "updated_at": "2026-10-14T08:48:21+09:00",
   "cards": [
+    {
+      "id": "2026-10-14-intraday-656dd13480",
+      "date": "2026-10-14",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-14T08:48:21+09:00",
+      "generated_label": "2026-10-14 08:48 KST",
+      "headline": "코스피 급락과 반도체 투심 위축, CPI 앞둔 경계감",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak",
+        "산업:전기차:strong"
+      ]
+    },
     {
       "id": "2026-10-14-intraday-0a04068724",
       "date": "2026-10-14",
@@ -1386,24 +1404,6 @@
       "generated_at": "2026-09-25T21:29:24+09:00",
       "generated_label": "2026-09-25 21:29 KST",
       "headline": "국제 유가 급락과 반도체 기술주 중심의 반등",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:화학/정유:weak",
-        "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-09-25-intraday-e64b053057",
-      "date": "2026-09-25",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-25T18:39:17+09:00",
-      "generated_label": "2026-09-25 18:39 KST",
-      "headline": "글로벌 반도체 반등과 유가 급락으로 보는 시장 변화",
       "low_signal": false,
       "session_label": "세션 외",
       "gate_reason": "유의미한 변화: Brent 선물(BZ)",
