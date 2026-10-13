@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-13T15:10:21+09:00",
+  "updated_at": "2026-10-13T23:15:29+09:00",
   "cards": [
+    {
+      "id": "2026-10-13-intraday-c493a178d7",
+      "date": "2026-10-13",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-13T23:15:29+09:00",
+      "generated_label": "2026-10-13 23:15 KST",
+      "headline": "반도체 약세와 기술주 조정, 내일 한국장 하방 압력",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Micron(MU)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:데이터인프라:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-10-13-intraday-301a185931",
       "date": "2026-10-13",
@@ -1393,24 +1411,6 @@
       "narrative_topics": [
         "산업:반도체:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-09-25-intraday-10704f12c0",
-      "date": "2026-09-25",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-25T08:42:40+09:00",
-      "generated_label": "2026-09-25 08:42 KST",
-      "headline": "유가 상승과 환율 변동 속 건설·자동차 약세 지속",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:건설/부동산:weak",
-        "산업:자동차:weak",
-        "산업:화학/정유:strong"
       ]
     }
   ]
