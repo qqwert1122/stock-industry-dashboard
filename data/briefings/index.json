@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-15T06:10:02+09:00",
+  "updated_at": "2026-10-15T08:59:50+09:00",
   "cards": [
+    {
+      "id": "2026-10-15-intraday-04198227b3",
+      "date": "2026-10-15",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-15T08:59:50+09:00",
+      "generated_label": "2026-10-15 08:59 KST",
+      "headline": "코스피 급락 속 배터리·소재주 선방, 수급 불안 지속",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:배터리:strong",
+        "산업:철강/소재:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-10-15-intraday-9c717f6619",
       "date": "2026-10-15",
@@ -1391,24 +1409,6 @@
         "산업:반도체:weak",
         "산업:매크로:weak",
         "산업:화학/정유:strong"
-      ]
-    },
-    {
-      "id": "2026-09-28-morning-95f9280587",
-      "date": "2026-09-28",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-09-28T10:24:23+09:00",
-      "generated_label": "2026-09-28 10:24 KST",
-      "headline": "반도체 약세 속 수급 엇갈림, 선물 시장 변동성 확대",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak",
-        "산업:전기차:strong"
       ]
     }
   ]
