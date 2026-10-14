@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-10-14T08:48:21+09:00",
+  "updated_at": "2026-10-14T10:35:35+09:00",
   "cards": [
+    {
+      "id": "2026-10-14-morning-b421b4e5af",
+      "date": "2026-10-14",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-10-14T10:35:35+09:00",
+      "generated_label": "2026-10-14 10:35 KST",
+      "headline": "반도체 중심의 시장 반등과 수급 불균형",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-10-14-intraday-656dd13480",
       "date": "2026-10-14",
@@ -1394,24 +1411,6 @@
         "산업:반도체:strong",
         "산업:로봇:strong",
         "산업:화학/정유:weak"
-      ]
-    },
-    {
-      "id": "2026-09-25-intraday-846746eff2",
-      "date": "2026-09-25",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-25T21:29:24+09:00",
-      "generated_label": "2026-09-25 21:29 KST",
-      "headline": "국제 유가 급락과 반도체 기술주 중심의 반등",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:화학/정유:weak",
-        "산업:매크로:strong"
       ]
     }
   ]
