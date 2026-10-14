@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-14T18:34:43+09:00",
+  "updated_at": "2026-10-14T21:35:39+09:00",
   "cards": [
+    {
+      "id": "2026-10-14-intraday-4f6d513c96",
+      "date": "2026-10-14",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-14T21:35:39+09:00",
+      "generated_label": "2026-10-14 21:35 KST",
+      "headline": "배터리·조선 강세 속 반도체 차익실현 지속",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Albemarle(ALB)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:배터리:strong",
+        "산업:조선:strong",
+        "산업:반도체:weak"
+      ]
+    },
     {
       "id": "2026-10-14-intraday-d92e6252ef",
       "date": "2026-10-14",
@@ -1392,24 +1410,6 @@
       "narrative_topics": [
         "산업:반도체:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-09-26-intraday-7192bbd0cc",
-      "date": "2026-09-26",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-26T08:44:16+09:00",
-      "generated_label": "2026-09-26 08:44 KST",
-      "headline": "국제 유가 급락과 건설·방산 약세로 시장 경계감 확대",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:건설/부동산:weak",
-        "산업:방산:weak",
-        "산업:화학/정유:weak"
       ]
     }
   ]
