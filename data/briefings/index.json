@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-14T13:12:56+09:00",
+  "updated_at": "2026-10-14T18:34:43+09:00",
   "cards": [
+    {
+      "id": "2026-10-14-intraday-d92e6252ef",
+      "date": "2026-10-14",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-14T18:34:43+09:00",
+      "generated_label": "2026-10-14 18:34 KST",
+      "headline": "배터리·철강 주도 속 코스닥 수급 불안 지속",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Albemarle(ALB)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:배터리:strong",
+        "산업:철강/소재:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-10-14-intraday-8af6e2139c",
       "date": "2026-10-14",
@@ -1391,24 +1409,6 @@
       "narrative_topics": [
         "산업:건설/부동산:weak",
         "산업:방산:weak",
-        "산업:화학/정유:weak"
-      ]
-    },
-    {
-      "id": "2026-09-26-intraday-48a64b6ae6",
-      "date": "2026-09-26",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-26T05:37:44+09:00",
-      "generated_label": "2026-09-26 05:37 KST",
-      "headline": "반도체·로봇 중심의 기술주 반등과 유가 급락",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:로봇:strong",
         "산업:화학/정유:weak"
       ]
     }
