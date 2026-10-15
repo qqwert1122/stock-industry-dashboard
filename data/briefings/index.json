@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-16T02:14:19+09:00",
+  "updated_at": "2026-10-16T05:27:10+09:00",
   "cards": [
+    {
+      "id": "2026-10-16-intraday-499e21398a",
+      "date": "2026-10-16",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-16T05:27:10+09:00",
+      "generated_label": "2026-10-16 05:27 KST",
+      "headline": "미국 증시 선물 혼조세 속 위험자산 선호 심리 회복",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥100 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:strong",
+        "산업:반도체:weak",
+        "산업:우주:strong"
+      ]
+    },
     {
       "id": "2026-10-16-intraday-b5c10b2466",
       "date": "2026-10-16",
@@ -1388,23 +1406,6 @@
         "산업:화학/정유",
         "산업:철강/소재",
         "산업:조선"
-      ]
-    },
-    {
-      "id": "2026-09-29-morning-6fdadb643c",
-      "date": "2026-09-29",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-09-29T11:28:52+09:00",
-      "generated_label": "2026-09-29 11:28 KST",
-      "headline": "반도체 중심의 수급 쏠림과 외국인 매도세 지속",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
