@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-15T12:55:45+09:00",
+  "updated_at": "2026-10-15T18:02:06+09:00",
   "cards": [
+    {
+      "id": "2026-10-15-intraday-f0d5a7f1d9",
+      "date": "2026-10-15",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-15T18:02:06+09:00",
+      "generated_label": "2026-10-15 18:02 KST",
+      "headline": "코스피·코스닥 급락과 반도체·우주 산업의 동반 약세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Rocket Lab(RKLB)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:우주:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-10-15-intraday-3e0a907211",
       "date": "2026-10-15",
@@ -1389,24 +1407,6 @@
         "산업:매크로:weak",
         "산업:데이터인프라:weak",
         "산업:로봇:strong"
-      ]
-    },
-    {
-      "id": "2026-09-28-intraday-5e0bf829a5",
-      "date": "2026-09-28",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-28T23:49:48+09:00",
-      "generated_label": "2026-09-28 23:49 KST",
-      "headline": "미국 기술주 중심의 투자심리 위축과 변동성 확대",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:weak",
-        "산업:매크로:weak"
       ]
     }
   ]
