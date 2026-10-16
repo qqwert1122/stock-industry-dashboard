@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-16T09:59:51+09:00",
+  "updated_at": "2026-10-16T12:52:04+09:00",
   "cards": [
+    {
+      "id": "2026-10-16-intraday-42f640e91b",
+      "date": "2026-10-16",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-16T12:52:04+09:00",
+      "generated_label": "2026-10-16 12:52 KST",
+      "headline": "반도체 주도 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:자동차",
+        "산업:데이터인프라",
+        "산업:철강/소재"
+      ]
+    },
     {
       "id": "2026-10-16-morning-f1bfbf49fa",
       "date": "2026-10-16",
@@ -1387,24 +1405,6 @@
       "narrative_topics": [
         "산업:반도체:strong",
         "산업:화학/정유:weak"
-      ]
-    },
-    {
-      "id": "2026-09-29-intraday-c3bb0db8cd",
-      "date": "2026-09-29",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-29T22:37:46+09:00",
-      "generated_label": "2026-09-29 22:37 KST",
-      "headline": "유가 급락과 반도체 장비주 반등, 엇갈린 시장 흐름",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:화학/정유:weak",
-        "산업:건설/부동산:weak"
       ]
     }
   ]
