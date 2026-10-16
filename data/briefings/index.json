@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-10-16T08:09:53+09:00",
+  "updated_at": "2026-10-16T09:59:51+09:00",
   "cards": [
+    {
+      "id": "2026-10-16-morning-f1bfbf49fa",
+      "date": "2026-10-16",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-10-16T09:59:51+09:00",
+      "generated_label": "2026-10-16 09:59 KST",
+      "headline": "반도체 중심의 코스피 반등과 외국인 수급 이탈",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-10-16-intraday-d2fc2ab8ac",
       "date": "2026-10-16",
@@ -1388,24 +1405,6 @@
         "산업:반도체:strong",
         "산업:화학/정유:weak",
         "산업:건설/부동산:weak"
-      ]
-    },
-    {
-      "id": "2026-09-29-intraday-ba744a1935",
-      "date": "2026-09-29",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-29T20:23:47+09:00",
-      "generated_label": "2026-09-29 20:23 KST",
-      "headline": "반도체 반등 속 유가 급락과 건설·자동차 약세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:건설/부동산:weak",
-        "산업:자동차:weak"
       ]
     }
   ]
