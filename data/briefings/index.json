@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-16T12:52:04+09:00",
+  "updated_at": "2026-10-16T17:53:05+09:00",
   "cards": [
+    {
+      "id": "2026-10-16-intraday-01c20d9232",
+      "date": "2026-10-16",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-16T17:53:05+09:00",
+      "generated_label": "2026-10-16 17:53 KST",
+      "headline": "방산·자동차·건설 주도, 코스닥 외국인 매도세 주의",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Tesla(TSLA)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:방산:strong",
+        "산업:자동차:strong",
+        "산업:건설/부동산:strong"
+      ]
+    },
     {
       "id": "2026-10-16-intraday-42f640e91b",
       "date": "2026-10-16",
@@ -1388,23 +1406,6 @@
         "산업:화학/정유:weak",
         "산업:철강/소재:weak",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-09-30-intraday-d7384232af",
-      "date": "2026-09-30",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-30T04:02:47+09:00",
-      "generated_label": "2026-09-30 04:02 KST",
-      "headline": "반도체 장비주 강세와 국제 유가 급락의 교차",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:화학/정유:weak"
       ]
     }
   ]
