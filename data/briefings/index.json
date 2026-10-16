@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-16T21:02:25+09:00",
+  "updated_at": "2026-10-17T01:50:15+09:00",
   "cards": [
+    {
+      "id": "2026-10-17-intraday-4b1ba82eee",
+      "date": "2026-10-17",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-17T01:50:15+09:00",
+      "generated_label": "2026-10-17 01:50 KST",
+      "headline": "스테이블코인 약세 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥100 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로",
+        "산업:화학/정유",
+        "산업:철강/소재"
+      ]
+    },
     {
       "id": "2026-10-16-intraday-e2b8db36f3",
       "date": "2026-10-16",
@@ -1389,23 +1407,6 @@
         "산업:매크로:weak",
         "산업:반도체:strong",
         "산업:화학/정유:weak"
-      ]
-    },
-    {
-      "id": "2026-09-30-morning-d18113636e",
-      "date": "2026-09-30",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-09-30T10:50:08+09:00",
-      "generated_label": "2026-09-30 10:50 KST",
-      "headline": "반도체 중심의 시장 반등과 외국인 선물 매도세",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
