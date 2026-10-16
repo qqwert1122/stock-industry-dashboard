@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-17T01:50:15+09:00",
+  "updated_at": "2026-10-17T04:46:36+09:00",
   "cards": [
+    {
+      "id": "2026-10-17-intraday-602bcd1c29",
+      "date": "2026-10-17",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-17T04:46:36+09:00",
+      "generated_label": "2026-10-17 04:46 KST",
+      "headline": "미국 증시 변동성 확대와 반도체 약세",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥100 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:데이터인프라:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-10-17-intraday-4b1ba82eee",
       "date": "2026-10-17",
@@ -1388,24 +1406,6 @@
       "narrative_topics": [
         "산업:조선:strong",
         "산업:매크로:weak",
-        "산업:화학/정유:weak"
-      ]
-    },
-    {
-      "id": "2026-09-30-intraday-1534186b87",
-      "date": "2026-09-30",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-30T13:49:16+09:00",
-      "generated_label": "2026-09-30 13:49 KST",
-      "headline": "코스피 1% 가까운 하락, 외국인 선물 매도세 지속",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:weak",
-        "산업:반도체:strong",
         "산업:화학/정유:weak"
       ]
     }
