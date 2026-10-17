@@ -1,7 +1,23 @@
 {
   "version": 1,
-  "updated_at": "2026-10-17T07:21:55+09:00",
+  "updated_at": "2026-10-17T10:03:29+09:00",
   "cards": [
+    {
+      "id": "2026-10-17-morning-81d14e2ebc",
+      "date": "2026-10-17",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-10-17T10:03:29+09:00",
+      "generated_label": "2026-10-17 10:03 KST",
+      "headline": "반도체 주도 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로"
+      ]
+    },
     {
       "id": "2026-10-17-intraday-e4c66307e9",
       "date": "2026-10-17",
@@ -1389,24 +1405,6 @@
         "산업:데이터인프라:strong",
         "산업:로봇:weak",
         "산업:스테이블코인:weak"
-      ]
-    },
-    {
-      "id": "2026-09-30-intraday-d51be320e3",
-      "date": "2026-09-30",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-09-30T22:14:00+09:00",
-      "generated_label": "2026-09-30 22:14 KST",
-      "headline": "스테이블코인 강세와 유가 급락 속 시장 관망",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:건설/부동산:strong",
-        "산업:은행/금융:weak"
       ]
     }
   ]
