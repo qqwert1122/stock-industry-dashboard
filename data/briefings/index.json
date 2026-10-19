@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-10-19T23:15:16+09:00",
+  "updated_at": "2026-10-20T05:02:34+09:00",
   "cards": [
+    {
+      "id": "2026-10-20-intraday-1dd236a182",
+      "date": "2026-10-20",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-20T05:02:34+09:00",
+      "generated_label": "2026-10-20 05:02 KST",
+      "headline": "미국 증시 변동성 완화와 나스닥 반등, 한국장 투자심리 개선 기대",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:strong",
+        "산업:반도체:weak"
+      ]
+    },
     {
       "id": "2026-10-19-intraday-e0e1f1ca1c",
       "date": "2026-10-19",
@@ -1384,23 +1401,6 @@
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: S&P 500",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-10-01-intraday-d5ead997e8",
-      "date": "2026-10-01",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-01T23:04:59+09:00",
-      "generated_label": "2026-10-01 23:04 KST",
-      "headline": "미국 증시 변동성 확대와 반도체 장비주의 엇갈린 흐름",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: VIX",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:strong",
