@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-18T09:38:55+09:00",
+  "updated_at": "2026-10-19T09:48:38+09:00",
   "cards": [
+    {
+      "id": "2026-10-19-morning-81731b3709",
+      "date": "2026-10-19",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-10-19T09:48:38+09:00",
+      "generated_label": "2026-10-19 09:48 KST",
+      "headline": "반도체·조선 중심의 차익실현과 수급 공백",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:조선:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-10-18-morning-fba4ebbbf5",
       "date": "2026-10-18",
@@ -1387,24 +1405,6 @@
       "narrative_topics": [
         "산업:반도체:strong",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-10-01-intraday-45a07997d8",
-      "date": "2026-10-01",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-01T07:30:32+09:00",
-      "generated_label": "2026-10-01 07:30 KST",
-      "headline": "국제 유가 급락과 변동성 확대, 조선주 강세 지속",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:조선:strong",
-        "산업:화학/정유:weak",
-        "산업:매크로:weak"
       ]
     }
   ]
