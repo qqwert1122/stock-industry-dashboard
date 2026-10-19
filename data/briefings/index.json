@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-20T05:02:34+09:00",
+  "updated_at": "2026-10-20T08:50:28+09:00",
   "cards": [
+    {
+      "id": "2026-10-20-intraday-a985737086",
+      "date": "2026-10-20",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-20T08:50:28+09:00",
+      "generated_label": "2026-10-20 08:50 KST",
+      "headline": "배터리·바이오 중심의 반등과 코스피 수급 변화",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:배터리:strong",
+        "산업:바이오:strong",
+        "산업:철강/소재:strong"
+      ]
+    },
     {
       "id": "2026-10-20-intraday-1dd236a182",
       "date": "2026-10-20",
@@ -1388,23 +1406,6 @@
         "산업:우주:strong",
         "산업:로봇:strong",
         "산업:반도체:strong"
-      ]
-    },
-    {
-      "id": "2026-10-02-intraday-b32dc48d49",
-      "date": "2026-10-02",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-02T04:41:12+09:00",
-      "generated_label": "2026-10-02 04:41 KST",
-      "headline": "반도체 장비주 중심의 기술주 반등과 미국 증시 상승",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: S&P 500",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:strong"
       ]
     }
   ]
