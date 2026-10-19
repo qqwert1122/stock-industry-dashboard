@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-19T09:48:38+09:00",
+  "updated_at": "2026-10-19T12:59:39+09:00",
   "cards": [
+    {
+      "id": "2026-10-19-intraday-3aa768bda1",
+      "date": "2026-10-19",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-19T12:59:39+09:00",
+      "generated_label": "2026-10-19 12:59 KST",
+      "headline": "코스피·코스닥 동반 강세, 대형주 중심의 수급 개선",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:배터리:strong",
+        "산업:바이오:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-10-19-morning-81731b3709",
       "date": "2026-10-19",
@@ -1384,23 +1402,6 @@
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-10-01-morning-0e4438b185",
-      "date": "2026-10-01",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-10-01T10:48:19+09:00",
-      "generated_label": "2026-10-01 10:48 KST",
-      "headline": "반도체 중심의 수급 회복과 코스닥의 반등세",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:strong",
