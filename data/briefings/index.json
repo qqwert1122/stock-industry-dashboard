@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-20T18:27:41+09:00",
+  "updated_at": "2026-10-20T21:28:01+09:00",
   "cards": [
+    {
+      "id": "2026-10-20-intraday-1a00626c85",
+      "date": "2026-10-20",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-20T21:28:01+09:00",
+      "generated_label": "2026-10-20 21:28 KST",
+      "headline": "방산·조선·반도체 동반 약세, 시장 위험회피 심리 확산",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: WTI 선물(CL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:방산:weak",
+        "산업:조선:weak",
+        "산업:반도체:weak"
+      ]
+    },
     {
       "id": "2026-10-20-intraday-2921a404d3",
       "date": "2026-10-20",
@@ -1387,24 +1405,6 @@
         "산업:반도체:strong",
         "산업:매크로:strong",
         "산업:스테이블코인:strong"
-      ]
-    },
-    {
-      "id": "2026-10-02-intraday-a1954ce3a2",
-      "date": "2026-10-02",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-02T19:58:04+09:00",
-      "generated_label": "2026-10-02 19:58 KST",
-      "headline": "반도체 장비주 강세와 유가 하락이 이끄는 시장",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: WTI 선물(CL)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:strong",
-        "산업:화학/정유:weak"
       ]
     }
   ]
