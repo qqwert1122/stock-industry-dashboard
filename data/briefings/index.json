@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-20T21:28:01+09:00",
+  "updated_at": "2026-10-21T02:25:56+09:00",
   "cards": [
+    {
+      "id": "2026-10-21-intraday-42199afcfc",
+      "date": "2026-10-21",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-21T02:25:56+09:00",
+      "generated_label": "2026-10-21 02:25 KST",
+      "headline": "미국 증시 변동성 완화와 스테이블코인 강세",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥100 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:로봇:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-10-20-intraday-1a00626c85",
       "date": "2026-10-20",
@@ -1387,24 +1405,6 @@
         "산업:반도체:strong",
         "산업:로봇:strong",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-10-02-intraday-b7a8b838e5",
-      "date": "2026-10-02",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-02T22:24:58+09:00",
-      "generated_label": "2026-10-02 22:24 KST",
-      "headline": "VIX 하락과 반도체 반등으로 시장 위험 선호 회복",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:strong",
-        "산업:스테이블코인:strong"
       ]
     }
   ]
