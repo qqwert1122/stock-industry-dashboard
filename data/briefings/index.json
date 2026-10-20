@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-20T13:10:20+09:00",
+  "updated_at": "2026-10-20T18:27:41+09:00",
   "cards": [
+    {
+      "id": "2026-10-20-intraday-2921a404d3",
+      "date": "2026-10-20",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-20T18:27:41+09:00",
+      "generated_label": "2026-10-20 18:27 KST",
+      "headline": "방산·조선·반도체 동반 약세, 외국인 수급 이탈 가속",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: WTI 선물(CL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:방산:weak",
+        "산업:조선:weak",
+        "산업:반도체:weak"
+      ]
+    },
     {
       "id": "2026-10-20-intraday-860d1f9eb3",
       "date": "2026-10-20",
@@ -1387,24 +1405,6 @@
         "산업:반도체:strong",
         "산업:매크로:strong",
         "산업:화학/정유:weak"
-      ]
-    },
-    {
-      "id": "2026-10-02-intraday-edbfc18807",
-      "date": "2026-10-02",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-02T13:51:58+09:00",
-      "generated_label": "2026-10-02 13:51 KST",
-      "headline": "코스닥 수급 변동성 확대와 방산·데이터인프라의 차별화",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:방산:strong",
-        "산업:데이터인프라:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
