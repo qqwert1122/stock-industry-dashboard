@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-10-20T08:50:28+09:00",
+  "updated_at": "2026-10-20T10:35:06+09:00",
   "cards": [
+    {
+      "id": "2026-10-20-morning-5e9f2ea230",
+      "date": "2026-10-20",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-10-20T10:35:06+09:00",
+      "generated_label": "2026-10-20 10:35 KST",
+      "headline": "반도체 중심의 외국인 매도세 강화와 코스피·코스닥 동반 급락",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-10-20-intraday-a985737086",
       "date": "2026-10-20",
@@ -1388,24 +1405,6 @@
         "산업:매크로:strong",
         "산업:방산:strong",
         "산업:데이터인프라:strong"
-      ]
-    },
-    {
-      "id": "2026-10-02-intraday-ce5b975f15",
-      "date": "2026-10-02",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-02T08:36:46+09:00",
-      "generated_label": "2026-10-02 08:36 KST",
-      "headline": "코스닥 급락 속 우주·로봇·반도체 대표주 강세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 코스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:우주:strong",
-        "산업:로봇:strong",
-        "산업:반도체:strong"
       ]
     }
   ]
