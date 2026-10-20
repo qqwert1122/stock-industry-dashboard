@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-21T02:25:56+09:00",
+  "updated_at": "2026-10-21T05:46:43+09:00",
   "cards": [
+    {
+      "id": "2026-10-21-intraday-c46510469d",
+      "date": "2026-10-21",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-21T05:46:43+09:00",
+      "generated_label": "2026-10-21 05:46 KST",
+      "headline": "VIX 하락과 위험 선호 회복, 미국장 반등세",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:strong",
+        "산업:반도체:strong",
+        "산업:우주:strong"
+      ]
+    },
     {
       "id": "2026-10-21-intraday-42199afcfc",
       "date": "2026-10-21",
@@ -1386,24 +1404,6 @@
       "narrative_topics": [
         "산업:우주:strong",
         "산업:스테이블코인:strong",
-        "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-10-03-intraday-3756cbfe51",
-      "date": "2026-10-03",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-03T03:34:27+09:00",
-      "generated_label": "2026-10-03 03:34 KST",
-      "headline": "미국 증시 변동성 완화와 반도체·로봇 중심의 기술주 반등",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:로봇:strong",
         "산업:매크로:strong"
       ]
     }
