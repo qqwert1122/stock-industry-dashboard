@@ -1,7 +1,23 @@
 {
   "version": 1,
-  "updated_at": "2026-10-21T08:34:10+09:00",
+  "updated_at": "2026-10-21T10:17:08+09:00",
   "cards": [
+    {
+      "id": "2026-10-21-morning-617f24ae64",
+      "date": "2026-10-21",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-10-21T10:17:08+09:00",
+      "generated_label": "2026-10-21 10:17 KST",
+      "headline": "반도체 주도 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로"
+      ]
+    },
     {
       "id": "2026-10-21-intraday-1c910fc706",
       "date": "2026-10-21",
@@ -1386,24 +1402,6 @@
       "narrative_topics": [
         "산업:방산:strong",
         "산업:매크로:weak",
-        "산업:데이터인프라:strong"
-      ]
-    },
-    {
-      "id": "2026-10-03-morning-fc3fbbd810",
-      "date": "2026-10-03",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-10-03T10:43:09+09:00",
-      "generated_label": "2026-10-03 10:43 KST",
-      "headline": "기관 선물 매도와 개인 순매도 속 코스피 수급 불안",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:weak",
-        "산업:방산:strong",
         "산업:데이터인프라:strong"
       ]
     }
