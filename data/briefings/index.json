@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-21T21:37:52+09:00",
+  "updated_at": "2026-10-22T02:48:57+09:00",
   "cards": [
+    {
+      "id": "2026-10-22-intraday-451f095621",
+      "date": "2026-10-22",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-22T02:48:57+09:00",
+      "generated_label": "2026-10-22 02:48 KST",
+      "headline": "나스닥 1.2% 상승하며 기술주 중심 반등, 한국장 금통위 경계감",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:스테이블코인:strong",
+        "산업:로봇:weak"
+      ]
+    },
     {
       "id": "2026-10-21-intraday-ca48d5928d",
       "date": "2026-10-21",
@@ -1384,24 +1402,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체"
-      ]
-    },
-    {
-      "id": "2026-10-05-intraday-74a28e24d5",
-      "date": "2026-10-05",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-05T21:10:25+09:00",
-      "generated_label": "2026-10-05 21:10 KST",
-      "headline": "스테이블코인 유동성 확대와 미국 변동성 지표 상승",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:매크로:weak",
-        "산업:반도체:strong"
       ]
     }
   ]
