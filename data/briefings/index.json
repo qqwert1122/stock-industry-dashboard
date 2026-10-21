@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-10-21T10:17:08+09:00",
+  "updated_at": "2026-10-21T12:58:26+09:00",
   "cards": [
+    {
+      "id": "2026-10-21-intraday-f7cfd1ca05",
+      "date": "2026-10-21",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-21T12:58:26+09:00",
+      "generated_label": "2026-10-21 12:58 KST",
+      "headline": "반도체 대표주 강세 속 코스피·코스닥 동반 상승",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 삼성전자(005930.KS)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-10-21-morning-617f24ae64",
       "date": "2026-10-21",
@@ -1384,24 +1401,6 @@
       "narrative_topics": [
         "산업:매크로:strong",
         "산업:방산:strong",
-        "산업:데이터인프라:strong"
-      ]
-    },
-    {
-      "id": "2026-10-04-morning-d96c749ab8",
-      "date": "2026-10-04",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-10-04T11:23:54+09:00",
-      "generated_label": "2026-10-04 11:23 KST",
-      "headline": "방산 수출 호조와 미국 계약 증가, 수급은 관망세",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:방산:strong",
-        "산업:매크로:weak",
         "산업:데이터인프라:strong"
       ]
     }
