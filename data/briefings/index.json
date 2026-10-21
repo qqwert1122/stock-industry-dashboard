@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-21T12:58:26+09:00",
+  "updated_at": "2026-10-21T18:18:03+09:00",
   "cards": [
+    {
+      "id": "2026-10-21-intraday-c0944d6f35",
+      "date": "2026-10-21",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-21T18:18:03+09:00",
+      "generated_label": "2026-10-21 18:18 KST",
+      "headline": "반도체 주도 반등과 건설·전력의 동반 강세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Mobileye(MBLY)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:건설/부동산:strong",
+        "산업:전력:strong"
+      ]
+    },
     {
       "id": "2026-10-21-intraday-f7cfd1ca05",
       "date": "2026-10-21",
@@ -1384,24 +1402,6 @@
         "산업:매크로:strong",
         "산업:철강/소재:strong",
         "산업:화학/정유:strong"
-      ]
-    },
-    {
-      "id": "2026-10-05-morning-fa49bc9fab",
-      "date": "2026-10-05",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-10-05T10:38:24+09:00",
-      "generated_label": "2026-10-05 10:38 KST",
-      "headline": "원/달러 환율 하락과 위험자산 선호 심리 회복",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:strong",
-        "산업:방산:strong",
-        "산업:데이터인프라:strong"
       ]
     }
   ]
