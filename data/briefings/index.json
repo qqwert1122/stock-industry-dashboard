@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-22T09:04:47+09:00",
+  "updated_at": "2026-10-22T10:13:15+09:00",
   "cards": [
+    {
+      "id": "2026-10-22-morning-468c731d55",
+      "date": "2026-10-22",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-10-22T10:13:15+09:00",
+      "generated_label": "2026-10-22 10:13 KST",
+      "headline": "코스피 반등 속 반도체 약세와 수급 변화 주목",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:strong",
+        "산업:우주:strong"
+      ]
+    },
     {
       "id": "2026-10-22-intraday-c5df6d8db6",
       "date": "2026-10-22",
@@ -1383,23 +1401,6 @@
       "narrative_topics": [
         "산업:반도체:weak",
         "산업:배터리:strong",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-10-06-morning-afaec241f5",
-      "date": "2026-10-06",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-10-06T11:41:29+09:00",
-      "generated_label": "2026-10-06 11:41 KST",
-      "headline": "반도체 약세 속 외국인 수급 이탈과 개인의 선물 매수",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
         "산업:매크로:weak"
       ]
     }
