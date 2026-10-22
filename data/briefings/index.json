@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-23T02:47:43+09:00",
+  "updated_at": "2026-10-23T06:03:32+09:00",
   "cards": [
+    {
+      "id": "2026-10-23-intraday-5ef0ccf212",
+      "date": "2026-10-23",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-23T06:03:32+09:00",
+      "generated_label": "2026-10-23 06:03 KST",
+      "headline": "미국 증시 변동성 확대와 반도체 약세 지속",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:데이터인프라:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-10-23-intraday-e704fbd1b5",
       "date": "2026-10-23",
@@ -1386,24 +1404,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:매크로"
-      ]
-    },
-    {
-      "id": "2026-10-07-intraday-e25f01b684",
-      "date": "2026-10-07",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-07T08:10:32+09:00",
-      "generated_label": "2026-10-07 08:10 KST",
-      "headline": "배터리·화학 주도 속 외국인 수급 이탈 주의",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:배터리:strong",
-        "산업:화학/정유:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
