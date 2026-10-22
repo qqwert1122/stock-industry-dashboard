@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-10-22T06:05:30+09:00",
+  "updated_at": "2026-10-22T09:04:47+09:00",
   "cards": [
+    {
+      "id": "2026-10-22-intraday-c5df6d8db6",
+      "date": "2026-10-22",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-22T09:04:47+09:00",
+      "generated_label": "2026-10-22 09:04 KST",
+      "headline": "코스피 급락 속 반도체 대표주만 나홀로 강세",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-10-22-intraday-be57ed2a0d",
       "date": "2026-10-22",
@@ -1384,24 +1401,6 @@
       "narrative_topics": [
         "산업:반도체:weak",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-10-06-intraday-8894097141",
-      "date": "2026-10-06",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-06T07:06:51+09:00",
-      "generated_label": "2026-10-06 07:06 KST",
-      "headline": "구리·알루미늄 강세와 유가 하락, 원자재 시장의 변화",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 구리 선물(HG)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:철강/소재:strong",
-        "산업:화학/정유:weak",
-        "산업:매크로:strong"
       ]
     }
   ]
