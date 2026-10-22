@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "generated_at": "2026-10-22T12:42:01",
+  "generated_at": "2026-10-22T17:47:41",
   "window": {
-    "from": "2026-10-15",
-    "to": "2027-01-20"
+    "from": "2026-10-16",
+    "to": "2027-01-21"
   },
   "events": [
     {
@@ -12,8 +12,8 @@
       "category": "policy",
       "country": "KR",
       "note": "통화정책방향 결정회의",
-      "d_day": 0,
-      "d_day_label": "D-day"
+      "d_day": -1,
+      "d_day_label": "D-1"
     },
     {
       "date": "2026-10-28",
@@ -21,8 +21,8 @@
       "category": "policy",
       "country": "US",
       "note": "10월 FOMC",
-      "d_day": 6,
-      "d_day_label": "D+6"
+      "d_day": 5,
+      "d_day_label": "D+5"
     },
     {
       "date": "2026-11-10",
@@ -30,8 +30,8 @@
       "category": "macro",
       "country": "US",
       "note": "2026년 10월 CPI",
-      "d_day": 19,
-      "d_day_label": "D+19"
+      "d_day": 18,
+      "d_day_label": "D+18"
     },
     {
       "date": "2026-11-12",
@@ -39,8 +39,8 @@
       "category": "market",
       "country": "KR",
       "note": "매월 둘째 목요일 기준, 휴장 시 전영업일",
-      "d_day": 21,
-      "d_day_label": "D+21"
+      "d_day": 20,
+      "d_day_label": "D+20"
     },
     {
       "date": "2026-11-26",
@@ -48,8 +48,8 @@
       "category": "holiday",
       "country": "US",
       "note": "Thanksgiving Day",
-      "d_day": 35,
-      "d_day_label": "D+35"
+      "d_day": 34,
+      "d_day_label": "D+34"
     },
     {
       "date": "2026-11-26",
@@ -57,8 +57,8 @@
       "category": "policy",
       "country": "KR",
       "note": "통화정책방향 결정회의",
-      "d_day": 35,
-      "d_day_label": "D+35"
+      "d_day": 34,
+      "d_day_label": "D+34"
     },
     {
       "date": "2026-12-09",
@@ -66,8 +66,8 @@
       "category": "policy",
       "country": "US",
       "note": "12월 FOMC·SEP",
-      "d_day": 48,
-      "d_day_label": "D+48"
+      "d_day": 47,
+      "d_day_label": "D+47"
     },
     {
       "date": "2026-12-10",
@@ -75,8 +75,8 @@
       "category": "macro",
       "country": "US",
       "note": "2026년 11월 CPI",
-      "d_day": 49,
-      "d_day_label": "D+49"
+      "d_day": 48,
+      "d_day_label": "D+48"
     },
     {
       "date": "2026-12-10",
@@ -84,8 +84,8 @@
       "category": "market",
       "country": "KR",
       "note": "3·6·9·12월 둘째 목요일 기준",
-      "d_day": 49,
-      "d_day_label": "D+49"
+      "d_day": 48,
+      "d_day_label": "D+48"
     },
     {
       "date": "2026-12-10",
@@ -93,8 +93,8 @@
       "category": "market",
       "country": "KR",
       "note": "매월 둘째 목요일 기준, 휴장 시 전영업일",
-      "d_day": 49,
-      "d_day_label": "D+49"
+      "d_day": 48,
+      "d_day_label": "D+48"
     },
     {
       "date": "2026-12-18",
@@ -102,8 +102,8 @@
       "category": "market",
       "country": "US",
       "note": "3·6·9·12월 셋째 금요일 기준, 휴장 시 전영업일",
-      "d_day": 57,
-      "d_day_label": "D+57"
+      "d_day": 56,
+      "d_day_label": "D+56"
     },
     {
       "date": "2026-12-25",
@@ -111,8 +111,8 @@
       "category": "holiday",
       "country": "KR",
       "note": "성탄절",
-      "d_day": 64,
-      "d_day_label": "D+64"
+      "d_day": 63,
+      "d_day_label": "D+63"
     },
     {
       "date": "2026-12-25",
@@ -120,8 +120,8 @@
       "category": "holiday",
       "country": "US",
       "note": "Christmas Day",
-      "d_day": 64,
-      "d_day_label": "D+64"
+      "d_day": 63,
+      "d_day_label": "D+63"
     },
     {
       "date": "2026-12-31",
@@ -129,8 +129,8 @@
       "category": "holiday",
       "country": "KR",
       "note": "연말 휴장일",
-      "d_day": 70,
-      "d_day_label": "D+70"
+      "d_day": 69,
+      "d_day_label": "D+69"
     },
     {
       "date": "2027-01-14",
@@ -138,20 +138,10 @@
       "category": "market",
       "country": "KR",
       "note": "매월 둘째 목요일 기준, 휴장 시 전영업일",
-      "d_day": 84,
-      "d_day_label": "D+84"
+      "d_day": 83,
+      "d_day_label": "D+83"
     }
   ],
-  "upcoming": [
-    {
-      "date": "2026-10-22",
-      "name": "한국은행 금통위",
-      "category": "policy",
-      "country": "KR",
-      "note": "통화정책방향 결정회의",
-      "d_day": 0,
-      "d_day_label": "D-day"
-    }
-  ],
+  "upcoming": [],
   "missing_years": []
 }
