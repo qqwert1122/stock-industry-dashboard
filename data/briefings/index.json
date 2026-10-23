@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-23T10:12:30+09:00",
+  "updated_at": "2026-10-23T13:02:14+09:00",
   "cards": [
+    {
+      "id": "2026-10-23-intraday-592d0f3ad4",
+      "date": "2026-10-23",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-23T13:02:14+09:00",
+      "generated_label": "2026-10-23 13:02 KST",
+      "headline": "코스피·코스닥 동반 급락, 투자심리 위축과 수급 공백",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak",
+        "산업:조선:weak"
+      ]
+    },
     {
       "id": "2026-10-23-morning-aeebeb33c6",
       "date": "2026-10-23",
@@ -1386,22 +1404,6 @@
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: 나스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체"
-      ]
-    },
-    {
-      "id": "2026-10-07-intraday-569153842e",
-      "date": "2026-10-07",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-07T20:49:04+09:00",
-      "generated_label": "2026-10-07 20:49 KST",
-      "headline": "우주 약세 흐름이 두드러집니다.",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체"
