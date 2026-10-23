@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-24T05:33:56+09:00",
+  "updated_at": "2026-10-24T08:42:02+09:00",
   "cards": [
+    {
+      "id": "2026-10-24-intraday-62b1ef9308",
+      "date": "2026-10-24",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-24T08:42:02+09:00",
+      "generated_label": "2026-10-24 08:42 KST",
+      "headline": "유가 급등과 소재주 약세 속 바이오의 독주",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: WTI 선물(CL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:바이오:strong",
+        "산업:철강/소재:weak",
+        "산업:화학/정유:strong"
+      ]
+    },
     {
       "id": "2026-10-24-intraday-5ec2de5d15",
       "date": "2026-10-24",
@@ -1390,24 +1408,6 @@
         "산업:반도체:weak",
         "산업:우주:weak",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-10-08-intraday-9d9657f3d0",
-      "date": "2026-10-08",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-08T14:19:40+09:00",
-      "generated_label": "2026-10-08 14:19 KST",
-      "headline": "코스피·코스닥 동반 하락, 외국인 선물 매도세 지속",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:weak",
-        "산업:방산:weak",
-        "산업:조선:weak"
       ]
     }
   ]
