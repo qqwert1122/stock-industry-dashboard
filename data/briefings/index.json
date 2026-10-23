@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-10-23T09:03:32+09:00",
+  "updated_at": "2026-10-23T10:12:30+09:00",
   "cards": [
+    {
+      "id": "2026-10-23-morning-aeebeb33c6",
+      "date": "2026-10-23",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-10-23T10:12:30+09:00",
+      "generated_label": "2026-10-23 10:12 KST",
+      "headline": "코스피·코스닥 동반 급락, 외국인 선물 매수 전환 주목",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-10-23-intraday-112b660885",
       "date": "2026-10-23",
@@ -1388,24 +1405,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체"
-      ]
-    },
-    {
-      "id": "2026-10-07-intraday-fcbe138e84",
-      "date": "2026-10-07",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-07T14:09:19+09:00",
-      "generated_label": "2026-10-07 14:09 KST",
-      "headline": "반도체·조선 등 주도주 조정 속 코스닥 하락세",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak",
-        "산업:조선:weak"
       ]
     }
   ]
