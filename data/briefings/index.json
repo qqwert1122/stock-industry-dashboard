@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-26T13:01:52+09:00",
+  "updated_at": "2026-10-26T19:03:32+09:00",
   "cards": [
+    {
+      "id": "2026-10-26-intraday-d51b6b1da1",
+      "date": "2026-10-26",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-26T19:03:32+09:00",
+      "generated_label": "2026-10-26 19:03 KST",
+      "headline": "국제 유가 급락과 배터리·데이터인프라의 상대적 강세",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:배터리:strong",
+        "산업:데이터인프라:strong",
+        "산업:화학/정유:weak"
+      ]
+    },
     {
       "id": "2026-10-26-intraday-fceef15c1c",
       "date": "2026-10-26",
@@ -1390,23 +1408,6 @@
         "산업:철강/소재:strong",
         "산업:매크로:weak",
         "산업:반도체:weak"
-      ]
-    },
-    {
-      "id": "2026-10-09-morning-2dd8a18085",
-      "date": "2026-10-09",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-10-09T11:47:07+09:00",
-      "generated_label": "2026-10-09 11:47 KST",
-      "headline": "한국장 휴장 속 외국인·기관 수급 이탈과 반도체 약세",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:strong"
       ]
     }
   ]
