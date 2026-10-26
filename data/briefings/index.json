@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-26T19:03:32+09:00",
+  "updated_at": "2026-10-26T22:48:59+09:00",
   "cards": [
+    {
+      "id": "2026-10-26-intraday-c07db75df2",
+      "date": "2026-10-26",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-26T22:48:59+09:00",
+      "generated_label": "2026-10-26 22:48 KST",
+      "headline": "반도체·전기차 주도 속 스테이블코인 약세 지속",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Circle(CRCL)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:전기차:strong",
+        "산업:스테이블코인:weak"
+      ]
+    },
     {
       "id": "2026-10-26-intraday-d51b6b1da1",
       "date": "2026-10-26",
@@ -1390,24 +1408,6 @@
         "산업:반도체:strong",
         "산업:스테이블코인:strong",
         "산업:전기차:strong"
-      ]
-    },
-    {
-      "id": "2026-10-09-intraday-7809f86162",
-      "date": "2026-10-09",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-09T14:23:03+09:00",
-      "generated_label": "2026-10-09 14:23 KST",
-      "headline": "한글날 휴장 속 글로벌 원자재 가격 변동과 수급 흐름 점검",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 이더리움",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:철강/소재:strong",
-        "산업:매크로:weak",
-        "산업:반도체:weak"
       ]
     }
   ]
