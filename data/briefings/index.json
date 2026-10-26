@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-27T04:41:07+09:00",
+  "updated_at": "2026-10-27T08:29:54+09:00",
   "cards": [
+    {
+      "id": "2026-10-27-intraday-d7497ecbf4",
+      "date": "2026-10-27",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-27T08:29:54+09:00",
+      "generated_label": "2026-10-27 08:29 KST",
+      "headline": "스테이블코인 약세 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:화학/정유",
+        "산업:매크로",
+        "산업:철강/소재"
+      ]
+    },
     {
       "id": "2026-10-27-intraday-c7671e37c9",
       "date": "2026-10-27",
@@ -1388,24 +1406,6 @@
         "산업:로봇:strong",
         "산업:데이터인프라:strong",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-10-09-intraday-6a89cdfc23",
-      "date": "2026-10-09",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-09T23:02:40+09:00",
-      "generated_label": "2026-10-09 23:02 KST",
-      "headline": "미국 로봇·데이터인프라 강세 속 나스닥 선물 소폭 하락",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥100 선물",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:로봇:strong",
-        "산업:데이터인프라:strong",
-        "산업:반도체:weak"
       ]
     }
   ]
