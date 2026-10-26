@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-26T09:58:43+09:00",
+  "updated_at": "2026-10-26T13:01:52+09:00",
   "cards": [
+    {
+      "id": "2026-10-26-intraday-fceef15c1c",
+      "date": "2026-10-26",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-26T13:01:52+09:00",
+      "generated_label": "2026-10-26 13:01 KST",
+      "headline": "코스닥 중심의 조정세와 기관의 선물 순매도 전환",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:weak",
+        "산업:조선:weak",
+        "산업:반도체:weak"
+      ]
+    },
     {
       "id": "2026-10-26-morning-f5ee06b6da",
       "date": "2026-10-26",
@@ -1389,24 +1407,6 @@
       "narrative_topics": [
         "산업:반도체:weak",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-10-09-intraday-47ded1dabc",
-      "date": "2026-10-09",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-09T09:31:12+09:00",
-      "generated_label": "2026-10-09 09:31 KST",
-      "headline": "코스피·코스닥 동반 약세, 외국인 선물 매도 지속",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:방산:weak",
-        "산업:매크로:weak"
       ]
     }
   ]
