@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-27T18:59:31+09:00",
+  "updated_at": "2026-10-27T21:54:13+09:00",
   "cards": [
+    {
+      "id": "2026-10-27-intraday-53c9bd6aba",
+      "date": "2026-10-27",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-27T21:54:13+09:00",
+      "generated_label": "2026-10-27 21:54 KST",
+      "headline": "배터리·반도체 주도 반등 속 외국인 선물 매수 유입",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:배터리:strong",
+        "산업:반도체:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-10-27-intraday-f50353b240",
       "date": "2026-10-27",
@@ -1386,24 +1404,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:매크로"
-      ]
-    },
-    {
-      "id": "2026-10-11-morning-53ec24a65f",
-      "date": "2026-10-11",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-10-11T10:33:34+09:00",
-      "generated_label": "2026-10-11 10:33 KST",
-      "headline": "반도체 수출 호조에도 주가 약세, 조선·우주 수출 모멘텀 주목",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:조선:strong",
-        "산업:우주:strong"
       ]
     }
   ]
