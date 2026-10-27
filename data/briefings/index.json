@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-27T21:54:13+09:00",
+  "updated_at": "2026-10-28T03:30:37+09:00",
   "cards": [
+    {
+      "id": "2026-10-28-intraday-5e4657e252",
+      "date": "2026-10-28",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-28T03:30:37+09:00",
+      "generated_label": "2026-10-28 03:30 KST",
+      "headline": "반도체·로봇 중심의 기술주 강세와 FOMC 관망세",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:로봇:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-10-27-intraday-53c9bd6aba",
       "date": "2026-10-27",
@@ -1388,22 +1406,6 @@
         "산업:반도체:weak",
         "산업:화학/정유:weak",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-10-12-morning-532879841b",
-      "date": "2026-10-12",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-10-12T11:03:42+09:00",
-      "generated_label": "2026-10-12 11:03 KST",
-      "headline": "반도체 약세 흐름이 두드러집니다.",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로"
       ]
     }
   ]
