@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-28T20:08:37+09:00",
+  "updated_at": "2026-10-28T22:42:17+09:00",
   "cards": [
+    {
+      "id": "2026-10-28-intraday-65af4c0b20",
+      "date": "2026-10-28",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-28T22:42:17+09:00",
+      "generated_label": "2026-10-28 22:42 KST",
+      "headline": "반도체 반등과 은행주 강세, FOMC 앞둔 시장",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Teradyne(TER)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:은행/금융:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-10-28-intraday-f458a37326",
       "date": "2026-10-28",
@@ -1383,23 +1401,6 @@
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "유의미한 변화: 코스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-10-13-morning-9aeca228d4",
-      "date": "2026-10-13",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-10-13T12:21:16+09:00",
-      "generated_label": "2026-10-13 12:21 KST",
-      "headline": "반도체 급락과 외국인 매도세에 코스피 6.9% 하락",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:weak",
