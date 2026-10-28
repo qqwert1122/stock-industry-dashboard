@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-10-28T11:01:14+09:00",
+  "updated_at": "2026-10-28T13:51:45+09:00",
   "cards": [
+    {
+      "id": "2026-10-28-intraday-aa76705a6f",
+      "date": "2026-10-28",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-28T13:51:45+09:00",
+      "generated_label": "2026-10-28 13:51 KST",
+      "headline": "반도체 주도 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: SK하이닉스(000660.KS)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체",
+        "산업:데이터인프라"
+      ]
+    },
     {
       "id": "2026-10-28-morning-d09c34a6d8",
       "date": "2026-10-28",
@@ -1387,24 +1404,6 @@
         "산업:우주:weak",
         "산업:로봇:weak",
         "산업:화학/정유:strong"
-      ]
-    },
-    {
-      "id": "2026-10-13-intraday-e1f50606dd",
-      "date": "2026-10-13",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-13T01:23:01+09:00",
-      "generated_label": "2026-10-13 01:23 KST",
-      "headline": "반도체·로봇 동반 약세 속 데이터인프라 강세",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Teradyne(TER)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:strong",
-        "산업:로봇:weak"
       ]
     }
   ]
