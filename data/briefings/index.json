@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-29T08:22:18+09:00",
+  "updated_at": "2026-10-29T11:05:36+09:00",
   "cards": [
+    {
+      "id": "2026-10-29-morning-4b649121f0",
+      "date": "2026-10-29",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-10-29T11:05:36+09:00",
+      "generated_label": "2026-10-29 11:05 KST",
+      "headline": "코스피·코스닥 동반 급락, 외국인·기관 매도세 확대",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak",
+        "산업:전기차:weak"
+      ]
+    },
     {
       "id": "2026-10-29-intraday-e0a6cd03f7",
       "date": "2026-10-29",
@@ -1388,24 +1406,6 @@
         "산업:매크로:weak",
         "산업:반도체:weak",
         "산업:우주:weak"
-      ]
-    },
-    {
-      "id": "2026-10-13-intraday-ee8918fba2",
-      "date": "2026-10-13",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-13T23:43:48+09:00",
-      "generated_label": "2026-10-13 23:43 KST",
-      "headline": "반도체 장비주 중심의 차익실현과 데이터 인프라의 상대적 견조함",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Applied Materials(AMAT)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:strong",
-        "산업:매크로:strong"
       ]
     }
   ]
