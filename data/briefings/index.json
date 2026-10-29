@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-29T22:53:07+09:00",
+  "updated_at": "2026-10-30T04:22:26+09:00",
   "cards": [
+    {
+      "id": "2026-10-30-intraday-712f045fcc",
+      "date": "2026-10-30",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-30T04:22:26+09:00",
+      "generated_label": "2026-10-30 04:22 KST",
+      "headline": "미국 기술주 조정과 반도체 약세, 한국장 하방 압력",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Huntington Ingalls(HII)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:데이터인프라:weak",
+        "산업:반도체:weak",
+        "산업:로봇:weak"
+      ]
+    },
     {
       "id": "2026-10-29-intraday-903add4dc0",
       "date": "2026-10-29",
@@ -1389,23 +1407,6 @@
       "narrative_topics": [
         "산업:배터리:strong",
         "산업:철강/소재:strong",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-10-14-intraday-8af6e2139c",
-      "date": "2026-10-14",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-14T13:12:56+09:00",
-      "generated_label": "2026-10-14 13:12 KST",
-      "headline": "반도체 중심의 반등과 코스닥 수급 불안 지속",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
         "산업:매크로:weak"
       ]
     }
