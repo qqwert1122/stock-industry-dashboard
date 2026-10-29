@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-29T11:05:36+09:00",
+  "updated_at": "2026-10-29T14:01:56+09:00",
   "cards": [
+    {
+      "id": "2026-10-29-intraday-7a7a8778e2",
+      "date": "2026-10-29",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-29T14:01:56+09:00",
+      "generated_label": "2026-10-29 14:01 KST",
+      "headline": "코스피·코스닥 동반 급락, 외국인·기관 매도세 확대",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:전기차:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-10-29-morning-4b649121f0",
       "date": "2026-10-29",
@@ -1388,24 +1406,6 @@
         "산업:반도체:weak",
         "산업:매크로:weak",
         "산업:전기차:strong"
-      ]
-    },
-    {
-      "id": "2026-10-14-intraday-0a04068724",
-      "date": "2026-10-14",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-14T05:27:56+09:00",
-      "generated_label": "2026-10-14 05:27 KST",
-      "headline": "미국 CPI 앞둔 관망세와 한국 증시의 급격한 조정",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 이더리움",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:weak",
-        "산업:반도체:weak",
-        "산업:우주:weak"
       ]
     }
   ]
