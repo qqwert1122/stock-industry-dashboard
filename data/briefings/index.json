@@ -1,7 +1,23 @@
 {
   "version": 1,
-  "updated_at": "2026-10-30T20:26:02+09:00",
+  "updated_at": "2026-10-30T22:45:20+09:00",
   "cards": [
+    {
+      "id": "2026-10-30-intraday-0d96bf6636",
+      "date": "2026-10-30",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-30T22:45:20+09:00",
+      "generated_label": "2026-10-30 22:45 KST",
+      "headline": "스테이블코인 약세 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체"
+      ]
+    },
     {
       "id": "2026-10-30-intraday-c0e7019000",
       "date": "2026-10-30",
@@ -1391,24 +1407,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:weak",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-10-15-intraday-04198227b3",
-      "date": "2026-10-15",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-15T08:59:50+09:00",
-      "generated_label": "2026-10-15 08:59 KST",
-      "headline": "코스피 급락 속 배터리·소재주 선방, 수급 불안 지속",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:배터리:strong",
-        "산업:철강/소재:strong",
         "산업:매크로:weak"
       ]
     }
