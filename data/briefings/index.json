@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-31T03:56:35+09:00",
+  "updated_at": "2026-10-31T07:45:29+09:00",
   "cards": [
+    {
+      "id": "2026-10-31-intraday-ab90235b87",
+      "date": "2026-10-31",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-31T07:45:29+09:00",
+      "generated_label": "2026-10-31 07:45 KST",
+      "headline": "스테이블코인 약세 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로",
+        "산업:철강/소재",
+        "산업:화학/정유"
+      ]
+    },
     {
       "id": "2026-10-31-intraday-bb0112d445",
       "date": "2026-10-31",
@@ -1391,23 +1409,6 @@
       "narrative_topics": [
         "산업:반도체:weak",
         "산업:우주:weak",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-10-15-intraday-3e0a907211",
-      "date": "2026-10-15",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-15T12:55:45+09:00",
-      "generated_label": "2026-10-15 12:55 KST",
-      "headline": "반도체 투매 속 코스피·코스닥 동반 급락",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
         "산업:매크로:weak"
       ]
     }
