@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-10-30T22:45:20+09:00",
+  "updated_at": "2026-10-31T03:56:35+09:00",
   "cards": [
+    {
+      "id": "2026-10-31-intraday-bb0112d445",
+      "date": "2026-10-31",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-10-31T03:56:35+09:00",
+      "generated_label": "2026-10-31 03:56 KST",
+      "headline": "미국 증시 변동성 급증, 나스닥 선물 4%대 하락",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥100 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:로봇:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-10-30-intraday-0d96bf6636",
       "date": "2026-10-30",
@@ -1387,23 +1405,6 @@
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-10-15-morning-773a05d061",
-      "date": "2026-10-15",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-10-15T10:12:32+09:00",
-      "generated_label": "2026-10-15 10:12 KST",
-      "headline": "반도체 중심의 급격한 조정과 외국인 매도세 확대",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:weak",
