@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-10-31T07:45:29+09:00",
+  "updated_at": "2026-10-31T11:01:15+09:00",
   "cards": [
+    {
+      "id": "2026-10-31-morning-ec938557d8",
+      "date": "2026-10-31",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-10-31T11:01:15+09:00",
+      "generated_label": "2026-10-31 11:01 KST",
+      "headline": "반도체 중심의 외국인 매도세와 시장 변동성 확대",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-10-31-intraday-ab90235b87",
       "date": "2026-10-31",
@@ -1392,24 +1409,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체"
-      ]
-    },
-    {
-      "id": "2026-10-15-intraday-f0d5a7f1d9",
-      "date": "2026-10-15",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-15T18:02:06+09:00",
-      "generated_label": "2026-10-15 18:02 KST",
-      "headline": "코스피·코스닥 급락과 반도체·우주 산업의 동반 약세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Rocket Lab(RKLB)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:우주:weak",
-        "산업:매크로:weak"
       ]
     }
   ]
