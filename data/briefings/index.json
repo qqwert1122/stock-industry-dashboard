@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-02T11:06:10+09:00",
+  "updated_at": "2026-11-02T14:14:26+09:00",
   "cards": [
+    {
+      "id": "2026-11-02-intraday-a62a2dc170",
+      "date": "2026-11-02",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-02T14:14:26+09:00",
+      "generated_label": "2026-11-02 14:14 KST",
+      "headline": "반도체 중심의 코스피 반등과 외국인 선물 순매수 전환",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:조선:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-11-02-morning-adb1701c8a",
       "date": "2026-11-02",
@@ -1392,24 +1410,6 @@
         "산업:매크로:weak",
         "산업:반도체:weak",
         "산업:자동차:weak"
-      ]
-    },
-    {
-      "id": "2026-10-16-intraday-499e21398a",
-      "date": "2026-10-16",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-16T05:27:10+09:00",
-      "generated_label": "2026-10-16 05:27 KST",
-      "headline": "미국 증시 선물 혼조세 속 위험자산 선호 심리 회복",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥100 선물",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:strong",
-        "산업:반도체:weak",
-        "산업:우주:strong"
       ]
     }
   ]
