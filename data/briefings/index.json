@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-03T23:47:54+09:00",
+  "updated_at": "2026-11-04T05:44:16+09:00",
   "cards": [
+    {
+      "id": "2026-11-04-intraday-37bc93d8b3",
+      "date": "2026-11-04",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-04T05:44:16+09:00",
+      "generated_label": "2026-11-04 05:44 KST",
+      "headline": "스테이블코인 강세와 반도체 반등, 미국장 온기 확산",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: GE Vernova(GEV)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:스테이블코인:strong",
+        "산업:반도체:strong",
+        "산업:데이터인프라:strong"
+      ]
+    },
     {
       "id": "2026-11-03-intraday-8dde79ebef",
       "date": "2026-11-03",
@@ -1388,24 +1406,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:매크로"
-      ]
-    },
-    {
-      "id": "2026-10-17-intraday-e4c66307e9",
-      "date": "2026-10-17",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-17T07:21:55+09:00",
-      "generated_label": "2026-10-17 07:21 KST",
-      "headline": "VIX 급등과 미국 선물 약세, 변동성 확대 주의",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:weak",
-        "산업:방산:strong",
-        "산업:자동차:strong"
       ]
     }
   ]
