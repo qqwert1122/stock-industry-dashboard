@@ -1,7 +1,23 @@
 {
   "version": 1,
-  "updated_at": "2026-11-03T22:57:44+09:00",
+  "updated_at": "2026-11-03T23:47:54+09:00",
   "cards": [
+    {
+      "id": "2026-11-03-intraday-8dde79ebef",
+      "date": "2026-11-03",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-03T23:47:54+09:00",
+      "generated_label": "2026-11-03 23:47 KST",
+      "headline": "스테이블코인 주도 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체"
+      ]
+    },
     {
       "id": "2026-11-03-intraday-3391d5b828",
       "date": "2026-11-03",
@@ -1390,24 +1406,6 @@
         "산업:매크로:weak",
         "산업:방산:strong",
         "산업:자동차:strong"
-      ]
-    },
-    {
-      "id": "2026-10-17-intraday-602bcd1c29",
-      "date": "2026-10-17",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-17T04:46:36+09:00",
-      "generated_label": "2026-10-17 04:46 KST",
-      "headline": "미국 증시 변동성 확대와 반도체 약세",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥100 선물",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
