@@ -1,7 +1,23 @@
 {
   "version": 1,
-  "updated_at": "2026-11-04T22:17:56+09:00",
+  "updated_at": "2026-11-04T23:59:30+09:00",
   "cards": [
+    {
+      "id": "2026-11-04-intraday-0558cf886f",
+      "date": "2026-11-04",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-04T23:59:30+09:00",
+      "generated_label": "2026-11-04 23:59 KST",
+      "headline": "데이터인프라 주도 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체"
+      ]
+    },
     {
       "id": "2026-11-04-intraday-b286bfe243",
       "date": "2026-11-04",
@@ -1388,24 +1404,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체"
-      ]
-    },
-    {
-      "id": "2026-10-19-intraday-3172fdb617",
-      "date": "2026-10-19",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-19T18:50:28+09:00",
-      "generated_label": "2026-10-19 18:50 KST",
-      "headline": "코스피·코스닥 동반 하락 속 반도체·조선 약세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:배터리:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
