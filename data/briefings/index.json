@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-05T14:53:19+09:00",
+  "updated_at": "2026-11-05T23:22:01+09:00",
   "cards": [
+    {
+      "id": "2026-11-05-intraday-e091c75dd8",
+      "date": "2026-11-05",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-05T23:22:01+09:00",
+      "generated_label": "2026-11-05 23:22 KST",
+      "headline": "미국 반도체주 급락과 기술주 투자심리 위축",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: Qualcomm(QCOM)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:로봇:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-11-05-intraday-a8abb15c55",
       "date": "2026-11-05",
@@ -1388,24 +1406,6 @@
         "산업:방산:weak",
         "산업:조선:weak",
         "산업:반도체:weak"
-      ]
-    },
-    {
-      "id": "2026-10-20-intraday-860d1f9eb3",
-      "date": "2026-10-20",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-20T13:10:20+09:00",
-      "generated_label": "2026-10-20 13:10 KST",
-      "headline": "코스피·코스닥 동반 급락, 외국인 매도세 확대",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:조선:weak",
-        "산업:매크로:weak"
       ]
     }
   ]
