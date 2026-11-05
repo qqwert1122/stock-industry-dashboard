@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-05T06:06:12+09:00",
+  "updated_at": "2026-11-05T10:34:13+09:00",
   "cards": [
+    {
+      "id": "2026-11-05-intraday-bb961eacce",
+      "date": "2026-11-05",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-05T10:34:13+09:00",
+      "generated_label": "2026-11-05 10:34 KST",
+      "headline": "반도체 대표주 급락에 코스피·코스닥 동반 약세",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:데이터인프라:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-11-05-intraday-df6a1325e9",
       "date": "2026-11-05",
@@ -1389,23 +1407,6 @@
         "산업:배터리:strong",
         "산업:바이오:strong",
         "산업:철강/소재:strong"
-      ]
-    },
-    {
-      "id": "2026-10-20-intraday-1dd236a182",
-      "date": "2026-10-20",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-20T05:02:34+09:00",
-      "generated_label": "2026-10-20 05:02 KST",
-      "headline": "미국 증시 변동성 완화와 나스닥 반등, 한국장 투자심리 개선 기대",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:strong",
-        "산업:반도체:weak"
       ]
     }
   ]
