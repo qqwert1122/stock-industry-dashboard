@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-11-05T10:34:13+09:00",
+  "updated_at": "2026-11-05T12:09:24+09:00",
   "cards": [
+    {
+      "id": "2026-11-05-morning-ee1f2a7506",
+      "date": "2026-11-05",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-11-05T12:09:24+09:00",
+      "generated_label": "2026-11-05 12:09 KST",
+      "headline": "반도체 투심 위축과 외국인 매도세에 코스피·코스닥 동반 급락",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-11-05-intraday-bb961eacce",
       "date": "2026-11-05",
@@ -1389,24 +1406,6 @@
       "narrative_topics": [
         "산업:반도체:weak",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-10-20-intraday-a985737086",
-      "date": "2026-10-20",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-20T08:50:28+09:00",
-      "generated_label": "2026-10-20 08:50 KST",
-      "headline": "배터리·바이오 중심의 반등과 코스피 수급 변화",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:배터리:strong",
-        "산업:바이오:strong",
-        "산업:철강/소재:strong"
       ]
     }
   ]
