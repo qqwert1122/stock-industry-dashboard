@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-06T00:04:44+09:00",
+  "updated_at": "2026-11-06T06:31:04+09:00",
   "cards": [
+    {
+      "id": "2026-11-06-intraday-4d4d4bcbae",
+      "date": "2026-11-06",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-06T06:31:04+09:00",
+      "generated_label": "2026-11-06 06:31 KST",
+      "headline": "미국 증시 급락과 VIX 폭등, 한국장 투자심리 위축 불가피",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: S&P 500",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:weak",
+        "산업:배터리:weak",
+        "산업:반도체:weak"
+      ]
+    },
     {
       "id": "2026-11-06-intraday-570a31f414",
       "date": "2026-11-06",
@@ -1388,24 +1406,6 @@
         "산업:스테이블코인:strong",
         "산업:로봇:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-10-20-intraday-1a00626c85",
-      "date": "2026-10-20",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-20T21:28:01+09:00",
-      "generated_label": "2026-10-20 21:28 KST",
-      "headline": "방산·조선·반도체 동반 약세, 시장 위험회피 심리 확산",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: WTI 선물(CL)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:방산:weak",
-        "산업:조선:weak",
-        "산업:반도체:weak"
       ]
     }
   ]
