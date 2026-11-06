@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-06T14:49:39+09:00",
+  "updated_at": "2026-11-06T22:58:34+09:00",
   "cards": [
+    {
+      "id": "2026-11-06-intraday-55e210a40d",
+      "date": "2026-11-06",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-06T22:58:34+09:00",
+      "generated_label": "2026-11-06 22:58 KST",
+      "headline": "반도체 장비주 급등 속 시장 변동성 확대",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Lam Research(LRCX)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:로봇:strong",
+        "산업:건설/부동산:weak"
+      ]
+    },
     {
       "id": "2026-11-06-intraday-c03db2f453",
       "date": "2026-11-06",
@@ -1387,22 +1405,6 @@
       "narrative_topics": [
         "산업:반도체:strong",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-10-21-morning-617f24ae64",
-      "date": "2026-10-21",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-10-21T10:17:08+09:00",
-      "generated_label": "2026-10-21 10:17 KST",
-      "headline": "반도체 주도 흐름이 두드러집니다.",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로"
       ]
     }
   ]
