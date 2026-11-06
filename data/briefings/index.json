@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-11-06T10:44:54+09:00",
+  "updated_at": "2026-11-06T12:10:28+09:00",
   "cards": [
+    {
+      "id": "2026-11-06-morning-b9426a90cb",
+      "date": "2026-11-06",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-11-06T12:10:28+09:00",
+      "generated_label": "2026-11-06 12:10 KST",
+      "headline": "반도체 약세와 외국인 선물 매수세의 충돌",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-11-06-intraday-b569ce92fe",
       "date": "2026-11-06",
@@ -1387,24 +1404,6 @@
         "산업:방산:weak",
         "산업:조선:weak",
         "산업:화학/정유:weak"
-      ]
-    },
-    {
-      "id": "2026-10-21-intraday-c46510469d",
-      "date": "2026-10-21",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-21T05:46:43+09:00",
-      "generated_label": "2026-10-21 05:46 KST",
-      "headline": "VIX 하락과 위험 선호 회복, 미국장 반등세",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:strong",
-        "산업:반도체:strong",
-        "산업:우주:strong"
       ]
     }
   ]
