@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-06T22:58:34+09:00",
+  "updated_at": "2026-11-06T23:43:58+09:00",
   "cards": [
+    {
+      "id": "2026-11-06-intraday-05318a43b2",
+      "date": "2026-11-06",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-06T23:43:58+09:00",
+      "generated_label": "2026-11-06 23:43 KST",
+      "headline": "미국 반도체 급반등과 달러 강세의 엇박자",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:로봇:strong",
+        "산업:데이터인프라:strong"
+      ]
+    },
     {
       "id": "2026-11-06-intraday-55e210a40d",
       "date": "2026-11-06",
@@ -1388,23 +1406,6 @@
         "산업:반도체:strong",
         "산업:건설/부동산:strong",
         "산업:전력:strong"
-      ]
-    },
-    {
-      "id": "2026-10-21-intraday-f7cfd1ca05",
-      "date": "2026-10-21",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-21T12:58:26+09:00",
-      "generated_label": "2026-10-21 12:58 KST",
-      "headline": "반도체 대표주 강세 속 코스피·코스닥 동반 상승",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 삼성전자(005930.KS)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:strong"
       ]
     }
   ]
