@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-11-06T06:31:04+09:00",
+  "updated_at": "2026-11-06T10:44:54+09:00",
   "cards": [
+    {
+      "id": "2026-11-06-intraday-b569ce92fe",
+      "date": "2026-11-06",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-06T10:44:54+09:00",
+      "generated_label": "2026-11-06 10:44 KST",
+      "headline": "반도체 대표주 급락과 코스피·코스닥 동반 약세",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-11-06-intraday-4d4d4bcbae",
       "date": "2026-11-06",
@@ -1388,24 +1405,6 @@
         "산업:매크로:strong",
         "산업:반도체:strong",
         "산업:우주:strong"
-      ]
-    },
-    {
-      "id": "2026-10-21-intraday-42199afcfc",
-      "date": "2026-10-21",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-21T02:25:56+09:00",
-      "generated_label": "2026-10-21 02:25 KST",
-      "headline": "미국 증시 변동성 완화와 스테이블코인 강세",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥100 선물",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:스테이블코인:strong",
-        "산업:로봇:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
