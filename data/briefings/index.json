@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-11-07T09:32:08+09:00",
+  "updated_at": "2026-11-07T11:32:05+09:00",
   "cards": [
+    {
+      "id": "2026-11-07-morning-3d13f3c68c",
+      "date": "2026-11-07",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-11-07T11:32:05+09:00",
+      "generated_label": "2026-11-07 11:32 KST",
+      "headline": "반도체 투심 위축과 외국인 선물 순매수 확대",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-11-07-intraday-86d02532c6",
       "date": "2026-11-07",
@@ -1388,24 +1405,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체"
-      ]
-    },
-    {
-      "id": "2026-10-22-intraday-451f095621",
-      "date": "2026-10-22",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-22T02:48:57+09:00",
-      "generated_label": "2026-10-22 02:48 KST",
-      "headline": "나스닥 1.2% 상승하며 기술주 중심 반등, 한국장 금통위 경계감",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:스테이블코인:strong",
-        "산업:로봇:weak"
       ]
     }
   ]
