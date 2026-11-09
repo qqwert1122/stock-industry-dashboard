@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-11-08T11:03:10+09:00",
+  "updated_at": "2026-11-09T11:21:51+09:00",
   "cards": [
+    {
+      "id": "2026-11-09-morning-fe39ba9b91",
+      "date": "2026-11-09",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-11-09T11:21:51+09:00",
+      "generated_label": "2026-11-09 11:21 KST",
+      "headline": "반도체 중심의 지수 반등과 개인 수급의 엇갈린 흐름",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-11-08-morning-508dfa33e9",
       "date": "2026-11-08",
@@ -1389,23 +1406,6 @@
         "산업:반도체:weak",
         "산업:매크로:strong",
         "산업:우주:strong"
-      ]
-    },
-    {
-      "id": "2026-10-22-intraday-c5df6d8db6",
-      "date": "2026-10-22",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-22T09:04:47+09:00",
-      "generated_label": "2026-10-22 09:04 KST",
-      "headline": "코스피 급락 속 반도체 대표주만 나홀로 강세",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
