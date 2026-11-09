@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-09T23:18:08+09:00",
+  "updated_at": "2026-11-10T02:02:00+09:00",
   "cards": [
+    {
+      "id": "2026-11-10-intraday-c5642bc75e",
+      "date": "2026-11-10",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-10T02:02:00+09:00",
+      "generated_label": "2026-11-10 02:02 KST",
+      "headline": "반도체 중심의 기술주 강세와 VIX 급락으로 시장 위험 선호 회복",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:로봇:strong",
+        "산업:데이터인프라:strong"
+      ]
+    },
     {
       "id": "2026-11-09-intraday-ebe6301230",
       "date": "2026-11-09",
@@ -1385,24 +1403,6 @@
         "산업:반도체:weak",
         "산업:방산:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-10-22-intraday-95bfdab8d3",
-      "date": "2026-10-22",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-22T18:21:06+09:00",
-      "generated_label": "2026-10-22 18:21 KST",
-      "headline": "미국 증시 변동성 확대와 반도체·전기차 동반 약세",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:전기차:weak",
-        "산업:배터리:weak"
       ]
     }
   ]
