@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-10T13:29:19+09:00",
+  "updated_at": "2026-11-10T15:40:12+09:00",
   "cards": [
+    {
+      "id": "2026-11-10-intraday-5fcb2ab929",
+      "date": "2026-11-10",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-10T15:40:12+09:00",
+      "generated_label": "2026-11-10 15:40 KST",
+      "headline": "반도체 주도 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:화학/정유",
+        "산업:반도체",
+        "산업:철강/소재"
+      ]
+    },
     {
       "id": "2026-11-10-morning-51fcf5d86e",
       "date": "2026-11-10",
@@ -1385,24 +1403,6 @@
         "산업:반도체:weak",
         "산업:매크로:strong",
         "산업:우주:strong"
-      ]
-    },
-    {
-      "id": "2026-10-23-intraday-5ef0ccf212",
-      "date": "2026-10-23",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-23T06:03:32+09:00",
-      "generated_label": "2026-10-23 06:03 KST",
-      "headline": "미국 증시 변동성 확대와 반도체 약세 지속",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:데이터인프라:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
