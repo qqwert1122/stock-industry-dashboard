@@ -1,7 +1,23 @@
 {
   "version": 1,
-  "updated_at": "2026-11-11T00:17:18+09:00",
+  "updated_at": "2026-11-11T00:21:04+09:00",
   "cards": [
+    {
+      "id": "2026-11-11-intraday-655b29d9e4",
+      "date": "2026-11-11",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-11T00:21:04+09:00",
+      "generated_label": "2026-11-11 00:21 KST",
+      "headline": "스테이블코인 약세 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: AMD(AMD)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체"
+      ]
+    },
     {
       "id": "2026-11-11-intraday-6239584125",
       "date": "2026-11-11",
@@ -1386,23 +1402,6 @@
         "산업:반도체:weak",
         "산업:매크로:weak",
         "산업:조선:weak"
-      ]
-    },
-    {
-      "id": "2026-10-23-morning-aeebeb33c6",
-      "date": "2026-10-23",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-10-23T10:12:30+09:00",
-      "generated_label": "2026-10-23 10:12 KST",
-      "headline": "코스피·코스닥 동반 급락, 외국인 선물 매수 전환 주목",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:strong"
       ]
     }
   ]
