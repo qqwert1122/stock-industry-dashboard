@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-10T15:40:12+09:00",
+  "updated_at": "2026-11-11T00:17:18+09:00",
   "cards": [
+    {
+      "id": "2026-11-11-intraday-6239584125",
+      "date": "2026-11-11",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-11T00:17:18+09:00",
+      "generated_label": "2026-11-11 00:17 KST",
+      "headline": "반도체 주도권 강화 속 미국 증시 혼조세",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: GE Vernova(GEV)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:로봇:weak",
+        "산업:스테이블코인:weak"
+      ]
+    },
     {
       "id": "2026-11-10-intraday-5fcb2ab929",
       "date": "2026-11-10",
@@ -1385,24 +1403,6 @@
       "narrative_topics": [
         "산업:반도체:weak",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-10-23-intraday-112b660885",
-      "date": "2026-10-23",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-23T09:03:32+09:00",
-      "generated_label": "2026-10-23 09:03 KST",
-      "headline": "반도체 대표주 약세 속 코스피·코스닥 동반 상승",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:strong",
-        "산업:우주:strong"
       ]
     }
   ]
