@@ -1,7 +1,23 @@
 {
   "version": 1,
-  "updated_at": "2026-11-10T09:47:00+09:00",
+  "updated_at": "2026-11-10T13:29:19+09:00",
   "cards": [
+    {
+      "id": "2026-11-10-morning-51fcf5d86e",
+      "date": "2026-11-10",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-11-10T13:29:19+09:00",
+      "generated_label": "2026-11-10 13:29 KST",
+      "headline": "반도체 주도 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로"
+      ]
+    },
     {
       "id": "2026-11-10-intraday-77e333d1d4",
       "date": "2026-11-10",
@@ -1387,22 +1403,6 @@
         "산업:반도체:weak",
         "산업:데이터인프라:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-10-23-intraday-e704fbd1b5",
-      "date": "2026-10-23",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-23T02:47:43+09:00",
-      "generated_label": "2026-10-23 02:47 KST",
-      "headline": "스테이블코인 약세 흐름이 두드러집니다.",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체"
       ]
     }
   ]
