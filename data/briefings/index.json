@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-11T14:26:55+09:00",
+  "updated_at": "2026-11-11T21:55:30+09:00",
   "cards": [
+    {
+      "id": "2026-11-11-intraday-40f5d34257",
+      "date": "2026-11-11",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-11T21:55:30+09:00",
+      "generated_label": "2026-11-11 21:55 KST",
+      "headline": "반도체·로봇 중심의 기술주 강세와 시장 변동성 완화",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: Teradyne(TER)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:로봇:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-11-11-intraday-9637141615",
       "date": "2026-11-11",
@@ -1386,24 +1404,6 @@
         "산업:바이오:strong",
         "산업:철강/소재:weak",
         "산업:화학/정유:strong"
-      ]
-    },
-    {
-      "id": "2026-10-24-intraday-5ec2de5d15",
-      "date": "2026-10-24",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-24T05:33:56+09:00",
-      "generated_label": "2026-10-24 05:33 KST",
-      "headline": "유가 급등과 변동성 확대 속 반도체 중심의 방어적 흐름",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: WTI 선물(CL)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:로봇:strong",
-        "산업:매크로:weak"
       ]
     }
   ]
