@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-11T10:21:06+09:00",
+  "updated_at": "2026-11-11T11:31:55+09:00",
   "cards": [
+    {
+      "id": "2026-11-11-morning-588afcbd46",
+      "date": "2026-11-11",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-11-11T11:31:55+09:00",
+      "generated_label": "2026-11-11 11:31 KST",
+      "headline": "반도체 중심의 시장 반등과 개인 수급의 변화",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:strong",
+        "산업:방산:strong"
+      ]
+    },
     {
       "id": "2026-11-11-intraday-1b30646b5a",
       "date": "2026-11-11",
@@ -1386,22 +1404,6 @@
         "산업:매크로:weak",
         "산업:화학/정유:strong",
         "산업:반도체:strong"
-      ]
-    },
-    {
-      "id": "2026-10-23-intraday-fe4a6537ca",
-      "date": "2026-10-23",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-23T21:20:04+09:00",
-      "generated_label": "2026-10-23 21:20 KST",
-      "headline": "바이오 주도 흐름이 두드러집니다.",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: VIX",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체"
       ]
     }
   ]
