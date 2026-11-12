@@ -86,6 +86,24 @@
         "USDKRW": 1360.0799560546875
       },
       "telegram_sent": false
+    },
+    {
+      "ts": "2026-11-12T03:40:03",
+      "observed_at": "2026-11-01",
+      "rule_key": "S&P 500 Shiller CAPE|pct_above=95",
+      "metric_id": "b0b6e0910209",
+      "metric_name": "S&P 500 Shiller CAPE",
+      "direction": "triggered",
+      "value": 40.24,
+      "display_value": "40.24 배",
+      "threshold_label": "≥ P95",
+      "message": "미국 증시 밸류에이션이 극단 구간입니다.",
+      "context": {
+        "KS11": 5420.60986328125,
+        "GSPC": 7619.3798828125,
+        "USDKRW": 1332.8499755859375
+      },
+      "telegram_sent": false
     }
   ]
 }
