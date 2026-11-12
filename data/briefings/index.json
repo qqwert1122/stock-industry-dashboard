@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-12T15:31:21+09:00",
+  "updated_at": "2026-11-13T00:38:54+09:00",
   "cards": [
+    {
+      "id": "2026-11-13-intraday-6fc23eb323",
+      "date": "2026-11-13",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-13T00:38:54+09:00",
+      "generated_label": "2026-11-13 00:38 KST",
+      "headline": "미국 기술주 조정과 변동성 확대, 한국장 경계감",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:스테이블코인:weak",
+        "산업:데이터인프라:strong"
+      ]
+    },
     {
       "id": "2026-11-12-intraday-285199ffa5",
       "date": "2026-11-12",
@@ -1386,24 +1404,6 @@
         "산업:배터리:strong",
         "산업:데이터인프라:strong",
         "산업:화학/정유:weak"
-      ]
-    },
-    {
-      "id": "2026-10-26-intraday-fceef15c1c",
-      "date": "2026-10-26",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-26T13:01:52+09:00",
-      "generated_label": "2026-10-26 13:01 KST",
-      "headline": "코스닥 중심의 조정세와 기관의 선물 순매도 전환",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:weak",
-        "산업:조선:weak",
-        "산업:반도체:weak"
       ]
     }
   ]
