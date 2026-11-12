@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-12T12:36:30+09:00",
+  "updated_at": "2026-11-12T15:31:21+09:00",
   "cards": [
+    {
+      "id": "2026-11-12-intraday-285199ffa5",
+      "date": "2026-11-12",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-12T15:31:21+09:00",
+      "generated_label": "2026-11-12 15:31 KST",
+      "headline": "외국인·기관 동반 매도에 코스피·코스닥 동반 하락",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:weak",
+        "산업:데이터인프라:weak",
+        "산업:조선:strong"
+      ]
+    },
     {
       "id": "2026-11-12-morning-f2844f1dd5",
       "date": "2026-11-12",
@@ -1386,24 +1404,6 @@
         "산업:매크로:weak",
         "산업:조선:weak",
         "산업:반도체:weak"
-      ]
-    },
-    {
-      "id": "2026-10-26-morning-f5ee06b6da",
-      "date": "2026-10-26",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-10-26T09:58:43+09:00",
-      "generated_label": "2026-10-26 09:58 KST",
-      "headline": "국내 증시 수급 공백과 기관의 선물 매도세",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:weak",
-        "산업:우주:strong",
-        "산업:조선:strong"
       ]
     }
   ]
