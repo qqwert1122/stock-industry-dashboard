@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-13T12:08:19+09:00",
+  "updated_at": "2026-11-13T14:50:44+09:00",
   "cards": [
+    {
+      "id": "2026-11-13-intraday-214ae1b915",
+      "date": "2026-11-13",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-13T14:50:44+09:00",
+      "generated_label": "2026-11-13 14:50 KST",
+      "headline": "코스피·코스닥 동반 급락, 반도체와 전력주 투자심리 위축",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:전력:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-11-13-morning-1ba7d16123",
       "date": "2026-11-13",
@@ -1388,24 +1406,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:매크로"
-      ]
-    },
-    {
-      "id": "2026-10-27-intraday-d7497ecbf4",
-      "date": "2026-10-27",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-27T08:29:54+09:00",
-      "generated_label": "2026-10-27 08:29 KST",
-      "headline": "스테이블코인 약세 흐름이 두드러집니다.",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:화학/정유",
-        "산업:매크로",
-        "산업:철강/소재"
       ]
     }
   ]
