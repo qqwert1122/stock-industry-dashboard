@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-13T06:59:50+09:00",
+  "updated_at": "2026-11-13T12:08:19+09:00",
   "cards": [
+    {
+      "id": "2026-11-13-morning-1ba7d16123",
+      "date": "2026-11-13",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-11-13T12:08:19+09:00",
+      "generated_label": "2026-11-13 12:08 KST",
+      "headline": "반도체 중심의 지수 반등과 개인 투자자의 수급 변화",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:strong",
+        "산업:방산:strong"
+      ]
+    },
     {
       "id": "2026-11-13-intraday-6c54a09dec",
       "date": "2026-11-13",
@@ -1388,22 +1406,6 @@
         "산업:화학/정유",
         "산업:매크로",
         "산업:철강/소재"
-      ]
-    },
-    {
-      "id": "2026-10-27-intraday-c7671e37c9",
-      "date": "2026-10-27",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-27T04:41:07+09:00",
-      "generated_label": "2026-10-27 04:41 KST",
-      "headline": "스테이블코인 약세 흐름이 두드러집니다.",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥100 선물",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체"
       ]
     }
   ]
