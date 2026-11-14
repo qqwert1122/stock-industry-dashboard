@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-14T06:28:55+09:00",
+  "updated_at": "2026-11-14T10:37:14+09:00",
   "cards": [
+    {
+      "id": "2026-11-14-intraday-6947d70475",
+      "date": "2026-11-14",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-14T10:37:14+09:00",
+      "generated_label": "2026-11-14 10:37 KST",
+      "headline": "반도체 약세 속 코스피·코스닥 수급 변동성 확대",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 이더리움",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:strong",
+        "산업:철강/소재:weak"
+      ]
+    },
     {
       "id": "2026-11-14-intraday-559fbf9db9",
       "date": "2026-11-14",
@@ -1390,24 +1408,6 @@
       "narrative_topics": [
         "산업:반도체:strong",
         "산업:로봇:strong",
-        "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-10-27-intraday-53c9bd6aba",
-      "date": "2026-10-27",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-27T21:54:13+09:00",
-      "generated_label": "2026-10-27 21:54 KST",
-      "headline": "배터리·반도체 주도 반등 속 외국인 선물 매수 유입",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:배터리:strong",
-        "산업:반도체:strong",
         "산업:매크로:strong"
       ]
     }
