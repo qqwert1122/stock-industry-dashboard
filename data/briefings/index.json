@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-14T11:54:28+09:00",
+  "updated_at": "2026-11-15T11:23:26+09:00",
   "cards": [
+    {
+      "id": "2026-11-15-morning-32d524fcdc",
+      "date": "2026-11-15",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-11-15T11:23:26+09:00",
+      "generated_label": "2026-11-15 11:23 KST",
+      "headline": "미국 증시 조정과 위험자산 회피 심리 확산",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:weak",
+        "산업:반도체:weak",
+        "산업:스테이블코인:weak"
+      ]
+    },
     {
       "id": "2026-11-14-morning-e6b2e11030",
       "date": "2026-11-14",
@@ -1389,24 +1407,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:strong",
-        "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-10-28-intraday-72a243fb8c",
-      "date": "2026-10-28",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-28T07:31:01+09:00",
-      "generated_label": "2026-10-28 07:31 KST",
-      "headline": "글로벌 유가 급락과 미국 선물 강세 속 한국장 반등 기대",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Brent 선물(BZ)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:배터리:strong",
         "산업:매크로:strong"
       ]
     }
