@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-11-15T11:23:26+09:00",
+  "updated_at": "2026-11-16T11:34:02+09:00",
   "cards": [
+    {
+      "id": "2026-11-16-morning-58d829d1d0",
+      "date": "2026-11-16",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-11-16T11:34:02+09:00",
+      "generated_label": "2026-11-16 11:34 KST",
+      "headline": "반도체 약세 속 개인 수급 쏠림과 시장 변동성 확대",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-11-15-morning-32d524fcdc",
       "date": "2026-11-15",
@@ -1391,23 +1408,6 @@
       "narrative_topics": [
         "산업:반도체",
         "산업:데이터인프라"
-      ]
-    },
-    {
-      "id": "2026-10-28-morning-d09c34a6d8",
-      "date": "2026-10-28",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-10-28T11:01:14+09:00",
-      "generated_label": "2026-10-28 11:01 KST",
-      "headline": "반도체 중심의 강한 반등, FOMC 앞둔 시장의 선택",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:strong"
       ]
     }
   ]
