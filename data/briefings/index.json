@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-16T14:40:29+09:00",
+  "updated_at": "2026-11-16T23:03:09+09:00",
   "cards": [
+    {
+      "id": "2026-11-16-intraday-15873e9aeb",
+      "date": "2026-11-16",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-16T23:03:09+09:00",
+      "generated_label": "2026-11-16 23:03 KST",
+      "headline": "미국 반도체주 급락과 변동성 확대, 한국장 하방 압력",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: 나스닥100 선물",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:로봇:weak",
+        "산업:스테이블코인:weak"
+      ]
+    },
     {
       "id": "2026-11-16-intraday-9f813cfc26",
       "date": "2026-11-16",
@@ -1390,24 +1408,6 @@
         "산업:반도체:strong",
         "산업:은행/금융:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-10-28-intraday-f458a37326",
-      "date": "2026-10-28",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-28T20:08:37+09:00",
-      "generated_label": "2026-10-28 20:08 KST",
-      "headline": "반도체·전력 주도 강세 속 코스피 6% 급등",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Micron(MU)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:전력:strong",
-        "산업:매크로:strong"
       ]
     }
   ]
