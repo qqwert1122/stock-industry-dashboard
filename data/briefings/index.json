@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-17T13:57:15+09:00",
+  "updated_at": "2026-11-17T16:15:59+09:00",
   "cards": [
+    {
+      "id": "2026-11-17-intraday-147d1afe86",
+      "date": "2026-11-17",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-17T16:15:59+09:00",
+      "generated_label": "2026-11-17 16:15 KST",
+      "headline": "나스닥 급락과 반도체 약세, 위험회피 심리 확산",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 나스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:전력:weak",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-11-17-morning-76d51b47c7",
       "date": "2026-11-17",
@@ -1389,24 +1407,6 @@
         "산업:반도체:weak",
         "산업:전기차:weak",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-10-29-morning-4b649121f0",
-      "date": "2026-10-29",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-10-29T11:05:36+09:00",
-      "generated_label": "2026-10-29 11:05 KST",
-      "headline": "코스피·코스닥 동반 급락, 외국인·기관 매도세 확대",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak",
-        "산업:전기차:weak"
       ]
     }
   ]
