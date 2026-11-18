@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-19T01:06:11+09:00",
+  "updated_at": "2026-11-19T07:59:41+09:00",
   "cards": [
+    {
+      "id": "2026-11-19-intraday-47ea9aee99",
+      "date": "2026-11-19",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-19T07:59:41+09:00",
+      "generated_label": "2026-11-19 07:59 KST",
+      "headline": "원자재 가격 급락과 바이오·화학 약세로 투자심리 위축",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: 알루미늄 선물(ALI)",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:철강/소재:weak",
+        "산업:바이오:weak",
+        "산업:화학/정유:weak"
+      ]
+    },
     {
       "id": "2026-11-19-intraday-57224f2d50",
       "date": "2026-11-19",
@@ -1387,24 +1405,6 @@
         "산업:반도체:weak",
         "산업:바이오:strong",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-10-30-intraday-80434d8ee2",
-      "date": "2026-10-30",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-30T14:01:31+09:00",
-      "generated_label": "2026-10-30 14:01 KST",
-      "headline": "반도체 중심의 외국인 매도세와 코스피 조정",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "유의미한 변화: 코스피",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak",
-        "산업:매크로:strong"
       ]
     }
   ]
