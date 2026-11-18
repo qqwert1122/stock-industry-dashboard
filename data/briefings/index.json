@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-11-18T08:42:56+09:00",
+  "updated_at": "2026-11-18T13:01:38+09:00",
   "cards": [
+    {
+      "id": "2026-11-18-morning-512d6766fb",
+      "date": "2026-11-18",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-11-18T13:01:38+09:00",
+      "generated_label": "2026-11-18 13:01 KST",
+      "headline": "반도체 중심의 반등과 개인 투자자의 수급 이탈",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:weak"
+      ]
+    },
     {
       "id": "2026-11-18-intraday-27f0c690be",
       "date": "2026-11-18",
@@ -1389,24 +1406,6 @@
         "산업:데이터인프라:weak",
         "산업:반도체:weak",
         "산업:로봇:weak"
-      ]
-    },
-    {
-      "id": "2026-10-29-intraday-903add4dc0",
-      "date": "2026-10-29",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-10-29T22:53:07+09:00",
-      "generated_label": "2026-10-29 22:53 KST",
-      "headline": "나스닥 1.5% 하락과 로봇·전기차 약세, 바이오·조선은 선방",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: 나스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:로봇:weak",
-        "산업:바이오:strong",
-        "산업:조선:strong"
       ]
     }
   ]
