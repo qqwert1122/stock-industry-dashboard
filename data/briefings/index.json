@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-20T01:13:04+09:00",
+  "updated_at": "2026-11-20T08:08:07+09:00",
   "cards": [
+    {
+      "id": "2026-11-20-intraday-73105fc67c",
+      "date": "2026-11-20",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-20T08:08:07+09:00",
+      "generated_label": "2026-11-20 08:08 KST",
+      "headline": "VIX 급등과 위험자산 회피 심리 확산",
+      "low_signal": false,
+      "session_label": "세션 외",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로:weak",
+        "산업:철강/소재:weak",
+        "산업:배터리:weak"
+      ]
+    },
     {
       "id": "2026-11-20-intraday-9f327c14bf",
       "date": "2026-11-20",
@@ -1380,23 +1398,6 @@
       "generated_at": "2026-11-01T10:50:58+09:00",
       "generated_label": "2026-11-01 10:50 KST",
       "headline": "반도체 약세와 글로벌 변동성 확대, 한국장 투자심리 위축",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-10-31-morning-ec938557d8",
-      "date": "2026-10-31",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-10-31T11:01:15+09:00",
-      "generated_label": "2026-10-31 11:01 KST",
-      "headline": "반도체 중심의 외국인 매도세와 시장 변동성 확대",
       "low_signal": false,
       "session_label": "한국장",
       "gate_reason": "일일 전체 빌드",
