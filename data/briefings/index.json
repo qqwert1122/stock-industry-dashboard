@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-11-20T12:51:56+09:00",
+  "updated_at": "2026-11-20T15:30:00+09:00",
   "cards": [
+    {
+      "id": "2026-11-20-intraday-e1157bc6bc",
+      "date": "2026-11-20",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-20T15:30:00+09:00",
+      "generated_label": "2026-11-20 15:30 KST",
+      "headline": "반도체 약세 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스닥",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체",
+        "산업:조선"
+      ]
+    },
     {
       "id": "2026-11-20-morning-3a7ef7e8ee",
       "date": "2026-11-20",
@@ -1387,24 +1404,6 @@
         "산업:반도체:strong",
         "산업:조선:strong",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-11-02-morning-adb1701c8a",
-      "date": "2026-11-02",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-11-02T11:06:10+09:00",
-      "generated_label": "2026-11-02 11:06 KST",
-      "headline": "조선·방산 중심의 수급 개선과 코스피 반등",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:조선:strong",
-        "산업:방산:strong",
-        "산업:매크로:neutral"
       ]
     }
   ]
