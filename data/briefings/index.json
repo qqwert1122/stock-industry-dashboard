@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-11-21T12:44:51+09:00",
+  "updated_at": "2026-11-22T11:49:15+09:00",
   "cards": [
+    {
+      "id": "2026-11-22-morning-371176cd16",
+      "date": "2026-11-22",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-11-22T11:49:15+09:00",
+      "generated_label": "2026-11-22 11:49 KST",
+      "headline": "미국 증시 급락 여파와 국내 기관의 매도 압력",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-11-21-morning-f5d9a71898",
       "date": "2026-11-21",
@@ -1387,23 +1404,6 @@
       "narrative_topics": [
         "산업:반도체:weak",
         "산업:배터리:weak",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-11-03-morning-2edbc13eb8",
-      "date": "2026-11-03",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-11-03T12:50:04+09:00",
-      "generated_label": "2026-11-03 12:50 KST",
-      "headline": "반도체 약세와 외국인 매도에 코스피·코스닥 동반 하락",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
         "산업:매크로:weak"
       ]
     }
