@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-23T12:30:31+09:00",
+  "updated_at": "2026-11-23T15:41:30+09:00",
   "cards": [
+    {
+      "id": "2026-11-23-intraday-139ea34171",
+      "date": "2026-11-23",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-23T15:41:30+09:00",
+      "generated_label": "2026-11-23 15:41 KST",
+      "headline": "코스피·코스닥 동반 하락, 외국인 선물 수급 변동성 확대",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: 코스피",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:매크로:weak",
+        "산업:데이터인프라:weak"
+      ]
+    },
     {
       "id": "2026-11-23-morning-3512bd421a",
       "date": "2026-11-23",
@@ -1386,24 +1404,6 @@
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체"
-      ]
-    },
-    {
-      "id": "2026-11-03-intraday-3391d5b828",
-      "date": "2026-11-03",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-11-03T22:57:44+09:00",
-      "generated_label": "2026-11-03 22:57 KST",
-      "headline": "반도체 기술주 반등 속 국내 증시 수급 부담 지속",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Teradyne(TER)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:매크로:weak",
-        "산업:로봇:strong"
       ]
     }
   ]
