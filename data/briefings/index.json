@@ -1,7 +1,23 @@
 {
   "version": 1,
-  "updated_at": "2026-11-24T13:09:01+09:00",
+  "updated_at": "2026-11-24T15:44:52+09:00",
   "cards": [
+    {
+      "id": "2026-11-24-morning-6aa5384ff1",
+      "date": "2026-11-24",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-11-24T15:44:52+09:00",
+      "generated_label": "2026-11-24 15:44 KST",
+      "headline": "반도체 주도 흐름이 두드러집니다.",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:매크로"
+      ]
+    },
     {
       "id": "2026-11-24-intraday-cda256fa19",
       "date": "2026-11-24",
@@ -1386,23 +1402,6 @@
         "산업:반도체:weak",
         "산업:매크로:weak",
         "산업:조선:weak"
-      ]
-    },
-    {
-      "id": "2026-11-04-morning-f2aad25b6b",
-      "date": "2026-11-04",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-11-04T11:54:53+09:00",
-      "generated_label": "2026-11-04 11:54 KST",
-      "headline": "반도체 약세와 외국인 매도세에 코스피·코스닥 동반 하락",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:weak"
       ]
     }
   ]
