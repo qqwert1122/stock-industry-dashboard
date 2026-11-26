@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-26T16:36:02+09:00",
+  "updated_at": "2026-11-27T02:28:38+09:00",
   "cards": [
+    {
+      "id": "2026-11-27-intraday-3111654114",
+      "date": "2026-11-27",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-27T02:28:38+09:00",
+      "generated_label": "2026-11-27 02:28 KST",
+      "headline": "미국 증시 변동성 완화와 구리 가격 반등",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:철강/소재:strong",
+        "산업:매크로:strong",
+        "산업:화학/정유:weak"
+      ]
+    },
     {
       "id": "2026-11-26-intraday-16b3ff0610",
       "date": "2026-11-26",
@@ -1382,24 +1400,6 @@
       "narrative_topics": [
         "산업:반도체:weak",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-11-06-intraday-4d4d4bcbae",
-      "date": "2026-11-06",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-11-06T06:31:04+09:00",
-      "generated_label": "2026-11-06 06:31 KST",
-      "headline": "미국 증시 급락과 VIX 폭등, 한국장 투자심리 위축 불가피",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: S&P 500",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:매크로:weak",
-        "산업:배터리:weak",
-        "산업:반도체:weak"
       ]
     }
   ]
