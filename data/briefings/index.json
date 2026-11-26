@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updated_at": "2026-11-26T10:23:38+09:00",
+  "updated_at": "2026-11-26T13:42:14+09:00",
   "cards": [
+    {
+      "id": "2026-11-26-morning-cf496ed62b",
+      "date": "2026-11-26",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-11-26T13:42:14+09:00",
+      "generated_label": "2026-11-26 13:42 KST",
+      "headline": "반도체 중심의 시장 반등과 기관의 수급 복귀",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-11-26-intraday-fe99cf0ebc",
       "date": "2026-11-26",
@@ -1378,24 +1395,6 @@
       "low_signal": false,
       "session_label": "미국장",
       "gate_reason": "유의미한 변화: 나스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:로봇:weak",
-        "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-11-05-intraday-e091c75dd8",
-      "date": "2026-11-05",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-11-05T23:22:01+09:00",
-      "generated_label": "2026-11-05 23:22 KST",
-      "headline": "미국 반도체주 급락과 기술주 투자심리 위축",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: Qualcomm(QCOM)",
       "gemini_call_attempted": true,
       "narrative_topics": [
         "산업:반도체:weak",
