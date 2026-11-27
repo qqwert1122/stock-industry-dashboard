@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-27T10:06:15+09:00",
+  "updated_at": "2026-11-27T13:46:51+09:00",
   "cards": [
+    {
+      "id": "2026-11-27-morning-fb7fb5e28b",
+      "date": "2026-11-27",
+      "card_type": "morning",
+      "card_type_label": "아침",
+      "generated_at": "2026-11-27T13:46:51+09:00",
+      "generated_label": "2026-11-27 13:46 KST",
+      "headline": "반도체 주도 반등과 외국인 수급의 귀환",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "일일 전체 빌드",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:strong",
+        "산업:방산:strong"
+      ]
+    },
     {
       "id": "2026-11-27-intraday-75bc413aeb",
       "date": "2026-11-27",
@@ -1384,23 +1402,6 @@
       "narrative_topics": [
         "산업:반도체:weak",
         "산업:매크로:weak"
-      ]
-    },
-    {
-      "id": "2026-11-06-morning-b9426a90cb",
-      "date": "2026-11-06",
-      "card_type": "morning",
-      "card_type_label": "아침",
-      "generated_at": "2026-11-06T12:10:28+09:00",
-      "generated_label": "2026-11-06 12:10 KST",
-      "headline": "반도체 약세와 외국인 선물 매수세의 충돌",
-      "low_signal": false,
-      "session_label": "한국장",
-      "gate_reason": "일일 전체 빌드",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:weak",
-        "산업:매크로:strong"
       ]
     }
   ]
