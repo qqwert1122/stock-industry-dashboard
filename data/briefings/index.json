@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-27T16:33:52+09:00",
+  "updated_at": "2026-11-28T02:06:38+09:00",
   "cards": [
+    {
+      "id": "2026-11-28-intraday-81643b62ba",
+      "date": "2026-11-28",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-28T02:06:38+09:00",
+      "generated_label": "2026-11-28 02:06 KST",
+      "headline": "미국 증시 변동성 완화와 반도체·데이터인프라의 조정",
+      "low_signal": false,
+      "session_label": "미국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:weak",
+        "산업:데이터인프라:weak",
+        "산업:매크로:strong"
+      ]
+    },
     {
       "id": "2026-11-27-intraday-4f39c17bb0",
       "date": "2026-11-27",
@@ -1384,24 +1402,6 @@
         "산업:반도체:strong",
         "산업:로봇:strong",
         "산업:데이터인프라:strong"
-      ]
-    },
-    {
-      "id": "2026-11-06-intraday-55e210a40d",
-      "date": "2026-11-06",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-11-06T22:58:34+09:00",
-      "generated_label": "2026-11-06 22:58 KST",
-      "headline": "반도체 장비주 급등 속 시장 변동성 확대",
-      "low_signal": false,
-      "session_label": "세션 외",
-      "gate_reason": "유의미한 변화: Lam Research(LRCX)",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:로봇:strong",
-        "산업:건설/부동산:weak"
       ]
     }
   ]
