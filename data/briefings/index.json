@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updated_at": "2026-11-28T02:06:38+09:00",
+  "updated_at": "2026-11-28T09:36:36+09:00",
   "cards": [
+    {
+      "id": "2026-11-28-intraday-66da967af6",
+      "date": "2026-11-28",
+      "card_type": "intraday",
+      "card_type_label": "장중",
+      "generated_at": "2026-11-28T09:36:36+09:00",
+      "generated_label": "2026-11-28 09:36 KST",
+      "headline": "코스피·코스닥 동반 급등, 외국인 수급 개선과 VIX 하락",
+      "low_signal": false,
+      "session_label": "한국장",
+      "gate_reason": "유의미한 변화: VIX",
+      "gemini_call_attempted": true,
+      "narrative_topics": [
+        "산업:반도체:strong",
+        "산업:매크로:strong",
+        "산업:철강/소재:strong"
+      ]
+    },
     {
       "id": "2026-11-28-intraday-81643b62ba",
       "date": "2026-11-28",
@@ -1384,24 +1402,6 @@
         "산업:반도체:strong",
         "산업:로봇:strong",
         "산업:매크로:strong"
-      ]
-    },
-    {
-      "id": "2026-11-06-intraday-05318a43b2",
-      "date": "2026-11-06",
-      "card_type": "intraday",
-      "card_type_label": "장중",
-      "generated_at": "2026-11-06T23:43:58+09:00",
-      "generated_label": "2026-11-06 23:43 KST",
-      "headline": "미국 반도체 급반등과 달러 강세의 엇박자",
-      "low_signal": false,
-      "session_label": "미국장",
-      "gate_reason": "유의미한 변화: 나스닥",
-      "gemini_call_attempted": true,
-      "narrative_topics": [
-        "산업:반도체:strong",
-        "산업:로봇:strong",
-        "산업:데이터인프라:strong"
       ]
     }
   ]
